@@ -3,41 +3,59 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.4.0",
+    "@cosmjs/cosmwasm-stargate": "^0.24.0-alpha.22",
+    "@cosmjs/crypto": "^0.24.0-alpha.22",
+    "@cosmjs/faucet-client": "^0.24.0-alpha.22",
+    "@cosmjs/launchpad": "^0.24.0-alpha.22",
+    "@cosmjs/ledger-amino": "^0.24.0-alpha.22",
+    "@cosmjs/math": "^0.24.0-alpha.22",
+    "@cosmjs/tendermint-rpc": "^0.24.0-alpha.22",
+    "@craco/craco": "^6.1.0",
+    "@ledgerhq/hw-transport-webusb": "^5.41.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
+    "@types/ledgerhq__hw-transport-webusb": "^4.70.1",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/styled-components": "^5.1.7",
+    "@types/yup": "^0.29.11",
+    "antd": "^4.12.1",
+    "babel-plugin-import": "^1.13.3",
+    "clipboard-copy": "^4.0.1",
+    "craco-antd": "^1.19.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "formik": "^2.2.6",
+    "formik-antd": "^2.0.1",
+    "prettier": "^2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "styled-components": "^5.2.1",
     "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "yup": "^0.32.8"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start:base": "craco start",
+    "start:local": "REACT_APP_NETWORK=local yarn start:base",
+    "start:musselnet": "REACT_APP_NETWORK=musselnet yarn start:base",
+    "start": "yarn start:musselnet",
+    "build:base": "craco build",
+    "build:local": "REACT_APP_NETWORK=local yarn build:base",
+    "build:musselnet": "REACT_APP_NETWORK=musselnet yarn build:base",
+    "build": "yarn build:musselnet",
+    "test": "craco test"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    "last 2 chrome versions",
+    "last 2 firefox versions",
+    "last 2 safari versions"
+  ]
 }
