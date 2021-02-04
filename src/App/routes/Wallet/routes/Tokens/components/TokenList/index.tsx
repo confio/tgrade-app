@@ -2,10 +2,10 @@ import { Coin } from "@cosmjs/launchpad";
 import { Button, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { useSdk } from "service";
-import { nativeCoinToDisplay } from "utils/currency";
-import { TokenDetailState } from "../../../TokenDetail";
-import { TokenItem, TokenStack } from "./style";
+import { useError, useSdk } from "service";
+import { nativeCoinToDisplay, useBalance } from "utils/currency";
+import { getErrorFromStackTrace } from "utils/errors";
+import { ErrorText, TokenItem, TokenStack } from "./style";
 
 const { Text } = Typography;
 
@@ -30,8 +30,8 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
       const balance: Coin[] = [];
       (async function updateCurrentBalance(): Promise<void> {
         try {
-        for (const denom in config.coinMap) {
-          const coin = await getClient().getBalance(currentAddress, denom);
+          for (const denom in config.coinMap) {
+            const coin = await getClient().getBalance(currentAddress, denom);
             if (coin) balance.push(coin);
           }
           clearError();
@@ -46,12 +46,14 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
     }
   }, [amAllowed, balance, clearError, config.coinMap, currentAddress, getClient, setError]);
 
-  const history = useHistory<TokenDetailState>();
+  const history = useHistory();
   function goTokenDetail(token: Coin) {
-    history.push(`${path}/${token.denom}`, { tokenAmount: token.amount });
+    history.push(`${path}/${token.denom}`);
   }
 
-  return (
+  return error ? (
+    <ErrorText>{error}</ErrorText>
+  ) : (
     <TokenStack>
       {currentBalance.map((nativeToken) => {
         const { denom: denomToDisplay, amount: amountToDisplay } = nativeCoinToDisplay(

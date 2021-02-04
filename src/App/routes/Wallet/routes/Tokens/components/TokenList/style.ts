@@ -1,5 +1,8 @@
+import { Typography } from "antd";
 import { Stack } from "App/components/layout";
 import styled from "styled-components";
+
+const { Text } = Typography;
 
 export const TokenStack = styled(Stack)`
   & > * {
@@ -16,5 +19,12 @@ export const TokenItem = styled.div`
     font-family: var(--ff-montserrat);
     font-size: var(--s-1);
     font-weight: bolder;
+  }
+`;
+
+export const ErrorText = styled(Text)`
+  && {
+    font-size: var(--s-1);
+    color: var(--color-red);
   }
 `;
