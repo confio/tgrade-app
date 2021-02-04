@@ -15,8 +15,7 @@ interface CosmWasmContextType {
   readonly getConfig: () => NetworkConfig;
   readonly changeConfig: (config: NetworkConfig) => void;
   readonly getAddress: () => string;
-  readonly getBalance: () => readonly Coin[];
-  readonly refreshBalance: () => Promise<void>;
+  readonly getBalance: () => Promise<readonly Coin[]>;
   readonly hitFaucet: () => Promise<void>;
   readonly getSigner: () => OfflineSigner;
   readonly changeSigner: (newSigner: OfflineSigner) => void;
@@ -36,7 +35,6 @@ const defaultContext: CosmWasmContextType = {
   changeConfig: throwNotInitialized,
   getAddress: throwNotInitialized,
   getBalance: throwNotInitialized,
-  refreshBalance: throwNotInitialized,
   hitFaucet: throwNotInitialized,
   getSigner: throwNotInitialized,
   changeSigner: throwNotInitialized,
@@ -58,43 +56,38 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
   const [config, setConfig] = useState(configProp);
   const [signer, setSigner] = useState<OfflineSigner>();
   const [client, setClient] = useState<SigningCosmWasmClient>();
-
-  const readyContext = useMemo<CosmWasmContextType>(
-    () => ({ ...defaultContext, init: setSigner, getConfig: () => config }),
-    [config],
-  );
-  const [value, setValue] = useState<CosmWasmContextType>(readyContext);
-
-  function clear() {
-    setSigner(undefined);
-  }
-
-  useEffect(() => {
-    if (signer) return;
-
-    setConfig(configProp);
-    setClient(undefined);
-    setValue(readyContext);
-  }, [configProp, readyContext, signer]);
+  const [address, setAddress] = useState<string>();
 
   // Get balance for each coin specified in config.coinMap
-  const refreshBalance = useCallback(
-    async function (address: string, balance: Coin[]): Promise<void> {
-      if (!client) return;
+  const getBalance = useCallback(
+    async function (): Promise<readonly Coin[]> {
+      if (!client || !address) return [];
 
-      balance.length = 0;
-      for (const denom in config.coinMap) {
-        const coin = await client.getBalance(address, denom);
-        if (coin) balance.push(coin);
+      const balance: Coin[] = [];
+      try {
+        for (const denom in config.coinMap) {
+          const coin = await client.getBalance(address, denom);
+          if (coin) {
+            balance.push(coin);
+          }
+        }
+        return balance;
+      } catch (error) {
+        console.error(error);
+        return balance;
       }
     },
-    [client, config.coinMap],
+    [address, client, config.coinMap],
   );
+
+  useEffect(() => {
+    setValue((prevValue) => ({ ...prevValue, getBalance }));
+  }, [getBalance]);
 
   // Get feeToken balance from faucet
   const hitFaucet = useCallback(
-    async function (address: string): Promise<void> {
-      if (!config.faucetUrl || !config.feeToken) return;
+    async function (): Promise<void> {
+      if (!config.faucetUrl || !config.feeToken || !address) return;
 
       try {
         const faucet = new FaucetClient(config.faucetUrl);
@@ -104,16 +97,60 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         console.error(error);
       }
     },
-    [config.faucetUrl, config.feeToken, setError],
+    [address, config.faucetUrl, config.feeToken, setError],
   );
+
+  useEffect(() => {
+    setValue((prevValue) => ({ ...prevValue, hitFaucet }));
+  }, [hitFaucet]);
+
+  const readyContext = useMemo<CosmWasmContextType>(
+    () => ({
+      ...defaultContext,
+      init: setSigner,
+      clear: () => setSigner(undefined),
+      getConfig: () => config,
+      changeConfig: setConfig,
+      changeSigner: setSigner,
+    }),
+    [config],
+  );
+  const [value, setValue] = useState<CosmWasmContextType>(readyContext);
+
+  useEffect(() => {
+    if (signer) return;
+
+    setConfig(configProp);
+    setClient(undefined);
+    setAddress(undefined);
+    setValue(readyContext);
+  }, [configProp, readyContext, signer]);
+
+  useEffect(() => {
+    if (!config) return;
+
+    (async function updateConfigAndStakingClient(): Promise<void> {
+      try {
+        const stakingClient = await createStakingClient(config.rpcUrl);
+        setValue((prevValue) => ({
+          ...prevValue,
+          getConfig: () => config,
+          getStakingClient: () => stakingClient,
+        }));
+      } catch (error) {
+        setError(error.message);
+      }
+    })();
+  }, [config, setError]);
 
   useEffect(() => {
     if (!signer) return;
 
-    (async function updateClient(): Promise<void> {
+    (async function updateSignerAndClient(): Promise<void> {
       try {
         const client = await createClient(config, signer);
         setClient(client);
+        setValue((prevValue) => ({ ...prevValue, getSigner: () => signer, getClient: () => client }));
       } catch (error) {
         setError(error.message);
       }
@@ -121,38 +158,35 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
   }, [config, setError, signer]);
 
   useEffect(() => {
-    if (!signer || !client) return;
+    if (!signer) return;
 
-    const balance: Coin[] = [];
-
-    (async function updateValue(): Promise<void> {
-      const address = (await signer.getAccounts())[0].address;
-
-      await refreshBalance(address, balance);
-      if (!balance.find((coin) => coin.denom === config.feeToken)) {
-        await hitFaucet(address);
+    (async function updateAddress(): Promise<void> {
+      try {
+        const address = (await signer.getAccounts())[0].address;
+        setAddress(address);
+        setValue((prevValue) => ({ ...prevValue, getAddress: () => address }));
+      } catch (error) {
+        setError(error.message);
       }
-      await refreshBalance(address, balance);
+    })();
+  }, [setError, signer]);
 
-      const stakingClient = await createStakingClient(config.rpcUrl);
+  useEffect(() => {
+    if (!config || !client || !address) return;
 
-      setValue({
+    (async function updateInitialized(): Promise<void> {
+      const balance = await getBalance();
+      if (!balance.find((coin) => coin.denom === config.feeToken)) {
+        await hitFaucet();
+      }
+
+      setValue((prevValue) => ({
+        ...prevValue,
         initialized: true,
         init: () => {},
-        clear,
-        getConfig: () => config,
-        changeConfig: setConfig,
-        getAddress: () => address,
-        getBalance: () => balance,
-        refreshBalance: refreshBalance.bind(null, address, balance),
-        hitFaucet: hitFaucet.bind(null, address),
-        getSigner: () => signer,
-        changeSigner: setSigner,
-        getClient: () => client,
-        getStakingClient: () => stakingClient,
-      });
+      }));
     })();
-  }, [client, config, hitFaucet, refreshBalance, signer]);
+  }, [address, client, config, getBalance, hitFaucet]);
 
   return <CosmWasmContext.Provider value={value}>{children}</CosmWasmContext.Provider>;
 }
