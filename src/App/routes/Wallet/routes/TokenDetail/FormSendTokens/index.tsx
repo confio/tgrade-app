@@ -15,7 +15,7 @@ export interface FormSendTokensValues {
 interface FormSendTokensProps {
   readonly tokenName: string;
   readonly tokenAmount: string;
-  readonly sendTokensAction: (values: FormSendTokensValues) => void;
+  readonly sendTokensAction: (values: FormSendTokensValues) => Promise<void>;
 }
 
 export function FormSendTokens({

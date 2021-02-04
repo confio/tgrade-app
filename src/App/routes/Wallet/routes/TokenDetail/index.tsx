@@ -23,7 +23,7 @@ export default function TokenDetail(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const history = useHistory();
-  const { path } = useRouteMatch();
+  const { url } = useRouteMatch();
   const { tokenName }: TokenDetailParams = useParams();
   const [tokenAmount, setTokenAmount] = useState("0");
 
@@ -43,51 +43,44 @@ export default function TokenDetail(): JSX.Element {
       }
     })();
   }, [balance, tokenName]);
+
+  async function sendTokensAction(values: FormSendTokensValues): Promise<void> {
     setLoading(true);
     const { address: recipientAddress, amount } = values;
 
-    // TODO: Add try catch so it does not fail i.e. too many decimals
-    const amountToTransfer = displayAmountToNative(amount, config.coinMap, tokenName);
+    try {
+      const amountToTransfer = displayAmountToNative(amount, config.coinMap, tokenName);
+      const nativeTokenToTransfer: Coin = { denom: tokenName, amount: amountToTransfer };
+      const transferAmount: readonly Coin[] = [nativeTokenToTransfer];
 
-    const nativeTokenToTransfer: Coin = { denom: tokenName, amount: amountToTransfer };
-    const transferAmount: readonly Coin[] = [nativeTokenToTransfer];
+      const response = await getClient().sendTokens(getAddress(), recipientAddress, transferAmount);
+      if (isBroadcastTxFailure(response)) {
+        throw new Error(response.rawLog);
+      }
 
-    getClient()
-      .sendTokens(getAddress(), recipientAddress, transferAmount)
-      .then((result) => {
-        if (isBroadcastTxFailure(result)) {
-          Promise.reject(result.rawLog);
-        }
-
-        refreshBalance();
-
-        history.push({
-          pathname: pathOperationResult,
-          state: {
-            success: true,
-            message: `${amount} ${tokenName} successfully sent to ${recipientAddress}`,
-            customButtonText: "Tokens",
-            customButtonActionPath: `${pathWallet}${pathTokens}`,
-          } as OperationResultState,
-        });
-      })
-      .catch((stackTrace) => {
-        console.error(stackTrace);
-
-        const tokenDetailState: TokenDetailState = { tokenAmount };
-
-        history.push({
-          pathname: pathOperationResult,
-          state: {
-            success: false,
-            message: "Send transaction failed:",
-            error: getErrorFromStackTrace(stackTrace),
-            customButtonActionPath: path,
-            customButtonActionState: tokenDetailState,
-          } as OperationResultState,
-        });
+      history.push({
+        pathname: pathOperationResult,
+        state: {
+          success: true,
+          message: `${amount} ${config.coinMap[tokenName].denom} successfully sent to ${recipientAddress}`,
+          customButtonText: "Tokens",
+          customButtonActionPath: `${pathWallet}${pathTokens}`,
+        } as OperationResultState,
       });
-  };
+    } catch (stackTrace) {
+      console.error(stackTrace);
+
+      history.push({
+        pathname: pathOperationResult,
+        state: {
+          success: false,
+          message: "Send transaction failed:",
+          error: getErrorFromStackTrace(stackTrace),
+          customButtonActionPath: url,
+        } as OperationResultState,
+      });
+    }
+  }
 
   const nativeToken: Coin = { denom: tokenName, amount: tokenAmount };
   // TODO: Add try catch so it does not fail i.e. too many decimals
