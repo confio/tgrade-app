@@ -50,7 +50,7 @@
     "build:base": "craco build",
     "build:local": "REACT_APP_NETWORK=local yarn build:base",
     "build:musselnet": "REACT_APP_NETWORK=musselnet yarn build:base",
-    "build": "yarn start:musselnet",
+    "build": "yarn build:musselnet",
     "test": "craco test"
   },
   "browserslist": [
