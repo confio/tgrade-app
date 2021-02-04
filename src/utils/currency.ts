@@ -1,5 +1,7 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Decimal } from "@cosmjs/math";
+import { useEffect, useState } from "react";
+import { useSdk } from "service";
 
 // NARROW NO-BREAK SPACE (U+202F)
 const thinSpace = "\u202F";
@@ -56,4 +58,18 @@ export function displayAmountToNative(
   }
 
   return amountToDisplay;
+}
+
+export function useBalance(): readonly Coin[] {
+  const { getBalance } = useSdk();
+  const [currentBalance, setCurrentBalance] = useState<readonly Coin[]>([]);
+
+  useEffect(() => {
+    (async function updateBalance() {
+      const balance = await getBalance();
+      setCurrentBalance(balance);
+    })();
+  }, [getBalance]);
+
+  return currentBalance;
 }
