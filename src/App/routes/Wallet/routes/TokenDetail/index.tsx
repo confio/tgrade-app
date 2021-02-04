@@ -5,10 +5,10 @@ import { PageLayout } from "App/components/layout";
 import { BackButton, Loading } from "App/components/logic";
 import { pathOperationResult, pathTokens, pathWallet } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
-import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
+import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { FormSendTokens, FormSendTokensValues } from "./FormSendTokens";
 import { Amount, MainStack } from "./style";
@@ -19,22 +19,30 @@ interface TokenDetailParams {
   readonly tokenName: string;
 }
 
-export interface TokenDetailState {
-  readonly tokenAmount: string;
-}
-
 export default function TokenDetail(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const history = useHistory();
   const { path } = useRouteMatch();
   const { tokenName }: TokenDetailParams = useParams();
-  const { tokenAmount } = history.location.state as TokenDetailState;
+  const [tokenAmount, setTokenAmount] = useState("0");
 
-  const { getConfig, getClient, getAddress, refreshBalance } = useSdk();
+  const { getConfig, getClient, getAddress } = useSdk();
+  const balance = useBalance();
   const config = getConfig();
 
-  const sendTokensAction = (values: FormSendTokensValues) => {
+  useEffect(() => {
+    (async function updateTokenAmount(): Promise<void> {
+      try {
+        const coin = balance.find((coin) => coin.denom === tokenName);
+        const amount = coin?.amount ?? "0";
+        setTokenAmount(amount);
+      } catch (error) {
+        setTokenAmount("0");
+        console.error(error);
+      }
+    })();
+  }, [balance, tokenName]);
     setLoading(true);
     const { address: recipientAddress, amount } = values;
 

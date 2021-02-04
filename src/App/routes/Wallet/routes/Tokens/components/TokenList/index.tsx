@@ -15,24 +15,36 @@ interface TokenListProps {
 
 export default function TokenList({ currentAddress }: TokenListProps): JSX.Element {
   const { path } = useRouteMatch();
-  const { getConfig, getClient, getAddress, getBalance: userBalance } = useSdk();
+  const { error, setError, clearError } = useError();
+  const { getConfig, getClient, getAddress } = useSdk();
   const config = getConfig();
   const amAllowed = getAddress() === currentAddress;
+  const balance = useBalance();
   const [currentBalance, setCurrentBalance] = useState<readonly Coin[]>([]);
 
   useEffect(() => {
     if (amAllowed) {
-      setCurrentBalance(userBalance);
+      clearError();
+      setCurrentBalance(balance);
     } else {
-      setCurrentBalance([]);
-      (async function updateCurrentBalance() {
+      const balance: Coin[] = [];
+      (async function updateCurrentBalance(): Promise<void> {
+        try {
         for (const denom in config.coinMap) {
           const coin = await getClient().getBalance(currentAddress, denom);
-          if (coin) setCurrentBalance((prev) => [...prev, coin]);
+            if (coin) balance.push(coin);
+          }
+          clearError();
+        } catch (error) {
+          balance.length = 0;
+          setError(getErrorFromStackTrace(error));
+          console.error(error);
+        } finally {
+          setCurrentBalance(balance);
         }
       })();
     }
-  }, [amAllowed, config.coinMap, currentAddress, getClient, userBalance]);
+  }, [amAllowed, balance, clearError, config.coinMap, currentAddress, getClient, setError]);
 
   const history = useHistory<TokenDetailState>();
   function goTokenDetail(token: Coin) {
