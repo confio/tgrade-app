@@ -1,0 +1,8 @@
+Copyright (c) 2021 Confio OÜ. All Rights Reserved.
+
+This repository contains confidential and proprietary information of Confio OÜ,
+and is protected under U.S. and international copyright and other intellectual property laws.
+
+It is not offered under an open source license.
+
+Please contact hello (at) confio (dot) tech for licensing related questions.

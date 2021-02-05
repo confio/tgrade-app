@@ -2,6 +2,7 @@
   "name": "wallet",
   "version": "0.1.0",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
     "@ant-design/icons": "^4.4.0",
     "@cosmjs/cosmwasm-stargate": "^0.24.0-alpha.22",
