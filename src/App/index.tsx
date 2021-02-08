@@ -3,8 +3,10 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ErrorProvider, SdkProvider } from "service";
 import GlobalStyle from "theme/GlobalStyle";
 import { ProtectedSwitch } from "./components/logic";
-import { pathLogin, pathOperationResult, pathWallet } from "./paths";
+import { pathAccount, pathLogin, pathLogout, pathOperationResult, pathWallet } from "./paths";
+import Account from "./routes/Account";
 import Login from "./routes/Login";
+import Logout from "./routes/Logout";
 import OperationResult from "./routes/OperationResult";
 import Wallet from "./routes/Wallet";
 
@@ -22,6 +24,12 @@ export default function App(): JSX.Element {
               <Login />
             </Route>
             <ProtectedSwitch authPath={pathLogin}>
+              <Route path={pathLogout}>
+                <Logout />
+              </Route>
+              <Route path={pathAccount}>
+                <Account />
+              </Route>
               <Route path={pathWallet}>
                 <Wallet />
               </Route>
