@@ -7,6 +7,7 @@
     "@ant-design/icons": "^4.4.0",
     "@cosmjs/cosmwasm-stargate": "^0.24.0-alpha.22",
     "@cosmjs/crypto": "^0.24.0-alpha.22",
+    "@cosmjs/encoding": "^0.24.0-alpha.22",
     "@cosmjs/faucet-client": "^0.24.0-alpha.22",
     "@cosmjs/launchpad": "^0.24.0-alpha.22",
     "@cosmjs/ledger-amino": "^0.24.0-alpha.22",
