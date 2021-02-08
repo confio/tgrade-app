@@ -1,13 +1,14 @@
 import { createContext, HTMLAttributes, useContext, useState } from "react";
+import { getErrorFromStackTrace } from "utils/errors";
 
 interface ErrorContextType {
   readonly error?: string;
-  readonly setError: (error: string) => void;
+  readonly handleError: (error: Error) => void;
   readonly clearError: () => void;
 }
 
 const defaultContext: ErrorContextType = {
-  setError: () => {
+  handleError: () => {
     return;
   },
   clearError: () => {
@@ -22,9 +23,14 @@ export const useError = (): ErrorContextType => useContext(ErrorContext);
 export default function ErrorProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   const [error, setError] = useState<string>();
 
+  function handleError(error: Error): void {
+    console.error(error);
+    setError(getErrorFromStackTrace(error));
+  }
+
   const context: ErrorContextType = {
-    error: error,
-    setError: setError,
+    error,
+    handleError,
     clearError: () => {
       setError(undefined);
     },

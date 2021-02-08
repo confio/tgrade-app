@@ -9,16 +9,7 @@ import { useHistory } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { loadKeplrWallet, loadLedgerWallet, loadOrCreateWallet, WalletLoader } from "utils/sdk";
 import cosmWasmLogo from "./assets/cosmWasmLogo.svg";
-import {
-  ErrorText,
-  LightText,
-  Logo,
-  StackButtons,
-  StackButtonsError,
-  StackLogoText,
-  StackText,
-  StackTextButtons,
-} from "./style";
+import { LightText, Logo, StackButtons, StackLogoText, StackText, StackTextButtons } from "./style";
 
 const { Title } = Typography;
 
@@ -37,7 +28,7 @@ function disableKeplrLogin() {
 export default function Login(): JSX.Element {
   const history = useHistory();
   const state = history.location.state as RedirectLocation;
-  const { error, setError, clearError } = useError();
+  const { handleError } = useError();
   const sdk = useSdk();
   const config = sdk.getConfig();
 
@@ -45,15 +36,13 @@ export default function Login(): JSX.Element {
 
   async function init(loadWallet: WalletLoader) {
     setInitializing(true);
-    clearError();
 
     try {
       const signer = await loadWallet(config.chainId, config.addressPrefix);
       sdk.init(signer);
     } catch (error) {
-      console.error(error);
-      setError(Error(error).message);
       setInitializing(false);
+      handleError(error);
     }
   }
 
@@ -72,8 +61,7 @@ export default function Login(): JSX.Element {
       await anyWindow.keplr.enable(config.chainId);
       await init(loadKeplrWallet);
     } catch (error) {
-      console.error(error);
-      setError(Error(error).message);
+      handleError(error);
     }
   }
 
@@ -99,20 +87,17 @@ export default function Login(): JSX.Element {
             <LightText>Welcome to your Wallet</LightText>
             <LightText>Select one of the following options to start</LightText>
           </StackText>
-          <StackButtonsError>
-            <StackButtons>
-              <Button data-size="large" type="primary" onClick={initBrowser}>
-                Browser (Demo)
-              </Button>
-              <Button data-size="large" type="primary" disabled={disableLedgerLogin()} onClick={initLedger}>
-                Ledger (Secure, Chrome)
-              </Button>
-              <Button data-size="large" type="primary" disabled={disableKeplrLogin()} onClick={initKeplr}>
-                Keplr (Secure)
-              </Button>
-            </StackButtons>
-            {error && <ErrorText>[ ! ] {error}</ErrorText>}
-          </StackButtonsError>
+          <StackButtons>
+            <Button data-size="large" type="primary" onClick={initBrowser}>
+              Browser (Demo)
+            </Button>
+            <Button data-size="large" type="primary" disabled={disableLedgerLogin()} onClick={initLedger}>
+              Ledger (Secure, Chrome)
+            </Button>
+            <Button data-size="large" type="primary" disabled={disableKeplrLogin()} onClick={initKeplr}>
+              Keplr (Secure)
+            </Button>
+          </StackButtons>
         </StackTextButtons>
       </StackLogoText>
     </PageLayout>

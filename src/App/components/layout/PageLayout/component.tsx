@@ -1,5 +1,5 @@
 import { Center, Stack } from "App/components/layout";
-import { BackButton, Burger, Menu } from "App/components/logic";
+import { BackButton, Burger, ErrorAlert, Menu } from "App/components/logic";
 import React, { ComponentProps, HTMLAttributes, useState } from "react";
 import { NavHeader } from "./style";
 
@@ -25,6 +25,7 @@ export default function PageLayout({
             <Menu open={open} setOpen={setOpen} />
           </NavHeader>
         ) : null}
+        <ErrorAlert />
         {children}
       </Stack>
     </Center>

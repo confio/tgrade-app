@@ -7,7 +7,7 @@ import { pathOperationResult, pathTokens, pathWallet } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useSdk } from "service";
+import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { FormSendTokens, FormSendTokensValues } from "./FormSendTokens";
@@ -22,6 +22,7 @@ interface TokenDetailParams {
 export default function TokenDetail(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
+  const { handleError } = useError();
   const history = useHistory();
   const { url } = useRouteMatch();
   const { tokenName }: TokenDetailParams = useParams();
@@ -39,10 +40,10 @@ export default function TokenDetail(): JSX.Element {
         setTokenAmount(amount);
       } catch (error) {
         setTokenAmount("0");
-        console.error(error);
+        handleError(error);
       }
     })();
-  }, [balance, tokenName]);
+  }, [balance, handleError, tokenName]);
 
   async function sendTokensAction(values: FormSendTokensValues): Promise<void> {
     setLoading(true);
@@ -68,7 +69,7 @@ export default function TokenDetail(): JSX.Element {
         } as OperationResultState,
       });
     } catch (stackTrace) {
-      console.error(stackTrace);
+      handleError(stackTrace);
 
       history.push({
         pathname: pathOperationResult,

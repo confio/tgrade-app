@@ -1,7 +1,9 @@
 import { Button } from "antd";
 import { PageLayout } from "App/components/layout";
 import { pathWallet } from "App/paths";
+import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { useError } from "service";
 import failIcon from "./assets/failIcon.svg";
 import successIcon from "./assets/successIcon.svg";
 import { MainStack, ResultIcon, ResultText } from "./style";
@@ -23,6 +25,9 @@ interface ResultContent {
 }
 
 export default function OperationResult(): JSX.Element {
+  const { clearError } = useError();
+  useEffect(clearError, [clearError]);
+
   const history = useHistory();
 
   const {

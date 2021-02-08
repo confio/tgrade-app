@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay, useBalance } from "utils/currency";
-import { getErrorFromStackTrace } from "utils/errors";
-import { ErrorText, TokenItem, TokenStack } from "./style";
+import { TokenItem, TokenStack } from "./style";
 
 const { Text } = Typography;
 
@@ -15,7 +14,7 @@ interface TokenListProps {
 
 export default function TokenList({ currentAddress }: TokenListProps): JSX.Element {
   const { path } = useRouteMatch();
-  const { error, setError, clearError } = useError();
+  const { handleError } = useError();
   const { getConfig, getClient, getAddress } = useSdk();
   const config = getConfig();
   const amAllowed = getAddress() === currentAddress;
@@ -24,7 +23,6 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
 
   useEffect(() => {
     if (amAllowed) {
-      clearError();
       setCurrentBalance(balance);
     } else {
       const balance: Coin[] = [];
@@ -34,26 +32,22 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
             const coin = await getClient().getBalance(currentAddress, denom);
             if (coin) balance.push(coin);
           }
-          clearError();
         } catch (error) {
           balance.length = 0;
-          setError(getErrorFromStackTrace(error));
-          console.error(error);
+          handleError(error);
         } finally {
           setCurrentBalance(balance);
         }
       })();
     }
-  }, [amAllowed, balance, clearError, config.coinMap, currentAddress, getClient, setError]);
+  }, [amAllowed, balance, config.coinMap, currentAddress, getClient, handleError]);
 
   const history = useHistory();
   function goTokenDetail(token: Coin) {
     history.push(`${path}/${token.denom}`);
   }
 
-  return error ? (
-    <ErrorText>{error}</ErrorText>
-  ) : (
+  return (
     <TokenStack>
       {currentBalance.map((nativeToken) => {
         const { denom: denomToDisplay, amount: amountToDisplay } = nativeCoinToDisplay(

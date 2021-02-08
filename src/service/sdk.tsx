@@ -51,7 +51,7 @@ interface SdkProviderProps extends React.HTMLAttributes<HTMLOrSVGElement> {
 }
 
 export default function SdkProvider({ config: configProp, children }: SdkProviderProps): JSX.Element {
-  const { setError } = useError();
+  const { handleError } = useError();
 
   const [config, setConfig] = useState(configProp);
   const [signer, setSigner] = useState<OfflineSigner>();
@@ -73,11 +73,11 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         }
         return balance;
       } catch (error) {
-        console.error(error);
+        handleError(error);
         return balance;
       }
     },
-    [address, client, config.coinMap],
+    [address, client, config.coinMap, handleError],
   );
 
   useEffect(() => {
@@ -93,11 +93,10 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         const faucet = new FaucetClient(config.faucetUrl);
         await faucet.credit(address, config.feeToken);
       } catch (error) {
-        setError(error.message);
-        console.error(error);
+        handleError(error);
       }
     },
-    [address, config.faucetUrl, config.feeToken, setError],
+    [address, config.faucetUrl, config.feeToken, handleError],
   );
 
   useEffect(() => {
@@ -138,10 +137,10 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
           getStakingClient: () => stakingClient,
         }));
       } catch (error) {
-        setError(error.message);
+        handleError(error);
       }
     })();
-  }, [config, setError]);
+  }, [config, handleError]);
 
   useEffect(() => {
     if (!signer) return;
@@ -152,10 +151,10 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         setClient(client);
         setValue((prevValue) => ({ ...prevValue, getSigner: () => signer, getClient: () => client }));
       } catch (error) {
-        setError(error.message);
+        handleError(error);
       }
     })();
-  }, [config, setError, signer]);
+  }, [config, handleError, signer]);
 
   useEffect(() => {
     if (!signer) return;
@@ -166,10 +165,10 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         setAddress(address);
         setValue((prevValue) => ({ ...prevValue, getAddress: () => address }));
       } catch (error) {
-        setError(error.message);
+        handleError(error);
       }
     })();
-  }, [setError, signer]);
+  }, [handleError, signer]);
 
   useEffect(() => {
     if (!config || !client || !address) return;
