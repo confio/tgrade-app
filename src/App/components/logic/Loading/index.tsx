@@ -12,7 +12,7 @@ export default function Loading({ loadingText }: LoadingProps): JSX.Element {
   const tip = loadingText || "Loading...";
 
   return (
-    <PageLayout>
+    <PageLayout hide="header">
       <StyledSpin indicator={spinIndicator} tip={tip} />
     </PageLayout>
   );
