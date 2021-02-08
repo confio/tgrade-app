@@ -12,6 +12,7 @@ export const GlobalReset = createGlobalStyle`
   }
   
   body {
+    position: fixed;
     min-height: 100vh;
     line-height: 1.5;
     text-rendering: optimizeSpeed;

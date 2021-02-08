@@ -2,7 +2,7 @@ import { Coin } from "@cosmjs/launchpad";
 import { isBroadcastTxFailure } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import { PageLayout } from "App/components/layout";
-import { BackButton, Loading } from "App/components/logic";
+import { Loading } from "App/components/logic";
 import { pathOperationResult, pathTokens, pathWallet } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import React, { useEffect, useState } from "react";
@@ -90,9 +90,8 @@ export default function TokenDetail(): JSX.Element {
   return loading ? (
     <Loading loadingText={`Sending ${nameToDisplay}...`} />
   ) : (
-    <PageLayout>
+    <PageLayout backButtonProps={{ path: `${pathWallet}${pathTokens}` }}>
       <MainStack>
-        <BackButton path={`${pathWallet}${pathTokens}`} />
         <Title>{nameToDisplay}</Title>
         <Amount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>

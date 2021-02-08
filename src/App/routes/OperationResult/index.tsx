@@ -60,7 +60,7 @@ export default function OperationResult(): JSX.Element {
     : buttonAction;
 
   return (
-    <PageLayout>
+    <PageLayout hide="header">
       <MainStack>
         <ResultIcon src={icon} alt="Result icon" />
         <ResultText data-result={result}>{message}</ResultText>
