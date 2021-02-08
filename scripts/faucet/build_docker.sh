@@ -7,10 +7,4 @@ SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR"/env
 
-export FAUCET_ADDRESS_PREFIX=wasm
-
-docker run --rm \
-  -e FAUCET_ADDRESS_PREFIX \
-  --name "$CONTAINER_NAME" \
-  "$REPOSITORY:$VERSION" \
-  generate
+docker build . -t "$REPOSITORY:$VERSION"

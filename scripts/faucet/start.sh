@@ -8,13 +8,13 @@ SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 source "$SCRIPT_DIR"/env
 
 export FAUCET_CONCURRENCY=2
-export FAUCET_MNEMONIC="cycle heart pair earn tenant access congress sense immune city winner hair"
-# address: cosmos1pr5vxw69nndf0v9rswz7qqqd42s2e93ltc2cwk
+export FAUCET_MNEMONIC="now mesh clog card twin rather knee head fancy matrix sponsor pill"
+# address: wasm1syn8janzh5t6rggtmlsuzs5w7qqfxqglvk5k0d
 export FAUCET_GAS_PRICE=0.025ucosm
 export FAUCET_ADDRESS_PREFIX=wasm
 export FAUCET_TOKENS=ucosm
 
-DOCKER_HOST_IP=$(docker run --read-only --rm alpine ip route | awk 'NR==1 {print $3}')
+# DOCKER_HOST_IP=$(docker run --read-only --rm alpine ip route | awk 'NR==1 {print $3}')
 
 docker run --read-only --rm \
   -e FAUCET_MNEMONIC \
@@ -24,5 +24,6 @@ docker run --read-only --rm \
   -e FAUCET_TOKENS \
   -p 8000:8000 \
   --name "$CONTAINER_NAME" \
+  --network=host \
   "$REPOSITORY:$VERSION" \
-  start "http://$DOCKER_HOST_IP:1319"
+  start http://localhost:26657
