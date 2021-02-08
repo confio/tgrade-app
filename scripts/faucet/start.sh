@@ -12,7 +12,7 @@ export FAUCET_MNEMONIC="now mesh clog card twin rather knee head fancy matrix sp
 # address: wasm1syn8janzh5t6rggtmlsuzs5w7qqfxqglvk5k0d
 export FAUCET_GAS_PRICE=0.025ucosm
 export FAUCET_ADDRESS_PREFIX=wasm
-export FAUCET_TOKENS=ucosm
+export FAUCET_TOKENS=ucosm,ustake
 
 # docker pull "$REPOSITORY:$VERSION"
 

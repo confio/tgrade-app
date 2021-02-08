@@ -14,5 +14,13 @@ echo "3 blocks produced!"
 echo "Wait for faucet to start up..."
 timeout 60 bash -c "until curl -s http://localhost:8000/status > /dev/null; do sleep 0.5; done"
 
+echo "Add CORS proxy (temporary)"
+DOCKER_HOST_IP=$(docker run --read-only --rm alpine ip route | awk 'NR==1 {print $3}');
+docker run --rm -t \
+  --name proxy \
+  -e PROXY_HOST="http://$DOCKER_HOST_IP:8000" \
+  -p 8001:80 \
+  mattbailey/docker-corsproxy
+
 echo "All systems go!"
 sleep 1
