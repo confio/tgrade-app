@@ -40,21 +40,8 @@ export const LightText = styled(Text)`
   color: #7c95ff;
 `;
 
-export const StackButtonsError = styled(Stack)`
-  & > * {
-    --gap: var(--s1);
-  }
-`;
-
 export const StackButtons = styled(Stack)`
   & > * {
     --gap: var(--s-1);
-  }
-`;
-
-export const ErrorText = styled(Text)`
-  && {
-    text-align: left;
-    color: var(--color-red);
   }
 `;
