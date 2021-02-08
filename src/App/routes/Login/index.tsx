@@ -90,7 +90,7 @@ export default function Login(): JSX.Element {
   return initializing ? (
     <Loading loadingText="Initializing app..." />
   ) : (
-    <PageLayout>
+    <PageLayout hide="header">
       <StackLogoText>
         <Logo src={cosmWasmLogo} alt="CosmWasm logo" />
         <StackTextButtons>
