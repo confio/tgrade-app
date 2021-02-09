@@ -1,3 +1,4 @@
+import * as React from "react";
 import { ComponentProps } from "react";
 import { useError } from "service";
 import { StyledAlert } from "./style";

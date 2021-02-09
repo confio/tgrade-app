@@ -1,4 +1,5 @@
 import { config } from "config/network";
+import * as React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ErrorProvider, SdkProvider } from "service";
 import GlobalStyle from "theme/GlobalStyle";

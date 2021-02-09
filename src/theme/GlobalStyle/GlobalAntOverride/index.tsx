@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Buttons } from "./Buttons";
 import { Forms } from "./Forms";
 

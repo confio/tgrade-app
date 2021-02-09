@@ -1,3 +1,4 @@
+import * as React from "react";
 import { HTMLAttributes } from "react";
 import { useHistory } from "react-router-dom";
 import backArrow from "./assets/backArrow.svg";

@@ -1,4 +1,5 @@
 import Menu from "App/components/logic/Menu";
+import * as React from "react";
 import { ComponentProps } from "react";
 import { StyledCloseBox } from "./style";
 

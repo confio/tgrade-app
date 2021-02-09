@@ -1,5 +1,6 @@
 import { Typography } from "antd";
 import { pathAccount, pathLogout, pathStaking, pathWallet } from "App/paths";
+import * as React from "react";
 import { Link } from "react-router-dom";
 import closeMenuIcon from "./assets/closeMenuIcon.svg";
 import MenuCloser from "./MenuCloser";

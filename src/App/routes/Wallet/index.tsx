@@ -1,4 +1,5 @@
 import { pathTokens } from "App/paths";
+import * as React from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import TokenDetail from "./routes/TokenDetail";
 import Tokens from "./routes/Tokens";

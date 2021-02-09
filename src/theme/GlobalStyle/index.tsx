@@ -1,3 +1,4 @@
+import * as React from "react";
 import GlobalAntOverride from "./GlobalAntOverride";
 import { GlobalColors } from "./GlobalColors";
 import { GlobalFonts } from "./GlobalFonts";

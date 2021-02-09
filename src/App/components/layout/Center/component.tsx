@@ -1,3 +1,4 @@
+import * as React from "react";
 import { HTMLAttributes } from "react";
 
 interface CenterProps extends HTMLAttributes<HTMLOrSVGElement> {

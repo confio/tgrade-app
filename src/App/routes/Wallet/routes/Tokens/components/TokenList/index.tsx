@@ -1,6 +1,7 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Button, Typography } from "antd";
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay, useBalance } from "utils/currency";
