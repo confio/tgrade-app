@@ -25,13 +25,13 @@ export type EncodeMsgWithdrawDelegatorReward = EncodeObject<
 
 export function useStakingValidator(validatorAddress: string): StakingValidator | undefined {
   const { handleError } = useError();
-  const { getStakingClient } = useSdk();
+  const { getQueryClient } = useSdk();
   const [validator, setValidator] = useState<StakingValidator>();
 
   useEffect(() => {
     (async function updateValidator() {
       try {
-        const { validator } = await getStakingClient().staking.unverified.validator(validatorAddress);
+        const { validator } = await getQueryClient().staking.unverified.validator(validatorAddress);
         if (!validator) {
           throw new Error(`No validator found with address: ${validatorAddress}`);
         }
@@ -40,7 +40,7 @@ export function useStakingValidator(validatorAddress: string): StakingValidator 
         handleError(error);
       }
     })();
-  }, [getStakingClient, handleError, validatorAddress]);
+  }, [getQueryClient, handleError, validatorAddress]);
 
   return validator;
 }

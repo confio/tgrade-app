@@ -29,7 +29,7 @@ export default function TokenDetail(): JSX.Element {
   const { tokenName }: TokenDetailParams = useParams();
   const [tokenAmount, setTokenAmount] = useState("0");
 
-  const { getConfig, getClient, getAddress } = useSdk();
+  const { getConfig, getAddress, getSigningClient } = useSdk();
   const balance = useBalance();
   const config = getConfig();
 
@@ -55,7 +55,7 @@ export default function TokenDetail(): JSX.Element {
       const nativeTokenToTransfer: Coin = { denom: tokenName, amount: amountToTransfer };
       const transferAmount: readonly Coin[] = [nativeTokenToTransfer];
 
-      const response = await getClient().sendTokens(getAddress(), recipientAddress, transferAmount);
+      const response = await getSigningClient().sendTokens(getAddress(), recipientAddress, transferAmount);
       if (isBroadcastTxFailure(response)) {
         throw new Error(response.rawLog);
       }

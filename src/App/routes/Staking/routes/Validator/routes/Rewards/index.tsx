@@ -1,5 +1,4 @@
-import { Coin, coins } from "@cosmjs/launchpad";
-import { isBroadcastTxFailure } from "@cosmjs/stargate";
+import { Coin } from "@cosmjs/launchpad";
 import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { DataList, Loading } from "App/components/logic";
@@ -10,7 +9,7 @@ import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
-import { EncodeMsgWithdrawDelegatorReward, useStakingValidator } from "utils/staking";
+import { useStakingValidator } from "utils/staking";
 import { HeaderTitleStack, MainStack } from "./style";
 
 const { Title, Text } = Typography;
@@ -27,7 +26,7 @@ export default function Rewards(): JSX.Element {
   const history = useHistory();
   const { validatorAddress } = useParams<RewardsParams>();
 
-  const { getConfig, getClient, getStakingClient, getAddress } = useSdk();
+  const { getConfig, getAddress, getQueryClient, withdrawRewards } = useSdk();
   const config = getConfig();
   const delegatorAddress = getAddress();
 
@@ -37,7 +36,7 @@ export default function Rewards(): JSX.Element {
   useEffect(() => {
     (async function updateRewards() {
       try {
-        const { rewards } = await getStakingClient().distribution.unverified.delegationRewards(
+        const { rewards } = await getQueryClient().distribution.unverified.delegationRewards(
           delegatorAddress,
           validatorAddress,
         );
@@ -55,29 +54,13 @@ export default function Rewards(): JSX.Element {
         // Do nothing because it throws if delegation does not exist, i.e balance = 0
       }
     })();
-  }, [delegatorAddress, getStakingClient, validatorAddress]);
+  }, [delegatorAddress, getQueryClient, validatorAddress]);
 
-  async function withdrawRewards() {
+  async function submitWithdrawRewards() {
     setLoading(true);
 
-    const withdrawRewardsMsg: EncodeMsgWithdrawDelegatorReward = {
-      typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
-      value: { delegatorAddress, validatorAddress },
-    };
-
-    const fee = {
-      amount: coins(
-        config.gasPrice * 10 ** config.coinMap[config.feeToken].fractionalDigits,
-        config.feeToken,
-      ),
-      gas: "1500000",
-    };
-
     try {
-      const response = await getClient().signAndBroadcast(delegatorAddress, [withdrawRewardsMsg], fee);
-      if (isBroadcastTxFailure(response)) {
-        throw new Error("Rewards withdrawal failed");
-      }
+      await withdrawRewards(validatorAddress);
 
       history.push({
         pathname: pathOperationResult,
@@ -126,7 +109,7 @@ export default function Rewards(): JSX.Element {
         {rewards.length ? (
           <>
             <DataList {...getRewardsMap()} />
-            <Button type="primary" onClick={withdrawRewards}>
+            <Button type="primary" onClick={submitWithdrawRewards}>
               Withdraw rewards
             </Button>
           </>

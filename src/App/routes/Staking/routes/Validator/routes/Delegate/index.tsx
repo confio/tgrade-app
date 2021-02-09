@@ -1,5 +1,4 @@
-import { Coin, coins } from "@cosmjs/launchpad";
-import { isBroadcastTxFailure } from "@cosmjs/stargate";
+import { Coin } from "@cosmjs/launchpad";
 import { Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { Loading } from "App/components/logic";
@@ -10,7 +9,7 @@ import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
-import { EncodeMsgDelegate, useStakingValidator } from "utils/staking";
+import { useStakingValidator } from "utils/staking";
 import FormDelegateBalance, { FormDelegateBalanceFields } from "./FormDelegateBalance";
 import { HeaderTitleStack, MainStack } from "./style";
 
@@ -27,36 +26,19 @@ export default function Delegate(): JSX.Element {
   const { handleError } = useError();
   const history = useHistory();
   const { validatorAddress } = useParams<DelegateParams>();
-  const { getConfig, getClient, getAddress } = useSdk();
-  const delegatorAddress = getAddress();
+  const { getConfig, delegateTokens } = useSdk();
 
   const validator = useStakingValidator(validatorAddress);
 
   async function submitDelegateBalance({ amount }: FormDelegateBalanceFields) {
     setLoading(true);
-
     const config = getConfig();
-    const nativeAmountString = displayAmountToNative(amount, config.coinMap, config.stakingToken);
-    const nativeAmountCoin: Coin = { amount: nativeAmountString, denom: config.stakingToken };
-
-    const delegateMsg: EncodeMsgDelegate = {
-      typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
-      value: { delegatorAddress, validatorAddress, amount: nativeAmountCoin },
-    };
-
-    const fee = {
-      amount: coins(
-        config.gasPrice * 10 ** config.coinMap[config.feeToken].fractionalDigits,
-        config.feeToken,
-      ),
-      gas: "1500000",
-    };
 
     try {
-      const response = await getClient().signAndBroadcast(delegatorAddress, [delegateMsg], fee);
-      if (isBroadcastTxFailure(response)) {
-        throw new Error("Delegate failed");
-      }
+      const nativeAmountString = displayAmountToNative(amount, config.coinMap, config.stakingToken);
+      const delegateAmount: Coin = { amount: nativeAmountString, denom: config.stakingToken };
+
+      await delegateTokens(validatorAddress, delegateAmount);
 
       history.push({
         pathname: pathOperationResult,

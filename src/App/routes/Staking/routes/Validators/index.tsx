@@ -26,13 +26,13 @@ function validatorCompare(a: ValidatorData, b: ValidatorData) {
 export default function Validators(): JSX.Element {
   const history = useHistory();
   const { url: pathValidatorsMatched } = useRouteMatch();
-  const { getStakingClient } = useSdk();
+  const { getQueryClient } = useSdk();
 
   const [validatorsData, setValidatorsData] = useState<readonly ValidatorData[]>([]);
 
   useEffect(() => {
     (async function updateValidatorsData() {
-      const { validators } = await getStakingClient().staking.unverified.validators("BOND_STATUS_BONDED");
+      const { validators } = await getQueryClient().staking.unverified.validators("BOND_STATUS_BONDED");
       if (!validators) {
         throw new Error("No bonded validators found");
       }
@@ -53,7 +53,7 @@ export default function Validators(): JSX.Element {
 
       setValidatorsData(validatorsData);
     })();
-  }, [getStakingClient]);
+  }, [getQueryClient]);
 
   function goToValidator(address: string) {
     history.push(`${pathValidatorsMatched}/${address}`);
@@ -71,7 +71,7 @@ export default function Validators(): JSX.Element {
               type="primary"
               onClick={() => goToValidator(validator.address)}
             >
-                <Text>{validator.name}</Text>
+              <Text>{validator.name}</Text>
             </Button>
           ))}
         </ValidatorStack>

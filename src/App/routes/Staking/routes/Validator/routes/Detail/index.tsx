@@ -24,28 +24,28 @@ export default function Detail(): JSX.Element {
   const { validatorAddress } = useParams<DetailParams>();
   const validator = useStakingValidator(validatorAddress);
 
-  const { getConfig, getStakingClient, getAddress } = useSdk();
+  const { getConfig, getAddress, getQueryClient } = useSdk();
   const config = getConfig();
-  const [balance, setBalance] = useState<Decimal>(Decimal.fromUserInput("0", 0));
+  const [stakedTokens, setStakedTokens] = useState<Decimal>(Decimal.fromUserInput("0", 0));
 
   useEffect(() => {
-    (async function updateBalance() {
+    (async function updateStakedTokens() {
       try {
-        const { delegationResponse } = await getStakingClient().staking.unverified.delegation(
+        const { delegationResponse } = await getQueryClient().staking.unverified.delegation(
           getAddress(),
           validatorAddress,
         );
-        const balance = Decimal.fromAtomics(
+        const stakedTokens = Decimal.fromAtomics(
           delegationResponse?.balance?.amount || "0",
           config.coinMap[config.stakingToken].fractionalDigits,
         );
 
-        setBalance(balance);
+        setStakedTokens(stakedTokens);
       } catch {
         // Do nothing because it throws if delegation does not exist, i.e balance = 0
       }
     })();
-  }, [config.coinMap, config.stakingToken, getAddress, getStakingClient, validatorAddress]);
+  }, [config.coinMap, config.stakingToken, getAddress, getQueryClient, validatorAddress]);
 
   function getValidatorMap(): ComponentProps<typeof DataList> {
     if (!validator) return {};
@@ -59,7 +59,7 @@ export default function Detail(): JSX.Element {
     return {
       Tokens: tokens,
       Commission: commissionPercent,
-      Balance: balance.toString(),
+      "Staked tokens": stakedTokens.toString(),
     };
   }
 

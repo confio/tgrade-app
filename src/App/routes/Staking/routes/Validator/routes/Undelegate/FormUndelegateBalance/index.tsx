@@ -23,7 +23,7 @@ export default function FormUndelegateBalance({
   validatorAddress,
   submitUndelegateBalance,
 }: FormUndelegateBalanceProps): JSX.Element {
-  const { getConfig, getStakingClient, getAddress } = useSdk();
+  const { getConfig, getAddress, getQueryClient } = useSdk();
 
   const [balance, setBalance] = useState<Decimal>(Decimal.fromUserInput("0", 0));
 
@@ -41,7 +41,7 @@ export default function FormUndelegateBalance({
 
     (async function updateBalance() {
       try {
-        const { delegationResponse } = await getStakingClient().staking.unverified.delegation(
+        const { delegationResponse } = await getQueryClient().staking.unverified.delegation(
           delegatorAddress,
           validatorAddress,
         );
@@ -56,7 +56,7 @@ export default function FormUndelegateBalance({
         // Do nothing because it throws if delegation does not exist, i.e balance = 0
       }
     })();
-  }, [getAddress, getConfig, getStakingClient, validatorAddress]);
+  }, [getAddress, getConfig, getQueryClient, validatorAddress]);
 
   return (
     <Formik
