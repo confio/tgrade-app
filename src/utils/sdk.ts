@@ -62,7 +62,7 @@ export async function loadKeplrWallet(chainId: string): Promise<OfflineSigner> {
 
 // this creates a new connection to a server at URL,
 // using a signing keyring generated from the given mnemonic
-export async function createClient(
+export async function createSigningClient(
   config: NetworkConfig,
   signer: OfflineSigner,
 ): Promise<SigningCosmWasmClient> {
@@ -82,7 +82,7 @@ export async function createClient(
   });
 }
 
-export async function createStakingClient(
+export async function createQueryClient(
   apiUrl: string,
 ): Promise<QueryClient & StakingExtension & DistributionExtension> {
   const tmClient = await TendermintClient.connect(apiUrl, adaptor34);
