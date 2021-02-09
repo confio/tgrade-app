@@ -88,15 +88,18 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
   const hitFaucet = useCallback(
     async function (): Promise<void> {
       if (!config.faucetUrl || !config.feeToken || !address) return;
+      const tokens = config.faucetTokens || [config.feeToken];
 
       try {
-        const faucet = new FaucetClient(config.faucetUrl);
-        await faucet.credit(address, config.feeToken);
+        for (const token of tokens) {
+          const faucet = new FaucetClient(config.faucetUrl);
+          await faucet.credit(address, token);
+        }
       } catch (error) {
         handleError(error);
       }
     },
-    [address, config.faucetUrl, config.feeToken, handleError],
+    [address, config.faucetUrl, config.feeToken, config.faucetTokens, handleError],
   );
 
   useEffect(() => {
