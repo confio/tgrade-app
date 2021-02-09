@@ -10,7 +10,7 @@ import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
-import { FormSendTokens, FormSendTokensValues } from "./FormSendTokens";
+import FormSendTokens, { FormSendTokensValues } from "./FormSendTokens";
 import { Amount, MainStack } from "./style";
 
 const { Title, Text } = Typography;
