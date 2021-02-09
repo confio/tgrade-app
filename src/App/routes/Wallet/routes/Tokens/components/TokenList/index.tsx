@@ -13,7 +13,7 @@ interface TokenListProps {
 }
 
 export default function TokenList({ currentAddress }: TokenListProps): JSX.Element {
-  const { path } = useRouteMatch();
+  const { url: pathTokensMatched } = useRouteMatch();
   const { handleError } = useError();
   const { getConfig, getClient, getAddress } = useSdk();
   const config = getConfig();
@@ -44,7 +44,7 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
 
   const history = useHistory();
   function goTokenDetail(token: Coin) {
-    history.push(`${path}/${token.denom}`);
+    history.push(`${pathTokensMatched}/${token.denom}`);
   }
 
   return (

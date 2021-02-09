@@ -24,7 +24,7 @@ export default function TokenDetail(): JSX.Element {
 
   const { handleError } = useError();
   const history = useHistory();
-  const { url } = useRouteMatch();
+  const { url: pathTokenDetailMatched } = useRouteMatch();
   const { tokenName }: TokenDetailParams = useParams();
   const [tokenAmount, setTokenAmount] = useState("0");
 
@@ -77,7 +77,7 @@ export default function TokenDetail(): JSX.Element {
           success: false,
           message: "Send transaction failed:",
           error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: url,
+          customButtonActionPath: pathTokenDetailMatched,
         } as OperationResultState,
       });
     }
