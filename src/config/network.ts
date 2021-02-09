@@ -21,14 +21,12 @@ export interface NetworkConfigs {
 
 export function getAppConfig(configs: NetworkConfigs): NetworkConfig {
   const network = process.env.REACT_APP_NETWORK;
-  console.log(network);
   if (!network) return configs.local;
 
   const config = configs[network];
   if (!config) {
     throw new Error(`No configuration found for network ${network}`);
   }
-  console.log(config);
 
   return config;
 }
@@ -39,9 +37,7 @@ const local: NetworkConfig = {
   addressPrefix: "wasm",
   rpcUrl: "http://localhost:26657",
   httpUrl: "http://localhost:1317",
-  // re-enable this when cors proxy is gone
-  // faucetUrl: "http://localhost:8000",
-  faucetUrl: "http://localhost:8001",
+  faucetUrl: "http://localhost:8000",
   feeToken: "ucosm",
   stakingToken: "ustake",
   coinMap: {

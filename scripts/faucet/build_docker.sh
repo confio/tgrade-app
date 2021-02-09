@@ -8,3 +8,4 @@ SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 source "$SCRIPT_DIR"/env
 
 docker build . -t "$REPOSITORY:$VERSION"
+docker push "$REPOSITORY:$VERSION"
