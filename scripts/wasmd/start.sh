@@ -25,4 +25,4 @@ docker run --rm \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/template \
   --mount type=volume,source=wasmd_data,target=/root \
   "$REPOSITORY:$VERSION" \
-  ./run_wasmd.sh /template
+  ./run_wasmd.sh /template 2>&1 | grep 'Executed block'
