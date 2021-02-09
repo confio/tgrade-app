@@ -1,8 +1,8 @@
 import { Typography } from "antd";
-import { pathAccount, pathLogout, pathWallet } from "App/paths";
+import { pathAccount, pathLogout, pathStaking, pathWallet } from "App/paths";
 import { Link } from "react-router-dom";
-import MenuCloser from "./MenuCloser";
 import closeMenuIcon from "./assets/closeMenuIcon.svg";
+import MenuCloser from "./MenuCloser";
 import { MenuStack, StyledMenu } from "./style";
 
 const { Title } = Typography;
@@ -30,6 +30,9 @@ export default function Menu({ open, setOpen }: MenuProps): JSX.Element {
           </Link>
           <Link to={pathWallet}>
             <Title level={3}>Wallet</Title>
+          </Link>
+          <Link to={pathStaking}>
+            <Title level={3}>Staking</Title>
           </Link>
           <Link to={pathLogout}>
             <Title level={3}>Logout</Title>
