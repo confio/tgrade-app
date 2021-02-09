@@ -1,5 +1,7 @@
+import { coins, StdFee } from "@cosmjs/launchpad";
 import { Decimal } from "@cosmjs/math";
 import { codec } from "@cosmjs/stargate";
+import { NetworkConfig } from "config/network";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 
@@ -41,6 +43,11 @@ export function useStakingValidator(validatorAddress: string): StakingValidator 
   }, [getStakingClient, handleError, validatorAddress]);
 
   return validator;
+}
+
+export function getDelegationFee({ gasPrice, feeToken }: NetworkConfig): StdFee {
+  const gas = 200_000;
+  return { amount: coins(gasPrice * gas, feeToken), gas: gas.toString() };
 }
 
 export function formatShares(shares: string): string {
