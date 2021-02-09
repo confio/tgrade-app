@@ -16,6 +16,7 @@ export FAUCET_TOKENS=ucosm,ustake
 
 # docker pull "$REPOSITORY:$VERSION"
 
+DOCKER_HOST_IP=$(docker run --read-only --rm alpine ip route | awk 'NR==1 {print $3}');
 docker run --read-only --rm \
   -e FAUCET_MNEMONIC \
   -e FAUCET_CONCURRENCY \
@@ -23,6 +24,6 @@ docker run --read-only --rm \
   -e FAUCET_ADDRESS_PREFIX \
   -e FAUCET_TOKENS \
   --name "$CONTAINER_NAME" \
-  --network=host \
+  -p 8000:8000 \
   "$REPOSITORY:$VERSION" \
-  start http://localhost:26657
+  start "http://$DOCKER_HOST_IP:26657"
