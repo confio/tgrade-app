@@ -8,6 +8,7 @@ export interface NetworkConfig {
   readonly httpUrl: string;
   readonly faucetUrl: string;
   readonly feeToken: string;
+  readonly faucetTokens?: string[];
   readonly stakingToken: string;
   readonly coinMap: CoinMap;
   readonly gasPrice: number;
@@ -40,6 +41,7 @@ const local: NetworkConfig = {
   faucetUrl: "http://localhost:8000",
   feeToken: "ucosm",
   stakingToken: "ustake",
+  faucetTokens: ["ucosm", "ustake"],
   coinMap: {
     ucosm: { denom: "COSM", fractionalDigits: 6 },
     ustake: { denom: "STAKE", fractionalDigits: 6 },
