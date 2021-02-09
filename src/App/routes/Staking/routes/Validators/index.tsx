@@ -1,10 +1,10 @@
-import { Typography } from "antd";
+import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
-import { BorderContainer, MainStack, ValidatorItem, ValidatorStack } from "./style";
+import { MainStack, ValidatorStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -65,11 +65,14 @@ export default function Validators(): JSX.Element {
         <Title>Validators</Title>
         <ValidatorStack>
           {validatorsData.map((validator) => (
-            <ValidatorItem key={validator.name} onClick={() => goToValidator(validator.address)}>
-              <BorderContainer>
+            <Button
+              key={validator.name}
+              data-size="large"
+              type="primary"
+              onClick={() => goToValidator(validator.address)}
+            >
                 <Text>{validator.name}</Text>
-              </BorderContainer>
-            </ValidatorItem>
+            </Button>
           ))}
         </ValidatorStack>
       </MainStack>
