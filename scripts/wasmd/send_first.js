@@ -7,21 +7,20 @@ const { coins } = require("@cosmjs/launchpad");
 const { DirectSecp256k1HdWallet } = require("@cosmjs/proto-signing");
 const { assertIsBroadcastTxSuccess, SigningStargateClient } = require("@cosmjs/stargate");
 
-const rpcUrl = "http://localhost:26659";
+const rpcUrl = "http://localhost:26657";
 const prefix = "wasm";
 const faucet = {
-  mnemonic:
-    "economy stock theory fatal elder harbor betray wasp final emotion task crumble siren bottom lizard educate guess current outdoor pair theory focus wife stone",
-  address0: "wasm1pkptre7fdkl6gfrzlesjjvhxhlc3r4gm32kke3",
+  mnemonic: "now mesh clog card twin rather knee head fancy matrix sponsor pill",
+  address0: "wasm1syn8janzh5t6rggtmlsuzs5w7qqfxqglvk5k0d",
 };
+const alice = "wasm14qemq0vw6y3gc3u3e0aty2e764u4gs5lndxgyk";
 
 async function main() {
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(faucet.mnemonic, undefined, prefix);
   const client = await SigningStargateClient.connectWithSigner(rpcUrl, wallet);
-  const recipient = Bech32.encode(prefix, Random.getBytes(20));
   const amount = coins(226644, "ucosm");
   const memo = "Ensure chain has my pubkey";
-  const sendResult = await client.sendTokens(faucet.address0, recipient, amount, memo);
+  const sendResult = await client.sendTokens(faucet.address0, alice, amount, memo);
   assertIsBroadcastTxSuccess(sendResult);
 }
 

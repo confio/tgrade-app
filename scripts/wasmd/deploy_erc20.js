@@ -5,7 +5,7 @@ const { DirectSecp256k1HdWallet } = require("@cosmjs/proto-signing");
 const { SigningCosmWasmClient } = require("@cosmjs/cosmwasm-stargate");
 const fs = require("fs");
 
-const endpoint = "http://localhost:26659";
+const endpoint = "http://localhost:26657";
 const alice = {
   mnemonic: "enlist hip relief stomach skate base shallow young switch frequent cry park",
   address0: "wasm14qemq0vw6y3gc3u3e0aty2e764u4gs5lndxgyk",
