@@ -89,7 +89,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         return balance;
       }
     },
-    [address, signingClient, config.coinMap, handleError],
+    [address, config.coinMap, handleError, signingClient],
   );
 
   useEffect(() => {
@@ -111,7 +111,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         handleError(error);
       }
     },
-    [address, config.faucetUrl, config.feeToken, config.faucetTokens, handleError],
+    [address, config.faucetTokens, config.faucetUrl, config.feeToken, handleError],
   );
 
   useEffect(() => {
@@ -247,7 +247,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         handleError(error);
       }
     })();
-  }, [config, undelegateTokens, handleError, signer, undelegateTokens, withdrawRewards]);
+  }, [config, handleError, signer]);
 
   useEffect(() => {
     if (!signer) return;
@@ -278,7 +278,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         init: () => {},
       }));
     })();
-  }, [address, signingClient, config, getBalance, hitFaucet]);
+  }, [address, config, getBalance, hitFaucet, signingClient]);
 
   return <CosmWasmContext.Provider value={value}>{children}</CosmWasmContext.Provider>;
 }
