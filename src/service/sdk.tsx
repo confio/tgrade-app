@@ -54,6 +54,10 @@ const defaultContext: CosmWasmContextType = {
   withdrawRewards: throwNotInitialized,
 };
 
+function isContextInitialized(context: CosmWasmContextType): boolean {
+  return !Object.values(context).some((field) => field === throwNotInitialized);
+}
+
 const CosmWasmContext = React.createContext<CosmWasmContextType>(defaultContext);
 
 export const useSdk = (): CosmWasmContextType => React.useContext(CosmWasmContext);
@@ -130,6 +134,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
     [config],
   );
   const [value, setValue] = useState<CosmWasmContextType>(readyContext);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     if (signer) return;
@@ -263,10 +268,12 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
     })();
   }, [handleError, signer]);
 
-  useEffect(() => {
-    if (!config || !signingClient || !address) return;
+  useEffect(() => setInitialized(isContextInitialized(value)), [value]);
 
-    (async function updateInitialized(): Promise<void> {
+  useEffect(() => {
+    if (!initialized) return;
+
+    (async function hitFaucetAndInitialize(): Promise<void> {
       const balance = await getBalance();
       if (!balance.find((coin) => coin.denom === config.feeToken)) {
         await hitFaucet();
@@ -278,7 +285,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         init: () => {},
       }));
     })();
-  }, [address, config, getBalance, hitFaucet, signingClient]);
+  }, [config.feeToken, getBalance, hitFaucet, initialized]);
 
   return <CosmWasmContext.Provider value={value}>{children}</CosmWasmContext.Provider>;
 }
