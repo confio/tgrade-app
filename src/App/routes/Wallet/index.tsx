@@ -1,10 +1,13 @@
-import { pathTokens } from "App/paths";
+import { paths } from "App/paths";
 import * as React from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import TokenDetail from "./routes/TokenDetail";
 import Tokens from "./routes/Tokens";
 
-const paramTokenName = "/:tokenName";
+const {
+  wallet: walletPaths,
+  wallet: { params: walletParams },
+} = paths;
 
 export default function Wallet(): JSX.Element {
   const { path: pathWalletMatched } = useRouteMatch();
@@ -12,12 +15,12 @@ export default function Wallet(): JSX.Element {
   return (
     <Switch>
       <Route exact path={pathWalletMatched}>
-        <Redirect to={{ pathname: `${pathWalletMatched}${pathTokens}` }} />
+        <Redirect to={{ pathname: `${pathWalletMatched}${walletPaths.tokens}` }} />
       </Route>
-      <Route exact path={`${pathWalletMatched}${pathTokens}`}>
+      <Route exact path={`${pathWalletMatched}${walletPaths.tokens}`}>
         <Tokens />
       </Route>
-      <Route path={`${pathWalletMatched}${pathTokens}${paramTokenName}`}>
+      <Route path={`${pathWalletMatched}${walletPaths.tokens}${walletParams.tokenName}`}>
         <TokenDetail />
       </Route>
     </Switch>

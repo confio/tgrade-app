@@ -3,7 +3,7 @@ import { isBroadcastTxFailure } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { Loading } from "App/components/logic";
-import { pathOperationResult, pathTokens, pathWallet } from "App/paths";
+import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -61,19 +61,19 @@ export default function TokenDetail(): JSX.Element {
       }
 
       history.push({
-        pathname: pathOperationResult,
+        pathname: paths.operationResult,
         state: {
           success: true,
           message: `${amount} ${config.coinMap[tokenName].denom} successfully sent to ${recipientAddress}`,
           customButtonText: "Tokens",
-          customButtonActionPath: `${pathWallet}${pathTokens}`,
+          customButtonActionPath: `${paths.wallet.prefix}${paths.wallet.tokens}`,
         } as OperationResultState,
       });
     } catch (stackTrace) {
       handleError(stackTrace);
 
       history.push({
-        pathname: pathOperationResult,
+        pathname: paths.operationResult,
         state: {
           success: false,
           message: "Send transaction failed:",
@@ -92,7 +92,7 @@ export default function TokenDetail(): JSX.Element {
   return loading ? (
     <Loading loadingText={`Sending ${nameToDisplay}...`} />
   ) : (
-    <PageLayout backButtonProps={{ path: `${pathWallet}${pathTokens}` }}>
+    <PageLayout backButtonProps={{ path: `${paths.wallet.prefix}${paths.wallet.tokens}` }}>
       <MainStack>
         <Title>{nameToDisplay}</Title>
         <Amount>
