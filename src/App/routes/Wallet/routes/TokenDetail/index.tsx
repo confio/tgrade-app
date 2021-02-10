@@ -5,12 +5,13 @@ import { PageLayout } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import { pathOperationResult, pathTokens, pathWallet } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
-import { FormSendTokens, FormSendTokensValues } from "./FormSendTokens";
+import FormSendTokens, { FormSendTokensValues } from "./FormSendTokens";
 import { Amount, MainStack } from "./style";
 
 const { Title, Text } = Typography;
@@ -24,11 +25,11 @@ export default function TokenDetail(): JSX.Element {
 
   const { handleError } = useError();
   const history = useHistory();
-  const { url } = useRouteMatch();
+  const { url: pathTokenDetailMatched } = useRouteMatch();
   const { tokenName }: TokenDetailParams = useParams();
   const [tokenAmount, setTokenAmount] = useState("0");
 
-  const { getConfig, getClient, getAddress } = useSdk();
+  const { getConfig, getAddress, getSigningClient } = useSdk();
   const balance = useBalance();
   const config = getConfig();
 
@@ -54,7 +55,7 @@ export default function TokenDetail(): JSX.Element {
       const nativeTokenToTransfer: Coin = { denom: tokenName, amount: amountToTransfer };
       const transferAmount: readonly Coin[] = [nativeTokenToTransfer];
 
-      const response = await getClient().sendTokens(getAddress(), recipientAddress, transferAmount);
+      const response = await getSigningClient().sendTokens(getAddress(), recipientAddress, transferAmount);
       if (isBroadcastTxFailure(response)) {
         throw new Error(response.rawLog);
       }
@@ -77,7 +78,7 @@ export default function TokenDetail(): JSX.Element {
           success: false,
           message: "Send transaction failed:",
           error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: url,
+          customButtonActionPath: pathTokenDetailMatched,
         } as OperationResultState,
       });
     }

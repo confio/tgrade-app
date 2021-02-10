@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import { Formik } from "formik";
 import { Form, Input } from "formik-antd";
-import React from "react";
+import * as React from "react";
 import { useSdk } from "service";
 import { getSendAddressValidationSchema } from "utils/formSchemas";
 import * as Yup from "yup";
@@ -18,7 +18,7 @@ interface FormSendTokensProps {
   readonly sendTokensAction: (values: FormSendTokensValues) => Promise<void>;
 }
 
-export function FormSendTokens({
+export default function FormSendTokens({
   tokenName,
   tokenAmount,
   sendTokensAction,

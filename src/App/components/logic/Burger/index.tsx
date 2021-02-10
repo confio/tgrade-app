@@ -1,3 +1,4 @@
+import * as React from "react";
 import { ComponentProps } from "react";
 import { StyledBurger } from "./style";
 

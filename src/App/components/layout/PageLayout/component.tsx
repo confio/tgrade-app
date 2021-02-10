@@ -1,6 +1,7 @@
 import { Center, Stack } from "App/components/layout";
 import { BackButton, Burger, ErrorAlert, Menu } from "App/components/logic";
-import React, { ComponentProps, HTMLAttributes, useState } from "react";
+import * as React from "react";
+import { ComponentProps, HTMLAttributes, useState } from "react";
 import { NavHeader } from "./style";
 
 interface PageLayoutProps extends HTMLAttributes<HTMLOrSVGElement> {

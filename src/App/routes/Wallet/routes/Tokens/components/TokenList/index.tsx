@@ -1,6 +1,7 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Button, Typography } from "antd";
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay, useBalance } from "utils/currency";
@@ -13,9 +14,9 @@ interface TokenListProps {
 }
 
 export default function TokenList({ currentAddress }: TokenListProps): JSX.Element {
-  const { path } = useRouteMatch();
+  const { url: pathTokensMatched } = useRouteMatch();
   const { handleError } = useError();
-  const { getConfig, getClient, getAddress } = useSdk();
+  const { getConfig, getAddress, getSigningClient } = useSdk();
   const config = getConfig();
   const amAllowed = getAddress() === currentAddress;
   const balance = useBalance();
@@ -29,7 +30,7 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
       (async function updateCurrentBalance(): Promise<void> {
         try {
           for (const denom in config.coinMap) {
-            const coin = await getClient().getBalance(currentAddress, denom);
+            const coin = await getSigningClient().getBalance(currentAddress, denom);
             if (coin) balance.push(coin);
           }
         } catch (error) {
@@ -40,11 +41,11 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
         }
       })();
     }
-  }, [amAllowed, balance, config.coinMap, currentAddress, getClient, handleError]);
+  }, [amAllowed, balance, config.coinMap, currentAddress, getSigningClient, handleError]);
 
   const history = useHistory();
   function goTokenDetail(token: Coin) {
-    history.push(`${path}/${token.denom}`);
+    history.push(`${pathTokensMatched}/${token.denom}`);
   }
 
   return (

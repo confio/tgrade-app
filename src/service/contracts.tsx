@@ -1,3 +1,4 @@
+import * as React from "react";
 import { createContext, HTMLAttributes, useContext, useState } from "react";
 import { CW20Instance } from "utils/cw20";
 

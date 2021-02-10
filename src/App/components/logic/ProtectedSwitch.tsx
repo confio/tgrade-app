@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Redirect, Switch, SwitchProps } from "react-router-dom";
 import { useSdk } from "service";
 

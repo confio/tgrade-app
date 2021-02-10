@@ -1,7 +1,7 @@
 import { Search } from "App/components/logic";
 import { Formik } from "formik";
 import { Form, FormItem } from "formik-antd";
-import React from "react";
+import * as React from "react";
 import { useSdk } from "service";
 import { getSearchValidationSchema } from "utils/formSchemas";
 

@@ -1,6 +1,7 @@
 import { Typography } from "antd";
 import { PageLayout } from "App/components/layout";
-import React, { useState } from "react";
+import * as React from "react";
+import { useState } from "react";
 import { useSdk } from "service";
 import FormSearchName from "./components/FormSearchName";
 import TokenList from "./components/TokenList";

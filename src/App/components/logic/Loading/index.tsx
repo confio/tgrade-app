@@ -1,5 +1,6 @@
 import { LoadingOutlined } from "@ant-design/icons";
 import { PageLayout } from "App/components/layout";
+import * as React from "react";
 import { StyledSpin } from "./style";
 
 const spinIndicator = <LoadingOutlined style={{ fontSize: "6.25rem", color: "#7c95ff" }} spin />;

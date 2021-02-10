@@ -1,5 +1,6 @@
+import Menu from "App/components/logic/Menu";
+import * as React from "react";
 import { ComponentProps } from "react";
-import Menu from "..";
 import { StyledCloseBox } from "./style";
 
 export default function MenuCloser({ open, setOpen }: ComponentProps<typeof Menu>): JSX.Element {
