@@ -126,7 +126,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
     () => ({
       ...defaultContext,
       init: setSigner,
-      clear: () => setSigner(undefined),
+      clear: () => {},
       getConfig: () => config,
       changeConfig: setConfig,
       changeSigner: setSigner,
@@ -134,20 +134,8 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
     [config],
   );
   const [value, setValue] = useState<CosmWasmContextType>(readyContext);
-  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    if (signer) return;
-
-    setConfig(configProp);
-    setSigningClient(undefined);
-    setAddress(undefined);
-    setValue(readyContext);
-  }, [configProp, readyContext, signer]);
-
-  useEffect(() => {
-    if (!config) return;
-
     (async function updateConfigAndQueryClient(): Promise<void> {
       try {
         const queryClient = await createQueryClient(config.rpcUrl);
@@ -268,7 +256,24 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
     })();
   }, [handleError, signer]);
 
+  const [initialized, setInitialized] = useState(false);
   useEffect(() => setInitialized(isContextInitialized(value)), [value]);
+
+  const clear = useCallback(
+    function (): void {
+      setSigner(undefined);
+      setValue(readyContext);
+    },
+    [readyContext],
+  );
+
+  useEffect(() => {
+    if (signer) return;
+
+    setAddress(undefined);
+    setSigningClient(undefined);
+    setConfig({ ...configProp });
+  }, [configProp, signer]);
 
   useEffect(() => {
     if (!initialized) return;
@@ -283,9 +288,10 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         ...prevValue,
         initialized: true,
         init: () => {},
+        clear,
       }));
     })();
-  }, [config.feeToken, getBalance, hitFaucet, initialized]);
+  }, [clear, config.feeToken, getBalance, hitFaucet, initialized]);
 
   return <CosmWasmContext.Provider value={value}>{children}</CosmWasmContext.Provider>;
 }
