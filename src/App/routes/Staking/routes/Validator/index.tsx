@@ -1,4 +1,4 @@
-import { pathDelegate, pathRewards, pathUndelegate } from "App/paths";
+import { paths } from "App/paths";
 import * as React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import Delegate from "./routes/Delegate";
@@ -14,13 +14,13 @@ export default function Validator(): JSX.Element {
       <Route exact path={pathValidatorMatched}>
         <Detail />
       </Route>
-      <Route path={`${pathValidatorMatched}${pathDelegate}`}>
+      <Route path={`${pathValidatorMatched}${paths.staking.delegate}`}>
         <Delegate />
       </Route>
-      <Route path={`${pathValidatorMatched}${pathUndelegate}`}>
+      <Route path={`${pathValidatorMatched}${paths.staking.undelegate}`}>
         <Undelegate />
       </Route>
-      <Route path={`${pathValidatorMatched}${pathRewards}`}>
+      <Route path={`${pathValidatorMatched}${paths.staking.rewards}`}>
         <Rewards />
       </Route>
     </Switch>
