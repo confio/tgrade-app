@@ -2,7 +2,7 @@ import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import { RedirectLocation } from "App/components/logic/ProtectedSwitch";
-import { pathWallet } from "App/paths";
+import { paths } from "App/paths";
 import { configKeplr } from "config/keplr";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -72,7 +72,7 @@ export default function Login(): JSX.Element {
     if (state) {
       history.push(state.redirectPathname, state.redirectState);
     } else {
-      history.push(pathWallet);
+      history.push(paths.wallet.prefix);
     }
   }, [history, sdk.initialized, state]);
 
