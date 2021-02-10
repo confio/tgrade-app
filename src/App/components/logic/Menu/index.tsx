@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import { pathAccount, pathLogout, pathStaking, pathWallet } from "App/paths";
+import { paths } from "App/paths";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import closeMenuIcon from "./assets/closeMenuIcon.svg";
@@ -26,16 +26,16 @@ export default function Menu({ open, setOpen }: MenuProps): JSX.Element {
               setOpen(false);
             }}
           />
-          <Link to={pathAccount}>
+          <Link to={paths.account}>
             <Title level={3}>Account</Title>
           </Link>
-          <Link to={pathWallet}>
+          <Link to={paths.wallet.prefix}>
             <Title level={3}>Wallet</Title>
           </Link>
-          <Link to={pathStaking}>
+          <Link to={paths.staking.prefix}>
             <Title level={3}>Staking</Title>
           </Link>
-          <Link to={pathLogout}>
+          <Link to={paths.logout}>
             <Title level={3}>Logout</Title>
           </Link>
         </MenuStack>
