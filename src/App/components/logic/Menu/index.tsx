@@ -32,6 +32,9 @@ export default function Menu({ open, setOpen }: MenuProps): JSX.Element {
           <Link to={paths.wallet.prefix}>
             <Title level={3}>Wallet</Title>
           </Link>
+          <Link to={paths.cw20Wallet.prefix}>
+            <Title level={3}>CW20 Wallet</Title>
+          </Link>
           <Link to={paths.staking.prefix}>
             <Title level={3}>Staking</Title>
           </Link>
