@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import { Form, FormItem } from "formik-antd";
 import * as React from "react";
 import { useSdk } from "service";
-import { getSearchValidationSchema } from "utils/formSchemas";
+import { getSearchAddressValidationSchema } from "utils/formSchemas";
 
 interface FormSearchNameProps {
   readonly currentAddress: string;
@@ -19,7 +19,7 @@ export default function FormSearchName({
   return (
     <Formik
       initialValues={{ address: currentAddress }}
-      validationSchema={getSearchValidationSchema(getConfig().addressPrefix)}
+      validationSchema={getSearchAddressValidationSchema(getConfig().addressPrefix)}
       onSubmit={(values) => {
         setCurrentAddress(values.address);
       }}
