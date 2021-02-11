@@ -7,20 +7,20 @@ import Rewards from "./routes/Rewards";
 import Undelegate from "./routes/Undelegate";
 
 export default function Validator(): JSX.Element {
-  const { path: pathValidatorMatched } = useRouteMatch();
+  const { path: basePath } = useRouteMatch();
 
   return (
     <Switch>
-      <Route exact path={pathValidatorMatched}>
+      <Route exact path={basePath}>
         <Detail />
       </Route>
-      <Route path={`${pathValidatorMatched}${paths.staking.delegate}`}>
+      <Route path={`${basePath}${paths.staking.delegate}`}>
         <Delegate />
       </Route>
-      <Route path={`${pathValidatorMatched}${paths.staking.undelegate}`}>
+      <Route path={`${basePath}${paths.staking.undelegate}`}>
         <Undelegate />
       </Route>
-      <Route path={`${pathValidatorMatched}${paths.staking.rewards}`}>
+      <Route path={`${basePath}${paths.staking.rewards}`}>
         <Rewards />
       </Route>
     </Switch>

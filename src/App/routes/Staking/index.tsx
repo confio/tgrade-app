@@ -10,17 +10,17 @@ const {
 } = paths;
 
 export default function Staking(): JSX.Element {
-  const { path: pathStakingMatched } = useRouteMatch();
+  const { path: basePath } = useRouteMatch();
 
   return (
     <Switch>
-      <Route exact path={pathStakingMatched}>
-        <Redirect to={{ pathname: `${pathStakingMatched}${stakingPaths.validators}` }} />
+      <Route exact path={basePath}>
+        <Redirect to={{ pathname: `${basePath}${stakingPaths.validators}` }} />
       </Route>
-      <Route exact path={`${pathStakingMatched}${stakingPaths.validators}`}>
+      <Route exact path={`${basePath}${stakingPaths.validators}`}>
         <Validators />
       </Route>
-      <Route path={`${pathStakingMatched}${stakingPaths.validators}${stakingParams.validatorAddress}`}>
+      <Route path={`${basePath}${stakingPaths.validators}${stakingParams.validatorAddress}`}>
         <Validator />
       </Route>
     </Switch>

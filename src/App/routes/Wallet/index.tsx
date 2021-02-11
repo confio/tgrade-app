@@ -10,17 +10,17 @@ const {
 } = paths;
 
 export default function Wallet(): JSX.Element {
-  const { path: pathWalletMatched } = useRouteMatch();
+  const { path: basePath } = useRouteMatch();
 
   return (
     <Switch>
-      <Route exact path={pathWalletMatched}>
-        <Redirect to={{ pathname: `${pathWalletMatched}${walletPaths.tokens}` }} />
+      <Route exact path={basePath}>
+        <Redirect to={{ pathname: `${basePath}${walletPaths.tokens}` }} />
       </Route>
-      <Route exact path={`${pathWalletMatched}${walletPaths.tokens}`}>
+      <Route exact path={`${basePath}${walletPaths.tokens}`}>
         <Tokens />
       </Route>
-      <Route path={`${pathWalletMatched}${walletPaths.tokens}${walletParams.tokenName}`}>
+      <Route path={`${basePath}${walletPaths.tokens}${walletParams.tokenName}`}>
         <TokenDetail />
       </Route>
     </Switch>
