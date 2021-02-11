@@ -1,11 +1,23 @@
-export const pathLogin = "/login";
-export const pathLogout = "/logout";
-export const pathOperationResult = "/operation-result";
-export const pathAccount = "/account";
-export const pathWallet = "/wallet";
-export const pathStaking = "/staking";
-export const pathTokens = "/tokens";
-export const pathValidators = "/validators";
-export const pathDelegate = "/delegate";
-export const pathUndelegate = "/undelegate";
-export const pathRewards = "/rewards";
+export const paths = {
+  login: "/login",
+  logout: "/logout",
+  operationResult: "/operation-result",
+  account: "/account",
+  wallet: {
+    prefix: "/wallet",
+    params: {
+      tokenName: "/:tokenName",
+    },
+    tokens: "/tokens",
+  },
+  staking: {
+    prefix: "/staking",
+    params: {
+      validatorAddress: "/:validatorAddress",
+    },
+    validators: "/validators",
+    delegate: "/delegate",
+    undelegate: "/undelegate",
+    rewards: "/rewards",
+  },
+};

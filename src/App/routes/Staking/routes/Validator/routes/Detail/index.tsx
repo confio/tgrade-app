@@ -3,7 +3,7 @@ import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { DataList } from "App/components/logic";
-import { pathDelegate, pathRewards, pathStaking, pathUndelegate, pathValidators } from "App/paths";
+import { paths } from "App/paths";
 import * as React from "react";
 import { ComponentProps, useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
@@ -64,19 +64,19 @@ export default function Detail(): JSX.Element {
   }
 
   function goToDelegate() {
-    history.push(`${pathValidatorDetailMatched}${pathDelegate}`);
+    history.push(`${pathValidatorDetailMatched}${paths.staking.delegate}`);
   }
 
   function goToUndelegate() {
-    history.push(`${pathValidatorDetailMatched}${pathUndelegate}`);
+    history.push(`${pathValidatorDetailMatched}${paths.staking.undelegate}`);
   }
 
   function goToRewards() {
-    history.push(`${pathValidatorDetailMatched}${pathRewards}`);
+    history.push(`${pathValidatorDetailMatched}${paths.staking.rewards}`);
   }
 
   return (
-    <PageLayout backButtonProps={{ path: `${pathStaking}${pathValidators}` }}>
+    <PageLayout backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}` }}>
       <MainStack>
         <Title>{validator?.description?.moniker ?? ""}</Title>
         <DataList {...getValidatorMap()} />

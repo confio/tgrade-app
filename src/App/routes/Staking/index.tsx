@@ -1,23 +1,26 @@
-import { pathValidators } from "App/paths";
+import { paths } from "App/paths";
 import * as React from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import Validator from "./routes/Validator";
 import Validators from "./routes/Validators";
 
-const paramValidatorAddress = "/:validatorAddress";
+const {
+  staking: stakingPaths,
+  staking: { params: stakingParams },
+} = paths;
 
 export default function Staking(): JSX.Element {
-  const { path: pathStakingMatched } = useRouteMatch();
+  const { path: basePath } = useRouteMatch();
 
   return (
     <Switch>
-      <Route exact path={pathStakingMatched}>
-        <Redirect to={{ pathname: `${pathStakingMatched}${pathValidators}` }} />
+      <Route exact path={basePath}>
+        <Redirect to={{ pathname: `${basePath}${stakingPaths.validators}` }} />
       </Route>
-      <Route exact path={`${pathStakingMatched}${pathValidators}`}>
+      <Route exact path={`${basePath}${stakingPaths.validators}`}>
         <Validators />
       </Route>
-      <Route path={`${pathStakingMatched}${pathValidators}${paramValidatorAddress}`}>
+      <Route path={`${basePath}${stakingPaths.validators}${stakingParams.validatorAddress}`}>
         <Validator />
       </Route>
     </Switch>

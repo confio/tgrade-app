@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ErrorProvider, SdkProvider } from "service";
 import GlobalStyle from "theme/GlobalStyle";
 import { ProtectedSwitch } from "./components/logic";
-import { pathAccount, pathLogin, pathLogout, pathOperationResult, pathStaking, pathWallet } from "./paths";
+import { paths } from "./paths";
 import Account from "./routes/Account";
 import Login from "./routes/Login";
 import Logout from "./routes/Logout";
@@ -22,24 +22,24 @@ export default function App(): JSX.Element {
             <Route exact path="/">
               <Login />
             </Route>
-            <Route path={pathLogin}>
+            <Route path={paths.login}>
               <Login />
             </Route>
-            <ProtectedSwitch authPath={pathLogin}>
-              <Route path={pathLogout}>
+            <ProtectedSwitch authPath={paths.login}>
+              <Route path={paths.logout}>
                 <Logout />
               </Route>
-              <Route path={pathAccount}>
+              <Route path={paths.operationResult}>
+                <OperationResult />
+              </Route>
+              <Route path={paths.account}>
                 <Account />
               </Route>
-              <Route path={pathWallet}>
+              <Route path={paths.wallet.prefix}>
                 <Wallet />
               </Route>
-              <Route path={pathStaking}>
+              <Route path={paths.staking.prefix}>
                 <Staking />
-              </Route>
-              <Route path={pathOperationResult}>
-                <OperationResult />
               </Route>
             </ProtectedSwitch>
           </Switch>

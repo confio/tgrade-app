@@ -2,7 +2,7 @@ import { Coin } from "@cosmjs/launchpad";
 import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { DataList, Loading } from "App/components/logic";
-import { pathOperationResult, pathStaking, pathValidators } from "App/paths";
+import { paths } from "App/paths";
 import * as React from "react";
 import { ComponentProps, useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
@@ -63,19 +63,19 @@ export default function Rewards(): JSX.Element {
       await withdrawRewards(validatorAddress);
 
       history.push({
-        pathname: pathOperationResult,
+        pathname: paths.operationResult,
         state: {
           success: true,
           message: `Successfully withdrawn`,
           customButtonText: "Validator home",
-          customButtonActionPath: `${pathStaking}${pathValidators}/${validatorAddress}`,
+          customButtonActionPath: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`,
         },
       });
     } catch (stackTrace) {
       handleError(stackTrace);
 
       history.push({
-        pathname: pathOperationResult,
+        pathname: paths.operationResult,
         state: {
           success: false,
           message: "Rewards withdrawal transaction failed:",
@@ -100,7 +100,9 @@ export default function Rewards(): JSX.Element {
   return loading ? (
     <Loading loadingText={`Withdrawing rewards...`} />
   ) : (
-    <PageLayout backButtonProps={{ path: `${pathStaking}${pathValidators}/${validatorAddress}` }}>
+    <PageLayout
+      backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}` }}
+    >
       <MainStack>
         <HeaderTitleStack>
           <Title>Pending rewards</Title>

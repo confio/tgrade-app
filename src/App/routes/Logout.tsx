@@ -1,4 +1,4 @@
-import { pathLogin } from "App/paths";
+import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -10,7 +10,7 @@ export default function Logout(): JSX.Element {
 
   useEffect(() => {
     clear();
-    history.replace(pathLogin);
+    history.replace(paths.login);
   }, [clear, history]);
 
   return <></>;

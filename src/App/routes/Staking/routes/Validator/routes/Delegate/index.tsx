@@ -2,7 +2,7 @@ import { Coin } from "@cosmjs/launchpad";
 import { Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { Loading } from "App/components/logic";
-import { pathOperationResult, pathStaking, pathValidators } from "App/paths";
+import { paths } from "App/paths";
 import * as React from "react";
 import { useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
@@ -41,19 +41,19 @@ export default function Delegate(): JSX.Element {
       await delegateTokens(validatorAddress, delegateAmount);
 
       history.push({
-        pathname: pathOperationResult,
+        pathname: paths.operationResult,
         state: {
           success: true,
           message: `${amount} ${config.coinMap[config.stakingToken].denom} successfully delegated`,
           customButtonText: "Validator home",
-          customButtonActionPath: `${pathStaking}${pathValidators}/${validatorAddress}`,
+          customButtonActionPath: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`,
         },
       });
     } catch (stackTrace) {
       handleError(stackTrace);
 
       history.push({
-        pathname: pathOperationResult,
+        pathname: paths.operationResult,
         state: {
           success: false,
           message: "Delegate transaction failed:",
@@ -67,7 +67,9 @@ export default function Delegate(): JSX.Element {
   return loading ? (
     <Loading loadingText={`Delegating...`} />
   ) : (
-    <PageLayout backButtonProps={{ path: `${pathStaking}${pathValidators}/${validatorAddress}` }}>
+    <PageLayout
+      backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}` }}
+    >
       <MainStack>
         <HeaderTitleStack>
           <Title>Delegate</Title>
