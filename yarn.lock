@@ -1299,7 +1299,7 @@
     "@cosmjs/utils" "^0.24.0-alpha.22"
     pako "^2.0.2"
 
-"@cosmjs/cosmwasm-stargate@^0.24.0-alpha.22":
+"@cosmjs/cosmwasm-stargate@0.24.0-alpha.22":
   version "0.24.0-alpha.22"
   resolved "https://registry.yarnpkg.com/@cosmjs/cosmwasm-stargate/-/cosmwasm-stargate-0.24.0-alpha.22.tgz#1664dfbfcf7ba24f44b24628c406f299039bed04"
   integrity sha512-oQC3UeUs0o4kcPy5D/89sXiGIPIWMK74EDsswHyJEbbzvl/YjxoaR/eVnO9Dvifm4bnQ2Y3Q8oQ4LtLbHLPWkg==
@@ -1317,7 +1317,14 @@
     pako "^2.0.2"
     protobufjs "~6.10.2"
 
-"@cosmjs/crypto@^0.24.0-alpha.22":
+"@cosmjs/cosmwasm@0.24.0-alpha.22":
+  version "0.24.0-alpha.22"
+  resolved "https://registry.yarnpkg.com/@cosmjs/cosmwasm/-/cosmwasm-0.24.0-alpha.22.tgz#0565ce361295b954c531ac8622589c3f69bfc358"
+  integrity sha512-G7NAmh//kP2rP9o2T+abD/yDBRsySMo3EyoXhbYeYIVEUONtQ4tVyyfv5cKt11cBTS52tdw7lyjucwCNXKgblw==
+  dependencies:
+    "@cosmjs/cosmwasm-launchpad" "^0.24.0-alpha.22"
+
+"@cosmjs/crypto@0.24.0-alpha.22", "@cosmjs/crypto@^0.24.0-alpha.22":
   version "0.24.0-alpha.22"
   resolved "https://registry.yarnpkg.com/@cosmjs/crypto/-/crypto-0.24.0-alpha.22.tgz#5a725d9c8d1ec89a14a580469427d79d8a1a9061"
   integrity sha512-EWfVBRT4a7/ZbkclK4YSb1vOhvaXMGgLB1QXUZJdj9blKCOaKcqA6g8BnI6Xo64188LAnqh5hAl0mu9srQBJjQ==
@@ -1335,7 +1342,7 @@
     sha.js "^2.4.11"
     unorm "^1.5.0"
 
-"@cosmjs/encoding@^0.24.0-alpha.22":
+"@cosmjs/encoding@0.24.0-alpha.22", "@cosmjs/encoding@^0.24.0-alpha.22":
   version "0.24.0-alpha.22"
   resolved "https://registry.yarnpkg.com/@cosmjs/encoding/-/encoding-0.24.0-alpha.22.tgz#637eb145724df11aa2d87f08e4b470b62ac62fb0"
   integrity sha512-0KjyejdUnkURXSSC1DEowp2dNMWGzuU93Q4KxBbuMYnQ+b4+A0S4XqboFDM48K4bDxpI2mtUa9AWZ8Y32+MaxQ==
@@ -1344,7 +1351,7 @@
     bech32 "^1.1.4"
     readonly-date "^1.0.0"
 
-"@cosmjs/faucet-client@^0.24.0-alpha.22":
+"@cosmjs/faucet-client@0.24.0-alpha.22":
   version "0.24.0-alpha.22"
   resolved "https://registry.yarnpkg.com/@cosmjs/faucet-client/-/faucet-client-0.24.0-alpha.22.tgz#5254e2028ebb1da999dcc757799692d2f9482630"
   integrity sha512-rF+W8ewVhfRTQhOCG5LletKVqh8bQgvMzzN7hAcx4hEJ2c7OTItt8PasEZjhIi+PUwdMuppFZ7utDO5w6uex9A==
@@ -1359,7 +1366,7 @@
     "@cosmjs/stream" "^0.24.0-alpha.22"
     xstream "^11.14.0"
 
-"@cosmjs/launchpad@^0.24.0-alpha.22":
+"@cosmjs/launchpad@0.24.0-alpha.22", "@cosmjs/launchpad@^0.24.0-alpha.22":
   version "0.24.0-alpha.22"
   resolved "https://registry.yarnpkg.com/@cosmjs/launchpad/-/launchpad-0.24.0-alpha.22.tgz#450a8742e319040f76857107d5126cddb4aef576"
   integrity sha512-QJUibJvb9V5cRg23YcuV/Ns6osC4t/HqYLPZAtWp8Jtg+9mHtteap+DgallxGfep8kWOIWyzquH0xYbOfKE3SA==
@@ -1371,7 +1378,7 @@
     axios "^0.21.1"
     fast-deep-equal "^3.1.3"
 
-"@cosmjs/ledger-amino@^0.24.0-alpha.22":
+"@cosmjs/ledger-amino@0.24.0-alpha.22":
   version "0.24.0-alpha.22"
   resolved "https://registry.yarnpkg.com/@cosmjs/ledger-amino/-/ledger-amino-0.24.0-alpha.22.tgz#6c696e50c9f945e7e6c52f3af44bc31b5e408b03"
   integrity sha512-QGumUP0JHUWDdFz6s//Lu8ywTTEgro4i3qJqMTCmOTzCLJBxmi+u95sDRUZeXFPzB9DH3cQJPb0bvO3EbRRa4g==
@@ -1381,7 +1388,7 @@
     ledger-cosmos-js "^2.1.8"
     semver "^7.3.2"
 
-"@cosmjs/math@^0.24.0-alpha.22":
+"@cosmjs/math@0.24.0-alpha.22", "@cosmjs/math@^0.24.0-alpha.22":
   version "0.24.0-alpha.22"
   resolved "https://registry.yarnpkg.com/@cosmjs/math/-/math-0.24.0-alpha.22.tgz#50d20250d08fdbc9ec7e47732bd5f480e1f73b48"
   integrity sha512-QEREFkjTYRh2ofTMvfe/ZgREAOhQhUz0cnp4dIkqiUT3pRWSOpVRdksdLEX8IytFiqhoB779r1FifDMuBoFWYA==
@@ -1407,7 +1414,7 @@
     ws "^6.2.0"
     xstream "^11.14.0"
 
-"@cosmjs/stargate@^0.24.0-alpha.22":
+"@cosmjs/stargate@0.24.0-alpha.22", "@cosmjs/stargate@^0.24.0-alpha.22":
   version "0.24.0-alpha.22"
   resolved "https://registry.yarnpkg.com/@cosmjs/stargate/-/stargate-0.24.0-alpha.22.tgz#10db834011c30fd176ea880bf3129bf0290a2d9a"
   integrity sha512-i3QAslKsUtq33FaMm+tBgGW9yJ+8TOvPzgcuyrWr/Z9CbEAg2Uce96F27zn39Onu1VUW1/1ejlBWxF/bO3XHFQ==
@@ -1430,7 +1437,7 @@
   dependencies:
     xstream "^11.14.0"
 
-"@cosmjs/tendermint-rpc@^0.24.0-alpha.22":
+"@cosmjs/tendermint-rpc@0.24.0-alpha.22", "@cosmjs/tendermint-rpc@^0.24.0-alpha.22":
   version "0.24.0-alpha.22"
   resolved "https://registry.yarnpkg.com/@cosmjs/tendermint-rpc/-/tendermint-rpc-0.24.0-alpha.22.tgz#67e388de37a81919671f0a5e7eabb6a018f26306"
   integrity sha512-WZO824f92eSbCmaIiCRMT+CnTdPsjnkkJc8GD03HHZXO1/52GB9IUvq0t6oYDR/I49gzZ3n3Ejj+y9lrkZbYvw==
