@@ -45,6 +45,9 @@
     "web-vitals": "^1.0.1",
     "yup": "^0.32.8"
   },
+  "devDependencies": {
+    "axios": "^0.21.1"
+  },
   "scripts": {
     "start:base": "craco start",
     "start:local": "REACT_APP_NETWORK=local yarn start:base",
