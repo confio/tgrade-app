@@ -6,24 +6,29 @@ import TokenNew from "./routes/TokenNew";
 import TokensAdd from "./routes/TokensAdd";
 import TokensList from "./routes/TokensList";
 
+const {
+  cw20Wallet: cw20WalletPaths,
+  cw20Wallet: { params: cw20WalletParams },
+} = paths;
+
 export default function Cw20Wallet(): JSX.Element {
   const { path: basePath } = useRouteMatch();
 
   return (
     <Switch>
       <Route exact path={basePath}>
-        <Redirect to={{ pathname: `${basePath}${paths.cw20Wallet.tokens}` }} />
+        <Redirect to={{ pathname: `${basePath}${cw20WalletPaths.tokens}` }} />
       </Route>
-      <Route exact path={`${basePath}${paths.cw20Wallet.tokens}`}>
+      <Route exact path={`${basePath}${cw20WalletPaths.tokens}`}>
         <TokensList />
       </Route>
-      <Route exact path={`${basePath}${paths.cw20Wallet.tokensAdd}`}>
+      <Route exact path={`${basePath}${cw20WalletPaths.tokensAdd}${cw20WalletParams.codeId}`}>
         <TokensAdd />
       </Route>
-      <Route exact path={`${basePath}${paths.cw20Wallet.tokensNew}`}>
+      <Route exact path={`${basePath}${cw20WalletPaths.tokensNew}`}>
         <TokenNew />
       </Route>
-      <Route path={`${basePath}${paths.cw20Wallet.tokens}`}>
+      <Route path={`${basePath}${cw20WalletPaths.tokens}${cw20WalletParams.contractAddress}`}>
         <Token />
       </Route>
     </Switch>
