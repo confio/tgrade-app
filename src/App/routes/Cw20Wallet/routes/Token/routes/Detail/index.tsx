@@ -5,8 +5,8 @@ import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useSdk } from "service";
-import { CW20 } from "utils/cw20";
+import { useError, useSdk } from "service";
+import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import FormSearchAllowing from "./FormSearchAllowing";
 import { Allowance, AllowanceStack, Amount, MainStack } from "./style";
 
@@ -18,30 +18,44 @@ interface DetailParams {
 }
 
 export default function Detail(): JSX.Element {
-  const { path: pathTokenDetailMatched } = useRouteMatch();
+  const { url: pathTokenDetailMatched } = useRouteMatch();
   const { contractAddress, allowingAddress: allowingAddressParam }: DetailParams = useParams();
   const history = useHistory();
+  const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
+  const client = getSigningClient();
   const address = getAddress();
 
   const [allowingAddress, setAllowingAddress] = useState(allowingAddressParam);
   const [allowance, setAllowance] = useState<string>();
-  const [tokenName, setTokenName] = useState("");
-  const [tokenAmount, setTokenAmount] = useState("0");
-  const [fractionalDigits, setFractionalDigits] = useState(0);
+  const [cw20Token, setCw20Token] = useState<Cw20Token>();
 
   useEffect(() => {
-    const cw20Contract = CW20(getSigningClient()).use(contractAddress);
-    const tokenAddress = allowingAddress ?? address;
+    const cw20Contract = CW20(client).use(contractAddress);
 
-    cw20Contract.tokenInfo().then(({ symbol, decimals }) => {
-      setTokenName(symbol);
-      setFractionalDigits(decimals);
-    });
-    cw20Contract.balance(tokenAddress).then((balance) => setTokenAmount(balance));
-  }, [getSigningClient, contractAddress, allowingAddress, address]);
+    (async function updateCw20TokenAndAllowance() {
+      const cw20Token = await getCw20Token(cw20Contract, address);
+      if (!cw20Token) {
+        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        return;
+      }
 
-  function updateAllowance(allowingAddress: string) {
+      if (allowingAddress) {
+        try {
+          const { allowance: amount } = await cw20Contract.allowance(allowingAddress, address);
+          setCw20Token({ ...cw20Token, amount });
+          setAllowance(amount);
+        } catch (error) {
+          handleError(error);
+        }
+      } else {
+        setCw20Token(cw20Token);
+        setAllowance(undefined);
+      }
+    })();
+  }, [address, allowingAddress, client, contractAddress, handleError]);
+
+  async function updateAllowance(allowingAddress?: string) {
     if (!allowingAddress) {
       setAllowingAddress(undefined);
       setAllowance(undefined);
@@ -49,9 +63,13 @@ export default function Detail(): JSX.Element {
     }
 
     setAllowingAddress(allowingAddress);
-
-    const cw20contract = CW20(getSigningClient()).use(contractAddress);
-    cw20contract.allowance(allowingAddress, address).then((response) => setAllowance(response.allowance));
+    const cw20contract = CW20(client).use(contractAddress);
+    try {
+      const { allowance } = await cw20contract.allowance(allowingAddress, address);
+      setAllowance(allowance);
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   function goToSend() {
@@ -62,20 +80,20 @@ export default function Detail(): JSX.Element {
     history.push(`${pathTokenDetailMatched}${paths.cw20Wallet.allowances}`);
   }
 
-  const amountToDisplay = Decimal.fromAtomics(tokenAmount, fractionalDigits).toString();
+  const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
   const [amountInteger, amountDecimal] = amountToDisplay.split(".");
 
-  const allowanceToDisplay = Decimal.fromAtomics(allowance ?? "0", fractionalDigits).toString();
+  const allowanceToDisplay = Decimal.fromAtomics(allowance || "0", cw20Token?.decimals ?? 0).toString();
 
   const showCurrentAllowance = !!allowance && allowance !== "0";
   const showSendButton = !allowance || allowance !== "0";
-  const isSendButtonDisabled = tokenAmount === "0";
+  const isSendButtonDisabled = !cw20Token || cw20Token.amount === "0";
   const showAllowancesLink = !allowingAddress;
 
   return (
     <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}` }}>
       <MainStack>
-        <Title>{tokenName}</Title>
+        <Title>{cw20Token?.symbol || ""}</Title>
         <Amount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}

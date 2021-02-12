@@ -7,7 +7,7 @@ import { getSearchAddressValidationSchema } from "utils/formSchemas";
 
 interface FormSearchAllowingProps {
   readonly initialAddress?: string;
-  readonly setSearchedAddress: (value: string) => void;
+  readonly setSearchedAddress: (value?: string) => Promise<void>;
 }
 
 export default function FormSearchAllowing({
@@ -20,9 +20,7 @@ export default function FormSearchAllowing({
     <Formik
       initialValues={{ address: initialAddress }}
       validationSchema={getSearchAddressValidationSchema(getConfig().addressPrefix)}
-      onSubmit={(values) => {
-        setSearchedAddress(values.address ?? "");
-      }}
+      onSubmit={async ({ address }) => await setSearchedAddress(address || undefined)}
     >
       {(formikProps) => (
         <Form>
@@ -31,8 +29,8 @@ export default function FormSearchAllowing({
               name="address"
               placeholder="Search"
               enterButton
-              onSearch={(value) => {
-                formikProps.isValid && setSearchedAddress(value);
+              onSearch={async (address) => {
+                if (formikProps.isValid) await setSearchedAddress(address || undefined);
               }}
             />
           </FormItem>
