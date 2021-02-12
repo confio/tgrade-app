@@ -61,8 +61,8 @@ export function getSendAddressValidationSchema(addressPrefix: string): Yup.AnyOb
   return Yup.object().shape({ address: getAddressField(addressPrefix) });
 }
 
-export function getContractValidationSchema(addressPrefix: string): Yup.AnyObjectSchema {
-  return Yup.object().shape({ contract: getContractField(addressPrefix) });
+export function getCodeIdOrAddressValidationSchema(addressPrefix: string): Yup.AnyObjectSchema {
+  return Yup.object().shape({ codeIdOrAddress: getContractField(addressPrefix) });
 }
 
 export function getAddAllowanceValidationSchema(addressPrefix: string): Yup.AnyObjectSchema {
