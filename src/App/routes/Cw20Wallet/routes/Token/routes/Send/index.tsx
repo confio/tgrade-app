@@ -8,7 +8,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { CW20 } from "utils/cw20";
+import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormSendTokens, { FormSendTokensFields } from "./FormSendTokens";
 import { Amount, MainStack } from "./style";
@@ -24,76 +24,84 @@ export default function Send(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const { contractAddress, allowingAddress }: SendParams = useParams();
-  const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}/${
-    allowingAddress ?? ""
+  const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${
+    allowingAddress ? `/${allowingAddress}` : ""
   }`;
   const history = useHistory();
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
+  const client = getSigningClient();
   const address = getAddress();
 
-  const [tokenName, setTokenName] = useState("");
-  const [tokenAmount, setTokenAmount] = useState("0");
-  const [tokenDecimals, setTokenDecimals] = useState(0);
+  const [cw20Token, setCw20Token] = useState<Cw20Token>();
 
   useEffect(() => {
-    const cw20Contract = CW20(getSigningClient()).use(contractAddress);
-    const tokenAddress = allowingAddress ?? address;
+    const cw20Contract = CW20(client).use(contractAddress);
 
-    cw20Contract.tokenInfo().then(({ symbol, decimals }) => {
-      setTokenName(symbol);
-      setTokenDecimals(decimals);
-    });
+    (async function updateCw20Token() {
+      const cw20Token = await getCw20Token(cw20Contract, address);
+      if (!cw20Token) {
+        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        return;
+      }
 
-    if (allowingAddress) {
-      cw20Contract.allowance(allowingAddress, address).then((response) => setTokenAmount(response.allowance));
-    } else {
-      cw20Contract.balance(tokenAddress).then((balance) => setTokenAmount(balance));
-    }
-  }, [getSigningClient, contractAddress, allowingAddress, address]);
+      if (allowingAddress) {
+        try {
+          const { allowance: amount } = await cw20Contract.allowance(allowingAddress, address);
+          setCw20Token({ ...cw20Token, amount });
+        } catch (error) {
+          handleError(error);
+        }
+      } else {
+        setCw20Token(cw20Token);
+      }
+    })();
+  }, [address, allowingAddress, client, contractAddress, handleError]);
 
-  const sendTokensAction = (values: FormSendTokensFields) => {
+  async function sendTokensAction(values: FormSendTokensFields) {
+    if (!cw20Token) return;
     setLoading(true);
 
     const { address: recipientAddress, amount } = values;
-    const transferAmount = Decimal.fromUserInput(amount, tokenDecimals).atomics;
-
-    const cw20Contract = CW20(getSigningClient()).use(contractAddress);
+    const cw20Contract = CW20(client).use(contractAddress);
 
     try {
+      const transferAmount = Decimal.fromUserInput(amount, cw20Token.decimals).atomics;
+
       if (allowingAddress) {
-        cw20Contract
-          .transferFrom(address, allowingAddress, recipientAddress, transferAmount)
-          .then((txHash) => {
-            if (!txHash) {
-              return Promise.reject("Transfer from failed");
-            }
+        const response = await cw20Contract.transferFrom(
+          address,
+          allowingAddress,
+          recipientAddress,
+          transferAmount,
+        );
+        if (!response) {
+          throw new Error(`Transfer from ${allowingAddress} failed`);
+        }
 
-            return history.push({
-              pathname: paths.operationResult,
-              state: {
-                success: true,
-                message: `${amount} ${tokenName} successfully sent to ${recipientAddress} with allowance from ${allowingAddress}`,
-                customButtonText: "Token detail",
-                customButtonActionPath: pathTokenDetail,
-              } as OperationResultState,
-            });
-          });
+        history.push({
+          pathname: paths.operationResult,
+          state: {
+            success: true,
+            message: `${amount} ${cw20Token.symbol} successfully sent to ${recipientAddress} with allowance from ${allowingAddress}`,
+            customButtonText: "Token detail",
+            customButtonActionPath: pathTokenDetail,
+          } as OperationResultState,
+        });
       } else {
-        cw20Contract.transfer(address, recipientAddress, transferAmount).then((txHash) => {
-          if (!txHash) {
-            return Promise.reject("Transfer failed");
-          }
+        const response = await cw20Contract.transfer(address, recipientAddress, transferAmount);
+        if (!response) {
+          throw new Error(`Transfer failed`);
+        }
 
-          return history.push({
-            pathname: paths.operationResult,
-            state: {
-              success: true,
-              message: `${amount} ${tokenName} successfully sent to ${recipientAddress}`,
-              customButtonText: "Token detail",
-              customButtonActionPath: pathTokenDetail,
-            } as OperationResultState,
-          });
+        history.push({
+          pathname: paths.operationResult,
+          state: {
+            success: true,
+            message: `${amount} ${cw20Token.symbol} successfully sent to ${recipientAddress}`,
+            customButtonText: "Token detail",
+            customButtonActionPath: pathTokenDetail,
+          } as OperationResultState,
         });
       }
     } catch (stackTrace) {
@@ -109,25 +117,29 @@ export default function Send(): JSX.Element {
         } as OperationResultState,
       });
     }
-  };
+  }
 
-  const amountToDisplay = Decimal.fromAtomics(tokenAmount, tokenDecimals).toString();
+  const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
   const [amountInteger, amountDecimal] = amountToDisplay.split(".");
 
-  const maxAmount = Decimal.fromAtomics(tokenAmount, tokenDecimals);
+  const maxAmount = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0);
 
   return loading ? (
-    <Loading loadingText={`Sending ${tokenName}...`} />
+    <Loading loadingText={`Sending ${cw20Token?.symbol || ""}...`} />
   ) : (
     <PageLayout backButtonProps={{ path: pathTokenDetail }}>
       <MainStack>
-        <Title>{tokenName}</Title>
+        <Title>{cw20Token?.symbol || ""}</Title>
         <Amount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
           <Text>{" tokens"}</Text>
         </Amount>
-        <FormSendTokens tokenName={tokenName} maxAmount={maxAmount} sendTokensAction={sendTokensAction} />
+        <FormSendTokens
+          tokenName={cw20Token?.symbol || ""}
+          maxAmount={maxAmount}
+          sendTokensAction={sendTokensAction}
+        />
       </MainStack>
     </PageLayout>
   );
