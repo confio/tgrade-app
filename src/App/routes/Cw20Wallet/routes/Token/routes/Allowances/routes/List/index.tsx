@@ -3,10 +3,10 @@ import { Button, Divider, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useSdk } from "service";
-import { AllowanceInfo, CW20 } from "utils/cw20";
+import { useError, useSdk } from "service";
+import { AllowanceInfo, CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import editIcon from "./assets/edit.svg";
 import {
   AllowanceAmountCopy,
@@ -24,27 +24,35 @@ interface ListParams {
 }
 
 export default function List(): JSX.Element {
-  const { path: pathAllowancesMatched } = useRouteMatch();
+  const { url: pathAllowancesMatched } = useRouteMatch();
   const { contractAddress }: ListParams = useParams();
   const history = useHistory();
+  const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
   const address = getAddress();
 
   const [allowances, setAllowances] = useState<readonly AllowanceInfo[]>([]);
-  const [tokenName, setTokenName] = useState("");
-  const [tokenAmount, setTokenAmount] = useState("0");
-  const [fractionalDigits, setFractionalDigits] = useState(0);
+  const [cw20Token, setCw20Token] = useState<Cw20Token>();
 
   useEffect(() => {
-    const cw20Contract = CW20(getSigningClient()).use(contractAddress);
+    (async function updateCw20TokenAndAllowances() {
+      const cw20Contract = CW20(getSigningClient()).use(contractAddress);
+      const cw20Token = await getCw20Token(cw20Contract, address);
+      if (!cw20Token) {
+        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        return;
+      }
 
-    cw20Contract.tokenInfo().then(({ symbol, decimals }) => {
-      setTokenName(symbol);
-      setFractionalDigits(decimals);
-    });
-    cw20Contract.balance(address).then((balance) => setTokenAmount(balance));
-    cw20Contract.allAllowances(address).then(({ allowances }) => setAllowances(allowances));
-  }, [getSigningClient, contractAddress, address]);
+      setCw20Token(cw20Token);
+
+      try {
+        const { allowances } = await cw20Contract.allAllowances(address);
+        setAllowances(allowances);
+      } catch (error) {
+        handleError(error);
+      }
+    })();
+  }, [address, contractAddress, getSigningClient, handleError]);
 
   function goToAllowancesEdit(spenderAddress: string) {
     history.push(`${pathAllowancesMatched}${paths.cw20Wallet.edit}/${spenderAddress}`);
@@ -54,13 +62,13 @@ export default function List(): JSX.Element {
     history.push(`${pathAllowancesMatched}${paths.cw20Wallet.add}`);
   }
 
-  const amountToDisplay = Decimal.fromAtomics(tokenAmount, fractionalDigits).toString();
+  const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
   const [amountInteger, maybeAmountDecimal] = amountToDisplay.split(".");
   const amountDecimal = maybeAmountDecimal ?? "";
 
   return (
     <PageLayout
-      backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}${contractAddress}` }}
+      backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}` }}
     >
       <MainStack>
         <TitleAmountStack>
@@ -68,7 +76,7 @@ export default function List(): JSX.Element {
           <Amount>
             <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
             <Text>
-              {amountDecimal} {tokenName}
+              {amountDecimal} {cw20Token?.symbol || ""}
             </Text>
             <Text>{" tokens"}</Text>
           </Amount>
@@ -77,11 +85,11 @@ export default function List(): JSX.Element {
           {allowances.map((allowanceInfo, index) => {
             const allowanceToDisplay = Decimal.fromAtomics(
               allowanceInfo.allowance,
-              fractionalDigits,
+              cw20Token?.decimals ?? 0,
             ).toString();
 
             return (
-              <>
+              <Fragment key={allowanceInfo.spender}>
                 {index > 0 && <Divider />}
                 <AllowanceItem>
                   <Text>{allowanceInfo.spender}</Text>
@@ -94,7 +102,7 @@ export default function List(): JSX.Element {
                     />
                   </AllowanceAmountCopy>
                 </AllowanceItem>
-              </>
+              </Fragment>
             );
           })}
         </AllowancesStack>
