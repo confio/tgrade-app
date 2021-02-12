@@ -207,3 +207,32 @@ export const CW20 = (client: SigningCosmWasmClient): CW20Contract => {
   };
   return { use };
 };
+
+export interface Cw20Token {
+  readonly address: string;
+  readonly symbol: string;
+  readonly decimals: number;
+  readonly amount: string;
+}
+
+export function cw20TokenCompare(a: Cw20Token, b: Cw20Token): -1 | 0 | 1 {
+  if (a.symbol < b.symbol) {
+    return -1;
+  }
+  if (a.symbol > b.symbol) {
+    return 1;
+  }
+  return 0;
+}
+
+export async function getCw20Token(contract: CW20Instance, address: string): Promise<Cw20Token | null> {
+  try {
+    const { symbol, decimals } = await contract.tokenInfo();
+    const amount = await contract.balance(address);
+
+    return { address: contract.contractAddress, symbol, decimals, amount };
+  } catch (error) {
+    // If no tokenInfo, or no balance, return null since it's not a CW20 token
+    return null;
+  }
+}
