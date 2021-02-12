@@ -15,12 +15,6 @@ export const MainStack = styled(Stack)`
   }
 `;
 
-export const AccountStack = styled(Stack)`
-  & > * {
-    --gap: var(--s2);
-  }
-`;
-
 export const Amount = styled.div`
   span {
     font-size: var(--s4);

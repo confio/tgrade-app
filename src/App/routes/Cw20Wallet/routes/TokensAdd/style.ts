@@ -1,7 +1,7 @@
 import { Stack } from "App/components/layout";
 import styled from "styled-components";
 
-const MainStack = styled(Stack)`
+export const MainStack = styled(Stack)`
   & > * {
     --gap: var(--s4);
   }
@@ -31,19 +31,3 @@ const MainStack = styled(Stack)`
     }
   }
 `;
-
-const FormStack = styled(Stack)`
-  & > * {
-    --gap: var(--s4);
-  }
-
-  .ant-form-item {
-    margin-bottom: 0;
-  }
-
-  button {
-    margin-top: var(--s2);
-  }
-`;
-
-export { MainStack, FormStack };
