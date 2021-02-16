@@ -3,6 +3,7 @@ import * as React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import Allowances from "./routes/Allowances";
 import Detail from "./routes/Detail";
+import Mint from "./routes/Mint";
 import Send from "./routes/Send";
 
 export default function Token(): JSX.Element {
@@ -18,6 +19,9 @@ export default function Token(): JSX.Element {
       </Route>
       <Route path={`${basePath}${paths.cw20Wallet.allowances}`}>
         <Allowances />
+      </Route>
+      <Route path={`${basePath}${paths.cw20Wallet.mint}`}>
+        <Mint />
       </Route>
     </Switch>
   );
