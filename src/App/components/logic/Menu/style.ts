@@ -15,6 +15,7 @@ export const StyledMenu = styled.nav<ComponentProps<typeof Menu>>`
 
   width: 80vw;
   height: 100vh;
+  height: -webkit-fill-available;
   padding: 2rem;
   text-align: left;
 
