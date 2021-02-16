@@ -47,6 +47,11 @@ export interface Claims {
   readonly claims: readonly Claim[];
 }
 
+export interface MinterResponse {
+  readonly minter: string;
+  readonly cap?: string;
+}
+
 export interface AllAccountsResponse {
   // list of bech32 address that have a balance
   readonly accounts: readonly string[];
@@ -63,7 +68,7 @@ export interface CW20Instance {
   tokenInfo: () => Promise<TokenInfo>;
   investment: () => Promise<Investment>;
   claims: (address: string) => Promise<Claims>;
-  minter: (sender: string) => Promise<any>;
+  minter: (sender: string) => Promise<MinterResponse>;
 
   // actions
   mint: (sender: string, recipient: string, amount: string) => Promise<string>;
@@ -121,7 +126,7 @@ export const CW20 = (client: SigningCosmWasmClient): CW20Contract => {
       return client.queryContractSmart(contractAddress, { claims: { address } });
     };
 
-    const minter = async (): Promise<any> => {
+    const minter = async (): Promise<MinterResponse> => {
       return client.queryContractSmart(contractAddress, { minter: {} });
     };
 
