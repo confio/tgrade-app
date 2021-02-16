@@ -25,6 +25,7 @@ export const paths = {
     allowances: "/allowances",
     add: "/add",
     edit: "/edit",
+    mint: "/mint",
   },
   staking: {
     prefix: "/staking",
