@@ -1,40 +1,15 @@
 import { Stack } from "App/components/layout";
 import styled from "styled-components";
 
-const MainStack = styled(Stack)`
+export const MainStack = styled(Stack)`
   & > * {
-    --gap: var(--s4);
-  }
-
-  h1 {
-    margin: 0;
-  }
-
-  .ant-transfer {
-    width: 100%;
-
-    & > *:first-child {
-      width: 100%;
-    }
-
-    & > *:not(:first-child) {
-      display: none;
-    }
-
-    .ant-transfer-list {
-      height: auto;
-      max-height: 300px;
-    }
-
-    .ant-transfer-list-content-item-text {
-      text-align: left;
-    }
+    --gap: var(--s1);
   }
 `;
 
-const FormStack = styled(Stack)`
+export const FormStack = styled(Stack)`
   & > * {
-    --gap: var(--s4);
+    --gap: var(--s2);
   }
 
   .ant-form-item {
@@ -46,4 +21,23 @@ const FormStack = styled(Stack)`
   }
 `;
 
-export { MainStack, FormStack };
+export const FormField = styled.div`
+  display: flex;
+  align-items: center;
+
+  & > * + * {
+    margin-left: var(--s0);
+  }
+
+  span.ant-typography {
+    font-family: var(--ff-iceland);
+    font-size: var(--s1);
+    width: 30%;
+    word-wrap: break-word;
+    text-align: left;
+  }
+
+  .ant-form-item {
+    width: 70%;
+  }
+`;
