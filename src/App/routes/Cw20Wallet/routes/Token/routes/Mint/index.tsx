@@ -6,7 +6,7 @@ import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
@@ -23,6 +23,7 @@ export default function Mint(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const { contractAddress }: MintParams = useParams();
+  const { url: pathMintMatched } = useRouteMatch();
   const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`;
   const history = useHistory();
   const { handleError } = useError();
@@ -82,7 +83,7 @@ export default function Mint(): JSX.Element {
           success: false,
           message: "Mint transaction failed:",
           error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: pathTokenDetail,
+          customButtonActionPath: pathMintMatched,
         } as OperationResultState,
       });
     }

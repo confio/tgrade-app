@@ -57,15 +57,21 @@ export default function TokenNew(): JSX.Element {
         mint,
       };
 
-      await getSigningClient().instantiate(getAddress(), codeId, msg, values.symbol, { admin: address });
+      const { contractAddress } = await getSigningClient().instantiate(
+        getAddress(),
+        codeId,
+        msg,
+        values.symbol,
+        { admin: address },
+      );
 
       history.push({
         pathname: paths.operationResult,
         state: {
           success: true,
           message: `${amount} ${values.tokenName} successfully created`,
-          customButtonText: "Tokens",
-          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}`,
+          customButtonText: "Token Detail",
+          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`,
         } as OperationResultState,
       });
     } catch (stackTrace) {
