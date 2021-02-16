@@ -35,6 +35,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "formik": "^2.2.6",
     "formik-antd": "^2.0.1",
+    "netlify-cli": "^3.8.1",
     "prettier": "^2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -57,6 +58,7 @@
     "build:local": "REACT_APP_NETWORK=local yarn build:base",
     "build:musselnet": "REACT_APP_NETWORK=musselnet yarn build:base",
     "build": "yarn build:musselnet",
+    "deploy": "yarn build && netlify deploy --dir=build --alias=$(git branch --show-current)",
     "test": "craco test"
   },
   "browserslist": [
