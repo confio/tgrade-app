@@ -29,6 +29,7 @@ export default function Detail(): JSX.Element {
   const [allowingAddress, setAllowingAddress] = useState(allowingAddressParam);
   const [allowance, setAllowance] = useState<string>();
   const [cw20Token, setCw20Token] = useState<Cw20Token>();
+  const [isUserMinter, setUserMinter] = useState(false);
 
   useEffect(() => {
     const cw20Contract = CW20(client).use(contractAddress);
@@ -55,6 +56,23 @@ export default function Detail(): JSX.Element {
     })();
   }, [address, allowingAddress, client, contractAddress, handleError]);
 
+  useEffect(() => {
+    const cw20Contract = CW20(client).use(contractAddress);
+
+    (async function updateIsUserMinter() {
+      try {
+        const minterResponse = await cw20Contract.minter(address);
+        if (minterResponse?.minter === address) {
+          setUserMinter(true);
+        } else {
+          setUserMinter(false);
+        }
+      } catch (error) {
+        handleError(error);
+      }
+    })();
+  }, [address, client, contractAddress, handleError]);
+
   async function updateAllowance(allowingAddress?: string) {
     if (!allowingAddress) {
       setAllowingAddress(undefined);
@@ -80,6 +98,10 @@ export default function Detail(): JSX.Element {
     history.push(`${pathTokenDetailMatched}${paths.cw20Wallet.allowances}`);
   }
 
+  function goToMint() {
+    history.push(`${pathTokenDetailMatched}${paths.cw20Wallet.mint}`);
+  }
+
   const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
   const [amountInteger, amountDecimal] = amountToDisplay.split(".");
 
@@ -89,6 +111,7 @@ export default function Detail(): JSX.Element {
   const showSendButton = !allowance || allowance !== "0";
   const isSendButtonDisabled = !cw20Token || cw20Token.amount === "0";
   const showAllowancesLink = !allowingAddress;
+  const showMintLink = isUserMinter;
 
   return (
     <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}` }}>
@@ -117,6 +140,11 @@ export default function Detail(): JSX.Element {
         {showAllowancesLink && (
           <Button type="primary" onClick={goToAllowances}>
             My allowances
+          </Button>
+        )}
+        {showMintLink && (
+          <Button type="primary" onClick={goToMint}>
+            Mint tokens
           </Button>
         )}
       </MainStack>
