@@ -1,7 +1,7 @@
 import { config } from "config/network";
 import * as React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { ContractsProvider, ErrorProvider, SdkProvider } from "service";
+import { ErrorProvider, SdkProvider } from "service";
 import GlobalStyle from "theme/GlobalStyle";
 import { ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
@@ -17,39 +17,37 @@ export default function App(): JSX.Element {
   return (
     <ErrorProvider>
       <SdkProvider config={config}>
-        <ContractsProvider>
-          <GlobalStyle />
-          <Router basename={process.env.PUBLIC_URL}>
-            <Switch>
-              <Route exact path="/">
-                <Login />
+        <GlobalStyle />
+        <Router basename={process.env.PUBLIC_URL}>
+          <Switch>
+            <Route exact path="/">
+              <Login />
+            </Route>
+            <Route path={paths.login}>
+              <Login />
+            </Route>
+            <ProtectedSwitch authPath={paths.login}>
+              <Route path={paths.logout}>
+                <Logout />
               </Route>
-              <Route path={paths.login}>
-                <Login />
+              <Route path={paths.operationResult}>
+                <OperationResult />
               </Route>
-              <ProtectedSwitch authPath={paths.login}>
-                <Route path={paths.logout}>
-                  <Logout />
-                </Route>
-                <Route path={paths.operationResult}>
-                  <OperationResult />
-                </Route>
-                <Route path={paths.account}>
-                  <Account />
-                </Route>
-                <Route path={paths.wallet.prefix}>
-                  <Wallet />
-                </Route>
-                <Route path={paths.cw20Wallet.prefix}>
-                  <Cw20Wallet />
-                </Route>
-                <Route path={paths.staking.prefix}>
-                  <Staking />
-                </Route>
-              </ProtectedSwitch>
-            </Switch>
-          </Router>
-        </ContractsProvider>
+              <Route path={paths.account}>
+                <Account />
+              </Route>
+              <Route path={paths.wallet.prefix}>
+                <Wallet />
+              </Route>
+              <Route path={paths.cw20Wallet.prefix}>
+                <Cw20Wallet />
+              </Route>
+              <Route path={paths.staking.prefix}>
+                <Staking />
+              </Route>
+            </ProtectedSwitch>
+          </Switch>
+        </Router>
       </SdkProvider>
     </ErrorProvider>
   );
