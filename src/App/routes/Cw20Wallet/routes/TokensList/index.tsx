@@ -59,7 +59,7 @@ export default function TokensList(): JSX.Element {
 
             return (
               <Button
-                key={token.symbol}
+                key={token.address}
                 data-size="large"
                 type="primary"
                 onClick={() => goTokenDetail(token.address)}
