@@ -73,3 +73,16 @@ export function getAddAllowanceValidationSchema(addressPrefix: string): Yup.AnyO
 }
 
 export const setAllowanceValidationSchema = Yup.object().shape({ newAmount: getAmountField() });
+
+export const createTokenValidationSchema = Yup.object().shape({
+  symbol: Yup.string().required().strict().uppercase().min(3).max(6),
+  tokenName: Yup.string().required().min(3).max(30),
+  decimals: Yup.number().required().integer().min(0).max(18),
+  initialSupply: Yup.number().required().positive(),
+  mintCap: Yup.number().when("initialSupply", (initialSupply: number, schema: any) => {
+    return schema.test({
+      test: (mintCap?: number) => !mintCap || initialSupply <= mintCap,
+      message: "Cap must be equal or greater than initial supply",
+    });
+  }),
+});
