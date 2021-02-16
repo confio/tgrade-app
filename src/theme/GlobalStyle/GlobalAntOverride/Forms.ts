@@ -48,6 +48,16 @@ export const Forms = createGlobalStyle`
       }
     }
 
+    .ant-form-item {
+      &[data-disabled=true] {
+        .ant-form-item-control-input-content {
+          color: #828282;
+          background-color: #333333;
+          border-color: #333333;
+        }
+      }
+    }
+
     .ant-transfer-list-body-search-wrapper:hover .anticon-search svg {
       color: #f9b77a;
     }
@@ -72,7 +82,8 @@ export const Forms = createGlobalStyle`
       color: inherit;
     }
 
-    .ant-input {
+    .ant-input,
+    .ant-select-selector.ant-select-selector {
       min-height: 4rem;
       text-overflow: ellipsis;
       background: none;
@@ -82,6 +93,30 @@ export const Forms = createGlobalStyle`
       &::placeholder {
         color: inherit;
       }
+    }
+
+    .ant-select,
+    .ant-select-selection-search,
+    .ant-select-selection-item {
+      color: #43547d;
+
+      &:hover {
+        color: #f9b77a;
+      }
+
+      &:focus-within {
+        color: #7c95ff;
+      }
+
+      & svg {
+        color: inherit;
+      }
+    }
+
+    .ant-select-selection-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .ant-input-search-button {
