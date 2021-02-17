@@ -8,13 +8,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn install --frozen-lockfile
       - save_cache:
           paths:
             - ~/.cache/yarn
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn build
       - run: yarn lint
 
@@ -31,12 +31,8 @@ jobs:
     steps:
       - checkout
       - run: # start early for less wait time below
-          name: Start wasmd
-          command: ./scripts/wasmd/start.sh
-          background: true
-      - run: # start early for less wait time below
-          name: Start simapp
-          command: ./scripts/simapp/start.sh
+          name: Start wasmd and faucet
+          command: ./scripts/start_all.sh
           background: true
       - run:
           # TODO: check if still needed with 20.04
@@ -62,33 +58,33 @@ jobs:
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
-            # - yarn-packages-{{ checksum "yarn.lock" }}
-            - yarn-packages-{{ checksum "package.json" }}
-      - run: yarn install
-      # - run: yarn install --frozen-lockfile
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run: yarn install --frozen-lockfile
       - run: yarn build
       - save_cache:
           name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "package.json" }}
+          key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - node_modules
       - run:
           name: Wait for chains to start up
           command: |
-            echo "Wait for wasmd..."
-            timeout 60 bash -c "until curl -s http://localhost:26659/status > /dev/null; do sleep 0.5; done"
-            echo "Wait for simapp..."
-            timeout 60 bash -c "until curl -s http://localhost:26658/status > /dev/null; do sleep 0.5; done"
-            sleep 1
+            echo "Wait for faucet..."
+            timeout 60 bash -c "until curl -s http://localhost:8000/status > /dev/null; do sleep 0.5; done"
+            echo "Wait for 3 contracts to deploy..."
+            sleep 8
             echo "Chains up and running!"
+      # TODO: uncomment when there is test code
+      # - run:
+      #     command: yarn test
       - run:
-          command: yarn test
+          name: Placeholder
+          command: curl http://localhost:8000/status
       - run:
           name: Stop chains
           command: |
-            ./scripts/simapp/stop.sh
-            ./scripts/wasmd/stop.sh
+            ./scripts/stop_all.sh
 
 workflows:
   version: 2
