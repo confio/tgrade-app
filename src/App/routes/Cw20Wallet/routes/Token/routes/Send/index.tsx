@@ -69,15 +69,7 @@ export default function Send(): JSX.Element {
       const transferAmount = Decimal.fromUserInput(amount, cw20Token.decimals).atomics;
 
       if (allowingAddress) {
-        const response = await cw20Contract.transferFrom(
-          address,
-          allowingAddress,
-          recipientAddress,
-          transferAmount,
-        );
-        if (!response) {
-          throw new Error(`Transfer from ${allowingAddress} failed`);
-        }
+        await cw20Contract.transferFrom(address, allowingAddress, recipientAddress, transferAmount);
 
         history.push({
           pathname: paths.operationResult,

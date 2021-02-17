@@ -59,11 +59,7 @@ export default function Mint(): JSX.Element {
 
     try {
       const mintAmount = Decimal.fromUserInput(amount, cw20Token.decimals).atomics;
-
-      const response = await cw20Contract.mint(address, recipientAddress, mintAmount);
-      if (!response) {
-        throw new Error(`Mint failed`);
-      }
+      await cw20Contract.mint(address, recipientAddress, mintAmount);
 
       history.push({
         pathname: paths.operationResult,
