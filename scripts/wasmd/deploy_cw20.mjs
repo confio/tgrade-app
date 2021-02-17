@@ -84,7 +84,7 @@ async function main() {
   console.info("Hitting the faucet...");
   const { address } = (await wallet.getAccounts())[0];
   const faucet = new FaucetClient(config.faucet);
-  faucet.credit(address, config.feeDenom);
+  await faucet.credit(address, config.feeDenom);
 
   console.info(`Downloading ${config.wasmUrl}...`);
   const wasm = await downloadWasm(config.wasmUrl);
