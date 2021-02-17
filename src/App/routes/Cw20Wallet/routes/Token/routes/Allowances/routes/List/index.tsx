@@ -46,7 +46,7 @@ export default function List(): JSX.Element {
       setCw20Token(cw20Token);
 
       try {
-        const { allowances } = await cw20Contract.allAllowances(address);
+        const allowances = await cw20Contract.allAllowances(address);
         setAllowances(allowances);
       } catch (error) {
         handleError(error);
