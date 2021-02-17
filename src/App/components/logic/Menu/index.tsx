@@ -4,7 +4,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import closeMenuIcon from "./assets/closeMenuIcon.svg";
 import MenuCloser from "./MenuCloser";
-import { MenuStack, StyledMenu } from "./style";
+import { MenuLinks, StyledMenu } from "./style";
 
 const { Title } = Typography;
 
@@ -18,7 +18,7 @@ export default function Menu({ open, setOpen }: MenuProps): JSX.Element {
     <>
       <MenuCloser open={open} setOpen={setOpen} />
       <StyledMenu open={open} setOpen={setOpen}>
-        <MenuStack>
+        <MenuLinks>
           <img
             alt="Close menu icon"
             src={closeMenuIcon}
@@ -32,13 +32,16 @@ export default function Menu({ open, setOpen }: MenuProps): JSX.Element {
           <Link to={paths.wallet.prefix}>
             <Title level={3}>Wallet</Title>
           </Link>
+          <Link to={paths.cw20Wallet.prefix}>
+            <Title level={3}>CW20 Wallet</Title>
+          </Link>
           <Link to={paths.staking.prefix}>
             <Title level={3}>Staking</Title>
           </Link>
           <Link to={paths.logout}>
             <Title level={3}>Logout</Title>
           </Link>
-        </MenuStack>
+        </MenuLinks>
       </StyledMenu>
     </>
   );

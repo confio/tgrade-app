@@ -1,4 +1,3 @@
-import { Stack } from "App/components/layout";
 import { ComponentProps } from "react";
 import styled from "styled-components";
 import Menu from ".";
@@ -15,6 +14,7 @@ export const StyledMenu = styled.nav<ComponentProps<typeof Menu>>`
 
   width: 80vw;
   height: 100vh;
+  height: -webkit-fill-available;
   padding: 2rem;
   text-align: left;
 
@@ -35,8 +35,13 @@ export const StyledMenu = styled.nav<ComponentProps<typeof Menu>>`
   }
 `;
 
-export const MenuStack = styled(Stack)`
+export const MenuLinks = styled.div`
   max-width: calc(var(--max-width) * 0.8);
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 
   img {
     cursor: pointer;

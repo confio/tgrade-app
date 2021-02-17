@@ -10,6 +10,23 @@ export const paths = {
     },
     tokens: "/tokens",
   },
+  cw20Wallet: {
+    prefix: "/cw20-wallet",
+    params: {
+      codeId: "/:codeId?",
+      contractAddress: "/:contractAddress",
+      allowingAddress: "/:allowingAddress?",
+      spenderAddress: "/:spenderAddress",
+    },
+    tokens: "/tokens",
+    tokensAdd: "/tokens/add",
+    tokensNew: "/tokens/new",
+    send: "/send",
+    allowances: "/allowances",
+    add: "/add",
+    edit: "/edit",
+    mint: "/mint",
+  },
   staking: {
     prefix: "/staking",
     params: {

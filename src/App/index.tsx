@@ -6,6 +6,7 @@ import GlobalStyle from "theme/GlobalStyle";
 import { ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
 import Account from "./routes/Account";
+import Cw20Wallet from "./routes/Cw20Wallet";
 import Login from "./routes/Login";
 import Logout from "./routes/Logout";
 import OperationResult from "./routes/OperationResult";
@@ -37,6 +38,9 @@ export default function App(): JSX.Element {
               </Route>
               <Route path={paths.wallet.prefix}>
                 <Wallet />
+              </Route>
+              <Route path={paths.cw20Wallet.prefix}>
+                <Cw20Wallet />
               </Route>
               <Route path={paths.staking.prefix}>
                 <Staking />

@@ -5,33 +5,33 @@ import * as React from "react";
 import { useSdk } from "service";
 import { getSearchAddressValidationSchema } from "utils/formSchemas";
 
-interface FormSearchNameProps {
-  readonly currentAddress: string;
-  readonly setCurrentAddress: (value: React.SetStateAction<string>) => void;
+interface FormSearchAllowingProps {
+  readonly initialAddress?: string;
+  readonly setSearchedAddress: (value?: string) => Promise<void>;
 }
 
-export default function FormSearchName({
-  currentAddress,
-  setCurrentAddress,
-}: FormSearchNameProps): JSX.Element {
+export default function FormSearchAllowing({
+  initialAddress,
+  setSearchedAddress,
+}: FormSearchAllowingProps): JSX.Element {
   const { getConfig } = useSdk();
 
   return (
     <Formik
-      initialValues={{ address: currentAddress }}
+      initialValues={{ address: initialAddress }}
       validationSchema={getSearchAddressValidationSchema(getConfig().addressPrefix)}
-      onSubmit={(values) => {
-        setCurrentAddress(values.address);
-      }}
+      onSubmit={async ({ address }) => await setSearchedAddress(address || undefined)}
     >
       {(formikProps) => (
         <Form>
           <FormItem name="address">
             <Search
               name="address"
-              placeholder="Enter address"
+              placeholder="Search"
               enterButton
-              onSearch={formikProps.submitForm}
+              onSearch={async (address) => {
+                if (formikProps.isValid) await setSearchedAddress(address || undefined);
+              }}
             />
           </FormItem>
         </Form>

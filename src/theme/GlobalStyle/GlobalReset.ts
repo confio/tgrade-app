@@ -12,10 +12,16 @@ export const GlobalReset = createGlobalStyle`
   }
   
   body {
-    position: fixed;
     min-height: 100vh;
     line-height: 1.5;
     text-rendering: optimizeSpeed;
+  }
+
+  #root {
+    min-width: 100%;
+    min-height: 100%;
+    position: relative;
+    overflow-x: hidden;
   }
   
   body,

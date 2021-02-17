@@ -47,6 +47,7 @@ const local: NetworkConfig = {
     ustake: { denom: "STAKE", fractionalDigits: 6 },
   },
   gasPrice: 0.025,
+  codeId: 1,
 };
 
 const musselnet: NetworkConfig = {
