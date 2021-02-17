@@ -61,7 +61,8 @@
     "build": "yarn build:musselnet",
     "deploy": "yarn build && netlify deploy --dir=build --alias=$(git branch --show-current)",
     "test": "craco test",
-    "lint": "echo TODO: return error if lint errors"
+    "lint": "echo TODO: return error if lint errors",
+    "compile": "tsc"
   },
   "browserslist": [
     "last 2 chrome versions",

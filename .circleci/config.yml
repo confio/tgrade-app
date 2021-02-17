@@ -15,7 +15,13 @@ jobs:
             - ~/.cache/yarn
             - node_modules
           key: v1-dependencies-{{ checksum "yarn.lock" }}
-      - run: yarn build
+      # I got this on CircleCI:
+      # Creating an optimized production build...
+      #              The build failed because the process exited too early.
+      #              This probably means the system ran out of memory or someone called
+      #              `kill -9` on the process.
+      # - run: yarn build
+      - run: yarn compile
       - run: yarn lint
 
   test:
@@ -58,12 +64,12 @@ jobs:
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn install --frozen-lockfile
-      - run: yarn build
+      # - run: yarn build
       - save_cache:
           name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - node_modules
