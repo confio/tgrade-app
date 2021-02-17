@@ -1,6 +1,10 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Coin } from "@cosmjs/launchpad";
 
+export interface BalanceResponse {
+  readonly balance: string;
+}
+
 export type Expiration =
   | { readonly at_height: number }
   | { readonly at_time: number }
@@ -21,14 +25,19 @@ export interface AllAllowancesResponse {
   readonly allowances: readonly AllowanceInfo[];
 }
 
-export interface TokenInfo {
+export interface AllAccountsResponse {
+  // list of bech32 address that have a balance
+  readonly accounts: readonly string[];
+}
+
+export interface TokenInfoResponse {
   readonly name: string;
   readonly symbol: string;
   readonly decimals: number;
   readonly total_supply: string;
 }
 
-export interface Investment {
+export interface InvestmentResponse {
   readonly exit_tax: string;
   readonly min_withdrawal: string;
   readonly nominal_value: string;
@@ -43,7 +52,7 @@ export interface Claim {
   readonly release_at: { readonly at_time: number };
 }
 
-export interface Claims {
+export interface ClaimsResponse {
   readonly claims: readonly Claim[];
 }
 
@@ -52,22 +61,17 @@ export interface MinterResponse {
   readonly cap?: string;
 }
 
-export interface AllAccountsResponse {
-  // list of bech32 address that have a balance
-  readonly accounts: readonly string[];
-}
-
 export interface CW20Instance {
   readonly contractAddress: string;
 
   // queries
   balance: (address: string) => Promise<string>;
   allowance: (owner: string, spender: string) => Promise<AllowanceResponse>;
-  allAllowances: (owner: string, startAfter?: string, limit?: number) => Promise<AllAllowancesResponse>;
+  allAllowances: (owner: string, startAfter?: string, limit?: number) => Promise<readonly AllowanceInfo[]>;
   allAccounts: (startAfter?: string, limit?: number) => Promise<readonly string[]>;
-  tokenInfo: () => Promise<TokenInfo>;
-  investment: () => Promise<Investment>;
-  claims: (address: string) => Promise<Claims>;
+  tokenInfo: () => Promise<TokenInfoResponse>;
+  investment: () => Promise<InvestmentResponse>;
+  claims: (address: string) => Promise<readonly Claim[]>;
   minter: (sender: string) => Promise<MinterResponse>;
 
   // actions
@@ -89,44 +93,53 @@ export interface CW20Contract {
 export const CW20 = (client: SigningCosmWasmClient): CW20Contract => {
   const use = (contractAddress: string): CW20Instance => {
     const balance = async (address: string): Promise<string> => {
-      const result = await client.queryContractSmart(contractAddress, { balance: { address } });
-      return result.balance;
+      const balanceQuery = { balance: { address } };
+      const { balance }: BalanceResponse = await client.queryContractSmart(contractAddress, balanceQuery);
+      return balance;
     };
 
-    const allowance = async (owner: string, spender: string): Promise<AllowanceResponse> => {
-      return client.queryContractSmart(contractAddress, { allowance: { owner, spender } });
+    const allowance = (owner: string, spender: string): Promise<AllowanceResponse> => {
+      const allowanceQuery = { allowance: { owner, spender } };
+      return client.queryContractSmart(contractAddress, allowanceQuery);
     };
 
     const allAllowances = async (
       owner: string,
       startAfter?: string,
       limit?: number,
-    ): Promise<AllAllowancesResponse> => {
-      return client.queryContractSmart(contractAddress, {
-        all_allowances: { owner, start_after: startAfter, limit },
-      });
+    ): Promise<readonly AllowanceInfo[]> => {
+      const allAllowancesQuery = { all_allowances: { owner, start_after: startAfter, limit } };
+      const { allowances }: AllAllowancesResponse = await client.queryContractSmart(
+        contractAddress,
+        allAllowancesQuery,
+      );
+      return allowances;
     };
 
     const allAccounts = async (startAfter?: string, limit?: number): Promise<readonly string[]> => {
-      const accounts: AllAccountsResponse = await client.queryContractSmart(contractAddress, {
-        all_accounts: { start_after: startAfter, limit },
-      });
-      return accounts.accounts;
+      const allAccountsQuery = { all_accounts: { start_after: startAfter, limit } };
+      const { accounts }: AllAccountsResponse = await client.queryContractSmart(
+        contractAddress,
+        allAccountsQuery,
+      );
+      return accounts;
     };
 
-    const tokenInfo = async (): Promise<TokenInfo> => {
+    const tokenInfo = (): Promise<TokenInfoResponse> => {
       return client.queryContractSmart(contractAddress, { token_info: {} });
     };
 
-    const investment = async (): Promise<Investment> => {
+    const investment = (): Promise<InvestmentResponse> => {
       return client.queryContractSmart(contractAddress, { investment: {} });
     };
 
-    const claims = async (address: string): Promise<Claims> => {
-      return client.queryContractSmart(contractAddress, { claims: { address } });
+    const claims = async (address: string): Promise<readonly Claim[]> => {
+      const claimsQuery = { claims: { address } };
+      const { claims }: ClaimsResponse = await client.queryContractSmart(contractAddress, claimsQuery);
+      return claims;
     };
 
-    const minter = async (): Promise<MinterResponse> => {
+    const minter = (): Promise<MinterResponse> => {
       return client.queryContractSmart(contractAddress, { minter: {} });
     };
 
