@@ -6,7 +6,7 @@ import App from "./";
 describe("should have a happy path for", () => {
   const emptyAddress = "wasm10tsncqntt778xpkt7d5uwhul2rcmlj5c3larlj";
 
-  test.only("native wallet", async () => {
+  test("native wallet", async () => {
     const cosmAmount = "1.5";
 
     render(<App />);
@@ -51,7 +51,11 @@ describe("should have a happy path for", () => {
     expect(otherCosmTokens.previousElementSibling).toHaveTextContent(/cosm/i);
   }, 25_000);
 
-  test("staking", async () => {
+  // TODO: implement this test
+  test.skip("cw20 wallet", () => {});
+
+  // TODO: finish this test
+  test.skip("staking", async () => {
     const stakeAmount = "0.2";
 
     render(<App />);
