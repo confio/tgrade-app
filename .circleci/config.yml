@@ -84,12 +84,8 @@ jobs:
           name: Deploy contracts
           command: |
             ./scripts/wasmd/init.sh
-      # TODO: uncomment when there is test code
-      # - run:
-      #     command: yarn test
       - run:
-          name: Placeholder
-          command: curl http://localhost:8000/status
+          command: yarn test --watchAll=false
       - run:
           name: Stop chains
           command: |
