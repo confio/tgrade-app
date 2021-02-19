@@ -25,9 +25,9 @@ describe("should have a happy path for", () => {
 
     // Enter amount and address
     const sendAmountInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
-    await waitFor(() => userEvent.type(sendAmountInput, cosmAmount, { delay: 1 }));
+    await userEvent.type(sendAmountInput, cosmAmount, { delay: 1 });
     const sendAddressInput = screen.getByPlaceholderText(/enter address/i) as HTMLInputElement;
-    await waitFor(() => userEvent.type(sendAddressInput, emptyAddress, { delay: 1 }));
+    await userEvent.type(sendAddressInput, emptyAddress, { delay: 1 });
 
     // Submit and expect success screen
     userEvent.click(screen.getByRole("button", { name: /send/i }));
@@ -45,11 +45,11 @@ describe("should have a happy path for", () => {
     // Check other account went up
     const searchAddressInput = screen.getByPlaceholderText(/enter address/i) as HTMLInputElement;
     userEvent.clear(searchAddressInput);
-    await waitFor(() => userEvent.type(searchAddressInput, emptyAddress, { delay: 1 }));
+    await userEvent.type(searchAddressInput, emptyAddress, { delay: 1 });
     userEvent.click(screen.getByRole("button", { name: /search/i }));
     const otherCosmTokens = await screen.findByText(cosmAmount);
     expect(otherCosmTokens.previousElementSibling).toHaveTextContent(/cosm/i);
-  }, 25_000);
+  }, 30_000);
 
   // TODO: implement this test
   test.skip("cw20 wallet", () => {});
