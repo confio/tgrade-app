@@ -148,9 +148,9 @@ describe("should have a happy path for", () => {
     await screen.findByText("800");
   }, 75_000);
 
-  // TODO: finish this test
-  test.skip("staking", async () => {
-    const stakeAmount = "0.2";
+  test("staking", async () => {
+    const delegateAmount = "4";
+    const undelegateAmount = "2";
 
     render(<App />);
 
@@ -163,12 +163,71 @@ describe("should have a happy path for", () => {
     const stakedTokens = (await screen.findByText(/staked tokens/i)).nextElementSibling;
     expect(stakedTokens).toHaveTextContent("0");
 
-    // Delegate 4 tokens and check new staked
+    // Delegate 4 tokens
     userEvent.click(screen.getByRole("button", { name: /^delegate/i }));
-    const stakeAmountInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
-    await waitFor(() => userEvent.type(stakeAmountInput, stakeAmount, { delay: 1 }));
-    // TODO: why this button is disabled
-    userEvent.click(screen.getByRole("button", { name: /delegate/i }));
-    screen.debug();
-  }, 99_999);
+    const delegateInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
+    const delegateButton = screen.getByRole("button", { name: /delegate/i });
+    await waitFor(async () => {
+      // Clear and write input till maxAmount balance effect kicks in and the form can validate
+      userEvent.clear(delegateInput);
+      await userEvent.type(delegateInput, delegateAmount, { delay: 1 });
+      expect(delegateButton).not.toBeDisabled();
+    });
+    userEvent.click(delegateButton);
+    await screen.findByText(`${delegateAmount} STAKE successfully delegated`, undefined, {
+      timeout: 10_000,
+    });
+
+    // Check staked tokens is 4
+    userEvent.click(screen.getByRole("button", { name: /validator home/i }));
+    const stakedTokensAfterDelegate = (await screen.findByText(/staked tokens/i)).nextElementSibling;
+    await waitFor(() => {
+      expect(stakedTokensAfterDelegate).toHaveTextContent(delegateAmount);
+    });
+
+    // Undelegate 2 tokens
+    userEvent.click(screen.getByRole("button", { name: /undelegate/i }));
+    const undelegateInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
+    const undelegateButton = screen.getByRole("button", { name: /delegate/i });
+    await waitFor(async () => {
+      // Clear and write input till maxAmount balance effect kicks in and the form can validate
+      userEvent.clear(undelegateInput);
+      await userEvent.type(undelegateInput, undelegateAmount, { delay: 1 });
+      expect(undelegateButton).not.toBeDisabled();
+    });
+    userEvent.click(undelegateButton);
+    await screen.findByText(`${undelegateAmount} STAKE successfully undelegated`, undefined, {
+      timeout: 10_000,
+    });
+
+    // Check staked tokens is 2
+    userEvent.click(screen.getByRole("button", { name: /validator home/i }));
+    const stakedTokensAfterUndelegate = (await screen.findByText(/staked tokens/i)).nextElementSibling;
+    await waitFor(() => {
+      expect(stakedTokensAfterUndelegate).toHaveTextContent("2");
+    });
+
+    // Withdraw rewards
+    await waitFor(
+      async () => {
+        // Enter and exit view until there are rewards (waits for blockchain, not for useEffect)
+        userEvent.click(screen.getByRole("button", { name: /rewards/i }));
+        try {
+          userEvent.click(await screen.findByRole("button", { name: /withdraw rewards/i }));
+        } catch (error) {
+          userEvent.click(screen.getByAltText(/back arrow/i));
+          throw new Error(error);
+        }
+      },
+      { timeout: 10_000 },
+    );
+    await screen.findByText("Successfully withdrawn", undefined, {
+      timeout: 10_000,
+    });
+
+    // Logout
+    userEvent.click(screen.getByRole("button", { name: /validator home/i }));
+    userEvent.click(await screen.findByText(/logout/i));
+    expect(screen.getByRole("button", { name: /browser/i })).toBeInTheDocument();
+  }, 75_000);
 });
