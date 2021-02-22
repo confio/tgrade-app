@@ -9,8 +9,8 @@ import { Form, FormItem, Input, Select } from "formik-antd";
 import * as React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { MinterResponse } from "utils/cw20";
+import { useContracts, useError, useSdk } from "service";
+import { CW20, MinterResponse } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { createTokenValidationSchema } from "utils/formSchemas";
 import { FormField, FormStack, MainStack } from "./style";
@@ -35,6 +35,7 @@ export default function TokenNew(): JSX.Element {
   const { getConfig, getSigningClient, getAddress } = useSdk();
   const codeId = getConfig().codeId;
   const address = getAddress();
+  const { addContract } = useContracts();
 
   async function submitCreateToken(values: FormCreateTokenFields) {
     setLoading(true);
@@ -64,6 +65,9 @@ export default function TokenNew(): JSX.Element {
         values.symbol,
         { admin: address },
       );
+
+      const newCw20Contract = CW20(getSigningClient()).use(contractAddress);
+      addContract(newCw20Contract);
 
       history.push({
         pathname: paths.operationResult,
