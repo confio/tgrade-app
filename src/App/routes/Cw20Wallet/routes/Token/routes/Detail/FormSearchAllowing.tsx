@@ -19,6 +19,7 @@ export default function FormSearchAllowing({
   return (
     <Formik
       initialValues={{ address: initialAddress }}
+      enableReinitialize
       validationSchema={getSearchAddressValidationSchema(getConfig().addressPrefix)}
       onSubmit={async ({ address }) => await setSearchedAddress(address || undefined)}
     >

@@ -133,7 +133,12 @@ export default function Detail(): JSX.Element {
           <Text>{" tokens"}</Text>
         </Amount>
         <FormSearchAllowing initialAddress={allowingAddress} setSearchedAddress={updateAllowance} />
-        {showCurrentAllowance && (
+        {allowingAddress ? (
+          <Button type="default" onClick={() => updateAllowance()}>
+            Back to My Account
+          </Button>
+        ) : null}
+        {showCurrentAllowance ? (
           <AllowanceStack>
             <Divider />
             <Allowance>
