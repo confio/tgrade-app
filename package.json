@@ -61,7 +61,7 @@
     "build": "yarn build:musselnet",
     "deploy": "yarn build && netlify deploy --dir=build --alias=$(git branch --show-current)",
     "test": "craco test",
-    "lint": "tsc --noEmit && npx eslint src/**/*.ts{,x}",
+    "lint": "tsc --noEmit && npx eslint src/**/*.ts{,x} --max-warnings 0",
     "compile": "tsc"
   },
   "browserslist": [
