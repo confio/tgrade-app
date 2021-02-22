@@ -69,7 +69,7 @@ export function useBalance(): readonly Coin[] {
       const balance = await getBalance();
       setCurrentBalance(balance);
     })();
-  }, []);
+  }, [getBalance]);
 
   return currentBalance;
 }
