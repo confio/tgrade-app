@@ -35,6 +35,8 @@ export default function List(): JSX.Element {
   const [cw20Token, setCw20Token] = useState<Cw20Token>();
 
   useEffect(() => {
+    let mounted = true;
+
     (async function updateCw20TokenAndAllowances() {
       const cw20Contract = CW20(getSigningClient()).use(contractAddress);
       const cw20Token = await getCw20Token(cw20Contract, address);
@@ -43,15 +45,19 @@ export default function List(): JSX.Element {
         return;
       }
 
-      setCw20Token(cw20Token);
+      if (mounted) setCw20Token(cw20Token);
 
       try {
         const allowances = await cw20Contract.allAllowances(address);
-        setAllowances(allowances);
+        if (mounted) setAllowances(allowances);
       } catch (error) {
         handleError(error);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [address, contractAddress, getSigningClient, handleError]);
 
   function goToAllowancesEdit(spenderAddress: string) {

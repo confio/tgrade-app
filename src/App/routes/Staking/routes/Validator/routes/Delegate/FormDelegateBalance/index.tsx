@@ -28,6 +28,8 @@ export default function FormDelegateBalance({
   const [maxAmount, setMaxAmount] = useState(0);
 
   useEffect(() => {
+    let mounted = true;
+
     (async function updateMaxAmount() {
       const stakingBalance = balance.find((coin) => coin.denom === config.stakingToken);
       const stakingDecimals = config.coinMap[config.stakingToken].fractionalDigits;
@@ -35,8 +37,12 @@ export default function FormDelegateBalance({
         ? Decimal.fromAtomics(stakingBalance.amount, stakingDecimals).toFloatApproximation()
         : 0;
 
-      setMaxAmount(maxAmount);
+      if (mounted) setMaxAmount(maxAmount);
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [balance, config.coinMap, config.stakingToken]);
 
   const delegateBalanceValidationSchema = Yup.object().shape({

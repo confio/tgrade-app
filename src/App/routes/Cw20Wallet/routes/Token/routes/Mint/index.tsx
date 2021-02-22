@@ -35,6 +35,7 @@ export default function Mint(): JSX.Element {
   const [mintCap, setMintCap] = useState<string>();
 
   useEffect(() => {
+    let mounted = true;
     const cw20Contract = CW20(client).use(contractAddress);
 
     (async function updateCw20TokenAndMintCap() {
@@ -43,11 +44,15 @@ export default function Mint(): JSX.Element {
         handleError(new Error(`No CW20 token at address: ${contractAddress}`));
         return;
       }
-      setCw20Token(cw20Token);
+      if (mounted) setCw20Token(cw20Token);
 
       const { cap: mintCap } = await cw20Contract.minter(address);
-      setMintCap(mintCap);
+      if (mounted) setMintCap(mintCap);
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [address, client, contractAddress, handleError]);
 
   async function mintTokensAction(values: FormMintTokensFields) {

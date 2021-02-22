@@ -29,17 +29,23 @@ export function useStakingValidator(validatorAddress: string): StakingValidator 
   const [validator, setValidator] = useState<StakingValidator>();
 
   useEffect(() => {
+    let mounted = true;
+
     (async function updateValidator() {
       try {
         const { validator } = await getQueryClient().staking.unverified.validator(validatorAddress);
         if (!validator) {
           throw new Error(`No validator found with address: ${validatorAddress}`);
         }
-        setValidator(validator);
+        if (mounted) setValidator(validator);
       } catch (error) {
         handleError(error);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [getQueryClient, handleError, validatorAddress]);
 
   return validator;

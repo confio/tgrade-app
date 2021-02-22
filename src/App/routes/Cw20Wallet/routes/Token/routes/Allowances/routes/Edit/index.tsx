@@ -36,6 +36,7 @@ export default function Edit(): JSX.Element {
   const [allowanceAmount, setAllowanceAmount] = useState("0");
 
   useEffect(() => {
+    let mounted = true;
     const cw20Contract = CW20(client).use(contractAddress);
 
     (async function updateCw20TokenAndAllowance() {
@@ -45,10 +46,14 @@ export default function Edit(): JSX.Element {
         return;
       }
 
-      setCw20Token(cw20Token);
+      if (mounted) setCw20Token(cw20Token);
       const { allowance } = await cw20Contract.allowance(address, spenderAddress);
-      setAllowanceAmount(allowance);
+      if (mounted) setAllowanceAmount(allowance);
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [address, client, contractAddress, handleError, spenderAddress]);
 
   async function submitChangeAmount(values: FormChangeAmountFields): Promise<void> {

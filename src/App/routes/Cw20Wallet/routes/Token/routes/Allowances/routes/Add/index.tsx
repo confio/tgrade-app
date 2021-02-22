@@ -40,6 +40,7 @@ export default function Add(): JSX.Element {
   const [cw20Token, setCw20Token] = useState<Cw20Token>();
 
   useEffect(() => {
+    let mounted = true;
     const cw20Contract = CW20(client).use(contractAddress);
 
     (async function updateCw20Token() {
@@ -49,8 +50,12 @@ export default function Add(): JSX.Element {
         return;
       }
 
-      setCw20Token(cw20Token);
+      if (mounted) setCw20Token(cw20Token);
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [address, client, contractAddress, handleError]);
 
   async function submitAddAllowance(values: FormAddAllowanceFields): Promise<void> {
