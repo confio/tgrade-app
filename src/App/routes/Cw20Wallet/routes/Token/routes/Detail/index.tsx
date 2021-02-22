@@ -147,22 +147,22 @@ export default function Detail(): JSX.Element {
               <Text>{allowanceToDisplay}</Text>
             </Allowance>
           </AllowanceStack>
-        )}
-        {showSendButton && (
+        ) : null}
+        {showSendButton ? (
           <Button type="primary" onClick={goToSend} disabled={isSendButtonDisabled}>
             Send
           </Button>
-        )}
-        {showAllowancesLink && (
+        ) : null}
+        {showAllowancesLink ? (
           <Button type="primary" onClick={goToAllowances}>
             My allowances
           </Button>
-        )}
-        {showMintLink && (
+        ) : null}
+        {showMintLink ? (
           <Button type="primary" onClick={goToMint}>
             Mint tokens
           </Button>
-        )}
+        ) : null}
       </MainStack>
     </PageLayout>
   );
