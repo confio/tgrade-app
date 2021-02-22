@@ -33,6 +33,8 @@ export default function TokensList(): JSX.Element {
   }, [addContract, getConfig, getSigningClient]);
 
   useEffect(() => {
+    let mounted = true;
+
     const cw20TokenPromises = cw20Contracts.map((contract) => getCw20Token(contract, getAddress()));
 
     (async function updateCw20Tokens() {
@@ -41,8 +43,12 @@ export default function TokensList(): JSX.Element {
         .filter((token): token is Cw20Token => token !== null)
         .sort(cw20TokenCompare);
 
-      setCw20Tokens(sortedNonNullCw20Tokens);
+      if (mounted) setCw20Tokens(sortedNonNullCw20Tokens);
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [cw20Contracts, getAddress]);
 
   function goTokenDetail(tokenAddress: string) {

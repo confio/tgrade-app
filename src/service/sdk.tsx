@@ -136,18 +136,26 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
   const [value, setValue] = useState<CosmWasmContextType>(readyContext);
 
   useEffect(() => {
+    let mounted = true;
+
     (async function updateConfigAndQueryClient(): Promise<void> {
       try {
         const queryClient = await createQueryClient(config.rpcUrl);
-        setValue((prevValue) => ({
-          ...prevValue,
-          getConfig: () => config,
-          getQueryClient: () => queryClient,
-        }));
+        if (mounted) {
+          setValue((prevValue) => ({
+            ...prevValue,
+            getConfig: () => config,
+            getQueryClient: () => queryClient,
+          }));
+        }
       } catch (error) {
         handleError(error);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [config, handleError]);
 
   const delegateTokens = useCallback(
@@ -230,30 +238,46 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
 
   useEffect(() => {
     if (!signer) return;
+    let mounted = true;
 
     (async function updateSignerAndSigningClient(): Promise<void> {
       try {
         const client = await createSigningClient(config, signer);
-        setSigningClient(client);
-        setValue((prevValue) => ({ ...prevValue, getSigner: () => signer, getSigningClient: () => client }));
+        if (mounted) setSigningClient(client);
+        if (mounted) {
+          setValue((prevValue) => ({
+            ...prevValue,
+            getSigner: () => signer,
+            getSigningClient: () => client,
+          }));
+        }
       } catch (error) {
         handleError(error);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [config, handleError, signer]);
 
   useEffect(() => {
     if (!signer) return;
+    let mounted = true;
 
     (async function updateAddress(): Promise<void> {
       try {
         const address = (await signer.getAccounts())[0].address;
-        setAddress(address);
-        setValue((prevValue) => ({ ...prevValue, getAddress: () => address }));
+        if (mounted) setAddress(address);
+        if (mounted) setValue((prevValue) => ({ ...prevValue, getAddress: () => address }));
       } catch (error) {
         handleError(error);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [handleError, signer]);
 
   const [initialized, setInitialized] = useState(false);
@@ -277,6 +301,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
 
   useEffect(() => {
     if (!initialized) return;
+    let mounted = true;
 
     (async function hitFaucetAndInitialize(): Promise<void> {
       const balance = await getBalance();
@@ -284,13 +309,19 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         await hitFaucet();
       }
 
-      setValue((prevValue) => ({
-        ...prevValue,
-        initialized: true,
-        init: () => {},
-        clear,
-      }));
+      if (mounted) {
+        setValue((prevValue) => ({
+          ...prevValue,
+          initialized: true,
+          init: () => {},
+          clear,
+        }));
+      }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [clear, config.feeToken, getBalance, hitFaucet, initialized]);
 
   return <CosmWasmContext.Provider value={value}>{children}</CosmWasmContext.Provider>;

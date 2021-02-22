@@ -23,8 +23,10 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
   const [currentBalance, setCurrentBalance] = useState<readonly Coin[]>([]);
 
   useEffect(() => {
+    let mounted = true;
+
     if (amAllowed) {
-      setCurrentBalance(balance);
+      if (mounted) setCurrentBalance(balance);
     } else {
       const balance: Coin[] = [];
       (async function updateCurrentBalance(): Promise<void> {
@@ -37,10 +39,14 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
           balance.length = 0;
           handleError(error);
         } finally {
-          setCurrentBalance(balance);
+          if (mounted) setCurrentBalance(balance);
         }
       })();
     }
+
+    return () => {
+      mounted = false;
+    };
   }, [amAllowed, balance, config.coinMap, currentAddress, getSigningClient, handleError]);
 
   const history = useHistory();

@@ -31,6 +31,8 @@ export default function Validators(): JSX.Element {
   const [validatorsData, setValidatorsData] = useState<readonly ValidatorData[]>([]);
 
   useEffect(() => {
+    let mounted = true;
+
     (async function updateValidatorsData() {
       const { validators } = await getQueryClient().staking.unverified.validators("BOND_STATUS_BONDED");
       if (!validators) {
@@ -51,8 +53,12 @@ export default function Validators(): JSX.Element {
         throw new Error("No bonded validators found");
       }
 
-      setValidatorsData(validatorsData);
+      if (mounted) setValidatorsData(validatorsData);
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [getQueryClient]);
 
   function goToValidator(address: string) {

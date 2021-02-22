@@ -32,6 +32,7 @@ export default function Detail(): JSX.Element {
   const [isUserMinter, setUserMinter] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     const cw20Contract = CW20(client).use(contractAddress);
 
     (async function updateCw20TokenAndAllowance() {
@@ -44,33 +45,42 @@ export default function Detail(): JSX.Element {
       if (allowingAddress) {
         try {
           const { allowance: amount } = await cw20Contract.allowance(allowingAddress, address);
-          setCw20Token({ ...cw20Token, amount });
-          setAllowance(amount);
+          if (mounted) setCw20Token({ ...cw20Token, amount });
+          if (mounted) setAllowance(amount);
         } catch (error) {
           handleError(error);
         }
       } else {
-        setCw20Token(cw20Token);
-        setAllowance(undefined);
+        if (mounted) setCw20Token(cw20Token);
+        if (mounted) setAllowance(undefined);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [address, allowingAddress, client, contractAddress, handleError]);
 
   useEffect(() => {
+    let mounted = true;
     const cw20Contract = CW20(client).use(contractAddress);
 
     (async function updateIsUserMinter() {
       try {
         const minterResponse = await cw20Contract.minter(address);
         if (minterResponse?.minter === address) {
-          setUserMinter(true);
+          if (mounted) setUserMinter(true);
         } else {
-          setUserMinter(false);
+          if (mounted) setUserMinter(false);
         }
       } catch (error) {
         handleError(error);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [address, client, contractAddress, handleError]);
 
   async function updateAllowance(allowingAddress?: string) {

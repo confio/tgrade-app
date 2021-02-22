@@ -34,6 +34,8 @@ export default function Rewards(): JSX.Element {
   const [rewards, setRewards] = useState<readonly Coin[]>([]);
 
   useEffect(() => {
+    let mounted = true;
+
     (async function updateRewards() {
       try {
         const { rewards } = await getQueryClient().distribution.unverified.delegationRewards(
@@ -49,11 +51,15 @@ export default function Rewards(): JSX.Element {
               .filter((coin) => coin.amount.length && coin.denom.length)
           : [];
 
-        setRewards(nonNullRewards);
+        if (mounted) setRewards(nonNullRewards);
       } catch {
         // Do nothing because it throws if delegation does not exist, i.e balance = 0
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [delegatorAddress, getQueryClient, validatorAddress]);
 
   async function submitWithdrawRewards() {

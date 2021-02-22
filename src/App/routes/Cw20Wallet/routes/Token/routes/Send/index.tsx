@@ -36,6 +36,7 @@ export default function Send(): JSX.Element {
   const [cw20Token, setCw20Token] = useState<Cw20Token>();
 
   useEffect(() => {
+    let mounted = true;
     const cw20Contract = CW20(client).use(contractAddress);
 
     (async function updateCw20Token() {
@@ -48,14 +49,18 @@ export default function Send(): JSX.Element {
       if (allowingAddress) {
         try {
           const { allowance: amount } = await cw20Contract.allowance(allowingAddress, address);
-          setCw20Token({ ...cw20Token, amount });
+          if (mounted) setCw20Token({ ...cw20Token, amount });
         } catch (error) {
           handleError(error);
         }
       } else {
-        setCw20Token(cw20Token);
+        if (mounted) setCw20Token(cw20Token);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [address, allowingAddress, client, contractAddress, handleError]);
 
   async function sendTokensAction(values: FormSendTokensFields) {

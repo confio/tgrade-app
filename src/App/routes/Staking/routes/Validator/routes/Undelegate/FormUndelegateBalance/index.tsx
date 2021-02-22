@@ -36,6 +36,7 @@ export default function FormUndelegateBalance({
   });
 
   useEffect(() => {
+    let mounted = true;
     const delegatorAddress = getAddress();
     const config = getConfig();
 
@@ -51,11 +52,15 @@ export default function FormUndelegateBalance({
           config.coinMap[config.stakingToken].fractionalDigits,
         );
 
-        setBalance(balanceDecimal);
+        if (mounted) setBalance(balanceDecimal);
       } catch {
         // Do nothing because it throws if delegation does not exist, i.e balance = 0
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [getAddress, getConfig, getQueryClient, validatorAddress]);
 
   return (

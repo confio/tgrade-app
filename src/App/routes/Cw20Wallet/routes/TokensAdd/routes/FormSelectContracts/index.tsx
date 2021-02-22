@@ -31,6 +31,8 @@ export default function FormSelectContracts(): JSX.Element {
   const [selectedContractAddresses, setSelectedContractAddresses] = useState<string[]>([]);
 
   useEffect(() => {
+    let mounted = true;
+
     (async function updateContracts() {
       try {
         const numCodeId = Number.parseInt(codeId, 10);
@@ -39,11 +41,15 @@ export default function FormSelectContracts(): JSX.Element {
         }
 
         const contracts = await client.getContracts(numCodeId);
-        setContracts(contracts);
+        if (mounted) setContracts(contracts);
       } catch (error) {
         handleError(error);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [client, codeId, handleError]);
 
   async function submitSelectContracts() {

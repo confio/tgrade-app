@@ -29,6 +29,8 @@ export default function Detail(): JSX.Element {
   const [stakedTokens, setStakedTokens] = useState<Decimal>(Decimal.fromUserInput("0", 0));
 
   useEffect(() => {
+    let mounted = true;
+
     (async function updateStakedTokens() {
       try {
         const { delegationResponse } = await getQueryClient().staking.unverified.delegation(
@@ -40,10 +42,14 @@ export default function Detail(): JSX.Element {
           config.coinMap[config.stakingToken].fractionalDigits,
         );
 
-        setStakedTokens(stakedTokens);
+        if (mounted) setStakedTokens(stakedTokens);
       } catch {
         // Do nothing because it throws if delegation does not exist, i.e balance = 0
       }
+
+      return () => {
+        mounted = false;
+      };
     })();
   }, [config.coinMap, config.stakingToken, getAddress, getQueryClient, validatorAddress]);
 

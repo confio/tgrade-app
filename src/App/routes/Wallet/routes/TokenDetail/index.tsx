@@ -34,16 +34,22 @@ export default function TokenDetail(): JSX.Element {
   const config = getConfig();
 
   useEffect(() => {
+    let mounted = true;
+
     (async function updateTokenAmount(): Promise<void> {
       try {
         const coin = balance.find((coin) => coin.denom === tokenName);
         const amount = coin?.amount ?? "0";
-        setTokenAmount(amount);
+        if (mounted) setTokenAmount(amount);
       } catch (error) {
-        setTokenAmount("0");
+        if (mounted) setTokenAmount("0");
         handleError(error);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [balance, handleError, tokenName]);
 
   async function sendTokensAction(values: FormSendTokensValues): Promise<void> {
