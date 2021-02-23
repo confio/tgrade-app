@@ -22,11 +22,11 @@ export default function Token(): JSX.Element {
       <Route exact path={`${basePath}${cw20WalletPaths.mint}`}>
         <Mint />
       </Route>
-      <Route exact path={`${basePath}${cw20WalletParams.allowingAddress}`}>
-        <Detail />
-      </Route>
       <Route exact path={`${basePath}${cw20WalletParams.allowingAddress}${cw20WalletPaths.send}`}>
         <Send />
+      </Route>
+      <Route exact path={`${basePath}${cw20WalletParams.allowingAddress}`}>
+        <Detail />
       </Route>
     </Switch>
   );
