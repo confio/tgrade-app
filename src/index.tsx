@@ -8,7 +8,7 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
 Sentry.init({
-  dsn: process.env.NODE_ENV === "production" ? credentials.sentry.dsn : undefined,
+  dsn: credentials.sentry.dsn,
   integrations: [new Integrations.BrowserTracing()],
   // Sample rate to determine trace sampling (percentage of traces sent)
   // 0.0 = send no traces 1.0 = send all traces
