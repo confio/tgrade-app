@@ -19,6 +19,7 @@ export default function FormSearchName({
   return (
     <Formik
       initialValues={{ address: currentAddress }}
+      enableReinitialize
       validationSchema={getSearchAddressValidationSchema(getConfig().addressPrefix)}
       onSubmit={(values) => {
         setCurrentAddress(values.address);

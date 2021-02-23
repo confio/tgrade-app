@@ -4,7 +4,7 @@ import { PageLayout } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useHistory, useParams, useRouteMatch } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import FormSearchAllowing from "./FormSearchAllowing";
@@ -18,8 +18,8 @@ interface DetailParams {
 }
 
 export default function Detail(): JSX.Element {
-  const { url: pathTokenDetailMatched } = useRouteMatch();
   const { contractAddress, allowingAddress: allowingAddressParam }: DetailParams = useParams();
+  const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`;
   const history = useHistory();
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
@@ -101,15 +101,16 @@ export default function Detail(): JSX.Element {
   }
 
   function goToSend() {
-    history.push(`${pathTokenDetailMatched}${paths.cw20Wallet.send}`);
+    const paramAllowing = allowingAddress ? `/${allowingAddress}` : "";
+    history.push(`${pathTokenDetail}${paramAllowing}${paths.cw20Wallet.send}`);
   }
 
   function goToAllowances() {
-    history.push(`${pathTokenDetailMatched}${paths.cw20Wallet.allowances}`);
+    history.push(`${pathTokenDetail}${paths.cw20Wallet.allowances}`);
   }
 
   function goToMint() {
-    history.push(`${pathTokenDetailMatched}${paths.cw20Wallet.mint}`);
+    history.push(`${pathTokenDetail}${paths.cw20Wallet.mint}`);
   }
 
   const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
@@ -133,7 +134,12 @@ export default function Detail(): JSX.Element {
           <Text>{" tokens"}</Text>
         </Amount>
         <FormSearchAllowing initialAddress={allowingAddress} setSearchedAddress={updateAllowance} />
-        {showCurrentAllowance && (
+        {allowingAddress ? (
+          <Button type="default" onClick={() => updateAllowance()}>
+            Back to My Account
+          </Button>
+        ) : null}
+        {showCurrentAllowance ? (
           <AllowanceStack>
             <Divider />
             <Allowance>
@@ -141,22 +147,22 @@ export default function Detail(): JSX.Element {
               <Text>{allowanceToDisplay}</Text>
             </Allowance>
           </AllowanceStack>
-        )}
-        {showSendButton && (
+        ) : null}
+        {showSendButton ? (
           <Button type="primary" onClick={goToSend} disabled={isSendButtonDisabled}>
             Send
           </Button>
-        )}
-        {showAllowancesLink && (
+        ) : null}
+        {showAllowancesLink ? (
           <Button type="primary" onClick={goToAllowances}>
             My allowances
           </Button>
-        )}
-        {showMintLink && (
+        ) : null}
+        {showMintLink ? (
           <Button type="primary" onClick={goToMint}>
             Mint tokens
           </Button>
-        )}
+        ) : null}
       </MainStack>
     </PageLayout>
   );
