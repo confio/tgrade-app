@@ -64,6 +64,7 @@ const musselnet: NetworkConfig = {
     ufrites: { denom: "FRITES", fractionalDigits: 6 },
   },
   gasPrice: 0.025,
+  codeId: 1,
 };
 
 const configs: NetworkConfigs = { local, musselnet };
