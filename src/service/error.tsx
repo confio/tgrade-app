@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import * as React from "react";
 import { createContext, HTMLAttributes, useContext, useState } from "react";
 import { getErrorFromStackTrace } from "utils/errors";
@@ -25,6 +26,7 @@ export default function ErrorProvider({ children }: HTMLAttributes<HTMLOrSVGElem
   const [error, setError] = useState<string>();
 
   function handleError(error: Error): void {
+    Sentry.captureException(error);
     console.error(error);
     setError(getErrorFromStackTrace(error));
   }

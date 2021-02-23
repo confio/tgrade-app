@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+# Sentry issues
+
+When a production deployment of this app throws an error, it's captured by [Sentry](https://sentry.io/welcome/). Every captured error can be seen on this dashboard: https://sentry.io/organizations/confio/issues/?project=5647042
+
 ## Available Scripts
 
 In the project directory, you can run:
