@@ -16,13 +16,12 @@ export const MainStack = styled(Stack)`
 `;
 
 export const Amount = styled.div`
-  span {
-    font-size: var(--s4);
-    font-weight: bolder;
-    overflow-wrap: anywhere;
+  span.ant-typography {
+    font-size: var(--s2);
+    font-family: var(--ff-iceland);
   }
 
-  span + span {
+  span.ant-typography + span.ant-typography {
     font-size: var(--s1);
   }
 `;
