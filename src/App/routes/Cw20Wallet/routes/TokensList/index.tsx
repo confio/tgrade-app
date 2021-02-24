@@ -79,10 +79,7 @@ export default function TokensList(): JSX.Element {
           })}
         </TokenStack>
         <Link to={`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`}>
-          <Button type="primary">Add other tokens</Button>
-        </Link>
-        <Link to={`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensNew}`}>
-          <Button type="primary">Create new token</Button>
+          <Button type="primary">Add Another</Button>
         </Link>
       </MainStack>
     </PageLayout>
