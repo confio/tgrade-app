@@ -27,7 +27,7 @@ export interface FormCreateTokenFields {
   readonly mintCap?: string;
 }
 
-export default function TokenNew(): JSX.Element {
+export default function New(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const history = useHistory();
@@ -88,7 +88,7 @@ export default function TokenNew(): JSX.Element {
           success: false,
           message: "Token creation failed:",
           error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensNew}`,
+          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAddNew}`,
         } as OperationResultState,
       });
     }
@@ -97,9 +97,9 @@ export default function TokenNew(): JSX.Element {
   return loading ? (
     <Loading loadingText={"Creating token..."} />
   ) : (
-    <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}` }}>
+    <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}` }}>
       <MainStack>
-        <Title>New token</Title>
+        <Title>Add New Token</Title>
         <Formik
           initialValues={{
             symbol: "",

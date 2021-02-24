@@ -31,13 +31,15 @@ export const FormField = styled.div`
 
   span.ant-typography {
     font-family: var(--ff-iceland);
-    font-size: var(--s1);
-    width: 30%;
+    font-size: var(--s2);
+    flex-basis: 30%;
+    flex-shrink: 0;
     word-wrap: break-word;
     text-align: left;
   }
 
   .ant-form-item {
-    width: 70%;
+    flex-basis: 70%;
+    flex-shrink: 1;
   }
 `;
