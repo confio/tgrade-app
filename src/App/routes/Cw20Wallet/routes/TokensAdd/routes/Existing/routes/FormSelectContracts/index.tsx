@@ -18,7 +18,7 @@ interface FormSelectContractsParams {
 }
 
 export default function FormSelectContracts(): JSX.Element {
-  const { url: pathTokensAddMatched } = useRouteMatch();
+  const { url: pathExisting } = useRouteMatch();
   const { codeId } = useParams<FormSelectContractsParams>();
   const pathTokens = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}`;
   const history = useHistory();
@@ -77,7 +77,7 @@ export default function FormSelectContracts(): JSX.Element {
           success: false,
           message: "Failed to add selected tokens",
           error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: pathTokensAddMatched,
+          customButtonActionPath: pathExisting,
         } as OperationResultState,
       });
     }

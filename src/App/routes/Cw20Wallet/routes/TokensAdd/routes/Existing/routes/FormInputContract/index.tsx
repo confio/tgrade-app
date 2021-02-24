@@ -16,7 +16,7 @@ interface FormInputContractFields {
 }
 
 export default function FormInputContract(): JSX.Element {
-  const { url: pathTokensAddMatched } = useRouteMatch();
+  const { url: pathExisting } = useRouteMatch();
   const history = useHistory();
   const { handleError } = useError();
   const { getConfig, getSigningClient } = useSdk();
@@ -25,7 +25,7 @@ export default function FormInputContract(): JSX.Element {
   async function submitInputContract({ codeIdOrAddress }: FormInputContractFields) {
     const codeId = Number.parseInt(codeIdOrAddress, 10);
     if (!Number.isNaN(codeId)) {
-      history.push(`${pathTokensAddMatched}/${codeId}`);
+      history.push(`${pathExisting}/${codeId}`);
       return;
     }
 
@@ -55,7 +55,7 @@ export default function FormInputContract(): JSX.Element {
           success: false,
           message: "Failed to add token",
           error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: pathTokensAddMatched,
+          customButtonActionPath: pathExisting,
         } as OperationResultState,
       });
     }
