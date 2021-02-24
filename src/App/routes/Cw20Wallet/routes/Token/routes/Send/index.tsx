@@ -130,7 +130,7 @@ export default function Send(): JSX.Element {
         <Amount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" tokens"}</Text>
+          <Text>{" Tokens"}</Text>
         </Amount>
         <FormSendTokens
           tokenName={cw20Token?.symbol || ""}
