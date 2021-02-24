@@ -24,7 +24,7 @@ export default function Edit(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const { contractAddress, spenderAddress }: EditParams = useParams();
-  const pathAllowances = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}`;
+  const pathAllowance = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}/${spenderAddress}`;
 
   const history = useHistory();
   const { handleError } = useError();
@@ -88,7 +88,7 @@ export default function Edit(): JSX.Element {
             cw20Token?.symbol || ""
           } allowance successfully set to ${newAmount} for ${spenderAddress}`,
           customButtonText: "Allowances",
-          customButtonActionPath: pathAllowances,
+          customButtonActionPath: pathAllowance,
         } as OperationResultState,
       });
     } catch (stackTrace) {
@@ -100,27 +100,35 @@ export default function Edit(): JSX.Element {
           success: false,
           message: "Could not set allowance:",
           error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: pathAllowances,
+          customButtonActionPath: pathAllowance,
         } as OperationResultState,
       });
     }
   }
 
-  const amountToDisplay = Decimal.fromAtomics(allowanceAmount, cw20Token?.decimals ?? 0).toString();
+  const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
+  const [amountInteger, amountDecimal] = amountToDisplay.split(".");
+  const allowanceToDisplay = Decimal.fromAtomics(allowanceAmount || "0", cw20Token?.decimals ?? 0).toString();
+  const [allowanceInteger, allowanceDecimal] = allowanceToDisplay.split(".");
 
   return loading ? (
     <Loading loadingText={`Changing allowance...`} />
   ) : (
-    <PageLayout backButtonProps={{ path: pathAllowances }}>
+    <PageLayout backButtonProps={{ path: pathAllowance }}>
       <MainStack>
-        <Title>Allowance</Title>
+        <Title>Edit Allowance</Title>
         <Text>{spenderAddress}</Text>
         <Amount>
-          <Text>Current</Text>
-          <Text>{amountToDisplay}</Text>
-          <Text>{cw20Token?.symbol || ""}</Text>
+          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+          {amountDecimal && <Text>{amountDecimal}</Text>}
+          <Text>{" Tokens"}</Text>
         </Amount>
-        <FormChangeAmount submitChangeAmount={submitChangeAmount} />
+        <Amount>
+          <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
+          {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
+          <Text>{" Allowance"}</Text>
+        </Amount>
+        <FormChangeAmount tokenName={cw20Token?.symbol || ""} submitChangeAmount={submitChangeAmount} />
       </MainStack>
     </PageLayout>
   );

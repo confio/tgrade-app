@@ -10,26 +10,19 @@ export const MainStack = styled(Stack)`
     margin: 0;
   }
 
-  & > span {
-    font-size: var(--s-1);
+  & > span.ant-typography {
+    font-size: var(--s0);
+    font-family: var(--ff-iceland);
   }
 `;
 
 export const Amount = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-
-  & > * + * {
-    margin-left: var(--s-1);
+  span.ant-typography {
+    font-size: var(--s2);
+    font-family: var(--ff-iceland);
   }
 
-  span {
-    font-size: var(--s-1);
-  }
-
-  span + span {
+  span.ant-typography + span.ant-typography {
     font-size: var(--s1);
-    font-weight: bolder;
   }
 `;
