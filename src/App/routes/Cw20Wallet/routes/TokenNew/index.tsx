@@ -48,7 +48,8 @@ export default function TokenNew(): JSX.Element {
       const decimals = parseInt(values.decimals, 10);
       const amount = Decimal.fromUserInput(values.initialSupply, decimals).toString();
       const cap = values.mintCap ? Decimal.fromUserInput(values.mintCap, decimals).toString() : undefined;
-      const mint: MinterResponse | undefined = values.mint === "none" ? undefined : { minter: address, cap };
+      const canMint = values.mint === "fixed" || values.mint === "unlimited";
+      const mint: MinterResponse | undefined = canMint ? { minter: address, cap } : undefined;
 
       const msg: any = {
         name: values.tokenName,
