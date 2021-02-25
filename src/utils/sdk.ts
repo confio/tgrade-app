@@ -10,7 +10,7 @@ import {
   setupStakingExtension,
   StakingExtension,
 } from "@cosmjs/stargate";
-import { adaptor34, Client as TendermintClient } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import { NetworkConfig } from "config/network";
 
@@ -85,6 +85,6 @@ export async function createSigningClient(
 export async function createQueryClient(
   apiUrl: string,
 ): Promise<QueryClient & StakingExtension & DistributionExtension> {
-  const tmClient = await TendermintClient.connect(apiUrl, adaptor34);
+  const tmClient = await Tendermint34Client.connect(apiUrl);
   return QueryClient.withExtensions(tmClient, setupStakingExtension, setupDistributionExtension);
 }

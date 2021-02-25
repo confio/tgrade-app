@@ -7,11 +7,12 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createQueryClient, createSigningClient } from "utils/sdk";
 import {
-  EncodeMsgDelegate,
-  EncodeMsgUndelegate,
-  EncodeMsgWithdrawDelegatorReward,
   getDelegationFee,
+  MsgDelegate,
+  MsgUndelegate,
+  MsgWithdrawDelegatorReward,
 } from "utils/staking";
+
 import { useError } from "./error";
 
 interface CosmWasmContextType {
@@ -163,9 +164,9 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
       if (!address || !signingClient) return;
 
       const delegatorAddress = address;
-      const delegateMsg: EncodeMsgDelegate = {
+      const delegateMsg = {
         typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
-        value: { delegatorAddress, validatorAddress, amount: delegateAmount },
+        value: MsgDelegate.fromPartial({ delegatorAddress, validatorAddress, amount: delegateAmount }),
       };
 
       const response = await signingClient.signAndBroadcast(
@@ -189,9 +190,9 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
       if (!address || !signingClient) return;
 
       const delegatorAddress = address;
-      const undelegateMsg: EncodeMsgUndelegate = {
+      const undelegateMsg = {
         typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
-        value: { delegatorAddress, validatorAddress, amount: undelegateAmount },
+        value: MsgUndelegate.fromPartial({ delegatorAddress, validatorAddress, amount: undelegateAmount }),
       };
 
       const response = await signingClient.signAndBroadcast(
@@ -215,9 +216,9 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
       if (!address || !signingClient) return;
 
       const delegatorAddress = address;
-      const withdrawRewardsMsg: EncodeMsgWithdrawDelegatorReward = {
+      const withdrawRewardsMsg = {
         typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
-        value: { delegatorAddress, validatorAddress },
+        value: MsgWithdrawDelegatorReward.fromPartial({ delegatorAddress, validatorAddress }),
       };
 
       const response = await signingClient.signAndBroadcast(
