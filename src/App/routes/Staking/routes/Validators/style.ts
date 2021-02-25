@@ -16,7 +16,7 @@ export const MenuHeader = styled.header`
 
 export const ValidatorStack = styled(Stack)`
   & > * {
-    --gap: 0;
+    --gap: var(--s0);
   }
 `;
 
