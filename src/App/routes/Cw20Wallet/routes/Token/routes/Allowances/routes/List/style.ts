@@ -33,7 +33,7 @@ export const AllowancesStack = styled(Stack)`
     --gap: var(--s0);
   }
 
-  & .ant-btn-primary {
+  & .ant-btn-primary[data-size="large"] {
     display: flex;
     align-items: center;
 
