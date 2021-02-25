@@ -1,19 +1,25 @@
-import { Button } from "antd";
+import { Button, Typography } from "antd";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { setAllowanceValidationSchema } from "utils/formSchemas";
-import { FormStack } from "./style";
+import { FormAmount, FormStack } from "./style";
+
+const { Text } = Typography;
 
 export interface FormChangeAmountFields {
   readonly newAmount: string;
 }
 
 interface FormChangeAmountProps {
+  readonly tokenName: string;
   readonly submitChangeAmount: (values: FormChangeAmountFields) => void;
 }
 
-export default function FormChangeAmount({ submitChangeAmount }: FormChangeAmountProps): JSX.Element {
+export default function FormChangeAmount({
+  tokenName,
+  submitChangeAmount,
+}: FormChangeAmountProps): JSX.Element {
   return (
     <Formik
       initialValues={{ newAmount: "" }}
@@ -23,15 +29,18 @@ export default function FormChangeAmount({ submitChangeAmount }: FormChangeAmoun
       {(formikProps) => (
         <Form>
           <FormStack>
-            <FormItem name="newAmount">
-              <Input name="newAmount" placeholder="Enter new amount" />
-            </FormItem>
+            <FormAmount>
+              <FormItem name="newAmount">
+                <Input name="newAmount" placeholder="Enter new amount" />
+              </FormItem>
+              <Text>{tokenName}</Text>
+            </FormAmount>
             <Button
               type="primary"
               onClick={formikProps.submitForm}
               disabled={!(formikProps.isValid && formikProps.dirty)}
             >
-              Confirm
+              Edit
             </Button>
           </FormStack>
         </Form>

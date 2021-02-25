@@ -104,7 +104,7 @@ export default function Mint(): JSX.Element {
         <Amount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" cap"}</Text>
+          <Text>{" Cap"}</Text>
         </Amount>
         <FormMintTokens
           tokenName={cw20Token?.symbol || ""}

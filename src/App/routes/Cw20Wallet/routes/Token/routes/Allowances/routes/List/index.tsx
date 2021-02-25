@@ -1,21 +1,13 @@
 import { Decimal } from "@cosmjs/math";
-import { Button, Divider, Typography } from "antd";
+import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { AllowanceInfo, CW20, Cw20Token, getCw20Token } from "utils/cw20";
-import editIcon from "./assets/edit.svg";
-import {
-  AllowanceAmountCopy,
-  AllowanceItem,
-  AllowancesStack,
-  Amount,
-  MainStack,
-  TitleAmountStack,
-} from "./style";
+import { AllowancesStack, Amount, MainStack, TitleAmountStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -60,8 +52,8 @@ export default function List(): JSX.Element {
     };
   }, [address, contractAddress, getSigningClient, handleError]);
 
-  function goToAllowancesEdit(spenderAddress: string) {
-    history.push(`${pathAllowancesMatched}${paths.cw20Wallet.edit}/${spenderAddress}`);
+  function goToAllowanceDetail(spenderAddress: string) {
+    history.push(`${pathAllowancesMatched}/${spenderAddress}`);
   }
 
   function goToAllowancesAdd() {
@@ -69,8 +61,16 @@ export default function List(): JSX.Element {
   }
 
   const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
-  const [amountInteger, maybeAmountDecimal] = amountToDisplay.split(".");
-  const amountDecimal = maybeAmountDecimal ?? "";
+  const [amountInteger, amountDecimal] = amountToDisplay.split(".");
+
+  const allowancesToDisplay = allowances
+    .map(({ allowance }) => Decimal.fromAtomics(allowance, cw20Token?.decimals ?? 0))
+    .reduce(
+      (accumulator, currentValue) => accumulator.plus(currentValue),
+      Decimal.fromAtomics("0", cw20Token?.decimals ?? 0),
+    )
+    .toString();
+  const [allowancesInteger, allowancesDecimal] = allowancesToDisplay.split(".");
 
   return (
     <PageLayout
@@ -81,36 +81,26 @@ export default function List(): JSX.Element {
           <Title>Allowances</Title>
           <Amount>
             <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-            <Text>
-              {amountDecimal} {cw20Token?.symbol || ""}
-            </Text>
-            <Text>{" tokens"}</Text>
+            {amountDecimal && <Text>{amountDecimal}</Text>}
+            <Text>{" Tokens"}</Text>
+          </Amount>
+          <Amount>
+            <Text>{`${allowancesInteger}${allowancesDecimal ? "." : ""}`}</Text>
+            {allowancesDecimal && <Text>{allowancesDecimal}</Text>}
+            <Text>{" Allowances"}</Text>
           </Amount>
         </TitleAmountStack>
         <AllowancesStack>
-          {allowances.map((allowanceInfo, index) => {
-            const allowanceToDisplay = Decimal.fromAtomics(
-              allowanceInfo.allowance,
-              cw20Token?.decimals ?? 0,
-            ).toString();
-
-            return (
-              <Fragment key={allowanceInfo.spender}>
-                {index > 0 && <Divider />}
-                <AllowanceItem>
-                  <Text>{allowanceInfo.spender}</Text>
-                  <AllowanceAmountCopy>
-                    <Text>{allowanceToDisplay}</Text>
-                    <img
-                      alt="Edit allowance"
-                      src={editIcon}
-                      onClick={() => goToAllowancesEdit(allowanceInfo.spender)}
-                    />
-                  </AllowanceAmountCopy>
-                </AllowanceItem>
-              </Fragment>
-            );
-          })}
+          {allowances.map((allowanceInfo) => (
+            <Button
+              key={allowanceInfo.spender}
+              data-size="large"
+              type="primary"
+              onClick={() => goToAllowanceDetail(allowanceInfo.spender)}
+            >
+              {allowanceInfo.spender}
+            </Button>
+          ))}
         </AllowancesStack>
         <Button type="primary" onClick={goToAllowancesAdd}>
           Add New

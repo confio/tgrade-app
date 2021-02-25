@@ -13,7 +13,7 @@ import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getAddAllowanceValidationSchema } from "utils/formSchemas";
-import { Amount, FormFieldsStack, FormStack, MainStack } from "./style";
+import { Amount, FormAmount, FormFieldsStack, FormStack, MainStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -109,12 +109,20 @@ export default function Add(): JSX.Element {
     }
   }
 
+  const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
+  const [amountInteger, amountDecimal] = amountToDisplay.split(".");
+
   return loading ? (
     <Loading loadingText={`Adding allowance...`} />
   ) : (
     <PageLayout backButtonProps={{ path: pathAllowances }}>
       <MainStack>
         <Title>Add Allowance</Title>
+        <Amount>
+          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+          {amountDecimal && <Text>{amountDecimal}</Text>}
+          <Text>{" Tokens"}</Text>
+        </Amount>
         <Formik
           initialValues={{ address: "", amount: "" }}
           onSubmit={submitAddAllowance}
@@ -124,22 +132,22 @@ export default function Add(): JSX.Element {
             <Form>
               <FormStack>
                 <FormFieldsStack>
-                  <FormItem name="address">
-                    <Input name="address" placeholder="Enter address" />
-                  </FormItem>
-                  <Amount>
+                  <FormAmount>
                     <FormItem name="amount">
                       <Input name="amount" placeholder="Enter amount" />
                     </FormItem>
                     <Text>{cw20Token?.symbol || ""}</Text>
-                  </Amount>
+                  </FormAmount>
+                  <FormItem name="address">
+                    <Input name="address" placeholder="Enter address" />
+                  </FormItem>
                 </FormFieldsStack>
                 <Button
                   type="primary"
                   onClick={formikProps.submitForm}
                   disabled={!(formikProps.isValid && formikProps.dirty)}
                 >
-                  Confirm
+                  Add
                 </Button>
               </FormStack>
             </Form>

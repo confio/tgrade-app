@@ -1,4 +1,4 @@
-import { Decimal } from "@cosmjs/math";
+import { Decimal, Uint64 } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { Loading } from "App/components/logic";
@@ -27,7 +27,7 @@ export interface FormCreateTokenFields {
   readonly mintCap?: string;
 }
 
-export default function TokenNew(): JSX.Element {
+export default function New(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const history = useHistory();
@@ -46,8 +46,14 @@ export default function TokenNew(): JSX.Element {
       }
 
       const decimals = parseInt(values.decimals, 10);
-      const amount = Decimal.fromUserInput(values.initialSupply, decimals).toString();
-      const cap = values.mintCap ? Decimal.fromUserInput(values.mintCap, decimals).toString() : undefined;
+      const amount = Decimal.fromUserInput(values.initialSupply, decimals)
+        .multiply(Uint64.fromNumber(10 ** decimals))
+        .toString();
+      const cap = values.mintCap
+        ? Decimal.fromUserInput(values.mintCap, decimals)
+            .multiply(Uint64.fromNumber(10 ** decimals))
+            .toString()
+        : undefined;
       const canMint = values.mint === "fixed" || values.mint === "unlimited";
       const mint: MinterResponse | undefined = canMint ? { minter: address, cap } : undefined;
 
@@ -88,7 +94,7 @@ export default function TokenNew(): JSX.Element {
           success: false,
           message: "Token creation failed:",
           error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensNew}`,
+          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAddNew}`,
         } as OperationResultState,
       });
     }
@@ -97,9 +103,9 @@ export default function TokenNew(): JSX.Element {
   return loading ? (
     <Loading loadingText={"Creating token..."} />
   ) : (
-    <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}` }}>
+    <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}` }}>
       <MainStack>
-        <Title>New token</Title>
+        <Title>Add New Token</Title>
         <Formik
           initialValues={{
             symbol: "",

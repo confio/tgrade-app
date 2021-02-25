@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { Button, Divider, Typography } from "antd";
+import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -8,7 +8,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import FormSearchAllowing from "./FormSearchAllowing";
-import { Allowance, AllowanceStack, Amount, MainStack } from "./style";
+import { Amount, MainStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -45,7 +45,7 @@ export default function Detail(): JSX.Element {
       if (allowingAddress) {
         try {
           const { allowance: amount } = await cw20Contract.allowance(allowingAddress, address);
-          if (mounted) setCw20Token({ ...cw20Token, amount });
+          if (mounted) setCw20Token(cw20Token);
           if (mounted) setAllowance(amount);
         } catch (error) {
           handleError(error);
@@ -115,14 +115,9 @@ export default function Detail(): JSX.Element {
 
   const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
   const [amountInteger, amountDecimal] = amountToDisplay.split(".");
-
   const allowanceToDisplay = Decimal.fromAtomics(allowance || "0", cw20Token?.decimals ?? 0).toString();
-
-  const showCurrentAllowance = !!allowance && allowance !== "0";
-  const showSendButton = !allowance || allowance !== "0";
-  const isSendButtonDisabled = !cw20Token || cw20Token.amount === "0";
-  const showAllowancesLink = !allowingAddress;
-  const showMintLink = isUserMinter;
+  const [allowanceInteger, allowanceDecimal] = allowanceToDisplay.split(".");
+  const isSendButtonDisabled = allowance ? allowance === "0" : cw20Token?.amount === "0";
 
   return (
     <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}` }}>
@@ -131,36 +126,32 @@ export default function Detail(): JSX.Element {
         <Amount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" tokens"}</Text>
+          <Text>{" Tokens"}</Text>
         </Amount>
+        {allowance ? (
+          <Amount>
+            <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
+            {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
+            <Text>{" Allowance"}</Text>
+          </Amount>
+        ) : null}
+        <Button type="primary" onClick={goToSend} disabled={isSendButtonDisabled}>
+          Send Tokens
+        </Button>
+        {!allowingAddress && isUserMinter ? (
+          <Button type="primary" onClick={goToMint}>
+            Mint Tokens
+          </Button>
+        ) : null}
+        {!allowingAddress ? (
+          <Button type="primary" onClick={goToAllowances}>
+            My Allowances
+          </Button>
+        ) : null}
         <FormSearchAllowing initialAddress={allowingAddress} setSearchedAddress={updateAllowance} />
         {allowingAddress ? (
           <Button type="default" onClick={() => updateAllowance()}>
             Back to My Account
-          </Button>
-        ) : null}
-        {showCurrentAllowance ? (
-          <AllowanceStack>
-            <Divider />
-            <Allowance>
-              <Text>Your allowance</Text>
-              <Text>{allowanceToDisplay}</Text>
-            </Allowance>
-          </AllowanceStack>
-        ) : null}
-        {showSendButton ? (
-          <Button type="primary" onClick={goToSend} disabled={isSendButtonDisabled}>
-            Send
-          </Button>
-        ) : null}
-        {showAllowancesLink ? (
-          <Button type="primary" onClick={goToAllowances}>
-            My allowances
-          </Button>
-        ) : null}
-        {showMintLink ? (
-          <Button type="primary" onClick={goToMint}>
-            Mint tokens
           </Button>
         ) : null}
       </MainStack>

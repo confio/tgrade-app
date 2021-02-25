@@ -55,10 +55,11 @@ describe("should have a happy path for", () => {
     const tokenSymbol = "TST";
     const tokenName = "TST coin";
     const initialSupply = "1000000000";
+    const initialSupplyToDisplay = "1000000000000000";
     const mintCapAmount = "2000000000";
-    const myTstBalance = "1000";
-    const mintMoreAmount = "500";
-    const tstAmount = "700";
+    const myTstBalance = "1000000000";
+    const mintMoreAmount = "500000000";
+    const tstAmount = "700000000";
 
     render(<App />);
 
@@ -67,7 +68,8 @@ describe("should have a happy path for", () => {
     userEvent.click(await screen.findByText(/cw20 wallet/i, undefined, { timeout: 10_000 }));
 
     // Create new token
-    userEvent.click(await screen.findByText(/create new token/i));
+    userEvent.click(await screen.findByRole("button", { name: /add another/i }));
+    userEvent.click(await screen.findByRole("button", { name: /new/i }));
     const tokenSymbolInput = screen.getByPlaceholderText(/enter symbol/i) as HTMLInputElement;
     await userEvent.type(tokenSymbolInput, tokenSymbol, { delay: 1 });
     const tokenNameInput = screen.getByPlaceholderText(/enter token name/i) as HTMLInputElement;
@@ -96,7 +98,7 @@ describe("should have a happy path for", () => {
     );
     await waitFor(() => expect(createButton).not.toBeDisabled());
     userEvent.click(createButton);
-    await screen.findByText(`${initialSupply} ${tokenName} successfully created`, undefined, {
+    await screen.findByText(`${initialSupplyToDisplay} ${tokenName} successfully created`, undefined, {
       timeout: 10_000,
     });
 
@@ -104,7 +106,7 @@ describe("should have a happy path for", () => {
     userEvent.click(screen.getByRole("button", { name: /token detail/i }));
     await screen.findByText(/tst/i);
     screen.getByText(myTstBalance);
-    screen.getByText("tokens");
+    screen.getByText("Tokens");
 
     // Get my account address
     userEvent.click(screen.getByText(/account/i));
@@ -129,8 +131,8 @@ describe("should have a happy path for", () => {
     );
     userEvent.click(screen.getByRole("button", { name: /token detail/i }));
     await screen.findByText(/tst/i);
-    screen.getByText("1500");
-    screen.getByText("tokens");
+    screen.getByText("1500000000");
+    screen.getByText("Tokens");
 
     // Send 700 to another address
     userEvent.click(screen.getByRole("button", { name: /send/i }));
@@ -150,8 +152,8 @@ describe("should have a happy path for", () => {
     // Go to token detail and check my new balance
     userEvent.click(screen.getByRole("button", { name: /token detail/i }));
     await screen.findByText(/tst/i);
-    screen.getByText("800");
-    screen.getByText("tokens");
+    screen.getByText("800000000");
+    screen.getByText("Tokens");
   }, 75_000);
 
   test("staking", async () => {

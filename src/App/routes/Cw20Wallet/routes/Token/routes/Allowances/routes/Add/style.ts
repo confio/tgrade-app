@@ -11,6 +11,17 @@ export const MainStack = styled(Stack)`
   }
 `;
 
+export const Amount = styled.div`
+  span.ant-typography {
+    font-size: var(--s2);
+    font-family: var(--ff-iceland);
+  }
+
+  span.ant-typography + span.ant-typography {
+    font-size: var(--s1);
+  }
+`;
+
 export const FormStack = styled(Stack)`
   & > * {
     --gap: var(--s7);
@@ -27,12 +38,16 @@ export const FormFieldsStack = styled(Stack)`
   }
 `;
 
-export const Amount = styled.div`
+export const FormAmount = styled.div`
   display: flex;
   align-items: baseline;
 
-  span {
-    margin-left: var(--s1);
+  .ant-form-item {
+    flex-grow: 1;
+  }
+
+  span.ant-typography {
+    margin-left: var(--s0);
     font-family: var(--ff-iceland);
     font-size: var(--s1);
   }

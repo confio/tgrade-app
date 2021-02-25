@@ -1,30 +1,30 @@
 import { Decimal } from "@cosmjs/math";
-import { Typography } from "antd";
+import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
-import FormChangeAmount, { FormChangeAmountFields } from "./FormChangeAmount";
 import { Amount, MainStack } from "./style";
 
 const { Title, Text } = Typography;
 
-interface EditParams {
+interface DetailParams {
   readonly contractAddress: string;
   readonly spenderAddress: string;
 }
 
-export default function Edit(): JSX.Element {
+export default function Detail(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
-  const { contractAddress, spenderAddress }: EditParams = useParams();
-  const pathAllowance = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}/${spenderAddress}`;
+  const { url: pathAllowancesMatched } = useRouteMatch();
+  const { contractAddress, spenderAddress }: DetailParams = useParams();
+  const pathAllowances = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}`;
 
   const history = useHistory();
   const { handleError } = useError();
@@ -56,39 +56,25 @@ export default function Edit(): JSX.Element {
     };
   }, [address, client, contractAddress, handleError, spenderAddress]);
 
-  async function submitChangeAmount(values: FormChangeAmountFields): Promise<void> {
-    setLoading(true);
+  function goToAllowancesEdit() {
+    history.push(`${pathAllowancesMatched}${paths.cw20Wallet.edit}`);
+  }
 
-    const { newAmount } = values;
-    const cw20Contract = CW20(getSigningClient()).use(contractAddress);
+  async function submitRemove() {
+    setLoading(true);
+    const cw20Contract = CW20(client).use(contractAddress);
 
     try {
-      const decNewAmount = Decimal.fromUserInput(newAmount, cw20Token?.decimals ?? 0);
-      const decCurrentAmount = Decimal.fromAtomics(allowanceAmount, cw20Token?.decimals ?? 0);
-
-      if (decNewAmount.isGreaterThan(decCurrentAmount)) {
-        await cw20Contract.increaseAllowance(
-          address,
-          spenderAddress,
-          decNewAmount.minus(decCurrentAmount).atomics,
-        );
-      } else {
-        await cw20Contract.decreaseAllowance(
-          address,
-          spenderAddress,
-          decCurrentAmount.minus(decNewAmount).atomics,
-        );
-      }
+      const { allowance } = await cw20Contract.allowance(address, spenderAddress);
+      await cw20Contract.decreaseAllowance(address, spenderAddress, allowance);
 
       history.push({
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `${
-            cw20Token?.symbol || ""
-          } allowance successfully set to ${newAmount} for ${spenderAddress}`,
+          message: `${cw20Token?.symbol || ""} allowance successfully removed for ${spenderAddress}`,
           customButtonText: "Allowances",
-          customButtonActionPath: pathAllowance,
+          customButtonActionPath: pathAllowances,
         } as OperationResultState,
       });
     } catch (stackTrace) {
@@ -98,37 +84,35 @@ export default function Edit(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Could not set allowance:",
+          message: "Could not remove allowance:",
           error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: pathAllowance,
+          customButtonActionPath: pathAllowancesMatched,
         } as OperationResultState,
       });
     }
   }
 
-  const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
-  const [amountInteger, amountDecimal] = amountToDisplay.split(".");
   const allowanceToDisplay = Decimal.fromAtomics(allowanceAmount || "0", cw20Token?.decimals ?? 0).toString();
   const [allowanceInteger, allowanceDecimal] = allowanceToDisplay.split(".");
 
   return loading ? (
-    <Loading loadingText={`Changing allowance...`} />
+    <Loading loadingText={`Removing allowance...`} />
   ) : (
-    <PageLayout backButtonProps={{ path: pathAllowance }}>
+    <PageLayout backButtonProps={{ path: pathAllowances }}>
       <MainStack>
-        <Title>Edit Allowance</Title>
-        <Text>{spenderAddress}</Text>
-        <Amount>
-          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-          {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" Tokens"}</Text>
-        </Amount>
+        <Title>{`${cw20Token?.symbol || ""} Allowance`}</Title>
         <Amount>
           <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
           {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-          <Text>{" Allowance"}</Text>
+          <Text>{" Tokens"}</Text>
         </Amount>
-        <FormChangeAmount tokenName={cw20Token?.symbol || ""} submitChangeAmount={submitChangeAmount} />
+        <Text>{spenderAddress}</Text>
+        <Button type="primary" onClick={() => goToAllowancesEdit()}>
+          Edit
+        </Button>
+        <Button type="primary" onClick={submitRemove}>
+          Remove
+        </Button>
       </MainStack>
     </PageLayout>
   );

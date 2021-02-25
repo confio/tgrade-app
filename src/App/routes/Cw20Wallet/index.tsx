@@ -2,7 +2,6 @@ import { paths } from "App/paths";
 import * as React from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import Token from "./routes/Token";
-import TokenNew from "./routes/TokenNew";
 import TokensAdd from "./routes/TokensAdd";
 import TokensList from "./routes/TokensList";
 
@@ -22,11 +21,8 @@ export default function Cw20Wallet(): JSX.Element {
       <Route exact path={`${basePath}${cw20WalletPaths.tokens}`}>
         <TokensList />
       </Route>
-      <Route exact path={`${basePath}${cw20WalletPaths.tokensAdd}${cw20WalletParams.codeId}`}>
+      <Route path={`${basePath}${cw20WalletPaths.tokensAdd}`}>
         <TokensAdd />
-      </Route>
-      <Route exact path={`${basePath}${cw20WalletPaths.tokensNew}`}>
-        <TokenNew />
       </Route>
       <Route path={`${basePath}${cw20WalletPaths.tokens}${cw20WalletParams.contractAddress}`}>
         <Token />

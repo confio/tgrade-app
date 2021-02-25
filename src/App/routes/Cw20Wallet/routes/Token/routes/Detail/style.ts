@@ -16,36 +16,12 @@ export const MainStack = styled(Stack)`
 `;
 
 export const Amount = styled.div`
-  span {
-    font-size: var(--s4);
-    font-weight: bolder;
-    overflow-wrap: anywhere;
-  }
-
-  span + span {
-    font-size: var(--s1);
-  }
-`;
-
-export const AllowanceStack = styled(Stack)`
-  & > * {
-    --gap: var(--s0);
-  }
-`;
-
-export const Allowance = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-
-  span {
-    font-family: var(--ff-iceland);
+  span.ant-typography {
     font-size: var(--s2);
+    font-family: var(--ff-iceland);
   }
 
-  span + span {
-    font-family: var(--ff-montserrat);
+  span.ant-typography + span.ant-typography {
     font-size: var(--s1);
-    font-weight: bolder;
   }
 `;
