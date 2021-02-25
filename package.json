@@ -50,7 +50,8 @@
     "yup": "0.32.9"
   },
   "devDependencies": {
-    "axios": "0.21.1"
+    "axios": "0.21.1",
+    "ts-proto": "^1.67.0"
   },
   "scripts": {
     "start:base": "craco start",
@@ -64,7 +65,8 @@
     "deploy": "yarn build && netlify deploy --dir=build --alias=$(git branch --show-current)",
     "test": "craco test",
     "lint": "tsc --noEmit && npx eslint src/**/*.ts{,x} --max-warnings 0",
-    "compile": "tsc"
+    "compile": "tsc",
+    "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/define-proto.sh"
   },
   "browserslist": [
     "last 2 chrome versions",
