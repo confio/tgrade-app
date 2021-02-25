@@ -55,10 +55,11 @@ describe("should have a happy path for", () => {
     const tokenSymbol = "TST";
     const tokenName = "TST coin";
     const initialSupply = "1000000000";
+    const initialSupplyToDisplay = "1000000000000000";
     const mintCapAmount = "2000000000";
-    const myTstBalance = "1000";
-    const mintMoreAmount = "500";
-    const tstAmount = "700";
+    const myTstBalance = "1000000000";
+    const mintMoreAmount = "500000000";
+    const tstAmount = "700000000";
 
     render(<App />);
 
@@ -97,7 +98,7 @@ describe("should have a happy path for", () => {
     );
     await waitFor(() => expect(createButton).not.toBeDisabled());
     userEvent.click(createButton);
-    await screen.findByText(`${initialSupply} ${tokenName} successfully created`, undefined, {
+    await screen.findByText(`${initialSupplyToDisplay} ${tokenName} successfully created`, undefined, {
       timeout: 10_000,
     });
 
@@ -130,7 +131,7 @@ describe("should have a happy path for", () => {
     );
     userEvent.click(screen.getByRole("button", { name: /token detail/i }));
     await screen.findByText(/tst/i);
-    screen.getByText("1500");
+    screen.getByText("1500000000");
     screen.getByText("Tokens");
 
     // Send 700 to another address
@@ -151,7 +152,7 @@ describe("should have a happy path for", () => {
     // Go to token detail and check my new balance
     userEvent.click(screen.getByRole("button", { name: /token detail/i }));
     await screen.findByText(/tst/i);
-    screen.getByText("800");
+    screen.getByText("800000000");
     screen.getByText("Tokens");
   }, 75_000);
 
