@@ -6,12 +6,7 @@ import { NetworkConfig } from "config/network";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createQueryClient, createSigningClient } from "utils/sdk";
-import {
-  getDelegationFee,
-  MsgDelegate,
-  MsgUndelegate,
-  MsgWithdrawDelegatorReward,
-} from "utils/staking";
+import { getDelegationFee, MsgDelegate, MsgUndelegate, MsgWithdrawDelegatorReward } from "utils/staking";
 
 import { useError } from "./error";
 
