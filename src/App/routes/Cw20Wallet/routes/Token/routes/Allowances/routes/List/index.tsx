@@ -65,7 +65,10 @@ export default function List(): JSX.Element {
 
   const allowancesToDisplay = allowances
     .map(({ allowance }) => Decimal.fromAtomics(allowance, cw20Token?.decimals ?? 0))
-    .reduce((accumulator, currentValue) => accumulator.plus(currentValue), Decimal.fromAtomics("0", 0))
+    .reduce(
+      (accumulator, currentValue) => accumulator.plus(currentValue),
+      Decimal.fromAtomics("0", cw20Token?.decimals ?? 0),
+    )
     .toString();
   const [allowancesInteger, allowancesDecimal] = allowancesToDisplay.split(".");
 
