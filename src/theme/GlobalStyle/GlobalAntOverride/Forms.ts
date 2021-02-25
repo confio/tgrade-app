@@ -13,6 +13,10 @@ export const Forms = createGlobalStyle`
       }
     }
 
+    .ant-input:focus {
+      border-radius: 20px;
+    }
+
     .ant-form-item-has-error {
       & .ant-input:not(.ant-form-item-has-error .ant-input-disabled) {
         background: none;
@@ -66,12 +70,6 @@ export const Forms = createGlobalStyle`
       color: #7c95ff;
     }
 
-    .ant-form-item-control-input-content {
-      &:hover {
-        color: #43547d;
-        border: 1px solid #43547d;
-      }
-    }
 
     .ant-input-search-enter-button input + .ant-input-group-addon {
       border-left: 1px solid;
