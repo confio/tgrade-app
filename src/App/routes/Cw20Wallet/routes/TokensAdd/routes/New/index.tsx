@@ -1,4 +1,4 @@
-import { Decimal } from "@cosmjs/math";
+import { Decimal, Uint64 } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { Loading } from "App/components/logic";
@@ -46,8 +46,14 @@ export default function New(): JSX.Element {
       }
 
       const decimals = parseInt(values.decimals, 10);
-      const amount = Decimal.fromUserInput(values.initialSupply, decimals).toString();
-      const cap = values.mintCap ? Decimal.fromUserInput(values.mintCap, decimals).toString() : undefined;
+      const amount = Decimal.fromUserInput(values.initialSupply, decimals)
+        .multiply(Uint64.fromNumber(10 ** decimals))
+        .toString();
+      const cap = values.mintCap
+        ? Decimal.fromUserInput(values.mintCap, decimals)
+            .multiply(Uint64.fromNumber(10 ** decimals))
+            .toString()
+        : undefined;
       const canMint = values.mint === "fixed" || values.mint === "unlimited";
       const mint: MinterResponse | undefined = canMint ? { minter: address, cap } : undefined;
 
