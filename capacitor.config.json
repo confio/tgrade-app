@@ -1,0 +1,13 @@
+{
+  "appId": "tech.confio.wallet",
+  "appName": "wallet",
+  "bundledWebRuntime": false,
+  "linuxAndroidStudioPath": "<path-to-android-studio>",
+  "npmClient": "yarn",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "webDir": "build"
+}
