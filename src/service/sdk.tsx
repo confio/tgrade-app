@@ -310,7 +310,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
 
     (async function hitFaucetAndInitialize(): Promise<void> {
       const balance = await getBalance();
-      if (!balance.find((coin) => coin.denom === config.feeToken)) {
+      if (!balance.find((coin) => coin.denom === config.feeToken && coin.amount !== "0")) {
         await hitFaucet();
       }
 
