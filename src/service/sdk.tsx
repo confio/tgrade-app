@@ -1,7 +1,14 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { Coin, OfflineSigner } from "@cosmjs/launchpad";
-import { DistributionExtension, isBroadcastTxFailure, QueryClient, StakingExtension } from "@cosmjs/stargate";
+import {
+  BankExtension,
+  coinFromProto,
+  DistributionExtension,
+  isBroadcastTxFailure,
+  QueryClient,
+  StakingExtension,
+} from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -21,7 +28,7 @@ interface CosmWasmContextType {
   readonly hitFaucet: () => Promise<void>;
   readonly getSigner: () => OfflineSigner;
   readonly changeSigner: (newSigner: OfflineSigner) => void;
-  readonly getQueryClient: () => QueryClient & StakingExtension & DistributionExtension;
+  readonly getQueryClient: () => QueryClient & BankExtension & StakingExtension & DistributionExtension;
   readonly getSigningClient: () => SigningCosmWasmClient;
   readonly delegateTokens: (validatorAddress: string, delegateAmount: Coin) => Promise<void>;
   readonly undelegateTokens: (validatorAddress: string, undelegateAmount: Coin) => Promise<void>;
@@ -74,11 +81,13 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
   const getBalance = useCallback(
     async function (): Promise<readonly Coin[]> {
       if (!signingClient || !address) return [];
+      const queryClient = await createQueryClient(config.rpcUrl);
 
       const balance: Coin[] = [];
       try {
         for (const denom in config.coinMap) {
-          const coin = await signingClient.getBalance(address, denom);
+          const res = await queryClient.bank.unverified.balance(address, denom);
+          const coin = res ? coinFromProto(res) : null;
           if (coin) {
             balance.push(coin);
           }
@@ -89,7 +98,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         return balance;
       }
     },
-    [address, config.coinMap, handleError, signingClient],
+    [address, config.coinMap, config.rpcUrl, handleError, signingClient],
   );
 
   useEffect(() => {
