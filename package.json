@@ -66,6 +66,7 @@
     "build:local": "REACT_APP_NETWORK=local yarn build:base",
     "build:musselnet": "REACT_APP_NETWORK=musselnet yarn build:base",
     "build": "yarn build:musselnet",
+    "postbuild": "if [ -z ${BUILD_ANDROID} ]; then echo \"Skipping android build\"; else npx cap add android; fi",
     "deploy": "yarn build && netlify deploy --dir=build --alias=$(git branch --show-current)",
     "test": "craco test",
     "lint": "tsc --noEmit && npx eslint src/**/*.ts{,x} --max-warnings 0",
