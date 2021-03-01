@@ -1,17 +1,19 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { Coin, OfflineSigner } from "@cosmjs/launchpad";
-import { DistributionExtension, isBroadcastTxFailure, QueryClient, StakingExtension } from "@cosmjs/stargate";
+import {
+  BankExtension,
+  coinFromProto,
+  DistributionExtension,
+  isBroadcastTxFailure,
+  QueryClient,
+  StakingExtension,
+} from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createQueryClient, createSigningClient } from "utils/sdk";
-import {
-  EncodeMsgDelegate,
-  EncodeMsgUndelegate,
-  EncodeMsgWithdrawDelegatorReward,
-  getDelegationFee,
-} from "utils/staking";
+import { getDelegationFee, MsgDelegate, MsgUndelegate, MsgWithdrawDelegatorReward } from "utils/staking";
 import { useError } from "./error";
 
 interface CosmWasmContextType {
@@ -25,7 +27,7 @@ interface CosmWasmContextType {
   readonly hitFaucet: () => Promise<void>;
   readonly getSigner: () => OfflineSigner;
   readonly changeSigner: (newSigner: OfflineSigner) => void;
-  readonly getQueryClient: () => QueryClient & StakingExtension & DistributionExtension;
+  readonly getQueryClient: () => QueryClient & BankExtension & StakingExtension & DistributionExtension;
   readonly getSigningClient: () => SigningCosmWasmClient;
   readonly delegateTokens: (validatorAddress: string, delegateAmount: Coin) => Promise<void>;
   readonly undelegateTokens: (validatorAddress: string, undelegateAmount: Coin) => Promise<void>;
@@ -70,6 +72,9 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
   const { handleError } = useError();
 
   const [config, setConfig] = useState(configProp);
+  const [queryClient, setQueryClient] = useState<
+    QueryClient & BankExtension & StakingExtension & DistributionExtension
+  >();
   const [signer, setSigner] = useState<OfflineSigner>();
   const [signingClient, setSigningClient] = useState<SigningCosmWasmClient>();
   const [address, setAddress] = useState<string>();
@@ -77,12 +82,13 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
   // Get balance for each coin specified in config.coinMap
   const getBalance = useCallback(
     async function (): Promise<readonly Coin[]> {
-      if (!signingClient || !address) return [];
+      if (!queryClient || !address) return [];
 
       const balance: Coin[] = [];
       try {
         for (const denom in config.coinMap) {
-          const coin = await signingClient.getBalance(address, denom);
+          const res = await queryClient.bank.unverified.balance(address, denom);
+          const coin = res ? coinFromProto(res) : null;
           if (coin) {
             balance.push(coin);
           }
@@ -93,7 +99,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         return balance;
       }
     },
-    [address, config.coinMap, handleError, signingClient],
+    [address, config.coinMap, handleError, queryClient],
   );
 
   useEffect(() => {
@@ -141,6 +147,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
     (async function updateConfigAndQueryClient(): Promise<void> {
       try {
         const queryClient = await createQueryClient(config.rpcUrl);
+        if (mounted) setQueryClient(queryClient);
         if (mounted) {
           setValue((prevValue) => ({
             ...prevValue,
@@ -163,9 +170,9 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
       if (!address || !signingClient) return;
 
       const delegatorAddress = address;
-      const delegateMsg: EncodeMsgDelegate = {
+      const delegateMsg = {
         typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
-        value: { delegatorAddress, validatorAddress, amount: delegateAmount },
+        value: MsgDelegate.fromPartial({ delegatorAddress, validatorAddress, amount: delegateAmount }),
       };
 
       const response = await signingClient.signAndBroadcast(
@@ -189,9 +196,9 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
       if (!address || !signingClient) return;
 
       const delegatorAddress = address;
-      const undelegateMsg: EncodeMsgUndelegate = {
+      const undelegateMsg = {
         typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
-        value: { delegatorAddress, validatorAddress, amount: undelegateAmount },
+        value: MsgUndelegate.fromPartial({ delegatorAddress, validatorAddress, amount: undelegateAmount }),
       };
 
       const response = await signingClient.signAndBroadcast(
@@ -215,9 +222,9 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
       if (!address || !signingClient) return;
 
       const delegatorAddress = address;
-      const withdrawRewardsMsg: EncodeMsgWithdrawDelegatorReward = {
+      const withdrawRewardsMsg = {
         typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
-        value: { delegatorAddress, validatorAddress },
+        value: MsgWithdrawDelegatorReward.fromPartial({ delegatorAddress, validatorAddress }),
       };
 
       const response = await signingClient.signAndBroadcast(
@@ -305,7 +312,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
 
     (async function hitFaucetAndInitialize(): Promise<void> {
       const balance = await getBalance();
-      if (!balance.find((coin) => coin.denom === config.feeToken)) {
+      if (!balance.find((coin) => coin.denom === config.feeToken && coin.amount !== "0")) {
         await hitFaucet();
       }
 

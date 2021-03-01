@@ -16,7 +16,7 @@ interface TokenListProps {
 export default function TokenList({ currentAddress }: TokenListProps): JSX.Element {
   const { url: pathTokensMatched } = useRouteMatch();
   const { handleError } = useError();
-  const { getConfig, getAddress, getSigningClient } = useSdk();
+  const { getConfig, getAddress, getQueryClient } = useSdk();
   const config = getConfig();
   const amAllowed = getAddress() === currentAddress;
   const balance = useBalance();
@@ -32,8 +32,8 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
       (async function updateCurrentBalance(): Promise<void> {
         try {
           for (const denom in config.coinMap) {
-            const coin = await getSigningClient().getBalance(currentAddress, denom);
-            if (coin) balance.push(coin);
+            const coin = await getQueryClient().bank.unverified.balance(currentAddress, denom);
+            balance.push(coin);
           }
         } catch (error) {
           balance.length = 0;
@@ -47,7 +47,7 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
     return () => {
       mounted = false;
     };
-  }, [amAllowed, balance, config.coinMap, currentAddress, getSigningClient, handleError]);
+  }, [amAllowed, balance, config.coinMap, currentAddress, getQueryClient, handleError]);
 
   const history = useHistory();
   function goTokenDetail(token: Coin) {
