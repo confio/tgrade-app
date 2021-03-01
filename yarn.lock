@@ -1239,12 +1239,12 @@
   resolved "https://registry.yarnpkg.com/@bugsnag/safe-json-stringify/-/safe-json-stringify-6.0.0.tgz#22abdcd83e008c369902976730c34c150148a758"
   integrity sha512-htzFO1Zc57S8kgdRK9mLcPVTW1BY2ijfH7Dk2CeZmspTWKdKqSo1iwmqrq2WtRjFlo8aRZYgLX0wFrDXF/9DLA==
 
-"@capacitor/android@2.4.6":
+"@capacitor/android@^2.4.6":
   version "2.4.6"
   resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-2.4.6.tgz#57c65f67d6a4e6b67f7f0f7fd23fa4c3c324ecc2"
   integrity sha512-SBXO0eVtkssnq1gfs6n/8vJLJXPjzqbIblhPetMiR0Myvjt9eqB7v5HbQ4t1EW0+jV46UGyFV6CPCrZeKPtvXg==
 
-"@capacitor/cli@2.4.6":
+"@capacitor/cli@^2.4.6":
   version "2.4.6"
   resolved "https://registry.yarnpkg.com/@capacitor/cli/-/cli-2.4.6.tgz#f95cf071403006b04cb0e8d21818292b0f9448ea"
   integrity sha512-fhwHnitpzjC35Trsb1uR9iA2zlhCZjmh7txunin+g35fImdWjvsswdOwrO7gEC4oItJvErblZF6bRwLvf1Rs1Q==
@@ -1261,7 +1261,7 @@
     which "^1.3.0"
     xml2js "^0.4.19"
 
-"@capacitor/core@2.4.6":
+"@capacitor/core@^2.4.6":
   version "2.4.6"
   resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-2.4.6.tgz#71cc6e23ef37fbb47c3c1736f1dea47302a5e22a"
   integrity sha512-3KLSMorCELA5RNRXwHOGlRGuxXaxCEYHC29wOUxObicI2mf14hbMJWylt4QBzNmSqh3/ha7u4/CAZMoJUQR/QA==
@@ -1297,7 +1297,7 @@
     "@cosmjs/utils" "^0.24.0-alpha.26"
     pako "^2.0.2"
 
-"@cosmjs/cosmwasm-stargate@^0.24.0-alpha.26":
+"@cosmjs/cosmwasm-stargate@^0.24.0-alpha.22":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/cosmwasm-stargate/-/cosmwasm-stargate-0.24.0-alpha.26.tgz#ff6596597ae19090bd3beaa7c7228ca27aa5c479"
   integrity sha512-7AjaT5k7J3r511ofENgfDqqoILjkMwJ1YJsjBW7qZWudLFi9Sqk2TGDCVArlokBaIU0cfZGNJ6krkEHaPpUGAw==
@@ -1315,14 +1315,14 @@
     pako "^2.0.2"
     protobufjs "~6.10.2"
 
-"@cosmjs/cosmwasm@^0.24.0-alpha.26":
+"@cosmjs/cosmwasm@^0.24.0-alpha.22":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/cosmwasm/-/cosmwasm-0.24.0-alpha.26.tgz#1b5d11db0e0ad58d46aecca2a13b88e7998df651"
   integrity sha512-Rs/6hpEylAfe25uW+q3wk8q7P8yyiCbcYvEBd5FfsosnO5f4Gz98D8BzuFsDRoR6AQ6OgIc5HSmjfWdtslNSug==
   dependencies:
     "@cosmjs/cosmwasm-launchpad" "^0.24.0-alpha.26"
 
-"@cosmjs/crypto@^0.24.0-alpha.26":
+"@cosmjs/crypto@^0.24.0-alpha.22", "@cosmjs/crypto@^0.24.0-alpha.26":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/crypto/-/crypto-0.24.0-alpha.26.tgz#f26c237e52a56caa3587a8cb240399205ae34fcb"
   integrity sha512-JPfwV0iXqGqPyUJTw0DWDkV1acXabldkBQ4QKk2tIpnaxwS+CCXIPshTb1XoS1f6sNOvrywxiYqTaLd3uDk8xg==
@@ -1340,7 +1340,7 @@
     sha.js "^2.4.11"
     unorm "^1.5.0"
 
-"@cosmjs/encoding@^0.24.0-alpha.26":
+"@cosmjs/encoding@^0.24.0-alpha.22", "@cosmjs/encoding@^0.24.0-alpha.26":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/encoding/-/encoding-0.24.0-alpha.26.tgz#e2b2237f95772dd777d87f6f697749271326231a"
   integrity sha512-ufcVPU/FUjv421vgayjJ2kwB3PkF8WDxVLOwGYG3fTU1DXFeRyoySVn6f9eKxwA7A0ChVMeNaE8N4yNOk1hOjw==
@@ -1349,7 +1349,7 @@
     bech32 "^1.1.4"
     readonly-date "^1.0.0"
 
-"@cosmjs/faucet-client@^0.24.0-alpha.26":
+"@cosmjs/faucet-client@^0.24.0-alpha.22":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/faucet-client/-/faucet-client-0.24.0-alpha.26.tgz#bc1e4b3460cf7dea080a2b12b417d70e31ca907a"
   integrity sha512-GJ6C8meBhAW512VKmkNq/dlsSN9hxg/AeqUSrJ1A8mI7p5FtpWCfGLq+5HrVrwKODm44JtVYwehilsqcVFikvw==
@@ -1364,7 +1364,7 @@
     "@cosmjs/stream" "^0.24.0-alpha.26"
     xstream "^11.14.0"
 
-"@cosmjs/launchpad@^0.24.0-alpha.26":
+"@cosmjs/launchpad@^0.24.0-alpha.22", "@cosmjs/launchpad@^0.24.0-alpha.26":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/launchpad/-/launchpad-0.24.0-alpha.26.tgz#4983429dc5142b75bbcfd51f126b776f103b9254"
   integrity sha512-cXMwsvu1TnwbTRkE5DnaRRtT99HZG8uo/+t6J1R7NzbOGd//F7TiPU4Gqa4FicW9TOrBL+AJY3VlrDEtYiTZwQ==
@@ -1376,7 +1376,7 @@
     axios "^0.21.1"
     fast-deep-equal "^3.1.3"
 
-"@cosmjs/ledger-amino@^0.24.0-alpha.26":
+"@cosmjs/ledger-amino@^0.24.0-alpha.22":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/ledger-amino/-/ledger-amino-0.24.0-alpha.26.tgz#1d27bdb9c791b65740be18ccee8308bf081d3344"
   integrity sha512-eRsby2i7Y06oJnUJ+yO5KrJv2ECo+r0VQH/Bbr+QjAj5Xl6q/TZ6YCSZWCchhsimdlDifIOTpvePFvIK6xWl1Q==
@@ -1386,7 +1386,7 @@
     ledger-cosmos-js "^2.1.8"
     semver "^7.3.2"
 
-"@cosmjs/math@^0.24.0-alpha.26":
+"@cosmjs/math@^0.24.0-alpha.22", "@cosmjs/math@^0.24.0-alpha.26":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/math/-/math-0.24.0-alpha.26.tgz#886503ef7c10533b5e96478cbcbc99fdb96d20e2"
   integrity sha512-bvj05U5/iBnI0Ka+uUy3OTz/sOvP3o/b1JE8s+wRPLX1Y5sh6suYyqXZvmvYw09B1zLmB+30H5Q1QPR+kPsfZA==
@@ -1412,7 +1412,7 @@
     ws "^6.2.0"
     xstream "^11.14.0"
 
-"@cosmjs/stargate@^0.24.0-alpha.26":
+"@cosmjs/stargate@^0.24.0-alpha.22", "@cosmjs/stargate@^0.24.0-alpha.26":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/stargate/-/stargate-0.24.0-alpha.26.tgz#32a0029fac00270b5ff94d68910c576d64b367bb"
   integrity sha512-QonmhP6SQ/bjl95fUmR4gYjdIjWESAhCpLQLCnGrLTOIdYT7fRhD7uk3ZEOEaWUo1MIuOOUJkGqoCJ2UxPCAAQ==
@@ -1435,7 +1435,7 @@
   dependencies:
     xstream "^11.14.0"
 
-"@cosmjs/tendermint-rpc@^0.24.0-alpha.26":
+"@cosmjs/tendermint-rpc@^0.24.0-alpha.22", "@cosmjs/tendermint-rpc@^0.24.0-alpha.26":
   version "0.24.0-alpha.26"
   resolved "https://registry.yarnpkg.com/@cosmjs/tendermint-rpc/-/tendermint-rpc-0.24.0-alpha.26.tgz#2e59f50d40c66c4f8488c199e34eabf33f279969"
   integrity sha512-lFHwRZaVcEmrDnWgum4EkuKe8jbfVOdNvVYbDXehKmNGY+YBIuCjevS6jERQBc6CAfPnWEKRHDzHiqmXqzh+OQ==
