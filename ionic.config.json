@@ -1,5 +1,6 @@
 {
   "name": "wallet",
+  "id": "b589a36d",
   "integrations": {
     "capacitor": {}
   },
