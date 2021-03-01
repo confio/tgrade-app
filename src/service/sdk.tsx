@@ -14,7 +14,6 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createQueryClient, createSigningClient } from "utils/sdk";
 import { getDelegationFee, MsgDelegate, MsgUndelegate, MsgWithdrawDelegatorReward } from "utils/staking";
-
 import { useError } from "./error";
 
 interface CosmWasmContextType {
@@ -73,6 +72,9 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
   const { handleError } = useError();
 
   const [config, setConfig] = useState(configProp);
+  const [queryClient, setQueryClient] = useState<
+    QueryClient & BankExtension & StakingExtension & DistributionExtension
+  >();
   const [signer, setSigner] = useState<OfflineSigner>();
   const [signingClient, setSigningClient] = useState<SigningCosmWasmClient>();
   const [address, setAddress] = useState<string>();
@@ -80,8 +82,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
   // Get balance for each coin specified in config.coinMap
   const getBalance = useCallback(
     async function (): Promise<readonly Coin[]> {
-      if (!signingClient || !address) return [];
-      const queryClient = await createQueryClient(config.rpcUrl);
+      if (!queryClient || !address) return [];
 
       const balance: Coin[] = [];
       try {
@@ -98,7 +99,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
         return balance;
       }
     },
-    [address, config.coinMap, config.rpcUrl, handleError, signingClient],
+    [address, config.coinMap, handleError, queryClient],
   );
 
   useEffect(() => {
@@ -146,6 +147,7 @@ export default function SdkProvider({ config: configProp, children }: SdkProvide
     (async function updateConfigAndQueryClient(): Promise<void> {
       try {
         const queryClient = await createQueryClient(config.rpcUrl);
+        if (mounted) setQueryClient(queryClient);
         if (mounted) {
           setValue((prevValue) => ({
             ...prevValue,
