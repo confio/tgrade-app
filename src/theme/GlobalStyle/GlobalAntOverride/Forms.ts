@@ -13,10 +13,6 @@ export const Forms = createGlobalStyle`
       }
     }
 
-    .ant-input:focus {
-      border-radius: 20px;
-    }
-
     .ant-form-item-has-error {
       & .ant-input:not(.ant-form-item-has-error .ant-input-disabled) {
         background: none;
@@ -31,6 +27,15 @@ export const Forms = createGlobalStyle`
           color: var(--color-red);
           border: 1px solid var(--color-red);
         }
+      }
+    }
+
+    .ant-input,
+    .ant-form-item-has-error .ant-input {
+      background: none;
+
+      &:focus {
+        border-radius: 20px;
       }
     }
 
