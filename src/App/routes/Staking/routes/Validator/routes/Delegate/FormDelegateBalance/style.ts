@@ -17,28 +17,23 @@ export const FormStack = styled(Stack)`
 
 export const FormField = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: baseline;
 
-  & > * + * {
-    margin-left: var(--s0);
-  }
+  span.ant-typography {
+    font-family: var(--ff-iceland);
+    font-size: var(--s2);
 
-  .ant-typography {
-    flex-grow: 0;
-    flex-shrink: 1;
+    flex-basis: 30%;
+    flex-shrink: 0;
     text-align: left;
   }
 
   .ant-form-item {
-    flex-grow: 1;
-    flex-shrink: 0;
-    max-width: 13.5rem;
+    flex-basis: 70%;
   }
 
-  span {
-    font-family: var(--ff-iceland);
-    font-size: var(--s2);
-    line-height: var(--s2);
+  .ant-form-item + span.ant-typography {
+    margin-left: var(--s-1);
+    flex-basis: auto;
   }
 `;

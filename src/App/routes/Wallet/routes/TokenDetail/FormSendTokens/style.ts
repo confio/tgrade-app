@@ -1,9 +1,5 @@
-import { Typography } from "antd";
 import { Stack } from "App/components/layout";
-import { FormItem } from "formik-antd";
 import styled from "styled-components";
-
-const { Text } = Typography;
 
 export const FormStack = styled(Stack)`
   & > * {
@@ -23,31 +19,21 @@ export const FormField = styled.div`
   display: flex;
   align-items: baseline;
 
-  span {
+  span.ant-typography {
     font-family: var(--ff-iceland);
     font-size: var(--s2);
-  }
-`;
 
-export const FormText = styled(Text)`
-  && {
-    width: 20%;
-    font-family: var(--ff-iceland);
-    font-size: var(--s2);
+    flex-basis: 20%;
+    flex-shrink: 0;
     text-align: left;
   }
-`;
 
-export const FormItemAmount = styled(FormItem)`
-  width: 60%;
-`;
+  .ant-form-item {
+    flex-basis: 80%;
+  }
 
-export const FormItemAddress = styled(FormItem)`
-  width: 80%;
-`;
-
-export const FormTextToken = styled(FormText)`
-  &&& {
-    text-align: right;
+  .ant-form-item + span.ant-typography {
+    margin-left: var(--s-1);
+    flex-basis: auto;
   }
 `;
