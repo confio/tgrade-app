@@ -1,5 +1,5 @@
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import { RedirectLocation } from "App/components/logic/ProtectedSwitch";
 import { paths } from "App/paths";
@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { loadKeplrWallet, loadLedgerWallet, loadOrCreateWallet, WalletLoader } from "utils/sdk";
 import cosmWasmLogo from "./assets/cosmWasmLogo.svg";
-import { LightText, Logo, StackButtons, StackLogoText, StackText, StackTextButtons } from "./style";
+import { LightText, Logo } from "./style";
 
 const { Title } = Typography;
 
@@ -80,15 +80,15 @@ export default function Login(): JSX.Element {
     <Loading loadingText="Initializing app..." />
   ) : (
     <PageLayout hide="header">
-      <StackLogoText>
+      <Stack gap="s5">
         <Logo src={cosmWasmLogo} alt="CosmWasm logo" />
-        <StackTextButtons>
-          <StackText>
+        <Stack gap="s3">
+          <Stack gap="s-1">
             <Title level={1}>Hello!</Title>
             <LightText>Welcome to your Wallet</LightText>
             <LightText>Select one of the following options to start</LightText>
-          </StackText>
-          <StackButtons>
+          </Stack>
+          <Stack>
             <Button data-size="large" type="primary" onClick={initBrowser}>
               Browser (Demo)
             </Button>
@@ -98,9 +98,9 @@ export default function Login(): JSX.Element {
             <Button data-size="large" type="primary" disabled={disableKeplrLogin()} onClick={initKeplr}>
               Keplr (Secure)
             </Button>
-          </StackButtons>
-        </StackTextButtons>
-      </StackLogoText>
+          </Stack>
+        </Stack>
+      </Stack>
     </PageLayout>
   );
 }
