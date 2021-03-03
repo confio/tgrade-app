@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
@@ -10,7 +10,7 @@ import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
-import { Amount, MainStack } from "./style";
+import { AddressText, Amount } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -99,21 +99,21 @@ export default function Detail(): JSX.Element {
     <Loading loadingText={`Removing allowance...`} />
   ) : (
     <PageLayout backButtonProps={{ path: pathAllowances }}>
-      <MainStack>
+      <Stack gap="s3">
         <Title>{`${cw20Token?.symbol || ""} Allowance`}</Title>
         <Amount>
           <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
           {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
           <Text>{" Tokens"}</Text>
         </Amount>
-        <Text>{spenderAddress}</Text>
+        <AddressText>{spenderAddress}</AddressText>
         <Button type="primary" onClick={() => goToAllowancesEdit()}>
           Edit
         </Button>
         <Button type="primary" onClick={submitRemove}>
           Remove
         </Button>
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

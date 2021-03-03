@@ -1,28 +1,22 @@
-import { Stack } from "App/components/layout";
+import { Typography } from "antd";
 import styled from "styled-components";
 
-export const MainStack = styled(Stack)`
-  & > * {
-    --gap: var(--s3);
-  }
+const { Text } = Typography;
 
-  h1 {
-    margin: 0;
-  }
-
-  & > span.ant-typography {
+export const AddressText = styled(Text)`
+  && {
     font-size: var(--s0);
     font-family: var(--ff-iceland);
   }
 `;
 
 export const Amount = styled.div`
-  span.ant-typography {
+  & span.ant-typography {
     font-size: var(--s2);
     font-family: var(--ff-iceland);
-  }
 
-  span.ant-typography + span.ant-typography {
-    font-size: var(--s1);
+    & + span.ant-typography {
+      font-size: var(--s1);
+    }
   }
 `;

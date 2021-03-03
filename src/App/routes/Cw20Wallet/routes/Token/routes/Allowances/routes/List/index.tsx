@@ -1,13 +1,13 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { AllowanceInfo, CW20, Cw20Token, getCw20Token } from "utils/cw20";
-import { AllowancesStack, Amount, MainStack, TitleAmountStack } from "./style";
+import { AllowanceButton, Amount } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -76,8 +76,8 @@ export default function List(): JSX.Element {
     <PageLayout
       backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}` }}
     >
-      <MainStack>
-        <TitleAmountStack>
+      <Stack gap="s7">
+        <Stack gap="s2">
           <Title>Allowances</Title>
           <Amount>
             <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
@@ -89,23 +89,23 @@ export default function List(): JSX.Element {
             {allowancesDecimal && <Text>{allowancesDecimal}</Text>}
             <Text>{" Allowances"}</Text>
           </Amount>
-        </TitleAmountStack>
-        <AllowancesStack>
+        </Stack>
+        <Stack>
           {allowances.map((allowanceInfo) => (
-            <Button
+            <AllowanceButton
               key={allowanceInfo.spender}
               data-size="large"
               type="primary"
               onClick={() => goToAllowanceDetail(allowanceInfo.spender)}
             >
               {allowanceInfo.spender}
-            </Button>
+            </AllowanceButton>
           ))}
-        </AllowancesStack>
+        </Stack>
         <Button type="primary" onClick={goToAllowancesAdd}>
           Add New
         </Button>
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

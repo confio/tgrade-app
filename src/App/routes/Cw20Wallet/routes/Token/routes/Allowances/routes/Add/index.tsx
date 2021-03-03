@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
@@ -13,7 +13,7 @@ import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getAddAllowanceValidationSchema } from "utils/formSchemas";
-import { Amount, FormAmount, FormFieldsStack, FormStack, MainStack } from "./style";
+import { Amount, FormAmount } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -116,7 +116,7 @@ export default function Add(): JSX.Element {
     <Loading loadingText={`Adding allowance...`} />
   ) : (
     <PageLayout backButtonProps={{ path: pathAllowances }}>
-      <MainStack>
+      <Stack gap="s7">
         <Title>Add Allowance</Title>
         <Amount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
@@ -130,8 +130,8 @@ export default function Add(): JSX.Element {
         >
           {(formikProps) => (
             <Form>
-              <FormStack>
-                <FormFieldsStack>
+              <Stack gap="s7">
+                <Stack gap="s2">
                   <FormAmount>
                     <FormItem name="amount">
                       <Input name="amount" placeholder="Enter amount" />
@@ -141,7 +141,7 @@ export default function Add(): JSX.Element {
                   <FormItem name="address">
                     <Input name="address" placeholder="Enter address" />
                   </FormItem>
-                </FormFieldsStack>
+                </Stack>
                 <Button
                   type="primary"
                   onClick={formikProps.submitForm}
@@ -149,11 +149,11 @@ export default function Add(): JSX.Element {
                 >
                   Add
                 </Button>
-              </FormStack>
+              </Stack>
             </Form>
           )}
         </Formik>
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }
