@@ -2,6 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
+import TokenAmount from "App/components/logic/TokenAmount";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import { Formik } from "formik";
@@ -13,7 +14,7 @@ import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getAddAllowanceValidationSchema } from "utils/formSchemas";
-import { Amount, FormAmount } from "./style";
+import { FormAmount } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -118,11 +119,11 @@ export default function Add(): JSX.Element {
     <PageLayout backButtonProps={{ path: pathAllowances }}>
       <Stack gap="s7">
         <Title>Add Allowance</Title>
-        <Amount>
+        <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
           <Text>{" Tokens"}</Text>
-        </Amount>
+        </TokenAmount>
         <Formik
           initialValues={{ address: "", amount: "" }}
           onSubmit={submitAddAllowance}

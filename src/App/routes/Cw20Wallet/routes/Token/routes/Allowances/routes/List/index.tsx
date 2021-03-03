@@ -1,13 +1,14 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { PageLayout, Stack } from "App/components/layout";
+import TokenAmount from "App/components/logic/TokenAmount";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { AllowanceInfo, CW20, Cw20Token, getCw20Token } from "utils/cw20";
-import { AllowanceButton, Amount } from "./style";
+import { AllowanceButton } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -79,30 +80,30 @@ export default function List(): JSX.Element {
       <Stack gap="s7">
         <Stack gap="s2">
           <Title>Allowances</Title>
-          <Amount>
+          <TokenAmount>
             <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
             {amountDecimal && <Text>{amountDecimal}</Text>}
             <Text>{" Tokens"}</Text>
-          </Amount>
-          <Amount>
+          </TokenAmount>
+          <TokenAmount>
             <Text>{`${allowancesInteger}${allowancesDecimal ? "." : ""}`}</Text>
             {allowancesDecimal && <Text>{allowancesDecimal}</Text>}
             <Text>{" Allowances"}</Text>
-          </Amount>
+          </TokenAmount>
         </Stack>
         {allowances.length ? (
-        <Stack>
-          {allowances.map((allowanceInfo) => (
-            <AllowanceButton
-              key={allowanceInfo.spender}
-              data-size="large"
-              type="primary"
-              onClick={() => goToAllowanceDetail(allowanceInfo.spender)}
-            >
-              {allowanceInfo.spender}
-            </AllowanceButton>
-          ))}
-        </Stack>
+          <Stack>
+            {allowances.map((allowanceInfo) => (
+              <AllowanceButton
+                key={allowanceInfo.spender}
+                data-size="large"
+                type="primary"
+                onClick={() => goToAllowanceDetail(allowanceInfo.spender)}
+              >
+                {allowanceInfo.spender}
+              </AllowanceButton>
+            ))}
+          </Stack>
         ) : null}
         <Button type="primary" onClick={goToAllowancesAdd}>
           Add New
