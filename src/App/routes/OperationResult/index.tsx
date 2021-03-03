@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect } from "react";
@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import { useError } from "service";
 import failIcon from "./assets/failIcon.svg";
 import successIcon from "./assets/successIcon.svg";
-import { MainStack, ResultIcon, ResultText } from "./style";
+import { ResultIcon, ResultText } from "./style";
 
 export interface OperationResultState {
   readonly success: boolean;
@@ -67,14 +67,14 @@ export default function OperationResult(): JSX.Element {
 
   return (
     <PageLayout hide="header">
-      <MainStack>
+      <Stack gap="s3">
         <ResultIcon src={icon} alt="Result icon" />
         <ResultText data-result={result}>{message}</ResultText>
         {error && <ResultText data-result={result}>{error}</ResultText>}
         <Button type="primary" onClick={chosenButtonAction}>
           {chosenButtonText}
         </Button>
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }
