@@ -1,5 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
+import { Stack } from "App/components/layout";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
@@ -7,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import { useBalance } from "utils/currency";
 import * as Yup from "yup";
-import { FormField, FormStack } from "./style";
+import { FormField } from "./style";
 
 const { Text } = Typography;
 
@@ -63,7 +64,7 @@ export default function FormDelegateBalance({
 
         return (
           <Form>
-            <FormStack>
+            <Stack gap="s2">
               <FormField>
                 <Text>{config.coinMap[config.stakingToken].denom}</Text>
                 <FormItem name="amount">
@@ -73,7 +74,7 @@ export default function FormDelegateBalance({
               <Button type="primary" onClick={formikProps.submitForm} disabled={formDisabled}>
                 Delegate
               </Button>
-            </FormStack>
+            </Stack>
           </Form>
         );
       }}

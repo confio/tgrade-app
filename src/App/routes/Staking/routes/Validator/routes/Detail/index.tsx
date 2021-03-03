@@ -1,7 +1,7 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -10,7 +10,6 @@ import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
 import { useStakingValidator } from "utils/staking";
-import { ButtonStack, MainStack } from "./style";
 
 const { Title } = Typography;
 
@@ -83,10 +82,10 @@ export default function Detail(): JSX.Element {
 
   return (
     <PageLayout backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}` }}>
-      <MainStack>
+      <Stack gap="s5">
         <Title>{validator?.description?.moniker ?? ""}</Title>
         <DataList {...getValidatorMap()} />
-        <ButtonStack>
+        <Stack>
           <Button type="primary" onClick={goToDelegate}>
             Delegate
           </Button>
@@ -96,8 +95,8 @@ export default function Detail(): JSX.Element {
           <Button type="primary" onClick={goToRewards}>
             Rewards
           </Button>
-        </ButtonStack>
-      </MainStack>
+        </Stack>
+      </Stack>
     </PageLayout>
   );
 }
