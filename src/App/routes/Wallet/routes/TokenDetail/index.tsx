@@ -3,6 +3,7 @@ import { isBroadcastTxFailure } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
+import TokenAmount from "App/components/logic/TokenAmount";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
@@ -12,7 +13,6 @@ import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormSendTokens, { FormSendTokensValues } from "./FormSendTokens";
-import { Amount } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -101,11 +101,11 @@ export default function TokenDetail(): JSX.Element {
     <PageLayout backButtonProps={{ path: `${paths.wallet.prefix}${paths.wallet.tokens}` }}>
       <Stack gap="s4">
         <Title>{nameToDisplay}</Title>
-        <Amount>
+        <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
           <Text>{" Tokens"}</Text>
-        </Amount>
+        </TokenAmount>
         <FormSendTokens
           tokenName={nameToDisplay}
           tokenAmount={amountToDisplay}
