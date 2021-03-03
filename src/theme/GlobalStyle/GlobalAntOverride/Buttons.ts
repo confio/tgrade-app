@@ -14,6 +14,8 @@ export const Buttons = styled.createGlobalStyle`
     border-radius: 1.375rem;
 
     white-space: normal;
+    font-family: var(--ff-montserrat);
+    font-size: var(--s-1);
 
     &:hover {
       color: var(--color-hover);
@@ -29,11 +31,6 @@ export const Buttons = styled.createGlobalStyle`
       &::after {
         display: none;
       }
-    }
-
-    & span {
-      font-family: var(--ff-montserrat);
-      font-size: var(--s-1);
     }
   }
 
@@ -101,8 +98,9 @@ export const Buttons = styled.createGlobalStyle`
 
     color: white;
     background: var(--grad-button-large);
-
     white-space: normal;
+    font-family: var(--ff-iceland);
+    font-size: var(--s2);
 
     &:hover {
       color: var(--color-hover);
@@ -119,14 +117,14 @@ export const Buttons = styled.createGlobalStyle`
       background-color: var(--color-button-disabled-bg);
     }
 
-    & span {
-      font-family: var(--ff-iceland);
-      font-size: var(--s2);
-      color: inherit;
-    }
-
     &::after {
       display: none;
+    }
+
+    & span.ant-typography {
+      color: inherit;
+      font-family: inherit;
+      font-size: inherit;
     }
   }
 `;
