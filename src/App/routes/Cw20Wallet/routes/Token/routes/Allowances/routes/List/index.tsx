@@ -90,6 +90,7 @@ export default function List(): JSX.Element {
             <Text>{" Allowances"}</Text>
           </Amount>
         </Stack>
+        {allowances.length ? (
         <Stack>
           {allowances.map((allowanceInfo) => (
             <AllowanceButton
@@ -102,6 +103,7 @@ export default function List(): JSX.Element {
             </AllowanceButton>
           ))}
         </Stack>
+        ) : null}
         <Button type="primary" onClick={goToAllowancesAdd}>
           Add New
         </Button>
