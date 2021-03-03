@@ -1,11 +1,6 @@
 import * as styled from "styled-components";
 
 export const Buttons = styled.createGlobalStyle`
-  :root {
-    --border-width: 1px;
-    --border-radius: 1.375rem;
-  }
-
   .ant-btn-primary,
   .ant-btn-default {
     align-self: center;
