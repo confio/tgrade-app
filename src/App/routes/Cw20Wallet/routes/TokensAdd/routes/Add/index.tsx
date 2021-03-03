@@ -1,9 +1,8 @@
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useHistory } from "react-router-dom";
-import { MainStack } from "./style";
 
 const { Title } = Typography;
 
@@ -11,7 +10,7 @@ export default function Add(): JSX.Element {
   const history = useHistory();
   return (
     <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}` }}>
-      <MainStack>
+      <Stack gap="s4">
         <Title>Add Another Token</Title>
         <Button
           type="primary"
@@ -25,7 +24,7 @@ export default function Add(): JSX.Element {
         >
           New
         </Button>
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }
