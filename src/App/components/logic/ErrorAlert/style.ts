@@ -6,8 +6,8 @@ export const StyledAlert = styled(Alert)`
 
   &.ant-alert-error {
     background: transparent;
-    border: 1px solid currentColor;
-    border-radius: 1.25rem;
+    border: var(--border-width) solid currentColor;
+    border-radius: var(--border-radius);
 
     img {
       width: 1.34rem;

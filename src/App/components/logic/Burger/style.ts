@@ -25,7 +25,7 @@ export const StyledBurger = styled.button<BurgerProps>`
     width: 2rem;
     height: 0.25rem;
 
-    border-radius: 10px;
+    border-radius: 0.625rem;
     background: var(--grad-primary);
   }
 `;

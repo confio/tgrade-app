@@ -23,11 +23,11 @@ export const Forms = styled.createGlobalStyle`
       .ant-input-group,
       .ant-form-item-control-input-content {
         color: currentColor;
-        border: 1px solid currentColor;
+        border: var(--border-width) solid currentColor;
 
         &:focus-within {
           color: currentColor;
-          border: 1px solid currentColor;
+          border: var(--border-width) solid currentColor;
         }
       }
     }
@@ -37,7 +37,7 @@ export const Forms = styled.createGlobalStyle`
       background: none;
 
       &:focus {
-        border-radius: 20px;
+        border-radius: var(--border-radius);
       }
     }
 
@@ -45,17 +45,17 @@ export const Forms = styled.createGlobalStyle`
     .ant-form-item-control-input-content,
     .ant-transfer-list-body-search-wrapper {
       color: var(--color-form);
-      border: 1px solid currentColor;
-      border-radius: 20px;
+      border: var(--border-width) solid currentColor;
+      border-radius: var(--border-radius);
 
       &:hover {
         color: var(--color-hover);
-        border: 1px solid var(--color-hover);
+        border: var(--border-width) solid var(--color-hover);
       }
 
       &:focus-within {
         color: var(--color-form-focus);
-        border: 1px solid var(--color-form-focus);
+        border: var(--border-width) solid var(--color-form-focus);
       }
     }
 
@@ -81,7 +81,7 @@ export const Forms = styled.createGlobalStyle`
     }
 
     .ant-input-search-enter-button input + .ant-input-group-addon {
-      border-left: 1px solid;
+      border-left: var(--border-width) solid;
     }
 
     .ant-input-group-addon {
@@ -146,7 +146,7 @@ export const Forms = styled.createGlobalStyle`
       &:focus,
       &:focus:hover {
         background: none;
-        border: 1px solid transparent;
+        border: var(--border-width) solid transparent;
       }
     }
 
@@ -156,7 +156,7 @@ export const Forms = styled.createGlobalStyle`
 
       .ant-transfer-list-header {
         background: none;
-        border-bottom: 1px solid var(--color-form);
+        border-bottom: var(--border-width) solid var(--color-form);
 
         span {
           color: var(--color-text);

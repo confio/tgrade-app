@@ -11,7 +11,7 @@ export const Buttons = styled.createGlobalStyle`
 
     border-color: transparent;
     border-width: var(--border-width);
-    border-radius: var(--border-radius);
+    border-radius: 1.375rem;
 
     white-space: normal;
 
@@ -96,8 +96,8 @@ export const Buttons = styled.createGlobalStyle`
     min-height: var(--s6);
     height: auto;
 
-    --border-radius: 1.25rem;
     border: var(--border-width);
+    border-radius: var(--border-radius);
 
     color: white;
     background: var(--grad-button-large);
