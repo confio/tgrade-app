@@ -6,15 +6,16 @@ export const GlobalReset = styled.createGlobalStyle`
   *::after {
     box-sizing: border-box;
   }
-  
+
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
     min-height: 100vh;
     line-height: 1.5;
     text-rendering: optimizeSpeed;
+    background-image: var(--grad-body);
   }
 
   #root {
@@ -23,7 +24,7 @@ export const GlobalReset = styled.createGlobalStyle`
     position: relative;
     overflow-x: hidden;
   }
-  
+
   body,
   h1,
   h2,
@@ -32,25 +33,25 @@ export const GlobalReset = styled.createGlobalStyle`
   ol[class] {
     margin: 0;
   }
-  
+
   ul[class],
   ol[class] {
     padding: 0;
     list-style: none;
   }
-  
+
   button,
   input,
   select,
   textarea {
     font: inherit;
   }
-  
+
   img {
     display: block;
     max-width: 100%;
   }
-  
+
   @media (prefers-reduced-motion: reduce) {
     * {
       animation-duration: 0.01s !important;

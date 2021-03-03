@@ -3,29 +3,31 @@ import * as styled from "styled-components";
 export const Forms = styled.createGlobalStyle`
   .ant-form {
     div[role="alert"] li {
-      color: var(--form-error);
+      color: var(--color-error-form);
       font-size: var(--s-1);
       text-align: left;
       margin: var(--s-1);
-    
+
       &::before {
         content: "* ";
       }
     }
 
     .ant-form-item-has-error {
+      color: var(--color-error-form);
+
       & .ant-input:not(.ant-form-item-has-error .ant-input-disabled) {
         background: none;
       }
 
       .ant-input-group,
       .ant-form-item-control-input-content {
-        color: var(--color-red);
-        border: 1px solid var(--color-red);
+        color: currentColor;
+        border: 1px solid currentColor;
 
         &:focus-within {
-          color: var(--color-red);
-          border: 1px solid var(--color-red);
+          color: currentColor;
+          border: 1px solid currentColor;
         }
       }
     }
@@ -42,18 +44,18 @@ export const Forms = styled.createGlobalStyle`
     .ant-input-group,
     .ant-form-item-control-input-content,
     .ant-transfer-list-body-search-wrapper {
-      color: #43547d;
-      border: 1px solid #43547d;
+      color: var(--color-form);
+      border: 1px solid currentColor;
       border-radius: 20px;
 
       &:hover {
-        color: #f9b77a;
-        border: 1px solid #f9b77a;
+        color: var(--color-hover);
+        border: 1px solid var(--color-hover);
       }
 
       &:focus-within {
-        color: #7c95ff;
-        border: 1px solid #7c95ff;
+        color: var(--color-form-focus);
+        border: 1px solid var(--color-form-focus);
       }
     }
 
@@ -61,23 +63,22 @@ export const Forms = styled.createGlobalStyle`
       margin-top: 0;
       margin-bottom: 0;
 
-      &[data-disabled=true] {
+      &[data-disabled="true"] {
         .ant-form-item-control-input-content {
-          color: #828282;
-          background-color: #333333;
-          border-color: #333333;
+          color: var(--color-form-disabled);
+          background-color: var(--color-form-disabled-bg);
+          border-color: var(--color-form-disabled-bg);
         }
       }
     }
 
     .ant-transfer-list-body-search-wrapper:hover .anticon-search svg {
-      color: #f9b77a;
+      color: var(--color-hover);
     }
 
     .ant-transfer-list-body-search-wrapper:focus-within .anticon-search svg {
-      color: #7c95ff;
+      color: var(--color-form-focus);
     }
-
 
     .ant-input-search-enter-button input + .ant-input-group-addon {
       border-left: 1px solid;
@@ -85,7 +86,12 @@ export const Forms = styled.createGlobalStyle`
 
     .ant-input-group-addon {
       background: none;
-      color: inherit;
+      color: currentColor;
+
+      & .ant-input-search-button,
+      & .anticon-search {
+        transition: all 0.3s ease, 0s;
+      }
     }
 
     .ant-input,
@@ -94,28 +100,29 @@ export const Forms = styled.createGlobalStyle`
       text-overflow: ellipsis;
       background: none;
       border: none;
-      color: inherit;
+      color: currentColor;
 
       &::placeholder {
-        color: inherit;
+        color: currentColor;
       }
     }
 
     .ant-select,
+    .ant-select-open,
     .ant-select-selection-search,
     .ant-select-selection-item {
-      color: #43547d;
+      color: var(--color-form);
 
       &:hover {
-        color: #f9b77a;
+        color: var(--color-hover);
       }
 
       &:focus-within {
-        color: #7c95ff;
+        color: var(--color-form-focus);
       }
 
-      & svg {
-        color: inherit;
+      & .ant-select-arrow {
+        color: currentColor;
       }
     }
 
@@ -130,7 +137,7 @@ export const Forms = styled.createGlobalStyle`
       min-height: 4rem;
 
       background: none;
-      color: inherit;
+      color: currentColor;
 
       &::after {
         display: none;
@@ -141,22 +148,18 @@ export const Forms = styled.createGlobalStyle`
         background: none;
         border: 1px solid transparent;
       }
-
-      & svg {
-        color: inherit;
-      }
     }
 
     .ant-transfer-list {
       border: none;
-      color: #7c95ff;
+      color: var(--color-primary);
 
       .ant-transfer-list-header {
         background: none;
-        border-bottom: 1px solid #43547d;
+        border-bottom: 1px solid var(--color-form);
 
         span {
-          color: #7c95ff;
+          color: var(--color-text);
         }
       }
 
@@ -169,17 +172,17 @@ export const Forms = styled.createGlobalStyle`
       }
 
       .ant-transfer-list-search-action svg {
-        color: #7c95ff;
+        color: var(--color-primary);
       }
 
       .ant-checkbox-checked .ant-checkbox-inner {
-        background-color: #7c95ff;
-        border-color: #7c95ff;
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
       }
 
       .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-        background-color: #7c95ff;
-        border-color: #7c95ff;
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
       }
 
       .ant-transfer-list-content-item,
@@ -188,12 +191,12 @@ export const Forms = styled.createGlobalStyle`
 
         &:hover {
           background: none;
-          color: #f9b77a;          
+          color: var(--color-hover);
         }
       }
 
       .ant-empty-description {
-        color: var(--color-red);
+        color: var(--color-error-form);
       }
     }
   }
