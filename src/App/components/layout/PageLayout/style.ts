@@ -3,20 +3,17 @@ import PageLayout from "./component";
 
 export const StyledPageLayout = styled(PageLayout)`
   --max-width: min(100vw, 22rem);
-  --gap: var(--s8);
-
+  max-width: var(--max-width);
   overflow: hidden;
 
-  max-width: var(--max-width);
   padding: var(--s4);
-
-  & > * {
-    width: 100%;
-  }
-
   /* Reduces padding when width < var(--max-width), but uses em for better media query support */
   @media (max-width: 22em) {
     padding: var(--s-1) 0 var(--s-2) 0;
+  }
+
+  && > * {
+    width: 100%;
   }
 `;
 
