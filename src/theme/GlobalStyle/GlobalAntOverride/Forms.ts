@@ -58,6 +58,9 @@ export const Forms = createGlobalStyle`
     }
 
     .ant-form-item {
+      margin-top: 0;
+      margin-bottom: 0;
+
       &[data-disabled=true] {
         .ant-form-item-control-input-content {
           color: #828282;
