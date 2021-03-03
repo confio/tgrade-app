@@ -10,5 +10,4 @@ export const Logo = styled.img`
 export const LightText = styled(Text)`
   display: block;
   font-weight: lighter;
-  color: #7c95ff;
 `;

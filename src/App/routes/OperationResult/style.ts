@@ -13,11 +13,11 @@ export const ResultText = styled(Text)`
     font-size: var(--s-1);
 
     &[data-result="success"] {
-      color: var(--color-green);
+      color: var(--color-result-success);
     }
 
     &[data-result="failure"] {
-      color: var(--color-red);
+      color: var(--color-result-failure);
     }
   }
 `;

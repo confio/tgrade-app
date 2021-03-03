@@ -2,7 +2,7 @@ import { Divider } from "antd";
 import styled from "styled-components";
 
 export const DataDivider = styled(Divider)`
-  border-color: #7c95ff;
+  border-color: var(--color-primary);
 `;
 
 export const Balance = styled.div`

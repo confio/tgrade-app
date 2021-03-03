@@ -3,9 +3,10 @@ import styled from "styled-components";
 
 export const TransferFormItem = styled(FormItem)`
   && .ant-form-item-control-input-content {
-    &:hover {
-      color: #43547d;
-      border: 1px solid #43547d;
+    &:hover,
+    &:focus-within {
+      color: var(--color-form);
+      border: 1px solid currentColor;
     }
   }
 

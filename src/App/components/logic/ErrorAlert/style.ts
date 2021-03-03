@@ -2,9 +2,11 @@ import { Alert } from "antd";
 import styled from "styled-components";
 
 export const StyledAlert = styled(Alert)`
+  color: var(--color-error-alert);
+
   &.ant-alert-error {
     background: transparent;
-    border: 1px solid var(--color-red);
+    border: 1px solid currentColor;
     border-radius: 1.25rem;
 
     img {
@@ -14,7 +16,7 @@ export const StyledAlert = styled(Alert)`
 
     .ant-alert-message,
     .anticon-close {
-      color: var(--color-red);
+      color: currentColor;
     }
 
     .ant-alert-message {
