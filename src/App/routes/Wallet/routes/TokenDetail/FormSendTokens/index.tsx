@@ -1,11 +1,12 @@
 import { Button, Typography } from "antd";
+import { Stack } from "App/components/layout";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { useSdk } from "service";
 import { getSendAddressValidationSchema } from "utils/formSchemas";
 import * as Yup from "yup";
-import { FormField, FormStack } from "./style";
+import { FormField } from "./style";
 
 const { Text } = Typography;
 
@@ -45,7 +46,7 @@ export default function FormSendTokens({
     >
       {(formikProps) => (
         <Form>
-          <FormStack>
+          <Stack>
             <FormField>
               <Text>Send</Text>
               <FormItem name="amount">
@@ -66,7 +67,7 @@ export default function FormSendTokens({
             >
               Send
             </Button>
-          </FormStack>
+          </Stack>
         </Form>
       )}
     </Formik>
