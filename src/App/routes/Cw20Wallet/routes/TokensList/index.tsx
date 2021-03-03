@@ -1,13 +1,13 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useContracts, useSdk } from "service";
 import { CW20, Cw20Token, cw20TokenCompare, getCw20Token } from "utils/cw20";
-import { MainStack, TokenItem, TokenStack } from "./style";
+import { TokenItem } from "./style";
 
 const { Text, Title } = Typography;
 
@@ -57,9 +57,9 @@ export default function TokensList(): JSX.Element {
 
   return (
     <PageLayout hide="back-button">
-      <MainStack>
+      <Stack gap="s4">
         <Title>Tokens</Title>
-        <TokenStack>
+        <Stack>
           {cw20Tokens.map((token) => {
             const amountToDisplay = Decimal.fromAtomics(token.amount, token.decimals).toString();
 
@@ -77,11 +77,11 @@ export default function TokensList(): JSX.Element {
               </Button>
             );
           })}
-        </TokenStack>
+        </Stack>
         <Link to={`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`}>
           <Button type="primary">Add Another</Button>
         </Link>
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }
