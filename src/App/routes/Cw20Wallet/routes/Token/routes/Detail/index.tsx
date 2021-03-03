@@ -1,6 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { PageLayout, Stack } from "App/components/layout";
+import TokenAmount from "App/components/logic/TokenAmount";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -8,7 +9,6 @@ import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import FormSearchAllowing from "./FormSearchAllowing";
-import { Amount } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -124,17 +124,17 @@ export default function Detail(): JSX.Element {
       <Stack gap="s4">
         <Title>{cw20Token?.symbol || ""}</Title>
         <Stack gap="s-2">
-          <Amount>
+          <TokenAmount>
             <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
             {amountDecimal && <Text>{amountDecimal}</Text>}
             <Text>{" Tokens"}</Text>
-          </Amount>
+          </TokenAmount>
           {allowance ? (
-            <Amount>
+            <TokenAmount>
               <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
               {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
               <Text>{" Allowance"}</Text>
-            </Amount>
+            </TokenAmount>
           ) : null}
         </Stack>
         <Stack>

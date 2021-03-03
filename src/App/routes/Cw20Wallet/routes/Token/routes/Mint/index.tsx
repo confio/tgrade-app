@@ -2,6 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
 import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
+import TokenAmount from "App/components/logic/TokenAmount";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
@@ -11,7 +12,6 @@ import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormMintTokens, { FormMintTokensFields } from "./FormMintTokens";
-import { Amount } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -101,11 +101,11 @@ export default function Mint(): JSX.Element {
     <PageLayout backButtonProps={{ path: pathTokenDetail }}>
       <Stack gap="s4">
         <Title>{cw20Token?.symbol || ""}</Title>
-        <Amount>
+        <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
           <Text>{" Cap"}</Text>
-        </Amount>
+        </TokenAmount>
         <FormMintTokens
           tokenName={cw20Token?.symbol || ""}
           maxAmount={maxAmount}
