@@ -1,12 +1,13 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
+import { Stack } from "App/components/layout";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { useSdk } from "service";
 import { getAmountField, getSendAddressValidationSchema } from "utils/formSchemas";
 import * as Yup from "yup";
-import { FormField, FormStack } from "./style";
+import { FormField } from "./style";
 
 const { Text } = Typography;
 
@@ -47,20 +48,22 @@ export default function FormSendTokens({
     >
       {(formikProps) => (
         <Form>
-          <FormStack>
-            <FormField>
-              <Text>Send</Text>
-              <FormItem name="amount">
-                <Input name="amount" placeholder="Enter amount" />
-              </FormItem>
-              <Text>{tokenName}</Text>
-            </FormField>
-            <FormField>
-              <Text>to</Text>
-              <FormItem name="address">
-                <Input name="address" placeholder="Enter address" />
-              </FormItem>
-            </FormField>
+          <Stack gap="s2">
+            <Stack>
+              <FormField>
+                <Text>Send</Text>
+                <FormItem name="amount">
+                  <Input name="amount" placeholder="Enter amount" />
+                </FormItem>
+                <Text>{tokenName}</Text>
+              </FormField>
+              <FormField>
+                <Text>to</Text>
+                <FormItem name="address">
+                  <Input name="address" placeholder="Enter address" />
+                </FormItem>
+              </FormField>
+            </Stack>
             <Button
               type="primary"
               onClick={formikProps.submitForm}
@@ -68,7 +71,7 @@ export default function FormSendTokens({
             >
               Send
             </Button>
-          </FormStack>
+          </Stack>
         </Form>
       )}
     </Formik>
