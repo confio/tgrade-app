@@ -1,6 +1,6 @@
-import { createGlobalStyle } from "styled-components";
+import * as styled from "styled-components";
 
-export const GlobalFonts = createGlobalStyle`
+export const GlobalFonts = styled.createGlobalStyle`
   :root {
     --ff-montserrat: Montserrat, sans-serif;
     --ff-iceland: Iceland, serif;

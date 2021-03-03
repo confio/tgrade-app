@@ -1,6 +1,6 @@
-import { createGlobalStyle } from "styled-components";
+import * as styled from "styled-components";
 
-export const Buttons = createGlobalStyle`
+export const Buttons = styled.createGlobalStyle`
   :root {
     --border-width: 1px;
     --border-radius: 1.375rem;

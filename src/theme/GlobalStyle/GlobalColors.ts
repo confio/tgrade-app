@@ -1,6 +1,6 @@
-import { createGlobalStyle } from "styled-components";
+import * as styled from "styled-components";
 
-export const GlobalColors = createGlobalStyle`
+export const GlobalColors = styled.createGlobalStyle`
   :root {
     --color-black: #333;
     --color-gray-light: #f2f2f2;

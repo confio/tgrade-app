@@ -1,6 +1,6 @@
-import { createGlobalStyle } from "styled-components";
+import * as styled from "styled-components";
 
-export const Forms = createGlobalStyle`
+export const Forms = styled.createGlobalStyle`
   .ant-form {
     div[role="alert"] li {
       color: var(--form-error);
