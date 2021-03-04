@@ -7,6 +7,7 @@ export const DataDivider = styled(Divider)`
 
 export const Balance = styled.div`
   & span.ant-typography {
+    display: block;
     font-size: var(--s-1);
 
     & + span.ant-typography {
