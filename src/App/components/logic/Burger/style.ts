@@ -1,11 +1,6 @@
 import styled from "styled-components";
 
-interface BurgerProps {
-  readonly open: boolean;
-  readonly setOpen: (open: boolean) => void;
-}
-
-export const StyledBurger = styled.button<BurgerProps>`
+export const StyledBurger = styled.button`
   cursor: pointer;
   align-self: right;
   display: flex;
