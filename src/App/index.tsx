@@ -4,6 +4,7 @@ import * as React from "react";
 import { I18nextProvider } from "react-i18next";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ContractsProvider, ErrorProvider, SdkProvider } from "service";
+import LayoutProvider from "service/layout";
 import GlobalStyle from "theme/GlobalStyle";
 import { ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
@@ -22,36 +23,38 @@ export default function App(): JSX.Element {
         <SdkProvider config={config}>
           <ContractsProvider>
             <GlobalStyle />
-            <Router basename={process.env.PUBLIC_URL}>
-              <Switch>
-                <Route exact path="/">
-                  <Login />
-                </Route>
-                <Route path={paths.login}>
-                  <Login />
-                </Route>
-                <ProtectedSwitch authPath={paths.login}>
-                  <Route path={paths.logout}>
-                    <Logout />
+            <LayoutProvider>
+              <Router basename={process.env.PUBLIC_URL}>
+                <Switch>
+                  <Route exact path="/">
+                    <Login />
                   </Route>
-                  <Route path={paths.operationResult}>
-                    <OperationResult />
+                  <Route path={paths.login}>
+                    <Login />
                   </Route>
-                  <Route path={paths.account}>
-                    <Account />
-                  </Route>
-                  <Route path={paths.wallet.prefix}>
-                    <Wallet />
-                  </Route>
-                  <Route path={paths.cw20Wallet.prefix}>
-                    <Cw20Wallet />
-                  </Route>
-                  <Route path={paths.staking.prefix}>
-                    <Staking />
-                  </Route>
-                </ProtectedSwitch>
-              </Switch>
-            </Router>
+                  <ProtectedSwitch authPath={paths.login}>
+                    <Route path={paths.logout}>
+                      <Logout />
+                    </Route>
+                    <Route path={paths.operationResult}>
+                      <OperationResult />
+                    </Route>
+                    <Route path={paths.account}>
+                      <Account />
+                    </Route>
+                    <Route path={paths.wallet.prefix}>
+                      <Wallet />
+                    </Route>
+                    <Route path={paths.cw20Wallet.prefix}>
+                      <Cw20Wallet />
+                    </Route>
+                    <Route path={paths.staking.prefix}>
+                      <Staking />
+                    </Route>
+                  </ProtectedSwitch>
+                </Switch>
+              </Router>
+            </LayoutProvider>
           </ContractsProvider>
         </SdkProvider>
       </ErrorProvider>
