@@ -1,11 +1,12 @@
 import { Button, Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
+import { Stack } from "App/components/layout";
 import { NavPagination, pageSize } from "App/components/logic";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
+import { useLayout } from "service/layout";
 
 const { Title, Text } = Typography;
 
@@ -28,6 +29,8 @@ export default function Validators(): JSX.Element {
   const { t } = useTranslation("staking");
   const history = useHistory();
   const { url: pathValidatorsMatched } = useRouteMatch();
+  useLayout();
+
   const { getQueryClient } = useSdk();
 
   const [validatorsData, setValidatorsData] = useState<readonly ValidatorData[]>([]);
@@ -69,27 +72,25 @@ export default function Validators(): JSX.Element {
   }
 
   return (
-    <PageLayout hide="back-button">
-      <Stack gap="s5">
-        <Title>{t("validators")}</Title>
-        <NavPagination
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          total={validatorsData.length}
-        />
-        <Stack>
-          {validatorsData.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((validator) => (
-            <Button
-              key={validator.name}
-              data-size="large"
-              type="primary"
-              onClick={() => goToValidator(validator.address)}
-            >
-              <Text>{validator.name}</Text>
-            </Button>
-          ))}
-        </Stack>
+    <Stack gap="s5">
+      <Title>{t("validators")}</Title>
+      <NavPagination
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        total={validatorsData.length}
+      />
+      <Stack>
+        {validatorsData.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((validator) => (
+          <Button
+            key={validator.name}
+            data-size="large"
+            type="primary"
+            onClick={() => goToValidator(validator.address)}
+          >
+            <Text>{validator.name}</Text>
+          </Button>
+        ))}
       </Stack>
-    </PageLayout>
+    </Stack>
   );
 }
