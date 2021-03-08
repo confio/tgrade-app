@@ -1,8 +1,8 @@
 import { FormItem } from "formik-antd";
 import styled from "styled-components";
-import PageLayout from "./component";
+import { Center } from "..";
 
-export const StyledPageLayout = styled(PageLayout)`
+export const StyledCenter = styled(Center)`
   --max-width: min(100vw, 22rem);
   max-width: var(--max-width);
   overflow: hidden;
