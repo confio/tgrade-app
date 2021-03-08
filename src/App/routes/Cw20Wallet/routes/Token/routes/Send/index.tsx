@@ -1,14 +1,15 @@
 import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
-import { Loading, TokenAmount } from "App/components/logic";
+import { Stack } from "App/components/layout";
+import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormSendTokens, { FormSendTokensFields } from "./FormSendTokens";
@@ -21,14 +22,15 @@ interface SendParams {
 }
 
 export default function Send(): JSX.Element {
-  const [loading, setLoading] = useState(false);
-
   const { t } = useTranslation("cw20Wallet");
+  const history = useHistory();
   const { contractAddress, allowingAddress }: SendParams = useParams();
   const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${
     allowingAddress ? `/${allowingAddress}` : ""
   }`;
-  const history = useHistory();
+  const backButtonProps = useMemo(() => ({ path: pathTokenDetail }), [pathTokenDetail]);
+  const { setLoading } = useLayout({ backButtonProps });
+
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
   const client = getSigningClient();
@@ -66,7 +68,7 @@ export default function Send(): JSX.Element {
 
   async function sendTokensAction(values: FormSendTokensFields) {
     if (!cw20Token) return;
-    setLoading(true);
+    setLoading(`Sending ${cw20Token.symbol}...`);
 
     const { address: recipientAddress, amount } = values;
     const cw20Contract = CW20(client).use(contractAddress);
@@ -93,6 +95,8 @@ export default function Send(): JSX.Element {
           throw new Error(t("transferFail"));
         }
 
+        setLoading(false);
+
         history.push({
           pathname: paths.operationResult,
           state: {
@@ -105,6 +109,7 @@ export default function Send(): JSX.Element {
       }
     } catch (stackTrace) {
       handleError(stackTrace);
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -123,23 +128,19 @@ export default function Send(): JSX.Element {
 
   const maxAmount = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0);
 
-  return loading ? (
-    <Loading loadingText={t("sending", { symbol: cw20Token?.symbol || "" })} />
-  ) : (
-    <PageLayout backButtonProps={{ path: pathTokenDetail }}>
-      <Stack gap="s4">
-        <Title>{cw20Token?.symbol || ""}</Title>
-        <TokenAmount>
-          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-          {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{` ${t("tokens")}`}</Text>
-        </TokenAmount>
-        <FormSendTokens
-          tokenName={cw20Token?.symbol || ""}
-          maxAmount={maxAmount}
-          sendTokensAction={sendTokensAction}
-        />
-      </Stack>
-    </PageLayout>
+  return (
+    <Stack gap="s4">
+      <Title>{cw20Token?.symbol || ""}</Title>
+      <TokenAmount>
+        <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+        {amountDecimal && <Text>{amountDecimal}</Text>}
+        <Text>{` ${t("tokens")}`}</Text>
+      </TokenAmount>
+      <FormSendTokens
+        tokenName={cw20Token?.symbol || ""}
+        maxAmount={maxAmount}
+        sendTokensAction={sendTokensAction}
+      />
+    </Stack>
   );
 }

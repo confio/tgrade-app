@@ -1,16 +1,16 @@
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
-import { Loading } from "App/components/logic";
+import { Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import { Formik } from "formik";
 import { Form, FormItem, Input, Select } from "formik-antd";
 import * as React from "react";
-import { useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useContracts, useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { CW20, MinterResponse } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import * as Yup from "yup";
@@ -18,6 +18,8 @@ import { FormField } from "./style";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
+
+const pathTokensAdd = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`;
 
 export interface FormCreateTokenFields {
   readonly tokenSymbol: string;
@@ -30,9 +32,10 @@ export interface FormCreateTokenFields {
 
 export default function New(): JSX.Element {
   const { t } = useTranslation(["common", "cw20Wallet"]);
-  const [loading, setLoading] = useState(false);
-
   const history = useHistory();
+  const backButtonProps = useMemo(() => ({ path: pathTokensAdd }), []);
+  const { setLoading } = useLayout({ backButtonProps });
+
   const { handleError } = useError();
   const { getConfig, getSigningClient, getAddress } = useSdk();
   const codeId = getConfig().codeId;
@@ -40,7 +43,7 @@ export default function New(): JSX.Element {
   const { addContract } = useContracts();
 
   async function submitCreateToken(values: FormCreateTokenFields) {
-    setLoading(true);
+    setLoading("Creating token...");
 
     try {
       if (!codeId) {
@@ -79,6 +82,7 @@ export default function New(): JSX.Element {
       addContract(newCw20Contract);
 
       const tokenName = values.tokenName;
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -91,6 +95,7 @@ export default function New(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -133,102 +138,98 @@ export default function New(): JSX.Element {
       }),
   });
 
-  return loading ? (
-    <Loading loadingText={t("cw20Wallet:creating")} />
-  ) : (
-    <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}` }}>
-      <Stack gap="s4">
-        <Title>{t("cw20Wallet:addNewToken")}</Title>
-        <Formik
-          initialValues={{
-            tokenSymbol: "",
-            tokenName: "",
-            tokenDecimals: "",
-            tokenSupply: "",
-            tokenMint: "",
-            tokenMintCap: "",
-          }}
-          onSubmit={submitCreateToken}
-          validationSchema={validationSchema}
-        >
-          {(formikProps) => (
-            <Form>
-              <Stack gap="s2">
-                <Stack>
-                  <FormField>
-                    <Text id="tokenSymbol-label">{t("cw20Wallet:symbol")}</Text>
-                    <FormItem name="tokenSymbol">
-                      <Input
-                        aria-labelledby="tokenSymbol-label"
-                        name="tokenSymbol"
-                        placeholder={t("cw20Wallet:enterSymbol")}
-                      />
-                    </FormItem>
-                  </FormField>
-                  <FormField>
-                    <Text id="tokenName-label">{t("cw20Wallet:name")}</Text>
-                    <FormItem name="tokenName">
-                      <Input
-                        aria-labelledby="tokenName-label"
-                        name="tokenName"
-                        placeholder={t("cw20Wallet:enterName")}
-                      />
-                    </FormItem>
-                  </FormField>
-                  <FormField>
-                    <Text id="tokenDecimals-label">{t("cw20Wallet:displayDecimals")}</Text>
-                    <FormItem name="tokenDecimals">
-                      <Input
-                        aria-labelledby="tokenDecimals-label"
-                        name="tokenDecimals"
-                        placeholder={t("cw20Wallet:enterDisplayDecimals")}
-                      />
-                    </FormItem>
-                  </FormField>
-                  <FormField>
-                    <Text id="tokenSupply-label">{t("cw20Wallet:initialSupply")}</Text>
-                    <FormItem name="tokenSupply">
-                      <Input
-                        aria-labelledby="tokenSupply-label"
-                        name="tokenSupply"
-                        placeholder={t("cw20Wallet:enterInitialSupply")}
-                      />
-                    </FormItem>
-                  </FormField>
-                  <FormField>
-                    <Text>{t("cw20Wallet:mint")}</Text>
-                    <FormItem name="tokenMint">
-                      <Select name="tokenMint" defaultValue="none">
-                        <Option value="none">{t("cw20Wallet:enterMintNone")}</Option>
-                        <Option value="fixed">{t("cw20Wallet:enterMintFixedCap")}</Option>
-                        <Option value="unlimited">{t("cw20Wallet:enterMintUnlimited")}</Option>
-                      </Select>
-                    </FormItem>
-                  </FormField>
-                  <FormField>
-                    <Text id="tokenMintCap-label">{t("cw20Wallet:mintCap")}</Text>
-                    <FormItem name="tokenMintCap" data-disabled={formikProps.values.tokenMint !== "fixed"}>
-                      <Input
-                        aria-labelledby="tokenMintCap-label"
-                        name="tokenMintCap"
-                        disabled={formikProps.values.tokenMint !== "fixed"}
-                        placeholder={t("cw20Wallet:enterMintCap")}
-                      />
-                    </FormItem>
-                  </FormField>
-                </Stack>
-                <Button
-                  type="primary"
-                  onClick={formikProps.submitForm}
-                  disabled={!(formikProps.isValid && formikProps.dirty)}
-                >
-                  {t("cw20Wallet:create")}
-                </Button>
+  return (
+    <Stack gap="s4">
+      <Title>{t("cw20Wallet:addNewToken")}</Title>
+      <Formik
+        initialValues={{
+          tokenSymbol: "",
+          tokenName: "",
+          tokenDecimals: "",
+          tokenSupply: "",
+          tokenMint: "",
+          tokenMintCap: "",
+        }}
+        onSubmit={submitCreateToken}
+        validationSchema={validationSchema}
+      >
+        {(formikProps) => (
+          <Form>
+            <Stack gap="s2">
+              <Stack>
+                <FormField>
+                  <Text id="tokenSymbol-label">{t("cw20Wallet:symbol")}</Text>
+                  <FormItem name="tokenSymbol">
+                    <Input
+                      aria-labelledby="tokenSymbol-label"
+                      name="tokenSymbol"
+                      placeholder={t("cw20Wallet:enterSymbol")}
+                    />
+                  </FormItem>
+                </FormField>
+                <FormField>
+                  <Text id="tokenName-label">{t("cw20Wallet:name")}</Text>
+                  <FormItem name="tokenName">
+                    <Input
+                      aria-labelledby="tokenName-label"
+                      name="tokenName"
+                      placeholder={t("cw20Wallet:enterName")}
+                    />
+                  </FormItem>
+                </FormField>
+                <FormField>
+                  <Text id="tokenDecimals-label">{t("cw20Wallet:displayDecimals")}</Text>
+                  <FormItem name="tokenDecimals">
+                    <Input
+                      aria-labelledby="tokenDecimals-label"
+                      name="tokenDecimals"
+                      placeholder={t("cw20Wallet:enterDisplayDecimals")}
+                    />
+                  </FormItem>
+                </FormField>
+                <FormField>
+                  <Text id="tokenSupply-label">{t("cw20Wallet:initialSupply")}</Text>
+                  <FormItem name="tokenSupply">
+                    <Input
+                      aria-labelledby="tokenSupply-label"
+                      name="tokenSupply"
+                      placeholder={t("cw20Wallet:enterInitialSupply")}
+                    />
+                  </FormItem>
+                </FormField>
+                <FormField>
+                  <Text>{t("cw20Wallet:mint")}</Text>
+                  <FormItem name="tokenMint">
+                    <Select name="tokenMint" defaultValue="none">
+                      <Option value="none">{t("cw20Wallet:enterMintNone")}</Option>
+                      <Option value="fixed">{t("cw20Wallet:enterMintFixedCap")}</Option>
+                      <Option value="unlimited">{t("cw20Wallet:enterMintUnlimited")}</Option>
+                    </Select>
+                  </FormItem>
+                </FormField>
+                <FormField>
+                  <Text id="tokenMintCap-label">{t("cw20Wallet:mintCap")}</Text>
+                  <FormItem name="tokenMintCap" data-disabled={formikProps.values.tokenMint !== "fixed"}>
+                    <Input
+                      aria-labelledby="tokenMintCap-label"
+                      name="tokenMintCap"
+                      disabled={formikProps.values.tokenMint !== "fixed"}
+                      placeholder={t("cw20Wallet:enterMintCap")}
+                    />
+                  </FormItem>
+                </FormField>
               </Stack>
-            </Form>
-          )}
-        </Formik>
-      </Stack>
-    </PageLayout>
+              <Button
+                type="primary"
+                onClick={formikProps.submitForm}
+                disabled={!(formikProps.isValid && formikProps.dirty)}
+              >
+                {t("cw20Wallet:create")}
+              </Button>
+            </Stack>
+          </Form>
+        )}
+      </Formik>
+    </Stack>
   );
 }

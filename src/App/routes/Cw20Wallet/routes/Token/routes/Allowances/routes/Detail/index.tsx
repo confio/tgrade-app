@@ -1,14 +1,15 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
-import { Loading, TokenAmount } from "App/components/logic";
+import { Stack } from "App/components/layout";
+import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { AddressText } from "./style";
@@ -21,14 +22,14 @@ interface DetailParams {
 }
 
 export default function Detail(): JSX.Element {
-  const [loading, setLoading] = useState(false);
-
   const { t } = useTranslation("cw20Wallet");
+  const history = useHistory();
   const { url: pathAllowancesMatched } = useRouteMatch();
   const { contractAddress, spenderAddress }: DetailParams = useParams();
   const pathAllowances = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}`;
+  const backButtonProps = useMemo(() => ({ path: pathAllowances }), [pathAllowances]);
+  const { setLoading } = useLayout({ backButtonProps });
 
-  const history = useHistory();
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
   const client = getSigningClient();
@@ -63,12 +64,14 @@ export default function Detail(): JSX.Element {
   }
 
   async function submitRemove() {
-    setLoading(true);
+    setLoading("Removing allowance...");
     const cw20Contract = CW20(client).use(contractAddress);
 
     try {
       const { allowance } = await cw20Contract.allowance(address, spenderAddress);
       await cw20Contract.decreaseAllowance(address, spenderAddress, allowance);
+
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -81,6 +84,7 @@ export default function Detail(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -97,25 +101,21 @@ export default function Detail(): JSX.Element {
   const allowanceToDisplay = Decimal.fromAtomics(allowanceAmount || "0", cw20Token?.decimals ?? 0).toString();
   const [allowanceInteger, allowanceDecimal] = allowanceToDisplay.split(".");
 
-  return loading ? (
-    <Loading loadingText={t("removing")} />
-  ) : (
-    <PageLayout backButtonProps={{ path: pathAllowances }}>
-      <Stack gap="s3">
-        <Title>{`${cw20Token?.symbol || ""} ${t("allowance")}`}</Title>
-        <TokenAmount>
-          <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
-          {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-          <Text>{` ${t("tokens")}`}</Text>
-        </TokenAmount>
-        <AddressText>{spenderAddress}</AddressText>
-        <Button type="primary" onClick={() => goToAllowancesEdit()}>
-          {t("edit")}
-        </Button>
-        <Button type="primary" onClick={submitRemove}>
-          {t("remove")}
-        </Button>
-      </Stack>
-    </PageLayout>
+  return (
+    <Stack gap="s3">
+      <Title>{`${cw20Token?.symbol || ""} ${t("allowance")}`}</Title>
+      <TokenAmount>
+        <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
+        {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
+        <Text>{` ${t("tokens")}`}</Text>
+      </TokenAmount>
+      <AddressText>{spenderAddress}</AddressText>
+      <Button type="primary" onClick={() => goToAllowancesEdit()}>
+        {t("edit")}
+      </Button>
+      <Button type="primary" onClick={submitRemove}>
+        {t("remove")}
+      </Button>
+    </Stack>
   );
 }

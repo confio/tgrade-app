@@ -1,14 +1,15 @@
 import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
-import { Loading, TokenAmount } from "App/components/logic";
+import { Stack } from "App/components/layout";
+import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormChangeAmount, { FormChangeAmountFields } from "./FormChangeAmount";
@@ -22,13 +23,13 @@ interface EditParams {
 }
 
 export default function Edit(): JSX.Element {
-  const [loading, setLoading] = useState(false);
-
   const { t } = useTranslation("cw20Wallet");
+  const history = useHistory();
   const { contractAddress, spenderAddress }: EditParams = useParams();
   const pathAllowance = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}/${spenderAddress}`;
+  const backButtonProps = useMemo(() => ({ path: pathAllowance }), [pathAllowance]);
+  const { setLoading } = useLayout({ backButtonProps });
 
-  const history = useHistory();
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
   const client = getSigningClient();
@@ -59,7 +60,7 @@ export default function Edit(): JSX.Element {
   }, [address, client, contractAddress, handleError, spenderAddress, t]);
 
   async function submitChangeAmount(values: FormChangeAmountFields): Promise<void> {
-    setLoading(true);
+    setLoading("Changing allowance...");
 
     const { amount: newAmount } = values;
     const cw20Contract = CW20(getSigningClient()).use(contractAddress);
@@ -82,6 +83,8 @@ export default function Edit(): JSX.Element {
         );
       }
 
+      setLoading(false);
+
       history.push({
         pathname: paths.operationResult,
         state: {
@@ -93,6 +96,7 @@ export default function Edit(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -111,25 +115,21 @@ export default function Edit(): JSX.Element {
   const allowanceToDisplay = Decimal.fromAtomics(allowanceAmount || "0", cw20Token?.decimals ?? 0).toString();
   const [allowanceInteger, allowanceDecimal] = allowanceToDisplay.split(".");
 
-  return loading ? (
-    <Loading loadingText={t("editing")} />
-  ) : (
-    <PageLayout backButtonProps={{ path: pathAllowance }}>
-      <Stack gap="s3">
-        <Title>{t("editAllowance")}</Title>
-        <AddressText>{spenderAddress}</AddressText>
-        <TokenAmount>
-          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-          {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{` ${t("tokens")}`}</Text>
-        </TokenAmount>
-        <TokenAmount>
-          <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
-          {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-          <Text>{` ${t("allowance")}`}</Text>
-        </TokenAmount>
-        <FormChangeAmount tokenName={cw20Token?.symbol || ""} submitChangeAmount={submitChangeAmount} />
-      </Stack>
-    </PageLayout>
+  return (
+    <Stack gap="s3">
+      <Title>{t("editAllowance")}</Title>
+      <AddressText>{spenderAddress}</AddressText>
+      <TokenAmount>
+        <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+        {amountDecimal && <Text>{amountDecimal}</Text>}
+        <Text>{` ${t("tokens")}`}</Text>
+      </TokenAmount>
+      <TokenAmount>
+        <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
+        {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
+        <Text>{` ${t("allowance")}`}</Text>
+      </TokenAmount>
+      <FormChangeAmount tokenName={cw20Token?.symbol || ""} submitChangeAmount={submitChangeAmount} />
+    </Stack>
   );
 }
