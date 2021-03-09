@@ -25,14 +25,7 @@ export const StyledBurger = styled.button<BurgerProps>`
     width: 2rem;
     height: 0.25rem;
 
-    border-radius: 10px;
-    background: linear-gradient(
-      90deg,
-      rgba(113, 100, 246, 1) 0%,
-      rgba(125, 97, 243, 1) 12%,
-      rgba(174, 117, 231, 1) 33%,
-      rgba(90, 67, 245, 1) 49%,
-      rgba(66, 160, 255, 1) 91%
-    );
+    border-radius: 0.625rem;
+    background: var(--grad-primary);
   }
 `;

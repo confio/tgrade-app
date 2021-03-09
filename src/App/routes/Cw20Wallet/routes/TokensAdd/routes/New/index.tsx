@@ -1,6 +1,6 @@
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
@@ -13,7 +13,7 @@ import { useContracts, useError, useSdk } from "service";
 import { CW20, MinterResponse } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { createTokenValidationSchema } from "utils/formSchemas";
-import { FormField, FormStack, MainStack } from "./style";
+import { FormField } from "./style";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -104,7 +104,7 @@ export default function New(): JSX.Element {
     <Loading loadingText={"Creating token..."} />
   ) : (
     <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}` }}>
-      <MainStack>
+      <Stack gap="s4">
         <Title>Add New Token</Title>
         <Formik
           initialValues={{
@@ -120,51 +120,53 @@ export default function New(): JSX.Element {
         >
           {(formikProps) => (
             <Form>
-              <FormStack>
-                <FormField>
-                  <Text>Symbol</Text>
-                  <FormItem name="symbol">
-                    <Input name="symbol" placeholder="Enter symbol" />
-                  </FormItem>
-                </FormField>
-                <FormField>
-                  <Text>Name</Text>
-                  <FormItem name="tokenName">
-                    <Input name="tokenName" placeholder="Enter Token Name" />
-                  </FormItem>
-                </FormField>
-                <FormField>
-                  <Text>Display decimals</Text>
-                  <FormItem name="decimals">
-                    <Input name="decimals" placeholder="Select Number" />
-                  </FormItem>
-                </FormField>
-                <FormField>
-                  <Text>Initial supply</Text>
-                  <FormItem name="initialSupply">
-                    <Input name="initialSupply" placeholder="Enter Number" />
-                  </FormItem>
-                </FormField>
-                <FormField>
-                  <Text>Mint</Text>
-                  <FormItem name="mint">
-                    <Select name="mint" defaultValue="none">
-                      <Option value="none">None</Option>
-                      <Option value="fixed">Fixed cap</Option>
-                      <Option value="unlimited">Unlimited</Option>
-                    </Select>
-                  </FormItem>
-                </FormField>
-                <FormField>
-                  <Text>Mint cap</Text>
-                  <FormItem name="mintCap" data-disabled={formikProps.values.mint !== "fixed"}>
-                    <Input
-                      name="mintCap"
-                      disabled={formikProps.values.mint !== "fixed"}
-                      placeholder="Enter Amount"
-                    />
-                  </FormItem>
-                </FormField>
+              <Stack gap="s2">
+                <Stack>
+                  <FormField>
+                    <Text>Symbol</Text>
+                    <FormItem name="symbol">
+                      <Input name="symbol" placeholder="Enter symbol" />
+                    </FormItem>
+                  </FormField>
+                  <FormField>
+                    <Text>Name</Text>
+                    <FormItem name="tokenName">
+                      <Input name="tokenName" placeholder="Enter Token Name" />
+                    </FormItem>
+                  </FormField>
+                  <FormField>
+                    <Text>Display decimals</Text>
+                    <FormItem name="decimals">
+                      <Input name="decimals" placeholder="Select Number" />
+                    </FormItem>
+                  </FormField>
+                  <FormField>
+                    <Text>Initial supply</Text>
+                    <FormItem name="initialSupply">
+                      <Input name="initialSupply" placeholder="Enter Number" />
+                    </FormItem>
+                  </FormField>
+                  <FormField>
+                    <Text>Mint</Text>
+                    <FormItem name="mint">
+                      <Select name="mint" defaultValue="none">
+                        <Option value="none">None</Option>
+                        <Option value="fixed">Fixed cap</Option>
+                        <Option value="unlimited">Unlimited</Option>
+                      </Select>
+                    </FormItem>
+                  </FormField>
+                  <FormField>
+                    <Text>Mint cap</Text>
+                    <FormItem name="mintCap" data-disabled={formikProps.values.mint !== "fixed"}>
+                      <Input
+                        name="mintCap"
+                        disabled={formikProps.values.mint !== "fixed"}
+                        placeholder="Enter Amount"
+                      />
+                    </FormItem>
+                  </FormField>
+                </Stack>
                 <Button
                   type="primary"
                   onClick={formikProps.submitForm}
@@ -172,11 +174,11 @@ export default function New(): JSX.Element {
                 >
                   Create
                 </Button>
-              </FormStack>
+              </Stack>
             </Form>
           )}
         </Formik>
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

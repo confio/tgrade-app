@@ -1,10 +1,9 @@
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
-import { MainStack, ValidatorStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -67,9 +66,9 @@ export default function Validators(): JSX.Element {
 
   return (
     <PageLayout hide="back-button">
-      <MainStack>
+      <Stack gap="s5">
         <Title>Validators</Title>
-        <ValidatorStack>
+        <Stack>
           {validatorsData.map((validator) => (
             <Button
               key={validator.name}
@@ -80,8 +79,8 @@ export default function Validators(): JSX.Element {
               <Text>{validator.name}</Text>
             </Button>
           ))}
-        </ValidatorStack>
-      </MainStack>
+        </Stack>
+      </Stack>
     </PageLayout>
   );
 }

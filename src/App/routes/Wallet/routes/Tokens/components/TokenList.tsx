@@ -1,13 +1,11 @@
 import { Coin } from "@cosmjs/launchpad";
-import { Button, Typography } from "antd";
+import { Stack } from "App/components/layout";
+import TokenButton from "App/components/logic/TokenButton";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay, useBalance } from "utils/currency";
-import { TokenItem, TokenStack } from "./style";
-
-const { Text } = Typography;
 
 interface TokenListProps {
   readonly currentAddress: string;
@@ -55,7 +53,7 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
   }
 
   return (
-    <TokenStack>
+    <Stack>
       {currentBalance.map((nativeToken) => {
         const { denom: denomToDisplay, amount: amountToDisplay } = nativeCoinToDisplay(
           nativeToken,
@@ -63,22 +61,16 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
         );
 
         return (
-          <Button
+          <TokenButton
             key={nativeToken.denom}
-            disabled={!amAllowed}
-            data-size="large"
-            type="primary"
+            denom={denomToDisplay}
+            amount={amountToDisplay}
             onClick={() => {
               amAllowed && goTokenDetail(nativeToken);
             }}
-          >
-            <TokenItem>
-              <Text>{denomToDisplay}</Text>
-              <Text>{amountToDisplay !== "0" ? amountToDisplay : "No tokens"}</Text>
-            </TokenItem>
-          </Button>
+          />
         );
       })}
-    </TokenStack>
+    </Stack>
   );
 }

@@ -1,9 +1,10 @@
 import { Button, Typography } from "antd";
+import { Stack } from "App/components/layout";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { setAllowanceValidationSchema } from "utils/formSchemas";
-import { FormAmount, FormStack } from "./style";
+import { FormAmount } from "./style";
 
 const { Text } = Typography;
 
@@ -28,7 +29,7 @@ export default function FormChangeAmount({
     >
       {(formikProps) => (
         <Form>
-          <FormStack>
+          <Stack gap="s7">
             <FormAmount>
               <FormItem name="newAmount">
                 <Input name="newAmount" placeholder="Enter new amount" />
@@ -42,7 +43,7 @@ export default function FormChangeAmount({
             >
               Edit
             </Button>
-          </FormStack>
+          </Stack>
         </Form>
       )}
     </Formik>

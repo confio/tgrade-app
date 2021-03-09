@@ -1,4 +1,5 @@
 import { Button } from "antd";
+import { Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import { Formik } from "formik";
@@ -9,7 +10,6 @@ import { useContracts, useError, useSdk } from "service";
 import { CW20 } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getCodeIdOrAddressValidationSchema } from "utils/formSchemas";
-import { FormStack } from "./style";
 
 interface FormInputContractFields {
   readonly codeIdOrAddress: string;
@@ -69,7 +69,7 @@ export default function FormInputContract(): JSX.Element {
     >
       {(formikProps) => (
         <Form>
-          <FormStack>
+          <Stack gap="s2">
             <FormItem name="codeIdOrAddress">
               <Input name="codeIdOrAddress" placeholder="Enter a contract address or codeID" />
             </FormItem>
@@ -80,7 +80,7 @@ export default function FormInputContract(): JSX.Element {
             >
               Continue
             </Button>
-          </FormStack>
+          </Stack>
         </Form>
       )}
     </Formik>

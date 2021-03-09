@@ -18,7 +18,7 @@ export default function PageLayout({
   const [open, setOpen] = useState(false);
   return (
     <Center tag="main" {...props}>
-      <Stack>
+      <Stack gap="s8">
         {hide !== "header" ? (
           <NavHeader>
             {hide !== "back-button" ? <BackButton {...backButtonProps} /> : null}

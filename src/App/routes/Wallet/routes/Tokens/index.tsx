@@ -1,11 +1,10 @@
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import * as React from "react";
 import { useState } from "react";
 import { useSdk } from "service";
 import FormSearchName from "./components/FormSearchName";
 import TokenList from "./components/TokenList";
-import { MainStack } from "./style";
 
 const { Title } = Typography;
 
@@ -16,7 +15,7 @@ export default function Tokens(): JSX.Element {
 
   return (
     <PageLayout hide="back-button">
-      <MainStack>
+      <Stack gap="s4">
         <Title>Tokens</Title>
         <FormSearchName currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />
         <TokenList currentAddress={currentAddress} />
@@ -25,7 +24,7 @@ export default function Tokens(): JSX.Element {
             Back to My Account
           </Button>
         ) : null}
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

@@ -1,7 +1,8 @@
 import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
+import TokenAmount from "App/components/logic/TokenAmount";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
@@ -11,7 +12,7 @@ import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormChangeAmount, { FormChangeAmountFields } from "./FormChangeAmount";
-import { Amount, MainStack } from "./style";
+import { AddressText } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -115,21 +116,21 @@ export default function Edit(): JSX.Element {
     <Loading loadingText={`Changing allowance...`} />
   ) : (
     <PageLayout backButtonProps={{ path: pathAllowance }}>
-      <MainStack>
+      <Stack gap="s3">
         <Title>Edit Allowance</Title>
-        <Text>{spenderAddress}</Text>
-        <Amount>
+        <AddressText>{spenderAddress}</AddressText>
+        <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
           <Text>{" Tokens"}</Text>
-        </Amount>
-        <Amount>
+        </TokenAmount>
+        <TokenAmount>
           <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
           {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
           <Text>{" Allowance"}</Text>
-        </Amount>
+        </TokenAmount>
         <FormChangeAmount tokenName={cw20Token?.symbol || ""} submitChangeAmount={submitChangeAmount} />
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

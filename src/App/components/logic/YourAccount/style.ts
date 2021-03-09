@@ -1,32 +1,17 @@
-import { Stack } from "App/components/layout";
+import { Divider } from "antd";
 import styled from "styled-components";
 
-export const AccountStack = styled(Stack)`
-  & > * {
-    --gap: var(--s-2);
-  }
+export const DataDivider = styled(Divider)`
+  border-color: var(--color-primary);
+`;
 
-  h3,
-  div[role="separator"] {
-    margin: 0;
-  }
-
-  span,
-  button {
-    overflow-wrap: anywhere;
-  }
-
-  span.ant-typography {
+export const Balance = styled.div`
+  & span.ant-typography {
     display: block;
     font-size: var(--s-1);
 
     & + span.ant-typography {
       font-weight: bold;
     }
-  }
-
-  button {
-    height: 100%;
-    white-space: normal;
   }
 `;

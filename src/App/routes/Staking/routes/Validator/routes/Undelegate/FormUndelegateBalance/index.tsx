@@ -1,12 +1,13 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
+import { Stack } from "App/components/layout";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import * as Yup from "yup";
-import { FormField, FormStack } from "./style";
+import { FormField } from "./style";
 
 const { Text } = Typography;
 
@@ -71,17 +72,19 @@ export default function FormUndelegateBalance({
     >
       {(formikProps) => (
         <Form>
-          <FormStack>
-            <FormField>
-              <Text>Balance</Text>
-              <Text>{balance.toString()}</Text>
-            </FormField>
-            <FormField>
-              <Text>Undelegate</Text>
-              <FormItem name="amount">
-                <Input name="amount" placeholder="Enter amount" />
-              </FormItem>
-            </FormField>
+          <Stack gap="s2">
+            <Stack>
+              <FormField>
+                <Text>Balance</Text>
+                <Text>{balance.toString()}</Text>
+              </FormField>
+              <FormField>
+                <Text>Undelegate</Text>
+                <FormItem name="amount">
+                  <Input name="amount" placeholder="Enter amount" />
+                </FormItem>
+              </FormField>
+            </Stack>
             <Button
               type="primary"
               onClick={formikProps.submitForm}
@@ -89,7 +92,7 @@ export default function FormUndelegateBalance({
             >
               Undelegate
             </Button>
-          </FormStack>
+          </Stack>
         </Form>
       )}
     </Formik>

@@ -1,24 +1,34 @@
-import { createGlobalStyle } from "styled-components";
+import * as styled from "styled-components";
 
-export const GlobalSpacing = createGlobalStyle`
+const spacings = ["s-2", "s-1", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"] as const;
+export type Spacing = typeof spacings[number];
+
+export const GlobalSpacing = styled.createGlobalStyle`
   :root {
     --ratio: 1.25;
+    --border-width: 1px;
+    --border-radius: 1.25rem;
 
-    --s-6: calc(var(--s-5) / var(--ratio));
-    --s-5: calc(var(--s-4) / var(--ratio));
-    --s-4: calc(var(--s-3) / var(--ratio));
-    --s-3: calc(var(--s-2) / var(--ratio));
-    --s-2: calc(var(--s-1) / var(--ratio));
-    --s-1: calc(var(--s0) / var(--ratio));
-    --s0: 1rem;
-    --s1: calc(var(--s0) * var(--ratio));
-    --s2: calc(var(--s1) * var(--ratio));
-    --s3: calc(var(--s2) * var(--ratio));
-    --s4: calc(var(--s3) * var(--ratio));
-    --s5: calc(var(--s4) * var(--ratio));
-    --s6: calc(var(--s5) * var(--ratio));
-    --s7: calc(var(--s6) * var(--ratio));
-    --s8: calc(var(--s7) * var(--ratio));
-    --s9: calc(var(--s8) * var(--ratio));
+    /* Generate CSS custom properties with the "spacings" array, like so:
+      --s-2: calc(var(--s-1) / var(--ratio));
+      --s-1: calc(var(--s0) / var(--ratio));
+      --s0: 1rem;
+      --s1: calc(var(--s0) * var(--ratio));
+      --s2: calc(var(--s1) * var(--ratio));
+    */
+    ${() =>
+      spacings.map((spacing: Spacing) => {
+        if (spacing === "s0") return "--s0: 1rem;";
+
+        // For spacing = "s3" => spacingPrevNum = 2 and spacingRoot = "--s"
+        // For spacing = "s-2" => spacingPrevNum = 1 and spacingRoot = "--s-"
+        // For spacing = "s-1" => spacingPrevNum = 0 and spacingRoot = "--s"
+        const spacingPrevNum = parseInt(spacing.slice(-1), 10) - 1;
+        const spacingRoot = `--${spacing.slice(0, -1)}`;
+        const spacingPrevRoot = spacingPrevNum === 0 ? "--s" : spacingRoot;
+        const ratioOp = spacingRoot === "--s" ? "*" : "/";
+
+        return `--${spacing}: calc(var(${spacingPrevRoot}${spacingPrevNum}) ${ratioOp} var(--ratio));`;
+      })}
   }
 `;

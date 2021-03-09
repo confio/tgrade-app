@@ -1,17 +1,18 @@
 import { Contract } from "@cosmjs/cosmwasm";
 import { Button } from "antd";
 import { TransferItem } from "antd/lib/transfer";
+import { Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import { Formik } from "formik";
-import { Form, FormItem, Transfer } from "formik-antd";
+import { Form, Transfer } from "formik-antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useContracts, useError, useSdk } from "service";
 import { CW20 } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
-import { FormStack } from "./style";
+import { TransferFormItem } from "./style";
 
 interface FormSelectContractsParams {
   readonly codeId: string;
@@ -91,8 +92,8 @@ export default function FormSelectContracts(): JSX.Element {
     <Formik initialValues={{}} onSubmit={submitSelectContracts}>
       {(formikProps) => (
         <Form>
-          <FormStack>
-            <FormItem name="contracts">
+          <Stack gap="s2">
+            <TransferFormItem name="contracts">
               <Transfer
                 name="contracts"
                 showSearch
@@ -104,7 +105,7 @@ export default function FormSelectContracts(): JSX.Element {
                 listStyle={{ listStyle: "none" }}
                 render={(item: TransferItem) => item.title ?? ""}
               />
-            </FormItem>
+            </TransferFormItem>
             <Button
               type="primary"
               onClick={formikProps.submitForm}
@@ -112,7 +113,7 @@ export default function FormSelectContracts(): JSX.Element {
             >
               Continue
             </Button>
-          </FormStack>
+          </Stack>
         </Form>
       )}
     </Formik>

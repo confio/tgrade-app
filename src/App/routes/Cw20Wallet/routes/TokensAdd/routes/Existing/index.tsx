@@ -1,11 +1,10 @@
 import { Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { Route, Switch, useParams } from "react-router-dom";
 import FormInputContract from "./routes/FormInputContract";
 import FormSelectContracts from "./routes/FormSelectContracts";
-import { MainStack } from "./style";
 
 const { Title } = Typography;
 
@@ -21,7 +20,7 @@ export default function Existing(): JSX.Element {
 
   return (
     <PageLayout backButtonProps={{ path: pathBack }}>
-      <MainStack>
+      <Stack gap="s4">
         <Title>Add Existing Token</Title>
         <Switch>
           <Route exact path={basePath}>
@@ -31,7 +30,7 @@ export default function Existing(): JSX.Element {
             <FormSelectContracts />
           </Route>
         </Switch>
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

@@ -1,6 +1,6 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { DataList, Loading } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -10,7 +10,6 @@ import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
-import { HeaderTitleStack, MainStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -109,11 +108,11 @@ export default function Rewards(): JSX.Element {
     <PageLayout
       backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}` }}
     >
-      <MainStack>
-        <HeaderTitleStack>
+      <Stack gap="s6">
+        <Stack>
           <Title>Pending rewards</Title>
           <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
-        </HeaderTitleStack>
+        </Stack>
         {rewards.length ? (
           <>
             <DataList {...getRewardsMap()} />
@@ -124,7 +123,7 @@ export default function Rewards(): JSX.Element {
         ) : (
           <Text>No rewards found</Text>
         )}
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

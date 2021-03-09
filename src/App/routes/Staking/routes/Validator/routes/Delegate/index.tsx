@@ -1,6 +1,6 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -11,7 +11,6 @@ import { displayAmountToNative } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
 import FormDelegateBalance, { FormDelegateBalanceFields } from "./FormDelegateBalance";
-import { HeaderTitleStack, MainStack } from "./style";
 
 const { Title } = Typography;
 
@@ -70,13 +69,13 @@ export default function Delegate(): JSX.Element {
     <PageLayout
       backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}` }}
     >
-      <MainStack>
-        <HeaderTitleStack>
+      <Stack gap="s6">
+        <Stack>
           <Title>Delegate</Title>
           <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
-        </HeaderTitleStack>
+        </Stack>
         <FormDelegateBalance submitDelegateBalance={submitDelegateBalance} />
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

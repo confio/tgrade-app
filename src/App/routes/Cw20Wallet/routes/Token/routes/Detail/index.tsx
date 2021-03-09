@@ -1,6 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
+import TokenAmount from "App/components/logic/TokenAmount";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -8,7 +9,6 @@ import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import FormSearchAllowing from "./FormSearchAllowing";
-import { Amount, MainStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -121,40 +121,44 @@ export default function Detail(): JSX.Element {
 
   return (
     <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}` }}>
-      <MainStack>
+      <Stack gap="s4">
         <Title>{cw20Token?.symbol || ""}</Title>
-        <Amount>
-          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-          {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" Tokens"}</Text>
-        </Amount>
-        {allowance ? (
-          <Amount>
-            <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
-            {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-            <Text>{" Allowance"}</Text>
-          </Amount>
-        ) : null}
-        <Button type="primary" onClick={goToSend} disabled={isSendButtonDisabled}>
-          Send Tokens
-        </Button>
-        {!allowingAddress && isUserMinter ? (
-          <Button type="primary" onClick={goToMint}>
-            Mint Tokens
+        <Stack gap="s-2">
+          <TokenAmount>
+            <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+            {amountDecimal && <Text>{amountDecimal}</Text>}
+            <Text>{" Tokens"}</Text>
+          </TokenAmount>
+          {allowance ? (
+            <TokenAmount>
+              <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
+              {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
+              <Text>{" Allowance"}</Text>
+            </TokenAmount>
+          ) : null}
+        </Stack>
+        <Stack>
+          <Button type="primary" onClick={goToSend} disabled={isSendButtonDisabled}>
+            Send Tokens
           </Button>
-        ) : null}
-        {!allowingAddress ? (
-          <Button type="primary" onClick={goToAllowances}>
-            My Allowances
-          </Button>
-        ) : null}
+          {!allowingAddress && isUserMinter ? (
+            <Button type="primary" onClick={goToMint}>
+              Mint Tokens
+            </Button>
+          ) : null}
+          {!allowingAddress ? (
+            <Button type="primary" onClick={goToAllowances}>
+              My Allowances
+            </Button>
+          ) : null}
+        </Stack>
         <FormSearchAllowing initialAddress={allowingAddress} setSearchedAddress={updateAllowance} />
         {allowingAddress ? (
           <Button type="default" onClick={() => updateAllowance()}>
             Back to My Account
           </Button>
         ) : null}
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

@@ -6,12 +6,12 @@ export const StyledStack = styled(Stack)`
   flex-direction: column;
   justify-content: flex-start;
 
-  & > * {
+  &&& > * {
     margin-top: 0;
     margin-bottom: 0;
   }
 
-  & > * + * {
-    margin-top: var(--gap, var(--s0));
+  &&& > * + * {
+    margin-top: ${(props) => (props.gap ? `var(--${props.gap})` : "var(--s0)")};
   }
 `;

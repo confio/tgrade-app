@@ -1,8 +1,9 @@
 import { Coin } from "@cosmjs/launchpad";
 import { isBroadcastTxFailure } from "@cosmjs/stargate";
 import { Typography } from "antd";
-import { PageLayout } from "App/components/layout";
+import { PageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
+import TokenAmount from "App/components/logic/TokenAmount";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
@@ -12,7 +13,6 @@ import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormSendTokens, { FormSendTokensValues } from "./FormSendTokens";
-import { Amount, MainStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -99,19 +99,19 @@ export default function TokenDetail(): JSX.Element {
     <Loading loadingText={`Sending ${nameToDisplay}...`} />
   ) : (
     <PageLayout backButtonProps={{ path: `${paths.wallet.prefix}${paths.wallet.tokens}` }}>
-      <MainStack>
+      <Stack gap="s4">
         <Title>{nameToDisplay}</Title>
-        <Amount>
+        <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
           <Text>{" Tokens"}</Text>
-        </Amount>
+        </TokenAmount>
         <FormSendTokens
           tokenName={nameToDisplay}
           tokenAmount={amountToDisplay}
           sendTokensAction={sendTokensAction}
         />
-      </MainStack>
+      </Stack>
     </PageLayout>
   );
 }

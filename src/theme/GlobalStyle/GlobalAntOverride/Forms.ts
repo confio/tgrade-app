@@ -1,196 +1,202 @@
-import { createGlobalStyle } from "styled-components";
+import * as styled from "styled-components";
 
-export const Forms = createGlobalStyle`
-  .ant-form {
-    div[role="alert"] li {
-      color: var(--form-error);
-      font-size: var(--s-1);
-      text-align: left;
-      margin: var(--s-1);
-    
-      &::before {
-        content: "* ";
-      }
-    }
+export const Forms = styled.createGlobalStyle`
+  /* Form field */
+  .ant-form-item {
+    margin-top: 0;
+    margin-bottom: 0;
 
-    .ant-form-item-has-error {
-      & .ant-input:not(.ant-form-item-has-error .ant-input-disabled) {
-        background: none;
-      }
+    /* Form field with validation error */
+    &.ant-form-item-has-error {
+      color: var(--color-error-form);
 
-      .ant-input-group,
-      .ant-form-item-control-input-content {
-        color: var(--color-red);
-        border: 1px solid var(--color-red);
+      /* Error input field and search */
+      & .ant-form-item-control-input-content,
+      & .ant-input-group {
+        color: currentColor;
+
+        &:hover {
+          color: var(--color-hover);
+        }
 
         &:focus-within {
-          color: var(--color-red);
-          border: 1px solid var(--color-red);
+          color: var(--color-form-focus);
+        }
+      }
+
+      /* Error message */
+      & .ant-form-item-explain-error li {
+        margin: var(--s-1);
+
+        color: currentColor;
+        font-size: var(--s-1);
+        text-align: left;
+
+        &::before {
+          content: "* ";
         }
       }
     }
 
-    .ant-input,
-    .ant-form-item-has-error .ant-input {
-      background: none;
-
-      &:focus {
-        border-radius: 20px;
+    /* Disabled form field */
+    &&[data-disabled="true"] {
+      & .ant-form-item-control-input-content {
+        color: var(--color-form-disabled);
+        background-color: var(--color-form-disabled-bg);
+        border-color: var(--color-form-disabled-bg);
       }
     }
 
-    .ant-input-group,
-    .ant-form-item-control-input-content,
-    .ant-transfer-list-body-search-wrapper {
-      color: #43547d;
-      border: 1px solid #43547d;
-      border-radius: 20px;
+    /* Input field, search, and transfer */
+    & .ant-form-item-control-input-content,
+    & .ant-input-group,
+    & .ant-transfer-list-body-search-wrapper {
+      color: var(--color-form);
+      border: var(--border-width) solid currentColor;
+      border-radius: var(--border-radius);
 
       &:hover {
-        color: #f9b77a;
-        border: 1px solid #f9b77a;
+        color: var(--color-hover);
       }
 
       &:focus-within {
-        color: #7c95ff;
-        border: 1px solid #7c95ff;
+        color: var(--color-form-focus);
       }
-    }
 
-    .ant-form-item {
-      &[data-disabled=true] {
-        .ant-form-item-control-input-content {
-          color: #828282;
-          background-color: #333333;
-          border-color: #333333;
+      & .ant-input,
+      & .ant-select-selector.ant-select-selector {
+        min-height: 4rem;
+        border: none;
+        color: currentColor;
+        background: none;
+        text-overflow: ellipsis;
+
+        &:focus {
+          border-radius: var(--border-radius);
+        }
+
+        &::placeholder {
+          color: currentColor;
         }
       }
     }
 
-    .ant-transfer-list-body-search-wrapper:hover .anticon-search svg {
-      color: #f9b77a;
-    }
-
-    .ant-transfer-list-body-search-wrapper:focus-within .anticon-search svg {
-      color: #7c95ff;
-    }
-
-
-    .ant-input-search-enter-button input + .ant-input-group-addon {
-      border-left: 1px solid;
-    }
-
-    .ant-input-group-addon {
+    /* Input for search bar */
+    & .ant-input-search .ant-input-group .ant-input-group-addon {
+      color: currentColor;
       background: none;
-      color: inherit;
-    }
+      border-left: var(--border-width) solid currentColor;
 
-    .ant-input,
-    .ant-select-selector.ant-select-selector {
-      min-height: 4rem;
-      text-overflow: ellipsis;
-      background: none;
-      border: none;
-      color: inherit;
-
-      &::placeholder {
-        color: inherit;
-      }
-    }
-
-    .ant-select,
-    .ant-select-selection-search,
-    .ant-select-selection-item {
-      color: #43547d;
-
-      &:hover {
-        color: #f9b77a;
+      & .ant-input-search-button,
+      & .anticon-search {
+        transition: all 0.3s ease, 0s;
       }
 
-      &:focus-within {
-        color: #7c95ff;
-      }
+      & .ant-input-search-button {
+        width: auto;
+        min-height: 4rem;
 
-      & svg {
-        color: inherit;
-      }
-    }
-
-    .ant-select-selection-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .ant-input-search-button {
-      width: auto;
-      min-height: 4rem;
-
-      background: none;
-      color: inherit;
-
-      &::after {
-        display: none;
-      }
-
-      &:focus,
-      &:focus:hover {
+        color: currentColor;
         background: none;
-        border: 1px solid transparent;
-      }
 
-      & svg {
-        color: inherit;
+        &::after {
+          display: none;
+        }
+
+        &:focus,
+        &:focus:hover {
+          background: none;
+          border: var(--border-width) solid transparent;
+        }
       }
     }
 
-    .ant-transfer-list {
+    /* Input for transfer */
+    & .ant-transfer-list {
+      color: var(--color-primary);
       border: none;
-      color: #7c95ff;
 
-      .ant-transfer-list-header {
+      & .ant-transfer-list-header {
         background: none;
-        border-bottom: 1px solid #43547d;
+        border-bottom: var(--border-width) solid var(--color-form);
 
         span {
-          color: #7c95ff;
+          color: var(--color-text);
         }
       }
 
-      .ant-transfer-list-body-search-wrapper {
+      & .ant-transfer-list-body-search-wrapper {
         margin: 0.625rem;
+
+        & .anticon-search svg {
+          color: var(--color-primary);
+        }
+
+        &:hover .anticon-search svg {
+          color: var(--color-hover);
+        }
+
+        &:focus-within .anticon-search svg {
+          color: var(--color-form-focus);
+        }
       }
 
-      .ant-input {
+      & .ant-input {
         min-height: 0;
       }
 
-      .ant-transfer-list-search-action svg {
-        color: #7c95ff;
+      & .ant-checkbox-checked .ant-checkbox-inner {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
       }
 
-      .ant-checkbox-checked .ant-checkbox-inner {
-        background-color: #7c95ff;
-        border-color: #7c95ff;
+      & .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
       }
 
-      .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-        background-color: #7c95ff;
-        border-color: #7c95ff;
-      }
-
-      .ant-transfer-list-content-item,
-      .ant-transfer-list-content-item-checked {
+      & .ant-transfer-list-content-item,
+      & .ant-transfer-list-content-item-checked {
         background: none;
 
         &:hover {
+          color: var(--color-hover);
           background: none;
-          color: #f9b77a;          
         }
       }
 
-      .ant-empty-description {
-        color: var(--color-red);
+      & .ant-empty-description {
+        color: var(--color-error-form);
+      }
+    }
+
+    /* Input for select */
+    & .ant-select {
+      color: var(--color-form);
+
+      &:hover {
+        color: var(--color-hover);
+      }
+
+      &:focus-within {
+        color: var(--color-form-focus);
+      }
+
+      & .ant-select-selector,
+      & .ant-select-selection-item {
+        transition: all 0.3s ease, 0s;
+      }
+
+      & .ant-select-selection-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: currentColor;
+      }
+
+      & .ant-select-arrow {
+        color: currentColor;
       }
     }
   }
