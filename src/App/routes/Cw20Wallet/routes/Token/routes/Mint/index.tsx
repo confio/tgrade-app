@@ -6,6 +6,7 @@ import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
@@ -21,6 +22,7 @@ interface MintParams {
 export default function Mint(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
+  const { t } = useTranslation("cw20Wallet");
   const { contractAddress }: MintParams = useParams();
   const { url: pathMintMatched } = useRouteMatch();
   const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`;
@@ -40,7 +42,7 @@ export default function Mint(): JSX.Element {
     (async function updateCw20TokenAndMintCap() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        handleError(new Error(t("error.noCw20Found", { contractAddress })));
         return;
       }
       if (mounted) setCw20Token(cw20Token);
@@ -52,7 +54,7 @@ export default function Mint(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, client, contractAddress, handleError]);
+  }, [address, client, contractAddress, handleError, t]);
 
   async function mintTokensAction(values: FormMintTokensFields) {
     if (!cw20Token) return;
@@ -69,8 +71,8 @@ export default function Mint(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `${amount} ${cw20Token.symbol} successfully minted to ${recipientAddress}`,
-          customButtonText: "Token detail",
+          message: t("mintSuccess", { amount, symbol: cw20Token.symbol, recipientAddress }),
+          customButtonText: t("tokenDetail"),
           customButtonActionPath: pathTokenDetail,
         } as OperationResultState,
       });
@@ -81,7 +83,7 @@ export default function Mint(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Mint transaction failed:",
+          message: t("mintFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathMintMatched,
         } as OperationResultState,
@@ -95,7 +97,7 @@ export default function Mint(): JSX.Element {
   const maxAmount = mintCap ? Decimal.fromAtomics(mintCap, cw20Token?.decimals ?? 0) : undefined;
 
   return loading ? (
-    <Loading loadingText={`Minting ${cw20Token?.symbol || ""}...`} />
+    <Loading loadingText={t("minting", { symbol: cw20Token?.symbol || "" })} />
   ) : (
     <PageLayout backButtonProps={{ path: pathTokenDetail }}>
       <Stack gap="s4">
@@ -103,7 +105,7 @@ export default function Mint(): JSX.Element {
         <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" Cap"}</Text>
+          <Text>{` ${t("cap")}`}</Text>
         </TokenAmount>
         <FormMintTokens
           tokenName={cw20Token?.symbol || ""}
