@@ -1,6 +1,6 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Stack } from "App/components/layout";
-import TokenButton from "App/components/logic/TokenButton";
+import { TokenButton } from "App/components/logic";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";

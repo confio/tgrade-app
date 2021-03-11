@@ -1,8 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { PageLayout, Stack } from "App/components/layout";
-import { Loading } from "App/components/logic";
-import TokenAmount from "App/components/logic/TokenAmount";
+import { Loading, TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
