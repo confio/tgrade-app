@@ -6,6 +6,7 @@ import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
@@ -23,6 +24,7 @@ interface EditParams {
 export default function Edit(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
+  const { t } = useTranslation("cw20Wallet");
   const { contractAddress, spenderAddress }: EditParams = useParams();
   const pathAllowance = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}/${spenderAddress}`;
 
@@ -42,7 +44,7 @@ export default function Edit(): JSX.Element {
     (async function updateCw20TokenAndAllowance() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        handleError(new Error(t("error.noCw20Found", { contractAddress })));
         return;
       }
 
@@ -54,12 +56,12 @@ export default function Edit(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, client, contractAddress, handleError, spenderAddress]);
+  }, [address, client, contractAddress, handleError, spenderAddress, t]);
 
   async function submitChangeAmount(values: FormChangeAmountFields): Promise<void> {
     setLoading(true);
 
-    const { newAmount } = values;
+    const { amount: newAmount } = values;
     const cw20Contract = CW20(getSigningClient()).use(contractAddress);
 
     try {
@@ -84,10 +86,8 @@ export default function Edit(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `${
-            cw20Token?.symbol || ""
-          } allowance successfully set to ${newAmount} for ${spenderAddress}`,
-          customButtonText: "Allowances",
+          message: t("editSuccess", { symbol: cw20Token?.symbol || "", newAmount, spenderAddress }),
+          customButtonText: t("allowances"),
           customButtonActionPath: pathAllowance,
         } as OperationResultState,
       });
@@ -98,7 +98,7 @@ export default function Edit(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Could not set allowance:",
+          message: t("editFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathAllowance,
         } as OperationResultState,
@@ -112,21 +112,21 @@ export default function Edit(): JSX.Element {
   const [allowanceInteger, allowanceDecimal] = allowanceToDisplay.split(".");
 
   return loading ? (
-    <Loading loadingText={`Changing allowance...`} />
+    <Loading loadingText={t("editing")} />
   ) : (
     <PageLayout backButtonProps={{ path: pathAllowance }}>
       <Stack gap="s3">
-        <Title>Edit Allowance</Title>
+        <Title>{t("editAllowance")}</Title>
         <AddressText>{spenderAddress}</AddressText>
         <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" Tokens"}</Text>
+          <Text>{` ${t("tokens")}`}</Text>
         </TokenAmount>
         <TokenAmount>
           <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
           {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-          <Text>{" Allowance"}</Text>
+          <Text>{` ${t("allowance")}`}</Text>
         </TokenAmount>
         <FormChangeAmount tokenName={cw20Token?.symbol || ""} submitChangeAmount={submitChangeAmount} />
       </Stack>

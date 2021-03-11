@@ -5,6 +5,7 @@ import { NavPagination, pageSize, TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { AllowanceInfo, CW20, Cw20Token, getCw20Token } from "utils/cw20";
@@ -17,6 +18,7 @@ interface ListParams {
 }
 
 export default function List(): JSX.Element {
+  const { t } = useTranslation("cw20Wallet");
   const { url: pathAllowancesMatched } = useRouteMatch();
   const { contractAddress }: ListParams = useParams();
   const history = useHistory();
@@ -35,7 +37,7 @@ export default function List(): JSX.Element {
       const cw20Contract = CW20(getSigningClient()).use(contractAddress);
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        handleError(new Error(t("error.noCw20Found", { contractAddress })));
         return;
       }
 
@@ -52,7 +54,7 @@ export default function List(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, contractAddress, getSigningClient, handleError]);
+  }, [address, contractAddress, getSigningClient, handleError, t]);
 
   function goToAllowanceDetail(spenderAddress: string) {
     history.push(`${pathAllowancesMatched}/${spenderAddress}`);
@@ -80,16 +82,16 @@ export default function List(): JSX.Element {
     >
       <Stack gap="s7">
         <Stack gap="s2">
-          <Title>Allowances</Title>
+          <Title>{t("allowances")}</Title>
           <TokenAmount>
             <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
             {amountDecimal && <Text>{amountDecimal}</Text>}
-            <Text>{" Tokens"}</Text>
+            <Text>{` ${t("tokens")}`}</Text>
           </TokenAmount>
           <TokenAmount>
             <Text>{`${allowancesInteger}${allowancesDecimal ? "." : ""}`}</Text>
             {allowancesDecimal && <Text>{allowancesDecimal}</Text>}
-            <Text>{" Allowances"}</Text>
+            <Text>{` ${t("allowance")}`}</Text>
           </TokenAmount>
         </Stack>
         <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={allowances.length} />
@@ -108,7 +110,7 @@ export default function List(): JSX.Element {
           </Stack>
         ) : null}
         <Button type="primary" onClick={goToAllowancesAdd}>
-          Add New
+          {t("addNew")}
         </Button>
       </Stack>
     </PageLayout>
