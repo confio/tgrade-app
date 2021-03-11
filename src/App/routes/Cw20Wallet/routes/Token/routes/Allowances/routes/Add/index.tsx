@@ -90,8 +90,8 @@ export default function Add(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: t("addSuccess", { newAmount, symbol: cw20Token?.symbol || "", spenderAddress }),
-          customButtonText: t("allowances"),
+          message: t("cw20Wallet:addSuccess", { newAmount, symbol: cw20Token?.symbol || "", spenderAddress }),
+          customButtonText: t("cw20Wallet:allowances"),
           customButtonActionPath: pathAllowances,
         } as OperationResultState,
       });
@@ -102,7 +102,7 @@ export default function Add(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: t("addFail"),
+          message: t("cw20Wallet:addFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathAllowances,
         } as OperationResultState,
