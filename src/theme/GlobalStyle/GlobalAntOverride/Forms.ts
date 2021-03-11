@@ -200,4 +200,9 @@ export const Forms = styled.createGlobalStyle`
       }
     }
   }
+
+  /* Global override so that dropdown shows above side menu, which has z-index=1100 */
+  .ant-select-dropdown {
+    z-index: 1101;
+  }
 `;

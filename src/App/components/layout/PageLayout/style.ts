@@ -1,3 +1,4 @@
+import { FormItem } from "formik-antd";
 import styled from "styled-components";
 import PageLayout from "./component";
 
@@ -52,6 +53,21 @@ export const MenuWrapper = styled.div`
     h3.ant-typography {
       color: white;
       margin: 0;
+    }
+  }
+`;
+
+export const LanguageFormItem = styled(FormItem)`
+  & .ant-form-item-control-input-content {
+    background-color: var(--color-form);
+    border-color: var(--color-form);
+
+    & .ant-select {
+      color: var(--color-form-focus);
+
+      &:focus-within {
+        color: white;
+      }
     }
   }
 `;

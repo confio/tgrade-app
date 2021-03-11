@@ -2,14 +2,18 @@ import { Typography } from "antd";
 import { Center, Stack } from "App/components/layout";
 import { BackButton, Burger, ErrorAlert } from "App/components/logic";
 import { paths } from "App/paths";
+import { Formik } from "formik";
+import { Form, Select } from "formik-antd";
 import * as React from "react";
 import { ComponentProps, HTMLAttributes, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useWindowSize } from "utils/ui";
-import { MenuWrapper, NavHeader } from "./style";
+import { LanguageFormItem, MenuWrapper, NavHeader } from "./style";
 
 const { Title } = Typography;
+const { Option } = Select;
 
 interface PageLayoutProps extends HTMLAttributes<HTMLOrSVGElement> {
   readonly hide?: "header" | "back-button" | "menu";
@@ -22,6 +26,8 @@ export default function PageLayout({
   children,
   ...props
 }: PageLayoutProps): JSX.Element {
+  const { t, i18n } = useTranslation("common");
+
   const { width } = useWindowSize();
   const isBigViewport = width >= 1040;
 
@@ -45,20 +51,35 @@ export default function PageLayout({
             customCrossIcon={menuCloseIcon}
           >
             <Link to={paths.account}>
-              <Title level={3}>Account</Title>
+              <Title level={3}>{t("menu.account")}</Title>
             </Link>
             <Link to={paths.wallet.prefix}>
-              <Title level={3}>Wallet</Title>
+              <Title level={3}>{t("menu.wallet")}</Title>
             </Link>
             <Link to={paths.cw20Wallet.prefix}>
-              <Title level={3}>CW20 Wallet</Title>
+              <Title level={3}>{t("menu.cw20Wallet")}</Title>
             </Link>
             <Link to={paths.staking.prefix}>
-              <Title level={3}>Staking</Title>
+              <Title level={3}>{t("menu.staking")}</Title>
             </Link>
             <Link to={paths.logout}>
-              <Title level={3}>Logout</Title>
+              <Title level={3}>{t("menu.logout")}</Title>
             </Link>
+            <Formik
+              initialValues={{ language: i18n.language }}
+              onSubmit={({ language }) => i18n.changeLanguage(language)}
+            >
+              {(formikProps) => (
+                <Form>
+                  <LanguageFormItem name="language">
+                    <Select name="language" defaultValue={i18n.language} onChange={formikProps.submitForm}>
+                      <Option value="en">English</Option>
+                      <Option value="es">Español</Option>
+                    </Select>
+                  </LanguageFormItem>
+                </Form>
+              )}
+            </Formik>
           </Menu>
         </MenuWrapper>
       ) : null}
