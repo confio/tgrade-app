@@ -1,0 +1,9 @@
+{
+  "initializing": "Inicializando app...",
+  "hello": "Hola!",
+  "welcome": "Bienvenido a tu Cartera",
+  "select": "Selecciona una de las siguientes opciones para empezar",
+  "browserButton": "Navegador (Demo)",
+  "ledgerButton": "Ledger (Seguro, Chrome)",
+  "keplrButton": "Keplr (Seguro)"
+}

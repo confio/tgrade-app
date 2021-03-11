@@ -1,0 +1,10 @@
+{
+  "backToAccount": "Volver a Mi Cuenta",
+  "enterAddress": "Introduce dirección",
+  "sending": "Enviando {{nameToDisplay}}...",
+  "sendSuccess": "{{amount}} {{denom}} enviados con éxito a {{recipientAddress}}",
+  "sendFail": "Transacción de envío fallida:",
+  "send": "Enviar",
+  "enterAmount": "Introduce cantidad",
+  "to": "A"
+}

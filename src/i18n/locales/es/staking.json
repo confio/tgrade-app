@@ -1,0 +1,26 @@
+{
+  "validators": "Validadores",
+  "error": {
+    "noBondedValidators": "No hay validadores con depósito"
+  },
+  "delegate": "Depositar",
+  "undelegate": "Retirar",
+  "rewards": "Recompensas",
+  "commission": "Comisión",
+  "stakedTokens": "Tokens depositados",
+  "delegating": "Depositando...",
+  "delegateSuccess": "{{amount}} {{denom}} depositados con éxito",
+  "delegateFail": "Transacción de depósito fallida:",
+  "enterAmount": "Introduce cantidad",
+  "undelegating": "Retirando...",
+  "undelegateSuccess": "{{amount}} {{denom}} retirados con éxito",
+  "undelegateFail": "Transacción de retirada fallida:",
+  "balance": "Saldo",
+  "validatorHome": "Vista de Validador",
+  "pendingRewards": "Recompensas pendientes",
+  "withdrawRewards": "Obtener recompensas",
+  "noRewardsFound": "No se encontraron recompensas",
+  "withdrawing": "Obteniendo recompensas...",
+  "withdrawSuccess": "Recompensas obtenidas",
+  "withdrawFail": "Transacción de obtención de recompensas fallida:"
+}
