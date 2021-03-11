@@ -5,8 +5,10 @@ import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSdk } from "service";
 import { useBalance } from "utils/currency";
+import { getAmountField } from "utils/forms";
 import * as Yup from "yup";
 import { FormField } from "./style";
 
@@ -23,10 +25,11 @@ interface FormDelegateBalanceProps {
 export default function FormDelegateBalance({
   submitDelegateBalance,
 }: FormDelegateBalanceProps): JSX.Element {
+  const { t } = useTranslation(["common", "staking"]);
   const { getConfig } = useSdk();
   const config = getConfig();
   const balance = useBalance();
-  const [maxAmount, setMaxAmount] = useState(0);
+  const [maxAmount, setMaxAmount] = useState(Decimal.fromAtomics("0", 0));
 
   useEffect(() => {
     let mounted = true;
@@ -35,8 +38,8 @@ export default function FormDelegateBalance({
       const stakingBalance = balance.find((coin) => coin.denom === config.stakingToken);
       const stakingDecimals = config.coinMap[config.stakingToken].fractionalDigits;
       const maxAmount = stakingBalance
-        ? Decimal.fromAtomics(stakingBalance.amount, stakingDecimals).toFloatApproximation()
-        : 0;
+        ? Decimal.fromAtomics(stakingBalance.amount, stakingDecimals)
+        : Decimal.fromAtomics("0", 0);
 
       if (mounted) setMaxAmount(maxAmount);
     })();
@@ -46,18 +49,15 @@ export default function FormDelegateBalance({
     };
   }, [balance, config.coinMap, config.stakingToken]);
 
-  const delegateBalanceValidationSchema = Yup.object().shape({
-    amount: Yup.number()
-      .required("An amount is required")
-      .positive("Amount should be positive")
-      .max(maxAmount),
+  const validationSchema = Yup.object().shape({
+    amount: getAmountField(t, maxAmount.toFloatApproximation(), maxAmount.toString()),
   });
 
   return (
     <Formik
       initialValues={{ amount: "" }}
       onSubmit={submitDelegateBalance}
-      validationSchema={delegateBalanceValidationSchema}
+      validationSchema={validationSchema}
     >
       {(formikProps) => {
         const formDisabled = !(formikProps.isValid && formikProps.dirty);
@@ -68,11 +68,11 @@ export default function FormDelegateBalance({
               <FormField>
                 <Text>{config.coinMap[config.stakingToken].denom}</Text>
                 <FormItem name="amount">
-                  <Input name="amount" placeholder="Enter amount" />
+                  <Input name="amount" placeholder={t("staking:enterAmount")} />
                 </FormItem>
               </FormField>
               <Button type="primary" onClick={formikProps.submitForm} disabled={formDisabled}>
-                Delegate
+                {t("staking:delegate")}
               </Button>
             </Stack>
           </Form>

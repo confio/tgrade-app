@@ -5,6 +5,7 @@ import { Loading } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
@@ -19,6 +20,7 @@ interface UndelegateParams {
 }
 
 export default function Undelegate(): JSX.Element {
+  const { t } = useTranslation("staking");
   const { url: pathUndelegateMatched } = useRouteMatch();
   const [loading, setLoading] = useState(false);
 
@@ -39,12 +41,14 @@ export default function Undelegate(): JSX.Element {
 
       await undelegateTokens(validatorAddress, undelegateAmount);
 
+      const denom = config.coinMap[config.stakingToken].denom;
+
       history.push({
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `${amount} ${config.coinMap[config.stakingToken].denom} successfully undelegated`,
-          customButtonText: "Validator home",
+          message: t("undelegateSuccess", { amount, denom }),
+          customButtonText: t("validatorHome"),
           customButtonActionPath: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`,
         },
       });
@@ -55,7 +59,7 @@ export default function Undelegate(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Undelegate transaction failed:",
+          message: t("undelegateFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathUndelegateMatched,
         },
@@ -64,14 +68,14 @@ export default function Undelegate(): JSX.Element {
   }
 
   return loading ? (
-    <Loading loadingText={`Undelegating...`} />
+    <Loading loadingText={t("undelegating")} />
   ) : (
     <PageLayout
       backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}` }}
     >
       <Stack gap="s6">
         <Stack>
-          <Title>Undelegate</Title>
+          <Title>{t("undelegate")}</Title>
           <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
         </Stack>
         <FormUndelegateBalance
