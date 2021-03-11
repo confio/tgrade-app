@@ -61,7 +61,7 @@ export default function TokensList(): JSX.Element {
   return (
     <PageLayout hide="back-button">
       <Stack gap="s4">
-        <Title>{t("cw20Wallet")}</Title>
+        <Title>{t("tokens")}</Title>
         <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={cw20Tokens.length} />
         <Stack>
           {cw20Tokens.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((token) => {
