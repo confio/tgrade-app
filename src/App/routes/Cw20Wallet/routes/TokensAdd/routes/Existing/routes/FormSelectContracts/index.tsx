@@ -8,6 +8,7 @@ import { Formik } from "formik";
 import { Form, Transfer } from "formik-antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useContracts, useError, useSdk } from "service";
 import { CW20 } from "utils/cw20";
@@ -19,6 +20,7 @@ interface FormSelectContractsParams {
 }
 
 export default function FormSelectContracts(): JSX.Element {
+  const { t } = useTranslation("cw20Wallet");
   const { url: pathExisting } = useRouteMatch();
   const { codeId } = useParams<FormSelectContractsParams>();
   const pathTokens = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}`;
@@ -38,7 +40,7 @@ export default function FormSelectContracts(): JSX.Element {
       try {
         const numCodeId = Number.parseInt(codeId, 10);
         if (Number.isNaN(numCodeId)) {
-          throw new Error(`Expected CodeId and instead got: ${codeId}`);
+          throw new Error(t("error.expectedCodeId", { codeId }));
         }
 
         const contracts = await client.getContracts(numCodeId);
@@ -51,7 +53,7 @@ export default function FormSelectContracts(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [client, codeId, handleError]);
+  }, [client, codeId, handleError, t]);
 
   async function submitSelectContracts() {
     try {
@@ -64,8 +66,8 @@ export default function FormSelectContracts(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `The selected tokens from CodeID: ${codeId} were successfully added`,
-          customButtonText: "Tokens",
+          message: t("addCodeIdSuccess", { codeId }),
+          customButtonText: t("tokens"),
           customButtonActionPath: pathTokens,
         } as OperationResultState,
       });
@@ -76,7 +78,7 @@ export default function FormSelectContracts(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Failed to add selected tokens",
+          message: t("addCodeIdFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathExisting,
         } as OperationResultState,
@@ -111,7 +113,7 @@ export default function FormSelectContracts(): JSX.Element {
               onClick={formikProps.submitForm}
               disabled={!selectedContractAddresses.length}
             >
-              Continue
+              {t("continue")}
             </Button>
           </Stack>
         </Form>

@@ -8,26 +8,28 @@ import { Formik } from "formik";
 import { Form, FormItem, Input, Select } from "formik-antd";
 import * as React from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useContracts, useError, useSdk } from "service";
 import { CW20, MinterResponse } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
-import { createTokenValidationSchema } from "utils/formSchemas";
+import * as Yup from "yup";
 import { FormField } from "./style";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 export interface FormCreateTokenFields {
-  readonly symbol: string;
+  readonly tokenSymbol: string;
   readonly tokenName: string;
-  readonly decimals: string;
-  readonly initialSupply: string;
-  readonly mint: string;
-  readonly mintCap?: string;
+  readonly tokenDecimals: string;
+  readonly tokenSupply: string;
+  readonly tokenMint: string;
+  readonly tokenMintCap?: string;
 }
 
 export default function New(): JSX.Element {
+  const { t } = useTranslation(["common", "cw20Wallet"]);
   const [loading, setLoading] = useState(false);
 
   const history = useHistory();
@@ -42,24 +44,24 @@ export default function New(): JSX.Element {
 
     try {
       if (!codeId) {
-        throw new Error("Missing codeId in configuration file.");
+        throw new Error(t("cw20Wallet:error.missingCodeId"));
       }
 
-      const decimals = parseInt(values.decimals, 10);
-      const amount = Decimal.fromUserInput(values.initialSupply, decimals)
+      const decimals = parseInt(values.tokenDecimals, 10);
+      const amount = Decimal.fromUserInput(values.tokenSupply, decimals)
         .multiply(Uint64.fromNumber(10 ** decimals))
         .toString();
-      const cap = values.mintCap
-        ? Decimal.fromUserInput(values.mintCap, decimals)
+      const cap = values.tokenMintCap
+        ? Decimal.fromUserInput(values.tokenMintCap, decimals)
             .multiply(Uint64.fromNumber(10 ** decimals))
             .toString()
         : undefined;
-      const canMint = values.mint === "fixed" || values.mint === "unlimited";
+      const canMint = values.tokenMint === "fixed" || values.tokenMint === "unlimited";
       const mint: MinterResponse | undefined = canMint ? { minter: address, cap } : undefined;
 
       const msg: any = {
         name: values.tokenName,
-        symbol: values.symbol,
+        symbol: values.tokenSymbol,
         decimals,
         initial_balances: [{ address, amount }],
         mint,
@@ -69,19 +71,21 @@ export default function New(): JSX.Element {
         getAddress(),
         codeId,
         msg,
-        values.symbol,
+        values.tokenSymbol,
         { admin: address },
       );
 
       const newCw20Contract = CW20(getSigningClient()).use(contractAddress);
       addContract(newCw20Contract);
 
+      const tokenName = values.tokenName;
+
       history.push({
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `${amount} ${values.tokenName} successfully created`,
-          customButtonText: "Token Detail",
+          message: t("cw20Wallet:createSuccess", { amount, tokenName }),
+          customButtonText: t("cw20Wallet:tokenDetail"),
           customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`,
         } as OperationResultState,
       });
@@ -92,7 +96,7 @@ export default function New(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Token creation failed:",
+          message: t("cw20Wallet:createFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAddNew}`,
         } as OperationResultState,
@@ -100,69 +104,98 @@ export default function New(): JSX.Element {
     }
   }
 
+  const validationSchema = Yup.object().shape({
+    tokenSymbol: Yup.string()
+      .required(t("form.tokenSymbol.required"))
+      .strict()
+      .uppercase(t("form.tokenSymbol.uppercase"))
+      .min(0, t("form.tokenSymbol.minMax", { min: 0, max: 6 }))
+      .max(6, t("form.tokenSymbol.minMax", { min: 0, max: 6 })),
+    tokenName: Yup.string()
+      .required(t("form.tokenName.required"))
+      .min(3, t("form.tokenName.minMax", { min: 3, max: 30 }))
+      .max(30, t("form.tokenName.minMax", { min: 3, max: 30 })),
+    tokenDecimals: Yup.number()
+      .required(t("form.tokenDecimals.required"))
+      .integer(t("form.tokenDecimals.integer"))
+      .min(0, t("form.tokenDecimals.minMax", { min: 0, max: 18 }))
+      .max(18, t("form.tokenDecimals.minMax", { min: 0, max: 18 })),
+    tokenSupply: Yup.number()
+      .required(t("form.tokenSupply.required"))
+      .positive(t("form.tokenSupply.positive")),
+    tokenMintCap: Yup.number()
+      .positive(t("form.tokenMintCap.positive"))
+      .when("tokenSupply", (tokenSupply: number, schema: any) => {
+        return schema.test({
+          test: (tokenMintCap?: number) => !tokenMintCap || tokenSupply <= tokenMintCap,
+          message: t("form.tokenMintCap.min"),
+        });
+      }),
+  });
+
   return loading ? (
-    <Loading loadingText={"Creating token..."} />
+    <Loading loadingText={t("cw20Wallet:creating")} />
   ) : (
     <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}` }}>
       <Stack gap="s4">
-        <Title>Add New Token</Title>
+        <Title>{t("cw20Wallet:addNewToken")}</Title>
         <Formik
           initialValues={{
-            symbol: "",
+            tokenSymbol: "",
             tokenName: "",
-            decimals: "",
-            initialSupply: "",
-            mint: "",
-            maxMint: "",
+            tokenDecimals: "",
+            tokenSupply: "",
+            tokenMint: "",
+            tokenMintCap: "",
           }}
           onSubmit={submitCreateToken}
-          validationSchema={createTokenValidationSchema}
+          validationSchema={validationSchema}
         >
           {(formikProps) => (
             <Form>
               <Stack gap="s2">
                 <Stack>
                   <FormField>
-                    <Text>Symbol</Text>
-                    <FormItem name="symbol">
-                      <Input name="symbol" placeholder="Enter symbol" />
+                    <Text>{t("cw20Wallet:symbol")}</Text>
+                    <FormItem name="tokenSymbol">
+                      <Input name="tokenSymbol" placeholder={t("cw20Wallet:enterSymbol")} />
                     </FormItem>
                   </FormField>
                   <FormField>
-                    <Text>Name</Text>
+                    <Text>{t("cw20Wallet:name")}</Text>
                     <FormItem name="tokenName">
-                      <Input name="tokenName" placeholder="Enter Token Name" />
+                      <Input name="tokenName" placeholder={t("cw20Wallet:enterName")} />
                     </FormItem>
                   </FormField>
                   <FormField>
-                    <Text>Display decimals</Text>
-                    <FormItem name="decimals">
-                      <Input name="decimals" placeholder="Select Number" />
+                    <Text>{t("cw20Wallet:displayDecimals")}</Text>
+                    <FormItem name="tokenDecimals">
+                      <Input name="tokenDecimals" placeholder={t("cw20Wallet:enterDisplayDecimals")} />
                     </FormItem>
                   </FormField>
                   <FormField>
-                    <Text>Initial supply</Text>
-                    <FormItem name="initialSupply">
-                      <Input name="initialSupply" placeholder="Enter Number" />
+                    <Text>{t("cw20Wallet:initialSupply")}</Text>
+                    <FormItem name="tokenSupply">
+                      <Input name="tokenSupply" placeholder={t("cw20Wallet:enterInitialSupply")} />
                     </FormItem>
                   </FormField>
                   <FormField>
-                    <Text>Mint</Text>
-                    <FormItem name="mint">
-                      <Select name="mint" defaultValue="none">
-                        <Option value="none">None</Option>
-                        <Option value="fixed">Fixed cap</Option>
-                        <Option value="unlimited">Unlimited</Option>
+                    <Text>{t("cw20Wallet:mint")}</Text>
+                    <FormItem name="tokenMint">
+                      <Select name="tokenMint" defaultValue="none">
+                        <Option value="none">{t("cw20Wallet:enterMintNone")}</Option>
+                        <Option value="fixed">{t("cw20Wallet:enterMintFixedCap")}</Option>
+                        <Option value="unlimited">{t("cw20Wallet:enterMintUnlimited")}</Option>
                       </Select>
                     </FormItem>
                   </FormField>
                   <FormField>
-                    <Text>Mint cap</Text>
-                    <FormItem name="mintCap" data-disabled={formikProps.values.mint !== "fixed"}>
+                    <Text>{t("cw20Wallet:mintCap")}</Text>
+                    <FormItem name="tokenMintCap" data-disabled={formikProps.values.tokenMint !== "fixed"}>
                       <Input
-                        name="mintCap"
-                        disabled={formikProps.values.mint !== "fixed"}
-                        placeholder="Enter Amount"
+                        name="tokenMintCap"
+                        disabled={formikProps.values.tokenMint !== "fixed"}
+                        placeholder={t("cw20Wallet:enterMintCap")}
                       />
                     </FormItem>
                   </FormField>
@@ -172,7 +205,7 @@ export default function New(): JSX.Element {
                   onClick={formikProps.submitForm}
                   disabled={!(formikProps.isValid && formikProps.dirty)}
                 >
-                  Create
+                  {t("cw20Wallet:create")}
                 </Button>
               </Stack>
             </Form>

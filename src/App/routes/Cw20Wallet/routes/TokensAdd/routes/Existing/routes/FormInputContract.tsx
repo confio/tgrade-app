@@ -5,17 +5,20 @@ import { OperationResultState } from "App/routes/OperationResult";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useContracts, useError, useSdk } from "service";
 import { CW20 } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
-import { getCodeIdOrAddressValidationSchema } from "utils/formSchemas";
+import { getAddressField } from "utils/forms";
+import * as Yup from "yup";
 
 interface FormInputContractFields {
   readonly codeIdOrAddress: string;
 }
 
 export default function FormInputContract(): JSX.Element {
+  const { t } = useTranslation(["common", "cw20Wallet"]);
   const { url: pathExisting } = useRouteMatch();
   const history = useHistory();
   const { handleError } = useError();
@@ -41,8 +44,8 @@ export default function FormInputContract(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `Contract with address: ${contractAddress} successfully added`,
-          customButtonText: "Tokens",
+          message: t("cw20Wallet:addContractSuccess", { contractAddress }),
+          customButtonText: t("cw20Wallet:tokens"),
           customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}`,
         } as OperationResultState,
       });
@@ -53,7 +56,7 @@ export default function FormInputContract(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Failed to add token",
+          message: t("cw20Wallet:addContractFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathExisting,
         } as OperationResultState,
@@ -61,24 +64,34 @@ export default function FormInputContract(): JSX.Element {
     }
   }
 
+  const validationSchema = Yup.object().shape({
+    codeIdOrAddress: Yup.lazy((codeIdOrAddress) => {
+      if (!Number.isNaN(Number.parseInt(codeIdOrAddress, 10))) {
+        return Yup.number().positive(t("form.codeId.positive"));
+      }
+
+      return getAddressField(t, getConfig().addressPrefix);
+    }),
+  });
+
   return (
     <Formik
       initialValues={{ codeIdOrAddress: "" }}
       onSubmit={submitInputContract}
-      validationSchema={getCodeIdOrAddressValidationSchema(getConfig().addressPrefix)}
+      validationSchema={validationSchema}
     >
       {(formikProps) => (
         <Form>
           <Stack gap="s2">
             <FormItem name="codeIdOrAddress">
-              <Input name="codeIdOrAddress" placeholder="Enter a contract address or codeID" />
+              <Input name="codeIdOrAddress" placeholder={t("cw20Wallet:enterCodeIdOrAddress")} />
             </FormItem>
             <Button
               type="primary"
               onClick={formikProps.submitForm}
               disabled={!(formikProps.isValid && formikProps.dirty)}
             >
-              Continue
+              {t("cw20Wallet:continue")}
             </Button>
           </Stack>
         </Form>
