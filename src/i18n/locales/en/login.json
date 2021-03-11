@@ -1,0 +1,9 @@
+{
+  "initializing": "Initializing app...",
+  "hello": "Hello!",
+  "welcome": "Welcome to your Wallet",
+  "select": "Select one of the following options to start",
+  "browserButton": "Browser (Demo)",
+  "ledgerButton": "Ledger (Secure, Chrome)",
+  "keplrButton": "Keplr (Secure)"
+}

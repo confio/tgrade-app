@@ -1,0 +1,26 @@
+{
+  "validators": "Validators",
+  "error": {
+    "noBondedValidators": "No bonded validators found"
+  },
+  "delegate": "Delegate",
+  "undelegate": "Undelegate",
+  "rewards": "Rewards",
+  "commission": "Commission",
+  "stakedTokens": "Staked tokens",
+  "delegating": "Delegating...",
+  "delegateSuccess": "{{amount}} {{denom}} successfully delegated",
+  "delegateFail": "Delegate transaction failed:",
+  "enterAmount": "Enter amount",
+  "undelegating": "Undelegating...",
+  "undelegateSuccess": "{{amount}} {{denom}} successfully undelegated",
+  "undelegateFail": "Undelegate transaction failed:",
+  "balance": "Balance",
+  "validatorHome": "Validator home",
+  "pendingRewards": "Pending rewards",
+  "withdrawRewards": "Withdraw rewards",
+  "noRewardsFound": "No rewards found",
+  "withdrawing": "Withdrawing rewards...",
+  "withdrawSuccess": "Successfully withdrawn",
+  "withdrawFail": "Rewards withdrawal transaction failed:"
+}
