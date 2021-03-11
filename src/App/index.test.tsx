@@ -94,7 +94,7 @@ describe("should have a happy path for", () => {
 
     // Wait input until mintCap validates
     await waitForElementToBeRemoved(() =>
-      screen.getByText("Cap must be equal or greater than initial supply"),
+      screen.getByText("Mint cap must be equal or greater than initial supply"),
     );
     await waitFor(() => expect(createButton).not.toBeDisabled());
     userEvent.click(createButton);
@@ -235,7 +235,7 @@ describe("should have a happy path for", () => {
 
     // Logout
     userEvent.click(screen.getByRole("button", { name: /validator home/i }));
-    userEvent.click(await screen.findByText(/logout/i));
+    userEvent.click(await screen.findByText(/log out/i));
     expect(screen.getByRole("button", { name: /browser/i })).toBeInTheDocument();
   }, 75_000);
 });
