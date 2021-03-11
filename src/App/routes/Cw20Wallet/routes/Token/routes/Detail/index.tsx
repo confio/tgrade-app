@@ -5,6 +5,7 @@ import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
@@ -18,6 +19,7 @@ interface DetailParams {
 }
 
 export default function Detail(): JSX.Element {
+  const { t } = useTranslation("cw20Wallet");
   const { contractAddress, allowingAddress: allowingAddressParam }: DetailParams = useParams();
   const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`;
   const history = useHistory();
@@ -38,7 +40,7 @@ export default function Detail(): JSX.Element {
     (async function updateCw20TokenAndAllowance() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        handleError(new Error(t("error.noCw20Found", { contractAddress })));
         return;
       }
 
@@ -59,7 +61,7 @@ export default function Detail(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, allowingAddress, client, contractAddress, handleError]);
+  }, [address, allowingAddress, client, contractAddress, handleError, t]);
 
   useEffect(() => {
     let mounted = true;
@@ -127,35 +129,35 @@ export default function Detail(): JSX.Element {
           <TokenAmount>
             <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
             {amountDecimal && <Text>{amountDecimal}</Text>}
-            <Text>{" Tokens"}</Text>
+            <Text>{` ${t("tokens")}`}</Text>
           </TokenAmount>
           {allowance ? (
             <TokenAmount>
               <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
               {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-              <Text>{" Allowance"}</Text>
+              <Text>{` ${t("allowance")}`}</Text>
             </TokenAmount>
           ) : null}
         </Stack>
         <Stack>
           <Button type="primary" onClick={goToSend} disabled={isSendButtonDisabled}>
-            Send Tokens
+            {t("sendTokens")}
           </Button>
           {!allowingAddress && isUserMinter ? (
             <Button type="primary" onClick={goToMint}>
-              Mint Tokens
+              {t("mintTokens")}
             </Button>
           ) : null}
           {!allowingAddress ? (
             <Button type="primary" onClick={goToAllowances}>
-              My Allowances
+              {t("myAllowances")}
             </Button>
           ) : null}
         </Stack>
         <FormSearchAllowing initialAddress={allowingAddress} setSearchedAddress={updateAllowance} />
         {allowingAddress ? (
           <Button type="default" onClick={() => updateAllowance()}>
-            Back to My Account
+            {t("backToAccount")}
           </Button>
         ) : null}
       </Stack>
