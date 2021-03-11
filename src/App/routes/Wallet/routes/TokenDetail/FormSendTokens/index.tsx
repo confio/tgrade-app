@@ -3,8 +3,9 @@ import { Stack } from "App/components/layout";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useSdk } from "service";
-import { getSendAddressValidationSchema } from "utils/formSchemas";
+import { getAddressField, getAmountField } from "utils/forms";
 import * as Yup from "yup";
 import { FormField } from "./style";
 
@@ -17,47 +18,43 @@ export interface FormSendTokensValues {
 
 interface FormSendTokensProps {
   readonly tokenName: string;
-  readonly tokenAmount: string;
+  readonly maxAmount: string;
   readonly sendTokensAction: (values: FormSendTokensValues) => Promise<void>;
 }
 
 export default function FormSendTokens({
   tokenName,
-  tokenAmount,
+  maxAmount,
   sendTokensAction,
 }: FormSendTokensProps): JSX.Element {
-  const sendAmountValidationSchema = Yup.object().shape({
-    amount: Yup.number()
-      .required("An amount is required")
-      .positive("Amount should be positive")
-      .max(parseFloat(tokenAmount), `Amount cannot be greater than ${tokenAmount}`),
-  });
-
+  const { t } = useTranslation(["common", "wallet"]);
   const { getConfig } = useSdk();
-  const sendValidationSchema = sendAmountValidationSchema.concat(
-    getSendAddressValidationSchema(getConfig().addressPrefix),
-  );
+
+  const validationSchema = Yup.object().shape({
+    amount: getAmountField(t, parseFloat(maxAmount), maxAmount),
+    address: getAddressField(t, getConfig().addressPrefix),
+  });
 
   return (
     <Formik
       initialValues={{ amount: "", address: "" }}
       onSubmit={sendTokensAction}
-      validationSchema={sendValidationSchema}
+      validationSchema={validationSchema}
     >
       {(formikProps) => (
         <Form>
           <Stack>
             <FormField>
-              <Text>Send</Text>
+              <Text>{t("wallet:send")}</Text>
               <FormItem name="amount">
-                <Input name="amount" placeholder="Enter amount" />
+                <Input name="amount" placeholder={t("wallet:enterAmount")} />
               </FormItem>
               <Text>{tokenName}</Text>
             </FormField>
             <FormField>
-              <Text>To</Text>
+              <Text>{t("wallet:to")}</Text>
               <FormItem name="address">
-                <Input name="address" placeholder="Enter address" />
+                <Input name="address" placeholder={t("wallet:enterAddress")} />
               </FormItem>
             </FormField>
             <Button
@@ -65,7 +62,7 @@ export default function FormSendTokens({
               onClick={formikProps.submitForm}
               disabled={!(formikProps.isValid && formikProps.dirty)}
             >
-              Send
+              {t("wallet:send")}
             </Button>
           </Stack>
         </Form>
