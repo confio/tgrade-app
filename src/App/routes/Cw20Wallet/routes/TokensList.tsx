@@ -1,7 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { PageLayout, Stack } from "App/components/layout";
-import TokenButton from "App/components/logic/TokenButton";
+import { NavPagination, pageSize, TokenButton } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -18,6 +18,7 @@ export default function TokensList(): JSX.Element {
   const { contracts: cw20Contracts, addContract } = useContracts();
 
   const [cw20Tokens, setCw20Tokens] = useState<readonly Cw20Token[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     (async function updateContracts() {
@@ -59,13 +60,14 @@ export default function TokensList(): JSX.Element {
     <PageLayout hide="back-button">
       <Stack gap="s4">
         <Title>Tokens</Title>
+        <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={cw20Tokens.length} />
         <Stack>
-          {cw20Tokens.map((token) => {
+          {cw20Tokens.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((token) => {
             const amountToDisplay = Decimal.fromAtomics(token.amount, token.decimals).toString();
 
             return (
               <TokenButton
-                key={token.address}
+                key={token.address + token.symbol}
                 denom={token.symbol}
                 amount={amountToDisplay}
                 onClick={() => goTokenDetail(token.address)}
