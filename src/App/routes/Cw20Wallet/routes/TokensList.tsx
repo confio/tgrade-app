@@ -5,6 +5,7 @@ import { NavPagination, pageSize, TokenButton } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useContracts, useSdk } from "service";
 import { CW20, Cw20Token, cw20TokenCompare, getCw20Token } from "utils/cw20";
@@ -12,6 +13,7 @@ import { CW20, Cw20Token, cw20TokenCompare, getCw20Token } from "utils/cw20";
 const { Title } = Typography;
 
 export default function TokensList(): JSX.Element {
+  const { t } = useTranslation("cw20Wallet");
   const { url: pathTokensMatched } = useRouteMatch();
   const history = useHistory();
   const { getConfig, getSigningClient, getAddress } = useSdk();
@@ -59,7 +61,7 @@ export default function TokensList(): JSX.Element {
   return (
     <PageLayout hide="back-button">
       <Stack gap="s4">
-        <Title>Tokens</Title>
+        <Title>{t("cw20Wallet")}</Title>
         <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={cw20Tokens.length} />
         <Stack>
           {cw20Tokens.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((token) => {
@@ -76,7 +78,7 @@ export default function TokensList(): JSX.Element {
           })}
         </Stack>
         <Link to={`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`}>
-          <Button type="primary">Add Another</Button>
+          <Button type="primary">{t("addAnother")}</Button>
         </Link>
       </Stack>
     </PageLayout>
