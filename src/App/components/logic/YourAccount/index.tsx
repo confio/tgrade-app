@@ -3,6 +3,7 @@ import { Stack } from "App/components/layout";
 import copyToClipboard from "clipboard-copy";
 import * as React from "react";
 import { ComponentProps } from "react";
+import { useTranslation } from "react-i18next";
 import { useSdk } from "service";
 import { printableBalance, useBalance } from "utils/currency";
 import { Balance, DataDivider } from "./style";
@@ -15,6 +16,7 @@ type YourAccountProps = ComponentProps<typeof Stack> & {
 };
 
 export default function YourAccount({ tag, hideTitle, hideBalance }: YourAccountProps): JSX.Element {
+  const { t } = useTranslation("common");
   const { getAddress } = useSdk();
   const address = getAddress();
   const balance = useBalance();
@@ -23,7 +25,7 @@ export default function YourAccount({ tag, hideTitle, hideBalance }: YourAccount
     <Stack tag={tag}>
       {!hideTitle && (
         <Stack gap="s-2" tag="header">
-          <Title level={3}>Your Account</Title>
+          <Title level={3}>{t("yourAccount.title")}</Title>
           {!hideBalance && <DataDivider />}
         </Stack>
       )}
@@ -32,7 +34,7 @@ export default function YourAccount({ tag, hideTitle, hideBalance }: YourAccount
         {!hideBalance && <Text>({printableBalance(balance)})</Text>}
       </Balance>
       <Button type="primary" onClick={() => copyToClipboard(address)}>
-        Copy Account Address
+        {t("yourAccount.copyAddress")}
       </Button>
     </Stack>
   );
