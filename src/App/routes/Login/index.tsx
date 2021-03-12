@@ -6,6 +6,7 @@ import { paths } from "App/paths";
 import { configKeplr } from "config/keplr";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { isChrome, isDesktop } from "react-device-detect";
 import { useHistory } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { loadKeplrWallet, loadLedgerWallet, loadOrCreateWallet, WalletLoader } from "utils/sdk";
@@ -16,14 +17,12 @@ const { Title } = Typography;
 
 function disableLedgerLogin() {
   const anyNavigator: any = navigator;
-  return !anyNavigator?.usb;
+  return !anyNavigator?.usb || !isChrome || !isDesktop;
 }
 
 function disableKeplrLogin() {
-  // TODO find check that works on reload
-  //const anyWindow: any = window;
-  //return !(anyWindow.getOfflineSigner && anyWindow.keplr.experimentalSuggestChain);
-  return false;
+  const anyWindow: any = window;
+  return !(anyWindow.getOfflineSigner && anyWindow.keplr.experimentalSuggestChain);
 }
 
 export default function Login(): JSX.Element {
