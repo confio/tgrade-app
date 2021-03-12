@@ -24,9 +24,9 @@ describe("should have a happy path for", () => {
     userEvent.click(cosmButton);
 
     // Enter amount and address
-    const sendAmountInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
+    const sendAmountInput = screen.getByLabelText(/send/i) as HTMLInputElement;
     await userEvent.type(sendAmountInput, cosmAmount, { delay: 1 });
-    const sendAddressInput = screen.getByPlaceholderText(/enter address/i) as HTMLInputElement;
+    const sendAddressInput = screen.getByLabelText("To") as HTMLInputElement;
     await userEvent.type(sendAddressInput, emptyAddress, { delay: 1 });
 
     // Submit and expect success screen
@@ -43,7 +43,7 @@ describe("should have a happy path for", () => {
     expect(newCosmTokens).toHaveTextContent("8.498");
 
     // Check other account went up
-    const searchAddressInput = screen.getByPlaceholderText(/enter address/i) as HTMLInputElement;
+    const searchAddressInput = screen.getByLabelText("search-input") as HTMLInputElement;
     userEvent.clear(searchAddressInput);
     await userEvent.type(searchAddressInput, emptyAddress, { delay: 1 });
     userEvent.click(screen.getByRole("button", { name: /search/i }));
@@ -70,17 +70,17 @@ describe("should have a happy path for", () => {
     // Create new token
     userEvent.click(await screen.findByRole("button", { name: /add another/i }));
     userEvent.click(await screen.findByRole("button", { name: /new/i }));
-    const tokenSymbolInput = screen.getByPlaceholderText(/enter symbol/i) as HTMLInputElement;
+    const tokenSymbolInput = screen.getByLabelText(/symbol/i) as HTMLInputElement;
     await userEvent.type(tokenSymbolInput, tokenSymbol, { delay: 1 });
-    const tokenNameInput = screen.getByPlaceholderText(/enter token name/i) as HTMLInputElement;
+    const tokenNameInput = screen.getByLabelText(/name/i) as HTMLInputElement;
     await userEvent.type(tokenNameInput, tokenName, { delay: 1 });
-    const decimalsInput = screen.getByPlaceholderText(/select number/i) as HTMLInputElement;
+    const decimalsInput = screen.getByLabelText(/display decimals/i) as HTMLInputElement;
     await userEvent.type(decimalsInput, "6", { delay: 1 });
-    const initialSupplyInput = screen.getByPlaceholderText(/enter number/i) as HTMLInputElement;
+    const initialSupplyInput = screen.getByLabelText(/initial supply/i) as HTMLInputElement;
     await userEvent.type(initialSupplyInput, initialSupply, { delay: 1 });
     userEvent.click(screen.getByRole("combobox"));
     userEvent.click(screen.getByText("Fixed cap"));
-    const mintCapInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
+    const mintCapInput = screen.getByLabelText(/mint cap/i) as HTMLInputElement;
     const createButton = screen.getByRole("button", { name: /create/i });
     await waitFor(
       async () => {
@@ -117,9 +117,9 @@ describe("should have a happy path for", () => {
     userEvent.click(await screen.findByRole("button", { name: /tst/i }));
     await screen.findByText(myTstBalance);
     userEvent.click(await screen.findByRole("button", { name: /mint tokens/i }));
-    const mintMoreInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
+    const mintMoreInput = screen.getByLabelText(/mint/i) as HTMLInputElement;
     await userEvent.type(mintMoreInput, mintMoreAmount, { delay: 1 });
-    const mintAddressInput = screen.getByPlaceholderText(/enter address/i) as HTMLInputElement;
+    const mintAddressInput = screen.getByLabelText("To") as HTMLInputElement;
     await userEvent.type(mintAddressInput, myAddress, { delay: 1 });
     userEvent.click(screen.getByRole("button", { name: /mint/i }));
     await screen.findByText(
@@ -138,9 +138,9 @@ describe("should have a happy path for", () => {
     userEvent.click(screen.getByRole("button", { name: /send/i }));
 
     // Enter amount and address
-    const sendAmountInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
+    const sendAmountInput = screen.getByLabelText(/send/i) as HTMLInputElement;
     await userEvent.type(sendAmountInput, tstAmount, { delay: 1 });
-    const sendAddressInput = screen.getByPlaceholderText(/enter address/i) as HTMLInputElement;
+    const sendAddressInput = screen.getByLabelText("To") as HTMLInputElement;
     await userEvent.type(sendAddressInput, emptyAddress, { delay: 1 });
 
     // Submit and expect success screen
@@ -173,7 +173,7 @@ describe("should have a happy path for", () => {
 
     // Delegate 4 tokens
     userEvent.click(screen.getByRole("button", { name: /^delegate/i }));
-    const delegateInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
+    const delegateInput = screen.getByLabelText(/stake/i) as HTMLInputElement;
     const delegateButton = screen.getByRole("button", { name: /delegate/i });
     await waitFor(async () => {
       // Clear and write input till maxAmount balance effect kicks in and the form can validate
@@ -195,7 +195,7 @@ describe("should have a happy path for", () => {
 
     // Undelegate 2 tokens
     userEvent.click(screen.getByRole("button", { name: /undelegate/i }));
-    const undelegateInput = screen.getByPlaceholderText(/enter amount/i) as HTMLInputElement;
+    const undelegateInput = screen.getByLabelText(/undelegate/i) as HTMLInputElement;
     const undelegateButton = screen.getByRole("button", { name: /delegate/i });
     await waitFor(async () => {
       // Clear and write input till maxAmount balance effect kicks in and the form can validate
