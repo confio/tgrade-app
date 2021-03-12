@@ -75,6 +75,7 @@ export default function PageLayout({
                     <Select name="language" defaultValue={i18n.language} onChange={formikProps.submitForm}>
                       <Option value="en">English</Option>
                       <Option value="es">Español</Option>
+                      <Option value="ru">Русский</Option>
                     </Select>
                   </LanguageFormItem>
                 </Form>
