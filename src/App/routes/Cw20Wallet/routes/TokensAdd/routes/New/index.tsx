@@ -156,27 +156,43 @@ export default function New(): JSX.Element {
               <Stack gap="s2">
                 <Stack>
                   <FormField>
-                    <Text>{t("cw20Wallet:symbol")}</Text>
+                    <Text id="tokenSymbol-label">{t("cw20Wallet:symbol")}</Text>
                     <FormItem name="tokenSymbol">
-                      <Input name="tokenSymbol" placeholder={t("cw20Wallet:enterSymbol")} />
+                      <Input
+                        aria-labelledby="tokenSymbol-label"
+                        name="tokenSymbol"
+                        placeholder={t("cw20Wallet:enterSymbol")}
+                      />
                     </FormItem>
                   </FormField>
                   <FormField>
-                    <Text>{t("cw20Wallet:name")}</Text>
+                    <Text id="tokenName-label">{t("cw20Wallet:name")}</Text>
                     <FormItem name="tokenName">
-                      <Input name="tokenName" placeholder={t("cw20Wallet:enterName")} />
+                      <Input
+                        aria-labelledby="tokenName-label"
+                        name="tokenName"
+                        placeholder={t("cw20Wallet:enterName")}
+                      />
                     </FormItem>
                   </FormField>
                   <FormField>
-                    <Text>{t("cw20Wallet:displayDecimals")}</Text>
+                    <Text id="tokenDecimals-label">{t("cw20Wallet:displayDecimals")}</Text>
                     <FormItem name="tokenDecimals">
-                      <Input name="tokenDecimals" placeholder={t("cw20Wallet:enterDisplayDecimals")} />
+                      <Input
+                        aria-labelledby="tokenDecimals-label"
+                        name="tokenDecimals"
+                        placeholder={t("cw20Wallet:enterDisplayDecimals")}
+                      />
                     </FormItem>
                   </FormField>
                   <FormField>
-                    <Text>{t("cw20Wallet:initialSupply")}</Text>
+                    <Text id="tokenSupply-label">{t("cw20Wallet:initialSupply")}</Text>
                     <FormItem name="tokenSupply">
-                      <Input name="tokenSupply" placeholder={t("cw20Wallet:enterInitialSupply")} />
+                      <Input
+                        aria-labelledby="tokenSupply-label"
+                        name="tokenSupply"
+                        placeholder={t("cw20Wallet:enterInitialSupply")}
+                      />
                     </FormItem>
                   </FormField>
                   <FormField>
@@ -190,9 +206,10 @@ export default function New(): JSX.Element {
                     </FormItem>
                   </FormField>
                   <FormField>
-                    <Text>{t("cw20Wallet:mintCap")}</Text>
+                    <Text id="tokenMintCap-label">{t("cw20Wallet:mintCap")}</Text>
                     <FormItem name="tokenMintCap" data-disabled={formikProps.values.tokenMint !== "fixed"}>
                       <Input
+                        aria-labelledby="tokenMintCap-label"
                         name="tokenMintCap"
                         disabled={formikProps.values.tokenMint !== "fixed"}
                         placeholder={t("cw20Wallet:enterMintCap")}

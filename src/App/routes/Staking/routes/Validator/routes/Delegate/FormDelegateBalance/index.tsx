@@ -66,9 +66,13 @@ export default function FormDelegateBalance({
           <Form>
             <Stack gap="s2">
               <FormField>
-                <Text>{config.coinMap[config.stakingToken].denom}</Text>
+                <Text id="amount-label">{config.coinMap[config.stakingToken].denom}</Text>
                 <FormItem name="amount">
-                  <Input name="amount" placeholder={t("staking:enterAmount")} />
+                  <Input
+                    aria-labelledby="amount-label"
+                    name="amount"
+                    placeholder={t("staking:enterAmount")}
+                  />
                 </FormItem>
               </FormField>
               <Button type="primary" onClick={formikProps.submitForm} disabled={formDisabled}>
