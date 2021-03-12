@@ -1,5 +1,6 @@
 import { Button, Typography } from "antd";
 import { PageLayout, Stack } from "App/components/layout";
+import { NavPagination, pageSize } from "App/components/logic";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -28,6 +29,7 @@ export default function Validators(): JSX.Element {
   const { getQueryClient } = useSdk();
 
   const [validatorsData, setValidatorsData] = useState<readonly ValidatorData[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     let mounted = true;
@@ -68,8 +70,13 @@ export default function Validators(): JSX.Element {
     <PageLayout hide="back-button">
       <Stack gap="s5">
         <Title>Validators</Title>
+        <NavPagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          total={validatorsData.length}
+        />
         <Stack>
-          {validatorsData.map((validator) => (
+          {validatorsData.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((validator) => (
             <Button
               key={validator.name}
               data-size="large"

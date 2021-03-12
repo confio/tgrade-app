@@ -1,7 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { PageLayout, Stack } from "App/components/layout";
-import TokenAmount from "App/components/logic/TokenAmount";
+import { NavPagination, pageSize, TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -25,6 +25,7 @@ export default function List(): JSX.Element {
   const address = getAddress();
 
   const [allowances, setAllowances] = useState<readonly AllowanceInfo[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [cw20Token, setCw20Token] = useState<Cw20Token>();
 
   useEffect(() => {
@@ -91,9 +92,10 @@ export default function List(): JSX.Element {
             <Text>{" Allowances"}</Text>
           </TokenAmount>
         </Stack>
+        <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={allowances.length} />
         {allowances.length ? (
           <Stack>
-            {allowances.map((allowanceInfo) => (
+            {allowances.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((allowanceInfo) => (
               <AllowanceButton
                 key={allowanceInfo.spender}
                 data-size="large"
