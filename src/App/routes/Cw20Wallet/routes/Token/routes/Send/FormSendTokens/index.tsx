@@ -49,16 +49,24 @@ export default function FormSendTokens({
           <Stack gap="s2">
             <Stack>
               <FormField>
-                <Text>{t("cw20Wallet:send")}</Text>
+                <Text id="amount-label">{t("cw20Wallet:send")}</Text>
                 <FormItem name="amount">
-                  <Input name="amount" placeholder={t("cw20Wallet:enterAmount")} />
+                  <Input
+                    aria-labelledby="amount-label"
+                    name="amount"
+                    placeholder={t("cw20Wallet:enterAmount")}
+                  />
                 </FormItem>
                 <Text>{tokenName}</Text>
               </FormField>
               <FormField>
-                <Text>{t("cw20Wallet:to")}</Text>
+                <Text id="address-label">{t("cw20Wallet:to")}</Text>
                 <FormItem name="address">
-                  <Input name="address" placeholder={t("cw20Wallet:enterAddress")} />
+                  <Input
+                    aria-labelledby="address-label"
+                    name="address"
+                    placeholder={t("cw20Wallet:enterAddress")}
+                  />
                 </FormItem>
               </FormField>
             </Stack>

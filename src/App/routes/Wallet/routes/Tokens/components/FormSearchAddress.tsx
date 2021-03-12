@@ -36,6 +36,7 @@ export default function FormSearchAddress({
         <Form>
           <FormItem name="address">
             <Search
+              aria-label="search-input"
               name="address"
               placeholder={t("wallet:enterAddress")}
               enterButton

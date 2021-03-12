@@ -78,9 +78,13 @@ export default function FormUndelegateBalance({
                 <Text>{balance.toString()}</Text>
               </FormField>
               <FormField>
-                <Text>{t("staking:undelegate")}</Text>
+                <Text id="amount-label">{t("staking:undelegate")}</Text>
                 <FormItem name="amount">
-                  <Input name="amount" placeholder={t("staking:enterAmount")} />
+                  <Input
+                    aria-labelledby="amount-label"
+                    name="amount"
+                    placeholder={t("staking:enterAmount")}
+                  />
                 </FormItem>
               </FormField>
             </Stack>
