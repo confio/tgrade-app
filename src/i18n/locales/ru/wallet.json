@@ -1,0 +1,11 @@
+{
+  "tokens": "Жетоны",
+  "backToAccount": "Вернуться к моему аккаунту",
+  "enterAddress": "Введите адрес",
+  "sending": "Отправка {{nameToDisplay}}...",
+  "sendSuccess": "{{amount}} {{denom}} успешно отправленный {{recipientAddress}}",
+  "sendFail": "Отправить сделку не удалось:",
+  "send": "Отправить",
+  "enterAmount": "Введите сумму",
+  "to": "На"
+}

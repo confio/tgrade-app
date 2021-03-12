@@ -1,0 +1,26 @@
+{
+  "validators": "Валидаторы",
+  "error": {
+    "noBondedValidators": "Валидаторы облигаций не найдены"
+  },
+  "delegate": "Делегат",
+  "undelegate": "Вывод",
+  "rewards": "Награды",
+  "commission": "комиссия",
+  "stakedTokens": "Отмеченные жетоны",
+  "delegating": "Удаление...",
+  "delegateSuccess": "{{amount}} {{denom}} успешно делегированный",
+  "delegateFail": "Сделка делегата не прошла:",
+  "enterAmount": "Введите сумму",
+  "undelegating": "Разделегирование...",
+  "undelegateSuccess": "{{amount}} {{denom}} успешно недооценённый",
+  "undelegateFail": "Неудачная сделка:",
+  "balance": "Баланс",
+  "validatorHome": "дом валидатора",
+  "pendingRewards": "Отложенные вознаграждения",
+  "withdrawRewards": "Выводить вознаграждение",
+  "noRewardsFound": "Награды не найдены",
+  "withdrawing": "Выходные вознаграждения...",
+  "withdrawSuccess": "успешно отозванный",
+  "withdrawFail": "Сделка по снятию наград не прошла:"
+}
