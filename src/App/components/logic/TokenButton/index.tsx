@@ -15,7 +15,7 @@ export default function TokenButton({ denom, amount, ...restProps }: TokenButton
     <Button data-size="large" type="primary" {...restProps}>
       <TokenItem>
         <Text>{denom}</Text>
-        <Text>{amount !== "0" ? amount : "No tokens"}</Text>
+        <Text>{amount}</Text>
       </TokenItem>
     </Button>
   );

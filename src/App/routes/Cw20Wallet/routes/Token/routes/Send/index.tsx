@@ -6,6 +6,7 @@ import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
@@ -22,6 +23,7 @@ interface SendParams {
 export default function Send(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
+  const { t } = useTranslation("cw20Wallet");
   const { contractAddress, allowingAddress }: SendParams = useParams();
   const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${
     allowingAddress ? `/${allowingAddress}` : ""
@@ -41,7 +43,7 @@ export default function Send(): JSX.Element {
     (async function updateCw20Token() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        handleError(new Error(t("error.noCw20Found", { contractAddress })));
         return;
       }
 
@@ -60,7 +62,7 @@ export default function Send(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, allowingAddress, client, contractAddress, handleError]);
+  }, [address, allowingAddress, client, contractAddress, handleError, t]);
 
   async function sendTokensAction(values: FormSendTokensFields) {
     if (!cw20Token) return;
@@ -68,6 +70,7 @@ export default function Send(): JSX.Element {
 
     const { address: recipientAddress, amount } = values;
     const cw20Contract = CW20(client).use(contractAddress);
+    const symbol = cw20Token.symbol;
 
     try {
       const transferAmount = Decimal.fromUserInput(amount, cw20Token.decimals).atomics;
@@ -79,23 +82,23 @@ export default function Send(): JSX.Element {
           pathname: paths.operationResult,
           state: {
             success: true,
-            message: `${amount} ${cw20Token.symbol} successfully sent to ${recipientAddress} with allowance from ${allowingAddress}`,
-            customButtonText: "Token detail",
+            message: t("transferSuccess", { amount, symbol, recipientAddress, allowingAddress }),
+            customButtonText: t("tokenDetail"),
             customButtonActionPath: pathTokenDetail,
           } as OperationResultState,
         });
       } else {
         const response = await cw20Contract.transfer(address, recipientAddress, transferAmount);
         if (!response) {
-          throw new Error(`Transfer failed`);
+          throw new Error(t("transferFail"));
         }
 
         history.push({
           pathname: paths.operationResult,
           state: {
             success: true,
-            message: `${amount} ${cw20Token.symbol} successfully sent to ${recipientAddress}`,
-            customButtonText: "Token detail",
+            message: t("sendSuccess", { amount, symbol, recipientAddress }),
+            customButtonText: t("tokenDetail"),
             customButtonActionPath: pathTokenDetail,
           } as OperationResultState,
         });
@@ -107,7 +110,7 @@ export default function Send(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Send transaction failed:",
+          message: t("sendSuccess"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathTokenDetail,
         } as OperationResultState,
@@ -121,7 +124,7 @@ export default function Send(): JSX.Element {
   const maxAmount = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0);
 
   return loading ? (
-    <Loading loadingText={`Sending ${cw20Token?.symbol || ""}...`} />
+    <Loading loadingText={t("sending", { symbol: cw20Token?.symbol || "" })} />
   ) : (
     <PageLayout backButtonProps={{ path: pathTokenDetail }}>
       <Stack gap="s4">
@@ -129,7 +132,7 @@ export default function Send(): JSX.Element {
         <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" Tokens"}</Text>
+          <Text>{` ${t("tokens")}`}</Text>
         </TokenAmount>
         <FormSendTokens
           tokenName={cw20Token?.symbol || ""}

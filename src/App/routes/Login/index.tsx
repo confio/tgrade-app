@@ -7,6 +7,7 @@ import { configKeplr } from "config/keplr";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { isChrome, isDesktop } from "react-device-detect";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { loadKeplrWallet, loadLedgerWallet, loadOrCreateWallet, WalletLoader } from "utils/sdk";
@@ -26,6 +27,7 @@ function disableKeplrLogin() {
 }
 
 export default function Login(): JSX.Element {
+  const { t } = useTranslation("login");
   const history = useHistory();
   const state = history.location.state as RedirectLocation;
   const { handleError } = useError();
@@ -83,19 +85,19 @@ export default function Login(): JSX.Element {
         <Logo src={cosmWasmLogo} alt="CosmWasm logo" />
         <Stack gap="s3">
           <Stack gap="s-1">
-            <Title level={1}>Hello!</Title>
-            <LightText>Welcome to your Wallet</LightText>
-            <LightText>Select one of the following options to start</LightText>
+            <Title level={1}>{t("hello")}</Title>
+            <LightText>{t("welcome")}</LightText>
+            <LightText>{t("select")}</LightText>
           </Stack>
           <Stack>
             <Button data-size="large" type="primary" onClick={initBrowser}>
-              Browser (Demo)
+              {t("browserButton")}
             </Button>
             <Button data-size="large" type="primary" disabled={disableLedgerLogin()} onClick={initLedger}>
-              Ledger (Secure, Chrome)
+              {t("ledgerButton")}
             </Button>
             <Button data-size="large" type="primary" disabled={disableKeplrLogin()} onClick={initKeplr}>
-              Keplr (Secure)
+              {t("keplrButton")}
             </Button>
           </Stack>
         </Stack>

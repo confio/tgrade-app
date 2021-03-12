@@ -8,11 +8,13 @@ import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
-import { getAddAllowanceValidationSchema } from "utils/formSchemas";
+import { getAddressField, getAmountField } from "utils/forms";
+import * as Yup from "yup";
 import { FormAmount } from "./style";
 
 const { Title, Text } = Typography;
@@ -27,6 +29,7 @@ interface AddParams {
 }
 
 export default function Add(): JSX.Element {
+  const { t } = useTranslation(["common", "cw20Wallet"]);
   const [loading, setLoading] = useState(false);
 
   const { contractAddress }: AddParams = useParams();
@@ -46,7 +49,7 @@ export default function Add(): JSX.Element {
     (async function updateCw20Token() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        handleError(new Error(t("error.noCw20Found", { contractAddress })));
         return;
       }
 
@@ -56,7 +59,7 @@ export default function Add(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, client, contractAddress, handleError]);
+  }, [address, client, contractAddress, handleError, t]);
 
   async function submitAddAllowance(values: FormAddAllowanceFields): Promise<void> {
     setLoading(true);
@@ -87,10 +90,8 @@ export default function Add(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `${newAmount} ${
-            cw20Token?.symbol || ""
-          } allowance for ${spenderAddress} successfully added `,
-          customButtonText: "Allowances",
+          message: t("cw20Wallet:addSuccess", { newAmount, symbol: cw20Token?.symbol || "", spenderAddress }),
+          customButtonText: t("cw20Wallet:allowances"),
           customButtonActionPath: pathAllowances,
         } as OperationResultState,
       });
@@ -101,7 +102,7 @@ export default function Add(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Could not set allowance:",
+          message: t("cw20Wallet:addFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathAllowances,
         } as OperationResultState,
@@ -112,21 +113,26 @@ export default function Add(): JSX.Element {
   const amountToDisplay = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0).toString();
   const [amountInteger, amountDecimal] = amountToDisplay.split(".");
 
+  const validationSchema = Yup.object().shape({
+    address: getAddressField(t, getConfig().addressPrefix),
+    amount: getAmountField(t),
+  });
+
   return loading ? (
-    <Loading loadingText={`Adding allowance...`} />
+    <Loading loadingText={t("cw20Wallet:adding")} />
   ) : (
     <PageLayout backButtonProps={{ path: pathAllowances }}>
       <Stack gap="s7">
-        <Title>Add Allowance</Title>
+        <Title>{t("cw20Wallet:addAllowance")}</Title>
         <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" Tokens"}</Text>
+          <Text>{` ${t("cw20Wallet:tokens")}`}</Text>
         </TokenAmount>
         <Formik
           initialValues={{ address: "", amount: "" }}
           onSubmit={submitAddAllowance}
-          validationSchema={getAddAllowanceValidationSchema(getConfig().addressPrefix)}
+          validationSchema={validationSchema}
         >
           {(formikProps) => (
             <Form>
@@ -134,12 +140,12 @@ export default function Add(): JSX.Element {
                 <Stack gap="s2">
                   <FormAmount>
                     <FormItem name="amount">
-                      <Input name="amount" placeholder="Enter amount" />
+                      <Input name="amount" placeholder={t("cw20Wallet:enterAmount")} />
                     </FormItem>
                     <Text>{cw20Token?.symbol || ""}</Text>
                   </FormAmount>
                   <FormItem name="address">
-                    <Input name="address" placeholder="Enter address" />
+                    <Input name="address" placeholder={t("cw20Wallet:enterAddress")} />
                   </FormItem>
                 </Stack>
                 <Button
@@ -147,7 +153,7 @@ export default function Add(): JSX.Element {
                   onClick={formikProps.submitForm}
                   disabled={!(formikProps.isValid && formikProps.dirty)}
                 >
-                  Add
+                  {t("cw20Wallet:add")}
                 </Button>
               </Stack>
             </Form>

@@ -1,0 +1,11 @@
+{
+  "tokens": "Tokens",
+  "backToAccount": "Back to My Account",
+  "enterAddress": "Enter address",
+  "sending": "Sending {{nameToDisplay}}...",
+  "sendSuccess": "{{amount}} {{denom}} successfully sent to {{recipientAddress}}",
+  "sendFail": "Send transaction failed:",
+  "send": "Send",
+  "enterAmount": "Enter amount",
+  "to": "To"
+}

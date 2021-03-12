@@ -5,7 +5,9 @@ import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSdk } from "service";
+import { getAmountField } from "utils/forms";
 import * as Yup from "yup";
 import { FormField } from "./style";
 
@@ -24,17 +26,10 @@ export default function FormUndelegateBalance({
   validatorAddress,
   submitUndelegateBalance,
 }: FormUndelegateBalanceProps): JSX.Element {
+  const { t } = useTranslation(["common", "staking"]);
   const { getConfig, getAddress, getQueryClient } = useSdk();
 
-  const [balance, setBalance] = useState<Decimal>(Decimal.fromUserInput("0", 0));
-
-  const maxAmount = balance.toFloatApproximation();
-  const undelegateBalanceValidationSchema = Yup.object().shape({
-    amount: Yup.number()
-      .required("An amount is required")
-      .positive("Amount should be positive")
-      .max(maxAmount),
-  });
+  const [balance, setBalance] = useState<Decimal>(Decimal.fromAtomics("0", 0));
 
   useEffect(() => {
     let mounted = true;
@@ -64,24 +59,28 @@ export default function FormUndelegateBalance({
     };
   }, [getAddress, getConfig, getQueryClient, validatorAddress]);
 
+  const validationSchema = Yup.object().shape({
+    amount: getAmountField(t, balance.toFloatApproximation(), balance.toString()),
+  });
+
   return (
     <Formik
       initialValues={{ amount: "" }}
       onSubmit={submitUndelegateBalance}
-      validationSchema={undelegateBalanceValidationSchema}
+      validationSchema={validationSchema}
     >
       {(formikProps) => (
         <Form>
           <Stack gap="s2">
             <Stack>
               <FormField>
-                <Text>Balance</Text>
+                <Text>{t("staking:balance")}</Text>
                 <Text>{balance.toString()}</Text>
               </FormField>
               <FormField>
-                <Text>Undelegate</Text>
+                <Text>{t("staking:undelegate")}</Text>
                 <FormItem name="amount">
-                  <Input name="amount" placeholder="Enter amount" />
+                  <Input name="amount" placeholder={t("staking:enterAmount")} />
                 </FormItem>
               </FormField>
             </Stack>
@@ -90,7 +89,7 @@ export default function FormUndelegateBalance({
               onClick={formikProps.submitForm}
               disabled={!(formikProps.isValid && formikProps.dirty)}
             >
-              Undelegate
+              {t("staking:undelegate")}
             </Button>
           </Stack>
         </Form>

@@ -5,6 +5,7 @@ import { DataList, Loading } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { ComponentProps, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
@@ -18,6 +19,7 @@ interface RewardsParams {
 }
 
 export default function Rewards(): JSX.Element {
+  const { t } = useTranslation("staking");
   const { url: pathRewardsMatched } = useRouteMatch();
   const [loading, setLoading] = useState(false);
 
@@ -71,8 +73,8 @@ export default function Rewards(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `Successfully withdrawn`,
-          customButtonText: "Validator home",
+          message: t("withdrawSuccess"),
+          customButtonText: t("validatorHome"),
           customButtonActionPath: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`,
         },
       });
@@ -83,7 +85,7 @@ export default function Rewards(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Rewards withdrawal transaction failed:",
+          message: t("withdrawFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathRewardsMatched,
         },
@@ -103,25 +105,25 @@ export default function Rewards(): JSX.Element {
   }
 
   return loading ? (
-    <Loading loadingText={`Withdrawing rewards...`} />
+    <Loading loadingText={t("withdrawing")} />
   ) : (
     <PageLayout
       backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}` }}
     >
       <Stack gap="s6">
         <Stack>
-          <Title>Pending rewards</Title>
+          <Title>{t("pendingRewards")}</Title>
           <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
         </Stack>
         {rewards.length ? (
           <>
             <DataList {...getRewardsMap()} />
             <Button type="primary" onClick={submitWithdrawRewards}>
-              Withdraw rewards
+              {t("withdrawRewards")}
             </Button>
           </>
         ) : (
-          <Text>No rewards found</Text>
+          <Text>{t("noRewardsFound")}</Text>
         )}
       </Stack>
     </PageLayout>

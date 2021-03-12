@@ -3,6 +3,7 @@ import { PageLayout, Stack } from "App/components/layout";
 import { NavPagination, pageSize } from "App/components/logic";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
 
@@ -24,6 +25,7 @@ function validatorCompare(a: ValidatorData, b: ValidatorData) {
 }
 
 export default function Validators(): JSX.Element {
+  const { t } = useTranslation("staking");
   const history = useHistory();
   const { url: pathValidatorsMatched } = useRouteMatch();
   const { getQueryClient } = useSdk();
@@ -37,7 +39,7 @@ export default function Validators(): JSX.Element {
     (async function updateValidatorsData() {
       const { validators } = await getQueryClient().staking.unverified.validators("BOND_STATUS_BONDED");
       if (!validators) {
-        throw new Error("No bonded validators found");
+        throw new Error(t("error.noBondedValidators"));
       }
 
       const validatorsData: readonly ValidatorData[] = validators
@@ -51,7 +53,7 @@ export default function Validators(): JSX.Element {
         .sort(validatorCompare);
 
       if (!validatorsData.length) {
-        throw new Error("No bonded validators found");
+        throw new Error(t("error.noBondedValidators"));
       }
 
       if (mounted) setValidatorsData(validatorsData);
@@ -60,7 +62,7 @@ export default function Validators(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [getQueryClient]);
+  }, [getQueryClient, t]);
 
   function goToValidator(address: string) {
     history.push(`${pathValidatorsMatched}/${address}`);
@@ -69,7 +71,7 @@ export default function Validators(): JSX.Element {
   return (
     <PageLayout hide="back-button">
       <Stack gap="s5">
-        <Title>Validators</Title>
+        <Title>{t("validators")}</Title>
         <NavPagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}

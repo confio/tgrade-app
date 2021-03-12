@@ -5,6 +5,7 @@ import { Loading } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
@@ -19,6 +20,7 @@ interface DelegateParams {
 }
 
 export default function Delegate(): JSX.Element {
+  const { t } = useTranslation("staking");
   const { url: pathDelegateMatched } = useRouteMatch();
   const [loading, setLoading] = useState(false);
 
@@ -39,12 +41,14 @@ export default function Delegate(): JSX.Element {
 
       await delegateTokens(validatorAddress, delegateAmount);
 
+      const denom = config.coinMap[config.stakingToken].denom;
+
       history.push({
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `${amount} ${config.coinMap[config.stakingToken].denom} successfully delegated`,
-          customButtonText: "Validator home",
+          message: t("delegateSuccess", { amount, denom }),
+          customButtonText: t("validatorHome"),
           customButtonActionPath: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`,
         },
       });
@@ -55,7 +59,7 @@ export default function Delegate(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Delegate transaction failed:",
+          message: t("delegateFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathDelegateMatched,
         },
@@ -64,14 +68,14 @@ export default function Delegate(): JSX.Element {
   }
 
   return loading ? (
-    <Loading loadingText={`Delegating...`} />
+    <Loading loadingText={t("delegating")} />
   ) : (
     <PageLayout
       backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}` }}
     >
       <Stack gap="s6">
         <Stack>
-          <Title>Delegate</Title>
+          <Title>{t("delegate")}</Title>
           <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
         </Stack>
         <FormDelegateBalance submitDelegateBalance={submitDelegateBalance} />

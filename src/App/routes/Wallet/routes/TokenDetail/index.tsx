@@ -7,6 +7,7 @@ import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
@@ -20,6 +21,7 @@ interface TokenDetailParams {
 }
 
 export default function TokenDetail(): JSX.Element {
+  const { t } = useTranslation("wallet");
   const [loading, setLoading] = useState(false);
 
   const { handleError } = useError();
@@ -65,12 +67,14 @@ export default function TokenDetail(): JSX.Element {
         throw new Error(response.rawLog);
       }
 
+      const denom = config.coinMap[tokenName].denom;
+
       history.push({
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `${amount} ${config.coinMap[tokenName].denom} successfully sent to ${recipientAddress}`,
-          customButtonText: "Tokens",
+          message: t("sendSuccess", { amount, denom, recipientAddress }),
+          customButtonText: t("tokens"),
           customButtonActionPath: `${paths.wallet.prefix}${paths.wallet.tokens}`,
         } as OperationResultState,
       });
@@ -81,7 +85,7 @@ export default function TokenDetail(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Send transaction failed:",
+          message: t("sendFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathTokenDetailMatched,
         } as OperationResultState,
@@ -95,7 +99,7 @@ export default function TokenDetail(): JSX.Element {
   const [amountInteger, amountDecimal] = amountToDisplay.split(".");
 
   return loading ? (
-    <Loading loadingText={`Sending ${nameToDisplay}...`} />
+    <Loading loadingText={t("sending", { nameToDisplay })} />
   ) : (
     <PageLayout backButtonProps={{ path: `${paths.wallet.prefix}${paths.wallet.tokens}` }}>
       <Stack gap="s4">
@@ -103,11 +107,11 @@ export default function TokenDetail(): JSX.Element {
         <TokenAmount>
           <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
           {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{" Tokens"}</Text>
+          <Text>{` ${t("tokens")}`}</Text>
         </TokenAmount>
         <FormSendTokens
           tokenName={nameToDisplay}
-          tokenAmount={amountToDisplay}
+          maxAmount={amountToDisplay}
           sendTokensAction={sendTokensAction}
         />
       </Stack>

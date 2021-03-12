@@ -1,0 +1,51 @@
+{
+  "yourAccount": {
+    "title": "Tu Cuenta",
+    "copyAddress": "Copiar Dirección de Cuenta"
+  },
+  "menu": {
+    "account": "Cuenta",
+    "wallet": "Cartera",
+    "cw20Wallet": "Cartera CW20",
+    "staking": "Participación",
+    "logout": "Salir"
+  },
+  "form": {
+    "address": {
+      "required": "Se requiere una dirección",
+      "bech32": "La dirección debe tener un formato bech32",
+      "prefix": "La dirección debe tener el prefijo \"{{addressPrefix}}\"",
+      "length": "La dirección debe tener 20 bytes de datos"
+    },
+    "amount": {
+      "required": "Se requiere una cantidad",
+      "positive": "La cantidad debe ser positiva",
+      "max": "La cantidad no debe ser mayor que {{maxAmountString}}"
+    },
+    "codeId": {
+      "positive": "Code ID must be positive"
+    },
+    "tokenSymbol": {
+      "required": "A symbol is required",
+      "uppercase": "Symbol must be uppercase",
+      "minMax": "Symbol length must be between {{min}} and {{max}}"
+    },
+    "tokenName": {
+      "required": "A name is required",
+      "minMax": "Name length must be between {{min}} and {{max}}"
+    },
+    "tokenDecimals": {
+      "required": "Display decimals are required",
+      "integer": "Display decimals must be an integer",
+      "minMax": "Display decimals must be between {{min}} and {{max}}"
+    },
+    "tokenSupply": {
+      "required": "An initial supply is required",
+      "positive": "Initial supply must be positive"
+    },
+    "tokenMintCap": {
+      "positive": "Mint cap must be positive",
+      "min": "Mint cap must be equal or greater than initial supply"
+    }
+  }
+}

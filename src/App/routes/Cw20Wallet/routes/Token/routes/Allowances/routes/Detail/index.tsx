@@ -6,6 +6,7 @@ import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
@@ -22,6 +23,7 @@ interface DetailParams {
 export default function Detail(): JSX.Element {
   const [loading, setLoading] = useState(false);
 
+  const { t } = useTranslation("cw20Wallet");
   const { url: pathAllowancesMatched } = useRouteMatch();
   const { contractAddress, spenderAddress }: DetailParams = useParams();
   const pathAllowances = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}`;
@@ -42,7 +44,7 @@ export default function Detail(): JSX.Element {
     (async function updateCw20TokenAndAllowance() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
+        handleError(new Error(t("error.noCw20Found", { contractAddress })));
         return;
       }
 
@@ -54,7 +56,7 @@ export default function Detail(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, client, contractAddress, handleError, spenderAddress]);
+  }, [address, client, contractAddress, handleError, spenderAddress, t]);
 
   function goToAllowancesEdit() {
     history.push(`${pathAllowancesMatched}${paths.cw20Wallet.edit}`);
@@ -72,8 +74,8 @@ export default function Detail(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: true,
-          message: `${cw20Token?.symbol || ""} allowance successfully removed for ${spenderAddress}`,
-          customButtonText: "Allowances",
+          message: t("removeSuccess", { symbol: cw20Token?.symbol || "", spenderAddress }),
+          customButtonText: t("allowances"),
           customButtonActionPath: pathAllowances,
         } as OperationResultState,
       });
@@ -84,7 +86,7 @@ export default function Detail(): JSX.Element {
         pathname: paths.operationResult,
         state: {
           success: false,
-          message: "Could not remove allowance:",
+          message: t("removeFail"),
           error: getErrorFromStackTrace(stackTrace),
           customButtonActionPath: pathAllowancesMatched,
         } as OperationResultState,
@@ -96,22 +98,22 @@ export default function Detail(): JSX.Element {
   const [allowanceInteger, allowanceDecimal] = allowanceToDisplay.split(".");
 
   return loading ? (
-    <Loading loadingText={`Removing allowance...`} />
+    <Loading loadingText={t("removing")} />
   ) : (
     <PageLayout backButtonProps={{ path: pathAllowances }}>
       <Stack gap="s3">
-        <Title>{`${cw20Token?.symbol || ""} Allowance`}</Title>
+        <Title>{`${cw20Token?.symbol || ""} ${t("allowance")}`}</Title>
         <TokenAmount>
           <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
           {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-          <Text>{" Tokens"}</Text>
+          <Text>{` ${t("tokens")}`}</Text>
         </TokenAmount>
         <AddressText>{spenderAddress}</AddressText>
         <Button type="primary" onClick={() => goToAllowancesEdit()}>
-          Edit
+          {t("edit")}
         </Button>
         <Button type="primary" onClick={submitRemove}>
-          Remove
+          {t("remove")}
         </Button>
       </Stack>
     </PageLayout>

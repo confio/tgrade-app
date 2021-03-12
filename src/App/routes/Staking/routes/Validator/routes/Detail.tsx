@@ -6,6 +6,7 @@ import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { ComponentProps, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
@@ -18,6 +19,7 @@ interface DetailParams {
 }
 
 export default function Detail(): JSX.Element {
+  const { t } = useTranslation("staking");
   const { url: pathValidatorDetailMatched } = useRouteMatch();
   const history = useHistory();
   const { validatorAddress } = useParams<DetailParams>();
@@ -63,8 +65,8 @@ export default function Detail(): JSX.Element {
 
     return {
       Tokens: tokens,
-      Commission: commissionPercent,
-      "Staked tokens": stakedTokens.toString(),
+      [t("commission")]: commissionPercent,
+      [t("stakedTokens")]: stakedTokens.toString(),
     };
   }
 
@@ -87,13 +89,13 @@ export default function Detail(): JSX.Element {
         <DataList {...getValidatorMap()} />
         <Stack>
           <Button type="primary" onClick={goToDelegate}>
-            Delegate
+            {t("delegate")}
           </Button>
           <Button type="primary" onClick={goToUndelegate}>
-            Undelegate
+            {t("undelegate")}
           </Button>
           <Button type="primary" onClick={goToRewards}>
-            Rewards
+            {t("rewards")}
           </Button>
         </Stack>
       </Stack>

@@ -1,0 +1,51 @@
+{
+  "yourAccount": {
+    "title": "Your Account",
+    "copyAddress": "Copy Account Address"
+  },
+  "menu": {
+    "account": "Account",
+    "wallet": "Wallet",
+    "cw20Wallet": "CW20 Wallet",
+    "staking": "Staking",
+    "logout": "Log out"
+  },
+  "form": {
+    "address": {
+      "required": "An address is required",
+      "bech32": "Address must have valid bech32 format",
+      "prefix": "Address must have prefix \"{{addressPrefix}}\"",
+      "length": "Address must have 20 bytes of data"
+    },
+    "amount": {
+      "required": "An amount is required",
+      "positive": "Amount must be positive",
+      "max": "Amount must not be greater than {{maxAmountString}}"
+    },
+    "codeId": {
+      "positive": "Code ID must be positive"
+    },
+    "tokenSymbol": {
+      "required": "A symbol is required",
+      "uppercase": "Symbol must be uppercase",
+      "minMax": "Symbol length must be between {{min}} and {{max}}"
+    },
+    "tokenName": {
+      "required": "A name is required",
+      "minMax": "Name length must be between {{min}} and {{max}}"
+    },
+    "tokenDecimals": {
+      "required": "Display decimals are required",
+      "integer": "Display decimals must be an integer",
+      "minMax": "Display decimals must be between {{min}} and {{max}}"
+    },
+    "tokenSupply": {
+      "required": "An initial supply is required",
+      "positive": "Initial supply must be positive"
+    },
+    "tokenMintCap": {
+      "positive": "Mint cap must be positive",
+      "min": "Mint cap must be equal or greater than initial supply"
+    }
+  }
+}

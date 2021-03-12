@@ -2,25 +2,32 @@ import { Search } from "App/components/logic";
 import { Formik } from "formik";
 import { Form, FormItem } from "formik-antd";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useSdk } from "service";
-import { getSearchAddressValidationSchema } from "utils/formSchemas";
+import { getAddressField } from "utils/forms";
+import * as Yup from "yup";
 
 interface FormSearchNameProps {
   readonly currentAddress: string;
   readonly setCurrentAddress: (value: React.SetStateAction<string>) => void;
 }
 
-export default function FormSearchName({
+export default function FormSearchAddress({
   currentAddress,
   setCurrentAddress,
 }: FormSearchNameProps): JSX.Element {
+  const { t } = useTranslation(["common", "wallet"]);
   const { getConfig } = useSdk();
+
+  const validationSchema = Yup.object().shape({
+    address: getAddressField(t, getConfig().addressPrefix, true),
+  });
 
   return (
     <Formik
       initialValues={{ address: currentAddress }}
       enableReinitialize
-      validationSchema={getSearchAddressValidationSchema(getConfig().addressPrefix)}
+      validationSchema={validationSchema}
       onSubmit={(values) => {
         setCurrentAddress(values.address);
       }}
@@ -30,7 +37,7 @@ export default function FormSearchName({
           <FormItem name="address">
             <Search
               name="address"
-              placeholder="Enter address"
+              placeholder={t("wallet:enterAddress")}
               enterButton
               onSearch={formikProps.submitForm}
             />
