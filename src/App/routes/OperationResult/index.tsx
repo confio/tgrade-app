@@ -28,7 +28,6 @@ interface ResultContent {
 
 export default function OperationResult(): JSX.Element {
   const history = useHistory();
-  console.log("OR state: ", history.location.state);
   const {
     success,
     message,
