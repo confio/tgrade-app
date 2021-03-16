@@ -1,7 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { Stack } from "App/components/layout";
-import { NavPagination, pageSize, TokenButton } from "App/components/logic";
+import { Loading, NavPagination, pageSize, TokenButton } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ export default function TokensList(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
   const history = useHistory();
   const { url: pathTokensMatched } = useRouteMatch();
-  useLayout();
+  useLayout({});
 
   const { getConfig, getSigningClient, getAddress } = useSdk();
   const { contracts: cw20Contracts, addContract } = useContracts();
@@ -65,20 +65,22 @@ export default function TokensList(): JSX.Element {
     <Stack gap="s4">
       <Title>{t("tokens")}</Title>
       <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={cw20Tokens.length} />
-      <Stack>
-        {cw20Tokens.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((token) => {
-          const amountToDisplay = Decimal.fromAtomics(token.amount, token.decimals).toString();
+      <Loading loading={!cw20Tokens.length ? "" : undefined}>
+        <Stack>
+          {cw20Tokens.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((token) => {
+            const amountToDisplay = Decimal.fromAtomics(token.amount, token.decimals).toString();
 
-          return (
-            <TokenButton
-              key={token.address}
-              denom={token.symbol}
-              amount={amountToDisplay}
-              onClick={() => goTokenDetail(token.address)}
-            />
-          );
-        })}
-      </Stack>
+            return (
+              <TokenButton
+                key={token.address}
+                denom={token.symbol}
+                amount={amountToDisplay}
+                onClick={() => goTokenDetail(token.address)}
+              />
+            );
+          })}
+        </Stack>
+      </Loading>
       <Link to={`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`}>
         <Button type="primary">{t("addAnother")}</Button>
       </Link>
