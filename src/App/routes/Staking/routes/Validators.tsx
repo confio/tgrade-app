@@ -29,7 +29,7 @@ export default function Validators(): JSX.Element {
   const { t } = useTranslation("staking");
   const history = useHistory();
   const { url: pathValidatorsMatched } = useRouteMatch();
-  useLayout();
+  useLayout({});
 
   const { getQueryClient } = useSdk();
 

@@ -12,7 +12,7 @@ const { Title } = Typography;
 
 export default function Tokens(): JSX.Element {
   const { t } = useTranslation("wallet");
-  useLayout();
+  useLayout({});
 
   const { getAddress } = useSdk();
   const address = getAddress();
