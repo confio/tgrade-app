@@ -1,11 +1,8 @@
-import { PageLayout } from "App/components/layout";
-import { BackButton, ErrorAlert, Loading, Menu, NavHeader, RedirectLocation } from "App/components/logic";
-import { paths } from "App/paths";
+import { BackButton } from "App/components/logic";
 import * as React from "react";
 import { ComponentProps, createContext, HTMLAttributes, useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useSdk } from "service";
-import { useWindowSize } from "utils/ui";
 
 interface LayoutState {
   readonly hideMenu?: boolean;
@@ -13,14 +10,22 @@ interface LayoutState {
 }
 
 interface LayoutContextType {
+  readonly hideMenu: boolean;
   readonly setHideMenu: (hideMenu: boolean) => void;
+  readonly backButtonProps?: ComponentProps<typeof BackButton>;
   readonly setBackButtonProps: (backButtonProps?: ComponentProps<typeof BackButton>) => void;
+  readonly isMenuOpen: boolean;
+  readonly setMenuOpen: (isMenuOpen: boolean) => void;
+  readonly loading?: string;
   readonly setLoading: (loading: boolean | string) => void;
 }
 
 const defaultContext: LayoutContextType = {
+  hideMenu: true,
   setHideMenu: () => {},
   setBackButtonProps: () => {},
+  isMenuOpen: false,
+  setMenuOpen: () => {},
   setLoading: () => {},
 };
 
@@ -28,32 +33,41 @@ const LayoutContext = createContext<LayoutContextType>(defaultContext);
 
 export const useLayout = (state?: LayoutState): LayoutContextType => {
   const context = useContext(LayoutContext);
-  const { hideMenu, backButtonProps } = state ?? {};
 
   useEffect(() => {
+    if (!state) return;
+
+    const { hideMenu, backButtonProps } = state;
     context.setHideMenu(!!hideMenu);
     context.setBackButtonProps(backButtonProps);
-  }, [backButtonProps, context, hideMenu]);
+  }, [context, state]);
 
   return context;
 };
 
 export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
-  const history = useHistory();
-  const state = history.location.state as RedirectLocation;
+  const { t } = useTranslation("login");
   const { initialized: isSdkInitialized } = useSdk();
-
-  const { width } = useWindowSize();
-  const isBigViewport = width >= 1040;
 
   const [hideMenu, setHideMenu] = useState(true);
   const [backButtonProps, setBackButtonProps] = useState<ComponentProps<typeof BackButton>>();
-  const [loading, setLoading] = useState<string>();
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const [loading, setLoading] = useState<string>();
+
+  useEffect(() => {
+    if (isSdkInitialized && loading === t("initializing")) {
+      setLoading(undefined);
+    }
+  }, [isSdkInitialized, loading, t]);
 
   const readyContext: LayoutContextType = {
+    hideMenu,
     setHideMenu,
+    backButtonProps,
     setBackButtonProps,
+    isMenuOpen,
+    setMenuOpen,
+    loading,
     setLoading: (loading) => {
       if (typeof loading === "boolean") {
         setLoading(loading ? "Loading..." : undefined);
@@ -65,36 +79,5 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
     },
   };
 
-  useEffect(() => {
-    if (!isSdkInitialized) return;
-    setLoading(undefined);
-
-    if (state) {
-      history.push(state.redirectPathname, state.redirectState);
-    } else {
-      history.push(paths.wallet.prefix);
-    }
-  }, [history, isSdkInitialized, state]);
-
-  const showMenu = !hideMenu && loading === undefined;
-  const showBurgerButton = !hideMenu && !isBigViewport;
-
-  return (
-    <LayoutContext.Provider value={readyContext}>
-      {showMenu ? (
-        <Menu isBigViewport={isBigViewport} isOpen={isMenuOpen} closeMenu={() => setMenuOpen(false)} />
-      ) : null}
-      <PageLayout>
-        <Loading loading={loading}>
-          <NavHeader
-            backButtonProps={backButtonProps}
-            showBurgerButton={showBurgerButton}
-            burgerButtonCallback={() => setMenuOpen(true)}
-          />
-          <ErrorAlert />
-          {children}
-        </Loading>
-      </PageLayout>
-    </LayoutContext.Provider>
-  );
+  return <LayoutContext.Provider value={readyContext}>{children}</LayoutContext.Provider>;
 }
