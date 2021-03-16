@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const StyledBurger = styled.button`
+export const StyledButton = styled.button`
   cursor: pointer;
   align-self: right;
   display: flex;

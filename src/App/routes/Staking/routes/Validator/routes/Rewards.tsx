@@ -1,13 +1,14 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Button, Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
-import { DataList, Loading } from "App/components/logic";
+import { Stack } from "App/components/layout";
+import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { nativeCoinToDisplay } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
@@ -20,18 +21,19 @@ interface RewardsParams {
 
 export default function Rewards(): JSX.Element {
   const { t } = useTranslation("staking");
+  const history = useHistory();
   const { url: pathRewardsMatched } = useRouteMatch();
-  const [loading, setLoading] = useState(false);
+  const { validatorAddress } = useParams<RewardsParams>();
+  const pathValidator = `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`;
+  const backButtonProps = useMemo(() => ({ path: pathValidator }), [pathValidator]);
+  const { setLoading } = useLayout({ backButtonProps });
 
   const { handleError } = useError();
-  const history = useHistory();
-  const { validatorAddress } = useParams<RewardsParams>();
-
   const { getConfig, getAddress, getQueryClient, withdrawRewards } = useSdk();
   const config = getConfig();
   const delegatorAddress = getAddress();
-
   const validator = useStakingValidator(validatorAddress);
+
   const [rewards, setRewards] = useState<readonly Coin[]>([]);
 
   useEffect(() => {
@@ -64,10 +66,12 @@ export default function Rewards(): JSX.Element {
   }, [delegatorAddress, getQueryClient, validatorAddress]);
 
   async function submitWithdrawRewards() {
-    setLoading(true);
+    setLoading("Withdrawing rewards...");
 
     try {
       await withdrawRewards(validatorAddress);
+
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -75,11 +79,12 @@ export default function Rewards(): JSX.Element {
           success: true,
           message: t("withdrawSuccess"),
           customButtonText: t("validatorHome"),
-          customButtonActionPath: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`,
+          customButtonActionPath: pathValidator,
         },
       });
     } catch (stackTrace) {
       handleError(stackTrace);
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -104,28 +109,22 @@ export default function Rewards(): JSX.Element {
     return rewardsMap;
   }
 
-  return loading ? (
-    <Loading loadingText={t("withdrawing")} />
-  ) : (
-    <PageLayout
-      backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}` }}
-    >
-      <Stack gap="s6">
-        <Stack>
-          <Title>{t("pendingRewards")}</Title>
-          <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
-        </Stack>
-        {rewards.length ? (
-          <>
-            <DataList {...getRewardsMap()} />
-            <Button type="primary" onClick={submitWithdrawRewards}>
-              {t("withdrawRewards")}
-            </Button>
-          </>
-        ) : (
-          <Text>{t("noRewardsFound")}</Text>
-        )}
+  return (
+    <Stack gap="s6">
+      <Stack>
+        <Title>{t("pendingRewards")}</Title>
+        <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
       </Stack>
-    </PageLayout>
+      {rewards.length ? (
+        <>
+          <DataList {...getRewardsMap()} />
+          <Button type="primary" onClick={submitWithdrawRewards}>
+            {t("withdrawRewards")}
+          </Button>
+        </>
+      ) : (
+        <Text>{t("noRewardsFound")}</Text>
+      )}
+    </Stack>
   );
 }

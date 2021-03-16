@@ -1,17 +1,20 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
+import { Stack } from "App/components/layout";
 import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import FormSearchAllowing from "./FormSearchAllowing";
 
 const { Title, Text } = Typography;
+
+const pathTokens = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}`;
 
 interface DetailParams {
   readonly contractAddress: string;
@@ -20,9 +23,12 @@ interface DetailParams {
 
 export default function Detail(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
+  const history = useHistory();
   const { contractAddress, allowingAddress: allowingAddressParam }: DetailParams = useParams();
   const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`;
-  const history = useHistory();
+  const backButtonProps = useMemo(() => ({ path: pathTokens }), []);
+  useLayout({ backButtonProps });
+
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
   const client = getSigningClient();
@@ -122,45 +128,43 @@ export default function Detail(): JSX.Element {
   const isSendButtonDisabled = allowance ? allowance === "0" : cw20Token?.amount === "0";
 
   return (
-    <PageLayout backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}` }}>
-      <Stack gap="s4">
-        <Title>{cw20Token?.symbol || ""}</Title>
-        <Stack gap="s-2">
+    <Stack gap="s4">
+      <Title>{cw20Token?.symbol || ""}</Title>
+      <Stack gap="s-2">
+        <TokenAmount>
+          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+          {amountDecimal && <Text>{amountDecimal}</Text>}
+          <Text>{` ${t("tokens")}`}</Text>
+        </TokenAmount>
+        {allowance ? (
           <TokenAmount>
-            <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-            {amountDecimal && <Text>{amountDecimal}</Text>}
-            <Text>{` ${t("tokens")}`}</Text>
+            <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
+            {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
+            <Text>{` ${t("allowance")}`}</Text>
           </TokenAmount>
-          {allowance ? (
-            <TokenAmount>
-              <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
-              {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-              <Text>{` ${t("allowance")}`}</Text>
-            </TokenAmount>
-          ) : null}
-        </Stack>
-        <Stack>
-          <Button type="primary" onClick={goToSend} disabled={isSendButtonDisabled}>
-            {t("sendTokens")}
+        ) : null}
+      </Stack>
+      <Stack>
+        <Button type="primary" onClick={goToSend} disabled={isSendButtonDisabled}>
+          {t("sendTokens")}
+        </Button>
+        {!allowingAddress && isUserMinter ? (
+          <Button type="primary" onClick={goToMint}>
+            {t("mintTokens")}
           </Button>
-          {!allowingAddress && isUserMinter ? (
-            <Button type="primary" onClick={goToMint}>
-              {t("mintTokens")}
-            </Button>
-          ) : null}
-          {!allowingAddress ? (
-            <Button type="primary" onClick={goToAllowances}>
-              {t("myAllowances")}
-            </Button>
-          ) : null}
-        </Stack>
-        <FormSearchAllowing initialAddress={allowingAddress} setSearchedAddress={updateAllowance} />
-        {allowingAddress ? (
-          <Button type="default" onClick={() => updateAllowance()}>
-            {t("backToAccount")}
+        ) : null}
+        {!allowingAddress ? (
+          <Button type="primary" onClick={goToAllowances}>
+            {t("myAllowances")}
           </Button>
         ) : null}
       </Stack>
-    </PageLayout>
+      <FormSearchAllowing initialAddress={allowingAddress} setSearchedAddress={updateAllowance} />
+      {allowingAddress ? (
+        <Button type="default" onClick={() => updateAllowance()}>
+          {t("backToAccount")}
+        </Button>
+      ) : null}
+    </Stack>
   );
 }

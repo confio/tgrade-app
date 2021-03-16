@@ -1,20 +1,23 @@
 import { Coin } from "@cosmjs/launchpad";
 import { isBroadcastTxFailure } from "@cosmjs/stargate";
 import { Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
-import { Loading, TokenAmount } from "App/components/logic";
+import { Stack } from "App/components/layout";
+import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormSendTokens, { FormSendTokensValues } from "./FormSendTokens";
 
 const { Title, Text } = Typography;
+
+const pathTokens = `${paths.wallet.prefix}${paths.wallet.tokens}`;
 
 interface TokenDetailParams {
   readonly tokenName: string;
@@ -22,17 +25,18 @@ interface TokenDetailParams {
 
 export default function TokenDetail(): JSX.Element {
   const { t } = useTranslation("wallet");
-  const [loading, setLoading] = useState(false);
-
-  const { handleError } = useError();
   const history = useHistory();
   const { url: pathTokenDetailMatched } = useRouteMatch();
   const { tokenName }: TokenDetailParams = useParams();
-  const [tokenAmount, setTokenAmount] = useState("0");
+  const backButtonProps = useMemo(() => ({ path: pathTokens }), []);
+  const { setLoading } = useLayout({ backButtonProps });
 
+  const { handleError } = useError();
   const { getConfig, getAddress, getSigningClient } = useSdk();
-  const balance = useBalance();
   const config = getConfig();
+  const balance = useBalance();
+
+  const [tokenAmount, setTokenAmount] = useState("0");
 
   useEffect(() => {
     let mounted = true;
@@ -54,7 +58,7 @@ export default function TokenDetail(): JSX.Element {
   }, [balance, handleError, tokenName]);
 
   async function sendTokensAction(values: FormSendTokensValues): Promise<void> {
-    setLoading(true);
+    setLoading(`Sending ${nameToDisplay}...`);
     const { address: recipientAddress, amount } = values;
 
     try {
@@ -68,6 +72,7 @@ export default function TokenDetail(): JSX.Element {
       }
 
       const denom = config.coinMap[tokenName].denom;
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -80,6 +85,7 @@ export default function TokenDetail(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -98,23 +104,19 @@ export default function TokenDetail(): JSX.Element {
   const { denom: nameToDisplay, amount: amountToDisplay } = nativeCoinToDisplay(nativeToken, config.coinMap);
   const [amountInteger, amountDecimal] = amountToDisplay.split(".");
 
-  return loading ? (
-    <Loading loadingText={t("sending", { nameToDisplay })} />
-  ) : (
-    <PageLayout backButtonProps={{ path: `${paths.wallet.prefix}${paths.wallet.tokens}` }}>
-      <Stack gap="s4">
-        <Title>{nameToDisplay}</Title>
-        <TokenAmount>
-          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-          {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{` ${t("tokens")}`}</Text>
-        </TokenAmount>
-        <FormSendTokens
-          tokenName={nameToDisplay}
-          maxAmount={amountToDisplay}
-          sendTokensAction={sendTokensAction}
-        />
-      </Stack>
-    </PageLayout>
+  return (
+    <Stack gap="s4">
+      <Title>{nameToDisplay}</Title>
+      <TokenAmount>
+        <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+        {amountDecimal && <Text>{amountDecimal}</Text>}
+        <Text>{` ${t("tokens")}`}</Text>
+      </TokenAmount>
+      <FormSendTokens
+        tokenName={nameToDisplay}
+        maxAmount={amountToDisplay}
+        sendTokensAction={sendTokensAction}
+      />
+    </Stack>
   );
 }

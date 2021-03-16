@@ -1,11 +1,8 @@
-import { PageLayout } from "App/components/layout";
 import { YourAccount } from "App/components/logic";
 import * as React from "react";
+import { useLayout } from "service/layout";
 
 export default function Account(): JSX.Element {
-  return (
-    <PageLayout hide="back-button">
-      <YourAccount />
-    </PageLayout>
-  );
+  useLayout({});
+  return <YourAccount />;
 }

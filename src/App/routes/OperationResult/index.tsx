@@ -1,10 +1,11 @@
 import { Button } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
+import { Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useError } from "service";
+import { useLayout } from "service/layout";
 import failIcon from "./assets/failIcon.svg";
 import successIcon from "./assets/successIcon.svg";
 import { ResultIcon, ResultText } from "./style";
@@ -26,11 +27,7 @@ interface ResultContent {
 }
 
 export default function OperationResult(): JSX.Element {
-  const { clearError } = useError();
-  useEffect(clearError, [clearError]);
-
   const history = useHistory();
-
   const {
     success,
     message,
@@ -39,6 +36,11 @@ export default function OperationResult(): JSX.Element {
     customButtonActionPath,
     customButtonActionState,
   } = history.location.state as OperationResultState;
+
+  useLayout({ hideMenu: true });
+
+  const { clearError } = useError();
+  useEffect(clearError, [clearError]);
 
   function getResultContent(success: boolean): ResultContent {
     if (success) {
@@ -66,15 +68,13 @@ export default function OperationResult(): JSX.Element {
     : buttonAction;
 
   return (
-    <PageLayout hide="header">
-      <Stack gap="s3">
-        <ResultIcon src={icon} alt="Result icon" />
-        <ResultText data-result={result}>{message}</ResultText>
-        {error && <ResultText data-result={result}>{error}</ResultText>}
-        <Button type="primary" onClick={chosenButtonAction}>
-          {chosenButtonText}
-        </Button>
-      </Stack>
-    </PageLayout>
+    <Stack gap="s3">
+      <ResultIcon src={icon} alt="Result icon" />
+      <ResultText data-result={result}>{message}</ResultText>
+      {error && <ResultText data-result={result}>{error}</ResultText>}
+      <Button type="primary" onClick={chosenButtonAction}>
+        {chosenButtonText}
+      </Button>
+    </Stack>
   );
 }

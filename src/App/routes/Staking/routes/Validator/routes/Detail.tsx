@@ -1,18 +1,21 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
+import { Stack } from "App/components/layout";
 import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
+import { useLayout } from "service/layout";
 import { nativeCoinToDisplay } from "utils/currency";
 import { useStakingValidator } from "utils/staking";
 
 const { Title } = Typography;
+
+const pathValidators = `${paths.staking.prefix}${paths.staking.validators}`;
 
 interface DetailParams {
   readonly validatorAddress: string;
@@ -20,13 +23,16 @@ interface DetailParams {
 
 export default function Detail(): JSX.Element {
   const { t } = useTranslation("staking");
-  const { url: pathValidatorDetailMatched } = useRouteMatch();
   const history = useHistory();
+  const { url: pathValidatorDetailMatched } = useRouteMatch();
   const { validatorAddress } = useParams<DetailParams>();
-  const validator = useStakingValidator(validatorAddress);
+  const backButtonProps = useMemo(() => ({ path: pathValidators }), []);
+  useLayout({ backButtonProps });
 
   const { getConfig, getAddress, getQueryClient } = useSdk();
   const config = getConfig();
+  const validator = useStakingValidator(validatorAddress);
+
   const [stakedTokens, setStakedTokens] = useState<Decimal>(Decimal.fromUserInput("0", 0));
 
   useEffect(() => {
@@ -83,22 +89,20 @@ export default function Detail(): JSX.Element {
   }
 
   return (
-    <PageLayout backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}` }}>
-      <Stack gap="s5">
-        <Title>{validator?.description?.moniker ?? ""}</Title>
-        <DataList {...getValidatorMap()} />
-        <Stack>
-          <Button type="primary" onClick={goToDelegate}>
-            {t("delegate")}
-          </Button>
-          <Button type="primary" onClick={goToUndelegate}>
-            {t("undelegate")}
-          </Button>
-          <Button type="primary" onClick={goToRewards}>
-            {t("rewards")}
-          </Button>
-        </Stack>
+    <Stack gap="s5">
+      <Title>{validator?.description?.moniker ?? ""}</Title>
+      <DataList {...getValidatorMap()} />
+      <Stack>
+        <Button type="primary" onClick={goToDelegate}>
+          {t("delegate")}
+        </Button>
+        <Button type="primary" onClick={goToUndelegate}>
+          {t("undelegate")}
+        </Button>
+        <Button type="primary" onClick={goToRewards}>
+          {t("rewards")}
+        </Button>
       </Stack>
-    </PageLayout>
+    </Stack>
   );
 }

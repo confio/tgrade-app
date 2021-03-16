@@ -1,16 +1,17 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
-import { Loading, TokenAmount } from "App/components/logic";
+import { Stack } from "App/components/layout";
+import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getAddressField, getAmountField } from "utils/forms";
@@ -30,11 +31,12 @@ interface AddParams {
 
 export default function Add(): JSX.Element {
   const { t } = useTranslation(["common", "cw20Wallet"]);
-  const [loading, setLoading] = useState(false);
-
+  const history = useHistory();
   const { contractAddress }: AddParams = useParams();
   const pathAllowances = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}`;
-  const history = useHistory();
+  const backButtonProps = useMemo(() => ({ path: pathAllowances }), [pathAllowances]);
+  const { setLoading } = useLayout({ backButtonProps });
+
   const { handleError } = useError();
   const { getConfig, getSigningClient, getAddress } = useSdk();
   const client = getSigningClient();
@@ -62,7 +64,7 @@ export default function Add(): JSX.Element {
   }, [address, client, contractAddress, handleError, t]);
 
   async function submitAddAllowance(values: FormAddAllowanceFields): Promise<void> {
-    setLoading(true);
+    setLoading("Adding allowance...");
 
     const { address: spenderAddress, amount: newAmount } = values;
     const cw20Contract = CW20(getSigningClient()).use(contractAddress);
@@ -86,6 +88,8 @@ export default function Add(): JSX.Element {
         );
       }
 
+      setLoading(false);
+
       history.push({
         pathname: paths.operationResult,
         state: {
@@ -97,6 +101,7 @@ export default function Add(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -118,48 +123,44 @@ export default function Add(): JSX.Element {
     amount: getAmountField(t),
   });
 
-  return loading ? (
-    <Loading loadingText={t("cw20Wallet:adding")} />
-  ) : (
-    <PageLayout backButtonProps={{ path: pathAllowances }}>
-      <Stack gap="s7">
-        <Title>{t("cw20Wallet:addAllowance")}</Title>
-        <TokenAmount>
-          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-          {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{` ${t("cw20Wallet:tokens")}`}</Text>
-        </TokenAmount>
-        <Formik
-          initialValues={{ address: "", amount: "" }}
-          onSubmit={submitAddAllowance}
-          validationSchema={validationSchema}
-        >
-          {(formikProps) => (
-            <Form>
-              <Stack gap="s7">
-                <Stack gap="s2">
-                  <FormAmount>
-                    <FormItem name="amount">
-                      <Input name="amount" placeholder={t("cw20Wallet:enterAmount")} />
-                    </FormItem>
-                    <Text>{cw20Token?.symbol || ""}</Text>
-                  </FormAmount>
-                  <FormItem name="address">
-                    <Input name="address" placeholder={t("cw20Wallet:enterAddress")} />
+  return (
+    <Stack gap="s7">
+      <Title>{t("cw20Wallet:addAllowance")}</Title>
+      <TokenAmount>
+        <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+        {amountDecimal && <Text>{amountDecimal}</Text>}
+        <Text>{` ${t("cw20Wallet:tokens")}`}</Text>
+      </TokenAmount>
+      <Formik
+        initialValues={{ address: "", amount: "" }}
+        onSubmit={submitAddAllowance}
+        validationSchema={validationSchema}
+      >
+        {(formikProps) => (
+          <Form>
+            <Stack gap="s7">
+              <Stack gap="s2">
+                <FormAmount>
+                  <FormItem name="amount">
+                    <Input name="amount" placeholder={t("cw20Wallet:enterAmount")} />
                   </FormItem>
-                </Stack>
-                <Button
-                  type="primary"
-                  onClick={formikProps.submitForm}
-                  disabled={!(formikProps.isValid && formikProps.dirty)}
-                >
-                  {t("cw20Wallet:add")}
-                </Button>
+                  <Text>{cw20Token?.symbol || ""}</Text>
+                </FormAmount>
+                <FormItem name="address">
+                  <Input name="address" placeholder={t("cw20Wallet:enterAddress")} />
+                </FormItem>
               </Stack>
-            </Form>
-          )}
-        </Formik>
-      </Stack>
-    </PageLayout>
+              <Button
+                type="primary"
+                onClick={formikProps.submitForm}
+                disabled={!(formikProps.isValid && formikProps.dirty)}
+              >
+                {t("cw20Wallet:add")}
+              </Button>
+            </Stack>
+          </Form>
+        )}
+      </Formik>
+    </Stack>
   );
 }

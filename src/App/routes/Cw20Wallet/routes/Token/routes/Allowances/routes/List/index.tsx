@@ -1,13 +1,14 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
+import { Stack } from "App/components/layout";
 import { NavPagination, pageSize, TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { AllowanceInfo, CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { AllowanceButton } from "./style";
 
@@ -19,9 +20,13 @@ interface ListParams {
 
 export default function List(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
+  const history = useHistory();
   const { url: pathAllowancesMatched } = useRouteMatch();
   const { contractAddress }: ListParams = useParams();
-  const history = useHistory();
+  const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`;
+  const backButtonProps = useMemo(() => ({ path: pathTokenDetail }), [pathTokenDetail]);
+  useLayout({ backButtonProps });
+
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
   const address = getAddress();
@@ -77,42 +82,38 @@ export default function List(): JSX.Element {
   const [allowancesInteger, allowancesDecimal] = allowancesToDisplay.split(".");
 
   return (
-    <PageLayout
-      backButtonProps={{ path: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}` }}
-    >
-      <Stack gap="s7">
-        <Stack gap="s2">
-          <Title>{t("allowances")}</Title>
-          <TokenAmount>
-            <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-            {amountDecimal && <Text>{amountDecimal}</Text>}
-            <Text>{` ${t("tokens")}`}</Text>
-          </TokenAmount>
-          <TokenAmount>
-            <Text>{`${allowancesInteger}${allowancesDecimal ? "." : ""}`}</Text>
-            {allowancesDecimal && <Text>{allowancesDecimal}</Text>}
-            <Text>{` ${t("allowance")}`}</Text>
-          </TokenAmount>
-        </Stack>
-        <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={allowances.length} />
-        {allowances.length ? (
-          <Stack>
-            {allowances.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((allowanceInfo) => (
-              <AllowanceButton
-                key={allowanceInfo.spender}
-                data-size="large"
-                type="primary"
-                onClick={() => goToAllowanceDetail(allowanceInfo.spender)}
-              >
-                {allowanceInfo.spender}
-              </AllowanceButton>
-            ))}
-          </Stack>
-        ) : null}
-        <Button type="primary" onClick={goToAllowancesAdd}>
-          {t("addNew")}
-        </Button>
+    <Stack gap="s7">
+      <Stack gap="s2">
+        <Title>{t("allowances")}</Title>
+        <TokenAmount>
+          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+          {amountDecimal && <Text>{amountDecimal}</Text>}
+          <Text>{` ${t("tokens")}`}</Text>
+        </TokenAmount>
+        <TokenAmount>
+          <Text>{`${allowancesInteger}${allowancesDecimal ? "." : ""}`}</Text>
+          {allowancesDecimal && <Text>{allowancesDecimal}</Text>}
+          <Text>{` ${t("allowance")}`}</Text>
+        </TokenAmount>
       </Stack>
-    </PageLayout>
+      <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={allowances.length} />
+      {allowances.length ? (
+        <Stack>
+          {allowances.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((allowanceInfo) => (
+            <AllowanceButton
+              key={allowanceInfo.spender}
+              data-size="large"
+              type="primary"
+              onClick={() => goToAllowanceDetail(allowanceInfo.spender)}
+            >
+              {allowanceInfo.spender}
+            </AllowanceButton>
+          ))}
+        </Stack>
+      ) : null}
+      <Button type="primary" onClick={goToAllowancesAdd}>
+        {t("addNew")}
+      </Button>
+    </Stack>
   );
 }

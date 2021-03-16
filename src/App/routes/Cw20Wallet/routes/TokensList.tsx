@@ -1,21 +1,24 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
-import { NavPagination, pageSize, TokenButton } from "App/components/logic";
+import { Stack } from "App/components/layout";
+import { Loading, NavPagination, pageSize, TokenButton } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useContracts, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { CW20, Cw20Token, cw20TokenCompare, getCw20Token } from "utils/cw20";
 
 const { Title } = Typography;
 
 export default function TokensList(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
-  const { url: pathTokensMatched } = useRouteMatch();
   const history = useHistory();
+  const { url: pathTokensMatched } = useRouteMatch();
+  useLayout({});
+
   const { getConfig, getSigningClient, getAddress } = useSdk();
   const { contracts: cw20Contracts, addContract } = useContracts();
 
@@ -59,17 +62,17 @@ export default function TokensList(): JSX.Element {
   }
 
   return (
-    <PageLayout hide="back-button">
-      <Stack gap="s4">
-        <Title>{t("tokens")}</Title>
-        <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={cw20Tokens.length} />
+    <Stack gap="s4">
+      <Title>{t("tokens")}</Title>
+      <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={cw20Tokens.length} />
+      <Loading loading={!cw20Tokens.length ? "" : undefined}>
         <Stack>
           {cw20Tokens.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((token) => {
             const amountToDisplay = Decimal.fromAtomics(token.amount, token.decimals).toString();
 
             return (
               <TokenButton
-                key={token.address + token.symbol}
+                key={token.address}
                 denom={token.symbol}
                 amount={amountToDisplay}
                 onClick={() => goTokenDetail(token.address)}
@@ -77,10 +80,10 @@ export default function TokensList(): JSX.Element {
             );
           })}
         </Stack>
-        <Link to={`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`}>
-          <Button type="primary">{t("addAnother")}</Button>
-        </Link>
-      </Stack>
-    </PageLayout>
+      </Loading>
+      <Link to={`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`}>
+        <Button type="primary">{t("addAnother")}</Button>
+      </Link>
+    </Stack>
   );
 }

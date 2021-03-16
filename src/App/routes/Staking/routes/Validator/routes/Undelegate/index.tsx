@@ -1,13 +1,13 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
-import { Loading } from "App/components/logic";
+import { Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
-import { useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { useLayout } from "service/layout";
 import { displayAmountToNative } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
@@ -21,18 +21,19 @@ interface UndelegateParams {
 
 export default function Undelegate(): JSX.Element {
   const { t } = useTranslation("staking");
+  const history = useHistory();
   const { url: pathUndelegateMatched } = useRouteMatch();
-  const [loading, setLoading] = useState(false);
+  const { validatorAddress } = useParams<UndelegateParams>();
+  const pathValidator = `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`;
+  const backButtonProps = useMemo(() => ({ path: pathValidator }), [pathValidator]);
+  const { setLoading } = useLayout({ backButtonProps });
 
   const { handleError } = useError();
-  const history = useHistory();
-  const { validatorAddress } = useParams<UndelegateParams>();
   const { getConfig, undelegateTokens } = useSdk();
-
   const validator = useStakingValidator(validatorAddress);
 
   async function submitUndelegateBalance({ amount }: FormUndelegateBalanceFields) {
-    setLoading(true);
+    setLoading("Undelegating...");
     const config = getConfig();
 
     try {
@@ -42,6 +43,7 @@ export default function Undelegate(): JSX.Element {
       await undelegateTokens(validatorAddress, undelegateAmount);
 
       const denom = config.coinMap[config.stakingToken].denom;
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -49,11 +51,12 @@ export default function Undelegate(): JSX.Element {
           success: true,
           message: t("undelegateSuccess", { amount, denom }),
           customButtonText: t("validatorHome"),
-          customButtonActionPath: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`,
+          customButtonActionPath: pathValidator,
         },
       });
     } catch (stackTrace) {
       handleError(stackTrace);
+      setLoading(false);
 
       history.push({
         pathname: paths.operationResult,
@@ -67,22 +70,16 @@ export default function Undelegate(): JSX.Element {
     }
   }
 
-  return loading ? (
-    <Loading loadingText={t("undelegating")} />
-  ) : (
-    <PageLayout
-      backButtonProps={{ path: `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}` }}
-    >
-      <Stack gap="s6">
-        <Stack>
-          <Title>{t("undelegate")}</Title>
-          <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
-        </Stack>
-        <FormUndelegateBalance
-          validatorAddress={validatorAddress}
-          submitUndelegateBalance={submitUndelegateBalance}
-        />
+  return (
+    <Stack gap="s6">
+      <Stack>
+        <Title>{t("undelegate")}</Title>
+        <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
       </Stack>
-    </PageLayout>
+      <FormUndelegateBalance
+        validatorAddress={validatorAddress}
+        submitUndelegateBalance={submitUndelegateBalance}
+      />
+    </Stack>
   );
 }
