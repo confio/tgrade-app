@@ -22,7 +22,13 @@ export default function TokenButton({
   ...restProps
 }: TokenButtonProps): JSX.Element {
   return (
-    <ButtonWrapper tabIndex={0} data-size="large" className="ant-btn ant-btn-primary" {...restProps}>
+    <ButtonWrapper
+      tabIndex={0}
+      role="button"
+      data-size="large"
+      className="ant-btn ant-btn-primary"
+      {...restProps}
+    >
       <TokenAndAmount>
         <FavAndDenom>
           <Button
