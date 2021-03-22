@@ -1,11 +1,11 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Stack } from "App/components/layout";
-import { TokenButton } from "App/components/logic";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay, useBalance } from "utils/currency";
+import TokenButton from "./TokenButton";
 
 interface TokenListProps {
   readonly currentAddress: string;

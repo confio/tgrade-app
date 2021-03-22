@@ -11,5 +11,4 @@ export { default as ProtectedSwitch } from "./ProtectedSwitch";
 export type { RedirectLocation } from "./ProtectedSwitch";
 export { default as Search } from "./Search";
 export { default as TokenAmount } from "./TokenAmount";
-export { default as TokenButton } from "./TokenButton";
 export { default as YourAccount } from "./YourAccount";
