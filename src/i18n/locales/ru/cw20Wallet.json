@@ -1,5 +1,7 @@
 {
   "tokens": "Жетоны",
+  "sortAlphabetically": "Алфавитный",
+  "sortFavourites": "Избранное",
   "addAnother": "Добавить еще один жетон",
   "existing": "Существующий",
   "new": "Новый сайт",

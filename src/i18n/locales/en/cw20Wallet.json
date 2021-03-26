@@ -1,5 +1,7 @@
 {
   "tokens": "Tokens",
+  "sortAlphabetically": "Alphabetical",
+  "sortFavourites": "Favourites",
   "addAnother": "Add Another Token",
   "existing": "Existing",
   "new": "New",

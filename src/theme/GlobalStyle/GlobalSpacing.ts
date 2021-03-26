@@ -1,6 +1,6 @@
 import * as styled from "styled-components";
 
-const spacings = ["s-2", "s-1", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"] as const;
+const spacings = ["s-4", "s-3", "s-2", "s-1", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"] as const;
 export type Spacing = typeof spacings[number];
 
 export const GlobalSpacing = styled.createGlobalStyle`
