@@ -10,7 +10,7 @@ export default function Logout(): JSX.Element {
 
   useEffect(() => {
     clear();
-    history.replace(paths.login);
+    history.replace(paths.login.prefix);
   }, [clear, history]);
 
   return <></>;

@@ -1,8 +1,15 @@
 export const paths = {
-  login: "/login",
+  login: {
+    prefix: "/login",
+    unlock: "/unlock",
+    import: "/import",
+  },
   logout: "/logout",
   operationResult: "/operation-result",
-  account: "/account",
+  account: {
+    prefix: "/account",
+    lock: "/lock",
+  },
   wallet: {
     prefix: "/wallet",
     params: {

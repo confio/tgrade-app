@@ -36,7 +36,7 @@ export default function Menu({ isBigViewport, isOpen, closeMenu, ...restProps }:
         noTransition={isBigViewport}
         customCrossIcon={menuCloseIcon}
       >
-        <Link to={paths.account} onClick={closeMenu}>
+        <Link to={paths.account.prefix} onClick={closeMenu}>
           <Title level={3}>{t("menu.account")}</Title>
         </Link>
         <Link to={paths.wallet.prefix} onClick={closeMenu}>
