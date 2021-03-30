@@ -14,56 +14,85 @@ import {
 } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
+import { configKeplr } from "config/keplr";
 import { NetworkConfig } from "config/network";
 
-// generateMnemonic will give you a fresh mnemonic
-// it is up to the app to store this somewhere
-export function generateMnemonic(): string {
-  return Bip39.encode(Random.getBytes(16)).toString();
-}
+// Wallet storage utils
+export const storedWalletKey = "burner-wallet";
+export const getWallet = (): string | null => localStorage.getItem(storedWalletKey);
+export const setWallet = (wallet: string): void => localStorage.setItem(storedWalletKey, wallet);
+export const isWalletEncrypted = (wallet: string): boolean => wallet.split(" ").length < 12;
+export const generateMnemonic = (): string => Bip39.encode(Random.getBytes(16)).toString();
 
-// some code that will only work in a browser...
 export function loadOrCreateMnemonic(): string {
-  const key = "burner-wallet";
-  const loaded = localStorage.getItem(key);
+  const loaded = localStorage.getItem(storedWalletKey);
   if (loaded) {
     return loaded;
   }
+
   const generated = generateMnemonic();
-  localStorage.setItem(key, generated);
+  localStorage.setItem(storedWalletKey, generated);
   return generated;
 }
 
-export type WalletLoader = (chainId: string, addressPrefix?: string) => Promise<OfflineSigner>;
+// Wallet creation utils
+export type WalletLoader = (
+  config: NetworkConfig,
+  password?: string,
+  mnemonic?: string,
+) => Promise<OfflineSigner>;
 
-export async function loadOrCreateWallet(_chainId: string, addressPrefix?: string): Promise<OfflineSigner> {
+export const loadOrCreateWallet: WalletLoader = async ({ addressPrefix }) => {
   const mnemonic = loadOrCreateMnemonic();
-  const hdPath = makeCosmoshubPath(0);
-  const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, hdPath, addressPrefix);
-  return wallet;
-}
+  if (isWalletEncrypted(mnemonic)) throw new Error("Cannot load encrypted wallet");
 
-export async function loadLedgerWallet(_chainId: string, addressPrefix?: string): Promise<OfflineSigner> {
+  const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, makeCosmoshubPath(0), addressPrefix);
+  return wallet;
+};
+
+export const unlockWallet: WalletLoader = async (_, password) => {
+  if (!password) throw new Error("Password needed for unlocking encrypted wallet");
+
+  const encryptedWallet = getWallet();
+  if (!encryptedWallet || !isWalletEncrypted(encryptedWallet)) throw new Error("No encrypted wallet found");
+
+  const wallet = await Secp256k1HdWallet.deserialize(encryptedWallet, password.normalize());
+  return wallet;
+};
+
+export const importWallet: WalletLoader = async ({ addressPrefix }, password, mnemonic) => {
+  if (!mnemonic || !password) throw new Error("Mnemonic and password needed for importing wallet");
+
+  const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, makeCosmoshubPath(0), addressPrefix);
+  const serializedWallet = await wallet.serialize(password.normalize());
+  setWallet(serializedWallet);
+
+  return wallet;
+};
+
+export const loadLedgerWallet: WalletLoader = async ({ addressPrefix }) => {
   const interactiveTimeout = 120_000;
   const ledgerTransport = await TransportWebUSB.create(interactiveTimeout, interactiveTimeout);
 
   return new LedgerSigner(ledgerTransport, { hdPaths: [makeCosmoshubPath(0)], prefix: addressPrefix });
-}
+};
 
-export async function loadKeplrWallet(chainId: string): Promise<OfflineSigner> {
+export const loadKeplrWallet: WalletLoader = async (config) => {
   const anyWindow: any = window;
   if (!anyWindow.getOfflineSigner) {
     throw new Error("Keplr extension is not available");
   }
 
-  const signer = anyWindow.getOfflineSigner(chainId);
+  await anyWindow.keplr.experimentalSuggestChain(configKeplr(config));
+  await anyWindow.keplr.enable(config.chainId);
+
+  const signer = anyWindow.getOfflineSigner(config.chainId);
   signer.signAmino = signer.signAmino ?? signer.sign;
 
-  return Promise.resolve(signer);
-}
+  return Promise.resolve(signer as OfflineSigner);
+};
 
-// this creates a new connection to a server at URL,
-// using a signing keyring generated from the given mnemonic
+// Client creation utils
 export async function createSigningClient(
   config: NetworkConfig,
   signer: OfflineSigner,
