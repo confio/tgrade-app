@@ -46,7 +46,12 @@ export default function TokensList(): JSX.Element {
   const [cw20Tokens, setCw20Tokens] = useState<Cw20Token[]>([]);
   const [tokenNameFilter, setTokenNameFilter] = useState("");
   const [sortBy, setSortBy] = useState<"alphabetically" | "favourites">("alphabetically");
-  const [favTokens, setFavTokens] = useLocalStorage<readonly string[]>("fav-tokens", []);
+  const [favTokens, setFavTokens] = useLocalStorage<readonly string[]>(
+    "fav-tokens",
+    [],
+    JSON.stringify,
+    JSON.parse,
+  );
 
   const searchedCw20Tokens = cw20Tokens.filter((token) =>
     token.symbol.toLowerCase().startsWith(tokenNameFilter.toLowerCase()),
