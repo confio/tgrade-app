@@ -4,6 +4,15 @@
   "welcome": "Welcome to your Wallet",
   "select": "Select one of the following options to start",
   "browserButton": "Browser (Demo)",
+  "importButton": "Import Existing Account",
   "ledgerButton": "Ledger (Secure, Chrome)",
-  "keplrButton": "Keplr (Secure)"
+  "keplrButton": "Keplr (Secure)",
+  "unlockAccount": "Unlock Account",
+  "unlockAccountMsg": "Please enter your password in order to unlock your account",
+  "password": "Password",
+  "unlock": "Unlock",
+  "importAccount": "Import Account",
+  "importAccountMsg": "Please enter your security twelve word phrase",
+  "securityWords": "Security words",
+  "import": "Import"
 }

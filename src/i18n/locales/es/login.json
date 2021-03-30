@@ -4,6 +4,15 @@
   "welcome": "Bienvenido a tu Cartera",
   "select": "Selecciona una de las siguientes opciones para empezar",
   "browserButton": "Navegador (Demo)",
+  "importButton": "Importar Cuenta Existente",
   "ledgerButton": "Ledger (Seguro, Chrome)",
-  "keplrButton": "Keplr (Seguro)"
+  "keplrButton": "Keplr (Seguro)",
+  "unlockAccount": "Desbloquear Cuenta",
+  "unlockAccountMsg": "Por favor, introduce una contraseña para desbloquear tu cuenta",
+  "password": "Contraseña",
+  "unlock": "Desbloquear",
+  "importAccount": "Importar Cuenta",
+  "importAccountMsg": "Por favor, introduce tu frase de seguridad de doce palabras",
+  "securityWords": "Palabras de seguridad",
+  "import": "Importar"
 }
