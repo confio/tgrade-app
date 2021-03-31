@@ -37,7 +37,7 @@
   "addCodeIdSuccess": "Los tokens seleccionados de Code ID: {{codeId}} fueron añadidos con éxito",
   "addCodeIdFail": "Adición de tokens seleccionados fallida:",
   "allowance": "Concesión",
-  "sendTokens": "Enviar Tokens",
+  "allowingTokens": "Concesor Tokens",
   "mintTokens": "Acuñar Tokens",
   "myAllowances": "Mis Concesiones",
   "backToAccount": "Volver a Mi Cuenta",

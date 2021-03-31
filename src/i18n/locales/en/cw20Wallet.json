@@ -38,7 +38,7 @@
   "addCodeIdSuccess": "The selected tokens from Code ID: {{codeId}} were successfully added",
   "addCodeIdFail": "Failed to add selected tokens",
   "allowance": "Allowance",
-  "sendTokens": "Send Tokens",
+  "allowingTokens": "Allowing Tokens",
   "mintTokens": "Mint Tokens",
   "myAllowances": "My Allowances",
   "backToAccount": "Back to My Account",

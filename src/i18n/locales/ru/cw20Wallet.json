@@ -38,7 +38,7 @@
   "addCodeIdSuccess": "Выбранные маркеры из Code Id: {{codeId}} были успешно добавлены",
   "addCodeIdFail": "Не удалось добавить выбранные маркеры",
   "allowance": "Разрешение",
-  "sendTokens": "Отправить жетоны",
+  "allowingTokens": "Разрешающие жетоны",
   "mintTokens": "Мятные жетоны",
   "myAllowances": "Мои пособия",
   "backToAccount": "Вернуться к моему аккаунту",
