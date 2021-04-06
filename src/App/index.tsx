@@ -30,17 +30,17 @@ export default function App(): JSX.Element {
                     <Route exact path="/">
                       <Login />
                     </Route>
-                    <Route path={paths.login}>
+                    <Route path={paths.login.prefix}>
                       <Login />
                     </Route>
-                    <ProtectedSwitch authPath={paths.login}>
+                    <ProtectedSwitch authPath={paths.login.prefix}>
                       <Route path={paths.logout}>
                         <Logout />
                       </Route>
                       <Route path={paths.operationResult}>
                         <OperationResult />
                       </Route>
-                      <Route path={paths.account}>
+                      <Route path={paths.account.prefix}>
                         <Account />
                       </Route>
                       <Route path={paths.wallet.prefix}>

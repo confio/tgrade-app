@@ -1,8 +1,4 @@
 {
-  "yourAccount": {
-    "title": "Your Account",
-    "copyAddress": "Copy Account Address"
-  },
   "menu": {
     "account": "Account",
     "wallet": "Wallet",
@@ -11,6 +7,14 @@
     "logout": "Log out"
   },
   "form": {
+    "password": {
+      "required": "A password is required",
+      "minMax": "Password length must be between {{min}} and {{max}}",
+      "match": "Password does not match"
+    },
+    "mnemonic": {
+      "required": "A security phrase is required"
+    },
     "address": {
       "required": "An address is required",
       "bech32": "Address must have valid bech32 format",

@@ -1,0 +1,14 @@
+{
+  "account": "Cuenta",
+  "locking": "Bloqueando cuenta",
+  "unlocking": "Desbloqueando cuenta",
+  "showWords": "Mostrar palabras de seguridad",
+  "hideWords": "Ocultar palabras de seguridad",
+  "wordsMsg": "No hagas captura de pantalla ni copies al portapapeles",
+  "lockMsg": "Por favor, introduce una contraseña para bloquear tu cuenta",
+  "password": "Contraseña",
+  "repeatPassword": "Repite contraseña",
+  "lock": "Bloquear",
+  "unlockMsg": "Por favor, introduce tu contraseña para desbloquear tu cuenta",
+  "unlock": "Desbloquear"
+}

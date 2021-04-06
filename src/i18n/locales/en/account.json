@@ -1,0 +1,14 @@
+{
+  "account": "Account",
+  "locking": "Locking account",
+  "unlocking": "Unlocking account",
+  "showWords": "Show security words",
+  "hideWords": "Hide security words",
+  "wordsMsg": "Don't screenshot or copy to clipboard",
+  "lockMsg": "Please enter your password in order to lock your account",
+  "password": "Password",
+  "repeatPassword": "Repeat password",
+  "lock": "Lock",
+  "unlockMsg": "Please enter your password in order to unlock your account",
+  "unlock": "Unlock"
+}

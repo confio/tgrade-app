@@ -1,8 +1,4 @@
 {
-  "yourAccount": {
-    "title": "Tu Cuenta",
-    "copyAddress": "Copiar Dirección de Cuenta"
-  },
   "menu": {
     "account": "Cuenta",
     "wallet": "Cartera",
@@ -11,6 +7,14 @@
     "logout": "Salir"
   },
   "form": {
+    "password": {
+      "required": "Se requiere una contraseña",
+      "minMax": "La contraseña debe tener una longitud entre {{min}} y {{max}}",
+      "match": "La contraseña no coincide"
+    },
+    "mnemonic": {
+      "required": "Se requiere una frase de seguridad"
+    },
     "address": {
       "required": "Se requiere una dirección",
       "bech32": "La dirección debe tener un formato bech32",
