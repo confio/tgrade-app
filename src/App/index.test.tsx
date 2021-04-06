@@ -104,7 +104,7 @@ describe("should have a happy path for", () => {
 
     // Check balance 1000
     userEvent.click(screen.getByRole("button", { name: /token detail/i }));
-    await screen.findByText(/tst/i);
+    await screen.findAllByText(/tst/i);
     screen.getByText(myTstBalance);
     screen.getByText("Tokens");
 
@@ -130,13 +130,11 @@ describe("should have a happy path for", () => {
       },
     );
     userEvent.click(screen.getByRole("button", { name: /token detail/i }));
-    await screen.findByText(/tst/i);
+    await screen.findAllByText(/tst/i);
     screen.getByText("1500000000");
     screen.getByText("Tokens");
 
     // Send 700 to another address
-    userEvent.click(screen.getByRole("button", { name: /send/i }));
-
     // Enter amount and address
     const sendAmountInput = screen.getByLabelText(/send/i) as HTMLInputElement;
     await userEvent.type(sendAmountInput, tstAmount, { delay: 1 });
@@ -151,7 +149,7 @@ describe("should have a happy path for", () => {
 
     // Go to token detail and check my new balance
     userEvent.click(screen.getByRole("button", { name: /token detail/i }));
-    await screen.findByText(/tst/i);
+    await screen.findAllByText(/tst/i);
     screen.getByText("800000000");
     screen.getByText("Tokens");
   }, 75_000);

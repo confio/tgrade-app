@@ -4,7 +4,6 @@ import { Route, Switch, useRouteMatch } from "react-router-dom";
 import Allowances from "./routes/Allowances";
 import Detail from "./routes/Detail";
 import Mint from "./routes/Mint";
-import Send from "./routes/Send";
 
 const {
   cw20Wallet: cw20WalletPaths,
@@ -21,9 +20,6 @@ export default function Token(): JSX.Element {
       </Route>
       <Route exact path={`${basePath}${cw20WalletPaths.mint}`}>
         <Mint />
-      </Route>
-      <Route exact path={`${basePath}${cw20WalletParams.allowingAddress}${cw20WalletPaths.send}`}>
-        <Send />
       </Route>
       <Route exact path={`${basePath}${cw20WalletParams.allowingAddress}`}>
         <Detail />
