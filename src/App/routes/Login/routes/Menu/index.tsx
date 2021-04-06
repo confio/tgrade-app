@@ -1,6 +1,7 @@
 import { Button, Typography } from "antd";
 import cosmWasmLogo from "App/assets/cosmWasmLogo.svg";
 import { Stack } from "App/components/layout";
+import { RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { isChrome, isDesktop } from "react-device-detect";
@@ -33,6 +34,7 @@ function disableKeplrLogin() {
 export default function Menu(): JSX.Element {
   const { t } = useTranslation("login");
   const history = useHistory();
+  const state = history.location.state as RedirectLocation;
   const { setLoading } = useLayout({ hideMenu: true });
 
   const { handleError } = useError();
@@ -54,7 +56,7 @@ export default function Menu(): JSX.Element {
   async function initBrowser() {
     const storedWallet = getWallet();
     if (!storedWallet || !isWalletEncrypted(storedWallet)) await init(loadOrCreateWallet);
-    else history.push(`${paths.login.prefix}${paths.login.unlock}`);
+    else history.push(`${paths.login.prefix}${paths.login.unlock}`, state);
   }
 
   async function initLedger() {
