@@ -23,3 +23,10 @@ export function useWindowSize(): WindowSize {
 
   return windowSize;
 }
+
+export const loadingDelay = 300;
+const afterLoadDelay = 400;
+
+export function runAfterLoad(callback: () => void): void {
+  setTimeout(callback, afterLoadDelay);
+}
