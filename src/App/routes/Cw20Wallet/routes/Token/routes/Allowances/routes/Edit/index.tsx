@@ -5,11 +5,11 @@ import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormChangeAmount, { FormChangeAmountFields } from "./FormChangeAmount";
@@ -24,11 +24,16 @@ interface EditParams {
 
 export default function Edit(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
+
   const history = useHistory();
   const { contractAddress, spenderAddress }: EditParams = useParams();
   const pathAllowance = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}/${spenderAddress}`;
-  const backButtonProps = useMemo(() => ({ path: pathAllowance }), [pathAllowance]);
-  const { setLoading } = useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathAllowance } }), [
+    layoutDispatch,
+    pathAllowance,
+  ]);
 
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
@@ -60,7 +65,7 @@ export default function Edit(): JSX.Element {
   }, [address, client, contractAddress, handleError, spenderAddress, t]);
 
   async function submitChangeAmount(values: FormChangeAmountFields): Promise<void> {
-    setLoading("Changing allowance...");
+    setLoading(layoutDispatch, "Changing allowance...");
 
     const { amount: newAmount } = values;
     const cw20Contract = CW20(getSigningClient()).use(contractAddress);
@@ -83,7 +88,7 @@ export default function Edit(): JSX.Element {
         );
       }
 
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
@@ -96,7 +101,7 @@ export default function Edit(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,

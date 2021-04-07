@@ -7,9 +7,10 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout } from "service/layout";
 import { useLocalStorage } from "utils/cw20";
 import { isWalletEncrypted } from "utils/sdk";
+import { runAfterLoad } from "utils/ui";
 import copyIcon from "./assets/copyIcon.svg";
 import LockAccount, { FormLockAccountFields } from "./components/LockAccount";
 import Mnemonic from "./components/Mnemonic";
@@ -20,7 +21,8 @@ const { Title, Text } = Typography;
 
 export default function Account(): JSX.Element {
   const { t } = useTranslation("account");
-  useLayout({});
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch), [layoutDispatch]);
 
   const [loadingMsg, setLoadingMsg] = useState<string>();
   const { handleError } = useError();
@@ -28,18 +30,16 @@ export default function Account(): JSX.Element {
   const address = getAddress();
   const [mnemonic, setMnemonic] = useLocalStorage<string>("burner-wallet", "");
   const isMnemonicEncrypted = isWalletEncrypted(mnemonic);
-
-  const [password, setPassword] = useState<string>();
   const [decryptedMnemonic, setDecryptedMnemonic] = useState<string>();
 
   useEffect(() => {
     if (!isMnemonicEncrypted) setDecryptedMnemonic(mnemonic);
   }, [isMnemonicEncrypted, mnemonic]);
 
-  useEffect(() => {
-    (async function unlockAccount() {
-      if (loadingMsg !== t("unlocking") || !password) return;
+  async function submitUnlockAccount({ password }: FormUnlockAccountFields) {
+    setLoadingMsg(t("unlocking"));
 
+    runAfterLoad(async () => {
       try {
         const { mnemonic: decryptedMnemonic } = await Secp256k1HdWallet.deserialize(
           mnemonic,
@@ -52,28 +52,25 @@ export default function Account(): JSX.Element {
         handleError(error);
         setLoadingMsg(undefined);
       }
-    })();
-  }, [handleError, loadingMsg, mnemonic, password, t]);
-
-  function submitUnlockAccount({ password }: FormUnlockAccountFields) {
-    setLoadingMsg(t("unlocking"));
-    setPassword(password);
+    });
   }
 
   async function submitLockAccount({ password }: FormLockAccountFields) {
     setLoadingMsg(t("locking"));
 
-    try {
-      const encryptedMnemonic = await (
-        await Secp256k1HdWallet.fromMnemonic(mnemonic, makeCosmoshubPath(0), "wasm")
-      ).serialize(password.normalize());
+    runAfterLoad(async () => {
+      try {
+        const encryptedMnemonic = await (
+          await Secp256k1HdWallet.fromMnemonic(mnemonic, makeCosmoshubPath(0), "wasm")
+        ).serialize(password.normalize());
 
-      setMnemonic(encryptedMnemonic);
-      setLoadingMsg(undefined);
-    } catch (error) {
-      handleError(error);
-      setLoadingMsg(undefined);
-    }
+        setMnemonic(encryptedMnemonic);
+        setLoadingMsg(undefined);
+      } catch (error) {
+        handleError(error);
+        setLoadingMsg(undefined);
+      }
+    });
   }
 
   return (

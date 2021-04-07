@@ -5,11 +5,12 @@ import { paths } from "App/paths";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
-import { useMemo } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { importWallet } from "utils/sdk";
+import { runAfterLoad } from "utils/ui";
 import * as Yup from "yup";
 import { LightText, Logo } from "./style";
 
@@ -23,23 +24,33 @@ interface FormImportAccountFields {
 
 export default function ImportAccount(): JSX.Element {
   const { t } = useTranslation(["common", "login"]);
-  const backButtonProps = useMemo(() => ({ path: paths.login.prefix }), []);
-  const { setLoading } = useLayout({ hideMenu: true, backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(
+    () =>
+      setInitialLayoutState(layoutDispatch, {
+        menuState: "hidden",
+        backButtonProps: { path: paths.login.prefix },
+      }),
+    [layoutDispatch],
+  );
 
   const { handleError } = useError();
   const sdk = useSdk();
   const config = sdk.getConfig();
 
-  async function submitImportAccount({ password, mnemonic }: FormImportAccountFields) {
-    setLoading(`${t("login:initializing")}`);
+  function submitImportAccount({ password, mnemonic }: FormImportAccountFields) {
+    setLoading(layoutDispatch, `${t("login:initializing")}`);
 
-    try {
-      const signer = await importWallet(config, password, mnemonic);
-      sdk.init(signer);
-    } catch (error) {
-      handleError(error);
-      setLoading(false);
-    }
+    runAfterLoad(async () => {
+      try {
+        const signer = await importWallet(config, password, mnemonic);
+        sdk.init(signer);
+      } catch (error) {
+        handleError(error);
+        setLoading(layoutDispatch, false);
+      }
+    });
   }
 
   const validationSchema = Yup.object().shape({

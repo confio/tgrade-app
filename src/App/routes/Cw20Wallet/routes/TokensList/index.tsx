@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useContracts, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout } from "service/layout";
 import {
   CW20,
   Cw20Token,
@@ -36,9 +36,12 @@ function cw20TokenCompareFavs(favTokens: readonly string[], a: Cw20Token, b: Cw2
 
 export default function TokensList(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
+
   const history = useHistory();
   const { url: pathTokensMatched } = useRouteMatch();
-  useLayout({});
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch), [layoutDispatch]);
 
   const { getConfig, getSigningClient, getAddress } = useSdk();
   const { contracts: cw20Contracts, addContract } = useContracts();

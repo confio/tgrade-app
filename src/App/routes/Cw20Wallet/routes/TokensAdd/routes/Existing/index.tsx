@@ -2,10 +2,10 @@ import { Typography } from "antd";
 import { Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
-import { useMemo } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Route, Switch, useParams } from "react-router-dom";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout } from "service/layout";
 import FormInputContract from "./routes/FormInputContract";
 import FormSelectContracts from "./routes/FormSelectContracts";
 
@@ -20,10 +20,15 @@ interface ExistingParams {
 
 export default function Existing(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
+
   const { codeId } = useParams<ExistingParams>();
   const pathBack = codeId ? basePath : pathTokensAdd;
-  const backButtonProps = useMemo(() => ({ path: pathBack }), [pathBack]);
-  useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathBack } }), [
+    layoutDispatch,
+    pathBack,
+  ]);
 
   return (
     <Stack gap="s4">

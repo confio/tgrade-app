@@ -5,7 +5,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useError } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout } from "service/layout";
 import failIcon from "./assets/failIcon.svg";
 import successIcon from "./assets/successIcon.svg";
 import { ResultIcon, ResultText } from "./style";
@@ -37,7 +37,8 @@ export default function OperationResult(): JSX.Element {
     customButtonActionState,
   } = history.location.state as OperationResultState;
 
-  useLayout({ hideMenu: true });
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { menuState: "hidden" }), [layoutDispatch]);
 
   const { clearError } = useError();
   useEffect(clearError, [clearError]);

@@ -5,11 +5,11 @@ import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormSearchAllowing from "./components/FormSearchAllowing";
@@ -26,11 +26,15 @@ interface DetailParams {
 
 export default function Detail(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
+
   const history = useHistory();
   const { contractAddress, allowingAddress: allowingAddressParam }: DetailParams = useParams();
   const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`;
-  const backButtonProps = useMemo(() => ({ path: pathTokens }), []);
-  const { setLoading } = useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathTokens } }), [
+    layoutDispatch,
+  ]);
 
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
@@ -116,7 +120,7 @@ export default function Detail(): JSX.Element {
 
   async function sendTokensAction(values: FormSendTokensFields) {
     if (!cw20Token) return;
-    setLoading(`Sending ${cw20Token.symbol}...`);
+    setLoading(layoutDispatch, `Sending ${cw20Token.symbol}...`);
 
     const { address: recipientAddress, amount } = values;
     const cw20Contract = CW20(client).use(contractAddress);
@@ -128,7 +132,7 @@ export default function Detail(): JSX.Element {
       if (allowingAddress) {
         await cw20Contract.transferFrom(address, allowingAddress, recipientAddress, transferAmount);
 
-        setLoading(false);
+        setLoading(layoutDispatch, false);
 
         history.push({
           pathname: paths.operationResult,
@@ -145,7 +149,7 @@ export default function Detail(): JSX.Element {
           throw new Error(t("transferFail"));
         }
 
-        setLoading(false);
+        setLoading(layoutDispatch, false);
 
         history.push({
           pathname: paths.operationResult,
@@ -159,7 +163,7 @@ export default function Detail(): JSX.Element {
       }
     } catch (stackTrace) {
       handleError(stackTrace);
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
