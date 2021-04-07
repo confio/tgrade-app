@@ -1,46 +1,109 @@
 import { BackButton } from "App/components/logic";
 import * as React from "react";
-import { ComponentProps, createContext, HTMLAttributes, useContext, useEffect, useState } from "react";
+import { ComponentProps, createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import { useSdk } from "service";
 
-interface LayoutState {
-  readonly hideMenu?: boolean;
-  readonly backButtonProps?: ComponentProps<typeof BackButton>;
-}
+type MenuState = "open" | "closed" | "hidden";
+export type LoadingState = "idle" | "preloading" | "loading";
 
-interface LayoutContextType {
-  readonly hideMenu: boolean;
-  readonly setHideMenu: (hideMenu: boolean) => void;
-  readonly backButtonProps?: ComponentProps<typeof BackButton>;
-  readonly setBackButtonProps: (backButtonProps?: ComponentProps<typeof BackButton>) => void;
-  readonly isMenuOpen: boolean;
-  readonly setMenuOpen: (isMenuOpen: boolean) => void;
-  readonly loading?: string;
-  readonly setLoading: (loading: boolean | string) => void;
-}
+type LayoutAction =
+  | {
+      readonly type: "setMenu";
+      readonly payload: MenuState;
+    }
+  | {
+      readonly type: "setBackButtonProps";
+      readonly payload?: ComponentProps<typeof BackButton>;
+    }
+  | {
+      readonly type: "setLoading";
+      readonly payload: boolean | string;
+    };
 
-const defaultContext: LayoutContextType = {
-  hideMenu: true,
-  setHideMenu: () => {},
-  setBackButtonProps: () => {},
-  isMenuOpen: false,
-  setMenuOpen: () => {},
-  setLoading: () => {},
+type LayoutDispatch = (action: LayoutAction) => void;
+type LayoutState = {
+  readonly menuState: MenuState;
+  readonly backButtonProps?: ComponentProps<typeof BackButton>;
+  readonly isLoading: boolean;
+  readonly loadingMsg?: string;
 };
 
-const LayoutContext = createContext<LayoutContextType>(defaultContext);
+type LayoutContextType =
+  | {
+      readonly layoutState: LayoutState;
+      readonly layoutDispatch: LayoutDispatch;
+    }
+  | undefined;
 
-export const useLayout = (state?: LayoutState): LayoutContextType => {
+const LayoutContext = createContext<LayoutContextType>(undefined);
+
+function layoutReducer(state: LayoutState, action: LayoutAction): LayoutState {
+  switch (action.type) {
+    case "setMenu": {
+      return { ...state, menuState: action.payload };
+    }
+    case "setBackButtonProps": {
+      return { ...state, backButtonProps: action.payload };
+    }
+    case "setLoading": {
+      if (typeof action.payload === "boolean") {
+        return { ...state, isLoading: action.payload, loadingMsg: undefined };
+      }
+
+      return { ...state, isLoading: true, loadingMsg: action.payload };
+    }
+    default: {
+      throw new Error("Unhandled action type");
+    }
+  }
+}
+
+export const hideMenu = (dispatch: LayoutDispatch): void => dispatch({ type: "setMenu", payload: "hidden" });
+export const openMenu = (dispatch: LayoutDispatch): void => dispatch({ type: "setMenu", payload: "open" });
+export const closeMenu = (dispatch: LayoutDispatch): void => dispatch({ type: "setMenu", payload: "closed" });
+export const showMenu = closeMenu;
+
+export function setBackButtonProps(
+  dispatch: LayoutDispatch,
+  backButtonProps?: ComponentProps<typeof BackButton>,
+): void {
+  dispatch({ type: "setBackButtonProps", payload: backButtonProps });
+}
+
+export function setLoading(dispatch: LayoutDispatch, loading: boolean | string): void {
+  dispatch({ type: "setLoading", payload: loading });
+}
+
+type InitialLayoutState = {
+  [Property in keyof LayoutState]?: LayoutState[Property];
+};
+
+export function setInitialLayoutState(dispatch: LayoutDispatch, state?: InitialLayoutState): void {
+  const { backButtonProps, menuState } = state || { backButtonProps: undefined, menuState: undefined };
+  setBackButtonProps(dispatch, backButtonProps);
+
+  switch (menuState) {
+    case "open": {
+      openMenu(dispatch);
+      break;
+    }
+    case "hidden": {
+      hideMenu(dispatch);
+      break;
+    }
+    default: {
+      closeMenu(dispatch);
+    }
+  }
+}
+
+export const useLayout = (): NonNullable<LayoutContextType> => {
   const context = useContext(LayoutContext);
 
-  useEffect(() => {
-    if (!state) return;
-
-    const { hideMenu, backButtonProps } = state;
-    context.setHideMenu(!!hideMenu);
-    context.setBackButtonProps(backButtonProps);
-  }, [context, state]);
+  if (context === undefined) {
+    throw new Error("useLayout must be used within a LayoutProvider");
+  }
 
   return context;
 };
@@ -49,35 +112,16 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
   const { t } = useTranslation("login");
   const { initialized: isSdkInitialized } = useSdk();
 
-  const [hideMenu, setHideMenu] = useState(true);
-  const [backButtonProps, setBackButtonProps] = useState<ComponentProps<typeof BackButton>>();
-  const [isMenuOpen, setMenuOpen] = useState(false);
-  const [loading, setLoading] = useState<string>();
+  const [layoutState, layoutDispatch] = useReducer<typeof layoutReducer>(layoutReducer, {
+    menuState: "hidden",
+    isLoading: false,
+  });
 
   useEffect(() => {
-    if (isSdkInitialized && loading === t("initializing")) {
-      setLoading(undefined);
+    if (isSdkInitialized && layoutState.loadingMsg === t("initializing")) {
+      setLoading(layoutDispatch, false);
     }
-  }, [isSdkInitialized, loading, t]);
+  }, [isSdkInitialized, layoutState.loadingMsg, t]);
 
-  const readyContext: LayoutContextType = {
-    hideMenu,
-    setHideMenu,
-    backButtonProps,
-    setBackButtonProps,
-    isMenuOpen,
-    setMenuOpen,
-    loading,
-    setLoading: (loading) => {
-      if (typeof loading === "boolean") {
-        setLoading(loading ? "Loading..." : undefined);
-      }
-
-      if (typeof loading === "string") {
-        setLoading(loading);
-      }
-    },
-  };
-
-  return <LayoutContext.Provider value={readyContext}>{children}</LayoutContext.Provider>;
+  return <LayoutContext.Provider value={{ layoutState, layoutDispatch }}>{children}</LayoutContext.Provider>;
 }
