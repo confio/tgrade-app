@@ -66,7 +66,7 @@ export default function TokenList({ currentAddress }: TokenListProps): JSX.Eleme
             key={nativeToken.denom}
             denom={denomToDisplay}
             amount={amountToDisplay}
-            disabled={amountToDisplay === "0"}
+            disabled={amountToDisplay === "0" || !amAllowed}
             onClick={() => goTokenDetail(nativeToken)}
           />
         );
