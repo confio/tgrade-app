@@ -21,11 +21,6 @@
   "enterMintCap": "Introduce cantidad",
   "create": "Crear",
   "creating": "Creando token...",
-  "error": {
-    "missingCodeId": "Falta Code Id en el fichero de configuración.",
-    "expectedCodeId": "Se esperaba Code Id y se obtuvo: {{codeId}}",
-    "noCw20Found": "No hay token CW20 en la dirección: {{contractAddress}}"
-  },
   "createSuccess": "{{amount}} {{tokenName}} se crearon con éxito",
   "tokenDetail": "Vista de Token",
   "createFail": "Creación de Token fallida:",

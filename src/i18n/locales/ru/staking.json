@@ -1,8 +1,5 @@
 {
   "validators": "Валидаторы",
-  "error": {
-    "noBondedValidators": "Валидаторы облигаций не найдены"
-  },
   "delegate": "Делегат",
   "undelegate": "Вывод",
   "rewards": "Награды",

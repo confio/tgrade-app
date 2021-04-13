@@ -1,8 +1,5 @@
 {
   "validators": "Validadores",
-  "error": {
-    "noBondedValidators": "No hay validadores con depósito"
-  },
   "delegate": "Depositar",
   "undelegate": "Retirar",
   "rewards": "Recompensas",

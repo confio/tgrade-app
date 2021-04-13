@@ -1,8 +1,5 @@
 {
   "validators": "Validators",
-  "error": {
-    "noBondedValidators": "No bonded validators found"
-  },
   "delegate": "Delegate",
   "undelegate": "Undelegate",
   "rewards": "Rewards",
