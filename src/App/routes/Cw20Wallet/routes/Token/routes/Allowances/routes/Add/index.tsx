@@ -10,8 +10,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useError, useLayout, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getAddressField, getAmountField } from "utils/forms";
@@ -43,15 +42,15 @@ export default function Add(): JSX.Element {
   ]);
 
   const { handleError } = useError();
-  const { getConfig, getSigningClient, getAddress } = useSdk();
-  const client = getSigningClient();
-  const address = getAddress();
+  const {
+    sdkState: { config, signingClient, address },
+  } = useSdk();
 
   const [cw20Token, setCw20Token] = useState<Cw20Token>();
 
   useEffect(() => {
     let mounted = true;
-    const cw20Contract = CW20(client).use(contractAddress);
+    const cw20Contract = CW20(signingClient).use(contractAddress);
 
     (async function updateCw20Token() {
       const cw20Token = await getCw20Token(cw20Contract, address);
@@ -66,13 +65,13 @@ export default function Add(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, client, contractAddress, handleError, t]);
+  }, [address, contractAddress, handleError, signingClient, t]);
 
   async function submitAddAllowance(values: FormAddAllowanceFields): Promise<void> {
     setLoading(layoutDispatch, "Adding allowance...");
 
     const { address: spenderAddress, amount: newAmount } = values;
-    const cw20Contract = CW20(getSigningClient()).use(contractAddress);
+    const cw20Contract = CW20(signingClient).use(contractAddress);
 
     try {
       const { allowance } = await cw20Contract.allowance(address, spenderAddress);
@@ -124,7 +123,7 @@ export default function Add(): JSX.Element {
   const [amountInteger, amountDecimal] = amountToDisplay.split(".");
 
   const validationSchema = Yup.object().shape({
-    address: getAddressField(t, getConfig().addressPrefix),
+    address: getAddressField(t, config.addressPrefix),
     amount: getAmountField(t),
   });
 

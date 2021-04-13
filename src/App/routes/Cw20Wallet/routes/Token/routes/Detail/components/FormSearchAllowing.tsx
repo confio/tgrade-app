@@ -17,10 +17,12 @@ export default function FormSearchAllowing({
   setSearchedAddress,
 }: FormSearchAllowingProps): JSX.Element {
   const { t } = useTranslation(["common", "cw20Wallet"]);
-  const { getConfig } = useSdk();
+  const {
+    sdkState: { config },
+  } = useSdk();
 
   const validationSchema = Yup.object().shape({
-    address: getAddressField(t, getConfig().addressPrefix),
+    address: getAddressField(t, config.addressPrefix),
   });
 
   return (

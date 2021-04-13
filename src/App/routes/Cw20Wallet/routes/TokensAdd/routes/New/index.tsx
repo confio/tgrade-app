@@ -9,8 +9,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { useContracts, useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useContracts, useError, useLayout, useSdk } from "service";
 import { CW20, MinterResponse } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import * as Yup from "yup";
@@ -40,9 +39,13 @@ export default function New(): JSX.Element {
   ]);
 
   const { handleError } = useError();
-  const { getConfig, getSigningClient, getAddress } = useSdk();
-  const codeId = getConfig().codeId;
-  const address = getAddress();
+  const {
+    sdkState: {
+      config: { codeId },
+      signingClient,
+      address,
+    },
+  } = useSdk();
   const { addContract } = useContracts();
 
   async function submitCreateToken(values: FormCreateTokenFields) {
@@ -73,15 +76,11 @@ export default function New(): JSX.Element {
         mint,
       };
 
-      const { contractAddress } = await getSigningClient().instantiate(
-        getAddress(),
-        codeId,
-        msg,
-        values.tokenSymbol,
-        { admin: address },
-      );
+      const { contractAddress } = await signingClient.instantiate(address, codeId, msg, values.tokenSymbol, {
+        admin: address,
+      });
 
-      const newCw20Contract = CW20(getSigningClient()).use(contractAddress);
+      const newCw20Contract = CW20(signingClient).use(contractAddress);
       addContract(newCw20Contract);
 
       const tokenName = values.tokenName;

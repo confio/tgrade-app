@@ -26,8 +26,9 @@ export default function FormSelectContracts(): JSX.Element {
   const pathTokens = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}`;
   const history = useHistory();
   const { handleError } = useError();
-  const { getSigningClient } = useSdk();
-  const client = getSigningClient();
+  const {
+    sdkState: { signingClient },
+  } = useSdk();
   const { addContract } = useContracts();
 
   const [contracts, setContracts] = useState<readonly Contract[]>([]);
@@ -43,7 +44,7 @@ export default function FormSelectContracts(): JSX.Element {
           throw new Error(t("error.expectedCodeId", { codeId }));
         }
 
-        const contracts = await client.getContracts(numCodeId);
+        const contracts = await signingClient.getContracts(numCodeId);
         if (mounted) setContracts(contracts);
       } catch (error) {
         handleError(error);
@@ -53,11 +54,11 @@ export default function FormSelectContracts(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [client, codeId, handleError, t]);
+  }, [codeId, handleError, signingClient, t]);
 
   async function submitSelectContracts() {
     try {
-      const cw20Contracts = selectedContractAddresses.map((address) => CW20(client).use(address));
+      const cw20Contracts = selectedContractAddresses.map((address) => CW20(signingClient).use(address));
       // If any of the selected contracts has no tokenInfo, it throws
       await Promise.all(cw20Contracts.map((contract) => contract.tokenInfo()));
       cw20Contracts.forEach(addContract);

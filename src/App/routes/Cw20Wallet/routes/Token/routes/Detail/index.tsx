@@ -8,8 +8,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useError, useLayout, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormSearchAllowing from "./components/FormSearchAllowing";
@@ -37,9 +36,9 @@ export default function Detail(): JSX.Element {
   ]);
 
   const { handleError } = useError();
-  const { getSigningClient, getAddress } = useSdk();
-  const client = getSigningClient();
-  const address = getAddress();
+  const {
+    sdkState: { signingClient, address },
+  } = useSdk();
 
   const [allowingAddress, setAllowingAddress] = useState(allowingAddressParam);
   const [allowance, setAllowance] = useState<string>();
@@ -49,7 +48,7 @@ export default function Detail(): JSX.Element {
 
   useEffect(() => {
     let mounted = true;
-    const cw20Contract = CW20(client).use(contractAddress);
+    const cw20Contract = CW20(signingClient).use(contractAddress);
 
     (async function updateCw20TokenAndAllowance() {
       const cw20Token = await getCw20Token(cw20Contract, address);
@@ -77,11 +76,11 @@ export default function Detail(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, allowingAddress, client, contractAddress, handleError, t]);
+  }, [address, allowingAddress, contractAddress, handleError, signingClient, t]);
 
   useEffect(() => {
     let mounted = true;
-    const cw20Contract = CW20(client).use(contractAddress);
+    const cw20Contract = CW20(signingClient).use(contractAddress);
 
     (async function updateIsUserMinter() {
       try {
@@ -99,7 +98,7 @@ export default function Detail(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, client, contractAddress, handleError]);
+  }, [address, contractAddress, handleError, signingClient]);
 
   async function updateAllowance(allowingAddress?: string) {
     if (!allowingAddress) {
@@ -109,7 +108,7 @@ export default function Detail(): JSX.Element {
     }
 
     setAllowingAddress(allowingAddress);
-    const cw20contract = CW20(client).use(contractAddress);
+    const cw20contract = CW20(signingClient).use(contractAddress);
     try {
       const { allowance } = await cw20contract.allowance(allowingAddress, address);
       setAllowance(allowance);
@@ -123,7 +122,7 @@ export default function Detail(): JSX.Element {
     setLoading(layoutDispatch, `Sending ${cw20Token.symbol}...`);
 
     const { address: recipientAddress, amount } = values;
-    const cw20Contract = CW20(client).use(contractAddress);
+    const cw20Contract = CW20(signingClient).use(contractAddress);
     const symbol = cw20Token.symbol;
 
     try {

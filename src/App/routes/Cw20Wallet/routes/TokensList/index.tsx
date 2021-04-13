@@ -9,8 +9,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
-import { useContracts, useSdk } from "service";
-import { setInitialLayoutState, useLayout } from "service/layout";
+import { setInitialLayoutState, useContracts, useLayout, useSdk } from "service";
 import {
   CW20,
   Cw20Token,
@@ -43,7 +42,13 @@ export default function TokensList(): JSX.Element {
   const { layoutDispatch } = useLayout();
   useEffect(() => setInitialLayoutState(layoutDispatch), [layoutDispatch]);
 
-  const { getConfig, getSigningClient, getAddress } = useSdk();
+  const {
+    sdkState: {
+      config: { codeId },
+      signingClient,
+      address,
+    },
+  } = useSdk();
   const { contracts: cw20Contracts, addContract } = useContracts();
 
   const [cw20Tokens, setCw20Tokens] = useState<Cw20Token[]>([]);
@@ -68,21 +73,20 @@ export default function TokensList(): JSX.Element {
 
   useEffect(() => {
     (async function updateContracts() {
-      const config = getConfig();
-      if (!config.codeId) return;
+      if (!codeId) return;
 
-      const client = getSigningClient();
-      const contracts = await client.getContracts(config.codeId);
+      const client = signingClient;
+      const contracts = await client.getContracts(codeId);
 
       const cw20Contracts = contracts.map((contract) => CW20(client).use(contract.address));
       cw20Contracts.forEach(addContract);
     })();
-  }, [addContract, getConfig, getSigningClient]);
+  }, [addContract, codeId, signingClient]);
 
   useEffect(() => {
     let mounted = true;
 
-    const cw20TokenPromises = cw20Contracts.map((contract) => getCw20Token(contract, getAddress()));
+    const cw20TokenPromises = cw20Contracts.map((contract) => getCw20Token(contract, address));
 
     (async function updateCw20Tokens() {
       const cw20Tokens = await Promise.all(cw20TokenPromises);
@@ -94,7 +98,7 @@ export default function TokensList(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [cw20Contracts, getAddress]);
+  }, [address, cw20Contracts]);
 
   function updateFav(tokenAddress: string, isFav: boolean) {
     if (!isFav) {
