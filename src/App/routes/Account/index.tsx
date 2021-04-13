@@ -26,7 +26,7 @@ export default function Account(): JSX.Element {
   const [loadingMsg, setLoadingMsg] = useState<string>();
   const { handleError } = useError();
   const {
-    sdkState: { address },
+    sdkState: { address, signer },
   } = useSdk();
   const [mnemonic, setMnemonic] = useLocalStorage<string>("burner-wallet", "");
   const isMnemonicEncrypted = isWalletEncrypted(mnemonic);
@@ -73,6 +73,9 @@ export default function Account(): JSX.Element {
     });
   }
 
+  // Only show mnemonic and lock/unlock if your keys are on the browser
+  const showMnemonicForm = !(signer as any).ledger && !(signer as any).keplr;
+
   return (
     <Stack gap="s4">
       <Title>{t("account")}</Title>
@@ -80,13 +83,15 @@ export default function Account(): JSX.Element {
         <Text>{address}</Text>
         <img src={copyIcon} alt="Copy icon" />
       </CopyAddressButton>
-      <Loading loading={loadingMsg}>
-        {isMnemonicEncrypted && !decryptedMnemonic ? (
-          <UnlockAccount submitUnlockAccount={submitUnlockAccount} />
-        ) : null}
-        {!isMnemonicEncrypted ? <LockAccount submitLockAccount={submitLockAccount} /> : null}
-        {decryptedMnemonic ? <Mnemonic mnemonic={decryptedMnemonic} /> : null}
-      </Loading>
+      {showMnemonicForm ? (
+        <Loading loading={loadingMsg}>
+          {isMnemonicEncrypted && !decryptedMnemonic ? (
+            <UnlockAccount submitUnlockAccount={submitUnlockAccount} />
+          ) : null}
+          {!isMnemonicEncrypted ? <LockAccount submitLockAccount={submitLockAccount} /> : null}
+          {decryptedMnemonic ? <Mnemonic mnemonic={decryptedMnemonic} /> : null}
+        </Loading>
+      ) : null}
     </Stack>
   );
 }
