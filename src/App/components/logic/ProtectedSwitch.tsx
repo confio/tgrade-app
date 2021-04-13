@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Redirect, Switch, SwitchProps } from "react-router-dom";
-import { useSdk } from "service";
+import { isSdkInitialized, useSdkInit } from "service";
 
 export interface RedirectLocation {
   readonly redirectPathname: string;
@@ -12,9 +12,9 @@ interface ProtectedSwitchProps extends SwitchProps {
 }
 
 export default function ProtectedSwitch({ authPath, children, location }: ProtectedSwitchProps): JSX.Element {
-  const { initialized } = useSdk();
+  const { sdkState } = useSdkInit();
 
-  return initialized ? (
+  return isSdkInitialized(sdkState) ? (
     <Switch location={location}>{children}</Switch>
   ) : (
     <Redirect
