@@ -24,7 +24,7 @@ export default function Mnemonic({ mnemonic }: MnemonicProps): JSX.Element {
         <Stack gap="s2">
           <MnemonicGrid>
             {mnemonic.split(" ").map((word) => (
-              <div>{word}</div>
+              <div key={word}>{word}</div>
             ))}
           </MnemonicGrid>
           <WarningText>{t("wordsMsg")}</WarningText>

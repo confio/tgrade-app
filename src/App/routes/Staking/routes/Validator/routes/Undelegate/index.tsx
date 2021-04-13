@@ -3,11 +3,11 @@ import { Typography } from "antd";
 import { Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
-import { useMemo } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { displayAmountToNative } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
@@ -21,19 +21,24 @@ interface UndelegateParams {
 
 export default function Undelegate(): JSX.Element {
   const { t } = useTranslation("staking");
+
   const history = useHistory();
   const { url: pathUndelegateMatched } = useRouteMatch();
   const { validatorAddress } = useParams<UndelegateParams>();
   const pathValidator = `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`;
-  const backButtonProps = useMemo(() => ({ path: pathValidator }), [pathValidator]);
-  const { setLoading } = useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathValidator } }), [
+    layoutDispatch,
+    pathValidator,
+  ]);
 
   const { handleError } = useError();
   const { getConfig, undelegateTokens } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
   async function submitUndelegateBalance({ amount }: FormUndelegateBalanceFields) {
-    setLoading("Undelegating...");
+    setLoading(layoutDispatch, "Undelegating...");
     const config = getConfig();
 
     try {
@@ -43,7 +48,7 @@ export default function Undelegate(): JSX.Element {
       await undelegateTokens(validatorAddress, undelegateAmount);
 
       const denom = config.coinMap[config.stakingToken].denom;
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
@@ -56,7 +61,7 @@ export default function Undelegate(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,

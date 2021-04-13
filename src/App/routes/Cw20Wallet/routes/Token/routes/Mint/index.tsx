@@ -5,11 +5,11 @@ import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormMintTokens, { FormMintTokensFields } from "./FormMintTokens";
@@ -22,12 +22,17 @@ interface MintParams {
 
 export default function Mint(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
+
   const history = useHistory();
   const { contractAddress }: MintParams = useParams();
   const { url: pathMintMatched } = useRouteMatch();
   const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`;
-  const backButtonProps = useMemo(() => ({ path: pathTokenDetail }), [pathTokenDetail]);
-  const { setLoading } = useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathTokenDetail } }), [
+    layoutDispatch,
+    pathTokenDetail,
+  ]);
 
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();
@@ -60,7 +65,7 @@ export default function Mint(): JSX.Element {
 
   async function mintTokensAction(values: FormMintTokensFields) {
     if (!cw20Token) return;
-    setLoading(`Minting ${cw20Token.symbol}...`);
+    setLoading(layoutDispatch, `Minting ${cw20Token.symbol}...`);
 
     const { address: recipientAddress, amount } = values;
     const cw20Contract = CW20(client).use(contractAddress);
@@ -69,7 +74,7 @@ export default function Mint(): JSX.Element {
       const mintAmount = Decimal.fromUserInput(amount, cw20Token.decimals).atomics;
       await cw20Contract.mint(address, recipientAddress, mintAmount);
 
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
@@ -82,7 +87,7 @@ export default function Mint(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,

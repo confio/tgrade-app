@@ -6,11 +6,11 @@ import { OperationResultState } from "App/routes/OperationResult";
 import { Formik } from "formik";
 import { Form, FormItem, Input, Select } from "formik-antd";
 import * as React from "react";
-import { useMemo } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useContracts, useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { CW20, MinterResponse } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import * as Yup from "yup";
@@ -33,8 +33,11 @@ export interface FormCreateTokenFields {
 export default function New(): JSX.Element {
   const { t } = useTranslation(["common", "cw20Wallet"]);
   const history = useHistory();
-  const backButtonProps = useMemo(() => ({ path: pathTokensAdd }), []);
-  const { setLoading } = useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathTokensAdd } }), [
+    layoutDispatch,
+  ]);
 
   const { handleError } = useError();
   const { getConfig, getSigningClient, getAddress } = useSdk();
@@ -43,7 +46,7 @@ export default function New(): JSX.Element {
   const { addContract } = useContracts();
 
   async function submitCreateToken(values: FormCreateTokenFields) {
-    setLoading("Creating token...");
+    setLoading(layoutDispatch, "Creating token...");
 
     try {
       if (!codeId) {
@@ -82,7 +85,7 @@ export default function New(): JSX.Element {
       addContract(newCw20Contract);
 
       const tokenName = values.tokenName;
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
@@ -95,7 +98,7 @@ export default function New(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,

@@ -5,11 +5,12 @@ import { paths } from "App/paths";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
-import { useMemo } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { unlockWallet } from "utils/sdk";
+import { runAfterLoad } from "utils/ui";
 import * as Yup from "yup";
 import { LightText, Logo } from "./style";
 
@@ -21,26 +22,33 @@ interface FormUnlockAccountFields {
 
 export default function UnlockAccount(): JSX.Element {
   const { t } = useTranslation(["common", "login"]);
-  const backButtonProps = useMemo(() => ({ path: paths.login.prefix }), []);
-  const { setLoading } = useLayout({ hideMenu: true, backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(
+    () =>
+      setInitialLayoutState(layoutDispatch, {
+        menuState: "hidden",
+        backButtonProps: { path: paths.login.prefix },
+      }),
+    [layoutDispatch],
+  );
 
   const { handleError } = useError();
   const sdk = useSdk();
   const config = sdk.getConfig();
 
   function submitUnlockForm({ password }: FormUnlockAccountFields) {
-    setLoading(`${t("login:initializing")}`);
+    setLoading(layoutDispatch, `${t("login:initializing")}`);
 
-    // Give chance to setLoading before expensive computation in unlockWallet
-    setTimeout(async () => {
+    runAfterLoad(async () => {
       try {
         const signer = await unlockWallet(config, password);
         sdk.init(signer);
       } catch (error) {
         handleError(error);
-        setLoading(false);
+        setLoading(layoutDispatch, false);
       }
-    }, 300);
+    });
   }
 
   const validationSchema = Yup.object().shape({

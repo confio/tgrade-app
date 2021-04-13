@@ -4,11 +4,11 @@ import { Stack } from "App/components/layout";
 import { NavPagination, pageSize, TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout } from "service/layout";
 import { AllowanceInfo, CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { AllowanceButton } from "./style";
 
@@ -20,12 +20,17 @@ interface ListParams {
 
 export default function List(): JSX.Element {
   const { t } = useTranslation("cw20Wallet");
+
   const history = useHistory();
   const { url: pathAllowancesMatched } = useRouteMatch();
   const { contractAddress }: ListParams = useParams();
   const pathTokenDetail = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`;
-  const backButtonProps = useMemo(() => ({ path: pathTokenDetail }), [pathTokenDetail]);
-  useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathTokenDetail } }), [
+    layoutDispatch,
+    pathTokenDetail,
+  ]);
 
   const { handleError } = useError();
   const { getSigningClient, getAddress } = useSdk();

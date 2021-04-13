@@ -4,11 +4,12 @@ import { Stack } from "App/components/layout";
 import { RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
+import { useEffect } from "react";
 import { isChrome, isDesktop } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import {
   getWallet,
   isWalletEncrypted,
@@ -17,6 +18,7 @@ import {
   loadOrCreateWallet,
   WalletLoader,
 } from "utils/sdk";
+import { runAfterLoad } from "utils/ui";
 import { LightText, Logo } from "./style";
 
 const { Title } = Typography;
@@ -35,22 +37,26 @@ export default function Menu(): JSX.Element {
   const { t } = useTranslation("login");
   const history = useHistory();
   const state = history.location.state as RedirectLocation;
-  const { setLoading } = useLayout({ hideMenu: true });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { menuState: "hidden" }), [layoutDispatch]);
 
   const { handleError } = useError();
   const sdk = useSdk();
   const config = sdk.getConfig();
 
   async function init(loadWallet: WalletLoader) {
-    setLoading(`${t("initializing")}`);
+    setLoading(layoutDispatch, `${t("initializing")}`);
 
-    try {
-      const signer = await loadWallet(config);
-      sdk.init(signer);
-    } catch (error) {
-      handleError(error);
-      setLoading(false);
-    }
+    runAfterLoad(async () => {
+      try {
+        const signer = await loadWallet(config);
+        sdk.init(signer);
+      } catch (error) {
+        handleError(error);
+        setLoading(layoutDispatch, false);
+      }
+    });
   }
 
   async function initBrowser() {

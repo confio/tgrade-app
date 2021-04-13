@@ -7,11 +7,11 @@ import { OperationResultState } from "App/routes/OperationResult";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getAddressField, getAmountField } from "utils/forms";
@@ -31,11 +31,16 @@ interface AddParams {
 
 export default function Add(): JSX.Element {
   const { t } = useTranslation(["common", "cw20Wallet"]);
+
   const history = useHistory();
   const { contractAddress }: AddParams = useParams();
   const pathAllowances = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}${paths.cw20Wallet.allowances}`;
-  const backButtonProps = useMemo(() => ({ path: pathAllowances }), [pathAllowances]);
-  const { setLoading } = useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathAllowances } }), [
+    layoutDispatch,
+    pathAllowances,
+  ]);
 
   const { handleError } = useError();
   const { getConfig, getSigningClient, getAddress } = useSdk();
@@ -64,7 +69,7 @@ export default function Add(): JSX.Element {
   }, [address, client, contractAddress, handleError, t]);
 
   async function submitAddAllowance(values: FormAddAllowanceFields): Promise<void> {
-    setLoading("Adding allowance...");
+    setLoading(layoutDispatch, "Adding allowance...");
 
     const { address: spenderAddress, amount: newAmount } = values;
     const cw20Contract = CW20(getSigningClient()).use(contractAddress);
@@ -88,7 +93,7 @@ export default function Add(): JSX.Element {
         );
       }
 
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
@@ -101,7 +106,7 @@ export default function Add(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,

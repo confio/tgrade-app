@@ -5,11 +5,11 @@ import { Stack } from "App/components/layout";
 import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { ComponentProps, useEffect, useMemo, useState } from "react";
+import { ComponentProps, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout } from "service/layout";
 import { nativeCoinToDisplay } from "utils/currency";
 import { useStakingValidator } from "utils/staking";
 
@@ -23,11 +23,15 @@ interface DetailParams {
 
 export default function Detail(): JSX.Element {
   const { t } = useTranslation("staking");
+
   const history = useHistory();
   const { url: pathValidatorDetailMatched } = useRouteMatch();
   const { validatorAddress } = useParams<DetailParams>();
-  const backButtonProps = useMemo(() => ({ path: pathValidators }), []);
-  useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathValidators } }), [
+    layoutDispatch,
+  ]);
 
   const { getConfig, getAddress, getQueryClient } = useSdk();
   const config = getConfig();

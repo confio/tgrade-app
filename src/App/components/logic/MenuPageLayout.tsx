@@ -1,30 +1,37 @@
 import * as React from "react";
 import { HTMLAttributes } from "react";
-import { useLayout } from "service/layout";
+import { closeMenu, openMenu, useLayout } from "service/layout";
 import { useWindowSize } from "utils/ui";
 import { ErrorAlert, Loading, Menu, NavHeader } from ".";
 import { PageLayout } from "../layout";
 
 export default function MenuPageLayout({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
-  const { hideMenu, loading, isMenuOpen, setMenuOpen, backButtonProps } = useLayout();
+  const {
+    layoutState: { menuState, backButtonProps, isLoading, loadingMsg },
+    layoutDispatch,
+  } = useLayout();
 
   const { width } = useWindowSize();
   const isBigViewport = width >= 1040;
 
-  const showMenu = !hideMenu && loading === undefined;
-  const showBurgerButton = !hideMenu && !isBigViewport;
+  const showMenu = menuState !== "hidden" && !isLoading;
+  const showBurgerButton = menuState !== "hidden" && !isBigViewport;
 
   return (
     <>
       {showMenu ? (
-        <Menu isBigViewport={isBigViewport} isOpen={isMenuOpen} closeMenu={() => setMenuOpen(false)} />
+        <Menu
+          isBigViewport={isBigViewport}
+          isOpen={menuState === "open"}
+          closeMenu={() => closeMenu(layoutDispatch)}
+        />
       ) : null}
       <PageLayout>
-        <Loading loading={loading}>
+        <Loading loading={loadingMsg}>
           <NavHeader
             backButtonProps={backButtonProps}
             showBurgerButton={showBurgerButton}
-            burgerButtonCallback={() => setMenuOpen(true)}
+            burgerButtonCallback={() => openMenu(layoutDispatch)}
           />
           <ErrorAlert />
           {children}

@@ -6,11 +6,11 @@ import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormSendTokens, { FormSendTokensValues } from "./FormSendTokens";
@@ -25,11 +25,15 @@ interface TokenDetailParams {
 
 export default function TokenDetail(): JSX.Element {
   const { t } = useTranslation("wallet");
+
   const history = useHistory();
   const { url: pathTokenDetailMatched } = useRouteMatch();
   const { tokenName }: TokenDetailParams = useParams();
-  const backButtonProps = useMemo(() => ({ path: pathTokens }), []);
-  const { setLoading } = useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathTokens } }), [
+    layoutDispatch,
+  ]);
 
   const { handleError } = useError();
   const { getConfig, getAddress, getSigningClient } = useSdk();
@@ -58,7 +62,7 @@ export default function TokenDetail(): JSX.Element {
   }, [balance, handleError, tokenName]);
 
   async function sendTokensAction(values: FormSendTokensValues): Promise<void> {
-    setLoading(`Sending ${nameToDisplay}...`);
+    setLoading(layoutDispatch, `Sending ${nameToDisplay}...`);
     const { address: recipientAddress, amount } = values;
 
     try {
@@ -72,7 +76,7 @@ export default function TokenDetail(): JSX.Element {
       }
 
       const denom = config.coinMap[tokenName].denom;
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
@@ -85,7 +89,7 @@ export default function TokenDetail(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,

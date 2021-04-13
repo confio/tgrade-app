@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout } from "service/layout";
 
 const { Title, Text } = Typography;
 
@@ -29,7 +29,9 @@ export default function Validators(): JSX.Element {
   const { t } = useTranslation("staking");
   const history = useHistory();
   const { url: pathValidatorsMatched } = useRouteMatch();
-  useLayout({});
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch), [layoutDispatch]);
 
   const { getQueryClient } = useSdk();
 

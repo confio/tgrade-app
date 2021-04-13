@@ -4,11 +4,11 @@ import { Stack } from "App/components/layout";
 import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { ComponentProps, useEffect, useMemo, useState } from "react";
+import { ComponentProps, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
 import { nativeCoinToDisplay } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
@@ -21,12 +21,17 @@ interface RewardsParams {
 
 export default function Rewards(): JSX.Element {
   const { t } = useTranslation("staking");
+
   const history = useHistory();
   const { url: pathRewardsMatched } = useRouteMatch();
   const { validatorAddress } = useParams<RewardsParams>();
   const pathValidator = `${paths.staking.prefix}${paths.staking.validators}/${validatorAddress}`;
-  const backButtonProps = useMemo(() => ({ path: pathValidator }), [pathValidator]);
-  const { setLoading } = useLayout({ backButtonProps });
+
+  const { layoutDispatch } = useLayout();
+  useEffect(() => setInitialLayoutState(layoutDispatch, { backButtonProps: { path: pathValidator } }), [
+    layoutDispatch,
+    pathValidator,
+  ]);
 
   const { handleError } = useError();
   const { getConfig, getAddress, getQueryClient, withdrawRewards } = useSdk();
@@ -66,12 +71,12 @@ export default function Rewards(): JSX.Element {
   }, [delegatorAddress, getQueryClient, validatorAddress]);
 
   async function submitWithdrawRewards() {
-    setLoading("Withdrawing rewards...");
+    setLoading(layoutDispatch, "Withdrawing rewards...");
 
     try {
       await withdrawRewards(validatorAddress);
 
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
@@ -84,7 +89,7 @@ export default function Rewards(): JSX.Element {
       });
     } catch (stackTrace) {
       handleError(stackTrace);
-      setLoading(false);
+      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
