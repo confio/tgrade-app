@@ -27,29 +27,29 @@
       "max": "La cantidad no debe ser mayor que {{maxAmountString}}"
     },
     "codeId": {
-      "positive": "Code ID must be positive"
+      "positive": "El Code ID debe ser positivo"
     },
     "tokenSymbol": {
-      "required": "A symbol is required",
-      "uppercase": "Symbol must be uppercase",
-      "minMax": "Symbol length must be between {{min}} and {{max}}"
+      "required": "Se requiere un símbolo",
+      "uppercase": "El símbolo debe ser en mayúsculas",
+      "minMax": "El símbolo debe tener una longitud entre {{min}} y {{max}}"
     },
     "tokenName": {
-      "required": "A name is required",
-      "minMax": "Name length must be between {{min}} and {{max}}"
+      "required": "Se requiere un nombre",
+      "minMax": "El nombre debe tener una longitud entre {{min}} y {{max}}"
     },
     "tokenDecimals": {
-      "required": "Display decimals are required",
-      "integer": "Display decimals must be an integer",
-      "minMax": "Display decimals must be between {{min}} and {{max}}"
+      "required": "Se requieren decimales a mostrar",
+      "integer": "Los decimales a mostrar deben ser un entero",
+      "minMax": "Los decimales a mostrar deben tener una longitud entre {{min}} y {{max}}"
     },
     "tokenSupply": {
-      "required": "An initial supply is required",
-      "positive": "Initial supply must be positive"
+      "required": "Se requiere un suministro inicial",
+      "positive": "El suministro inicial debe ser positivo"
     },
     "tokenMintCap": {
-      "positive": "Mint cap must be positive",
-      "min": "Mint cap must be equal or greater than initial supply"
+      "positive": "El límite de acuñado debe ser positivo",
+      "min": "El límite de acuñado debe ser igual o mayor que el suministro inicial"
     }
   }
 }

@@ -22,11 +22,6 @@
   "enterMintCap": "Введите сумму",
   "create": "Создать",
   "creating": "Создание жетона...",
-  "error": {
-    "missingCodeId": "Отсутствие Code Id в файле конфигурации.",
-    "expectedCodeId": "Ожидаемый Code Id и вместо этого получил: {{codeId}}",
-    "noCw20Found": "Нет токена CW20 по адресу: {{contractAddress}}"
-  },
   "createSuccess": "{{amount}} {{tokenName}} успешно созданный",
   "tokenDetail": "Подробная информация о жетоне",
   "createFail": "Создание жетонов провалилось:",

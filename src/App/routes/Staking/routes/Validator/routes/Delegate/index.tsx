@@ -39,7 +39,7 @@ export default function Delegate(): JSX.Element {
   const validator = useStakingValidator(validatorAddress);
 
   async function submitDelegateBalance({ amount }: FormDelegateBalanceFields) {
-    setLoading(layoutDispatch, "Delegating...");
+    setLoading(layoutDispatch, `${t("delegating")}`);
 
     try {
       const nativeAmountString = displayAmountToNative(amount, config.coinMap, config.stakingToken);

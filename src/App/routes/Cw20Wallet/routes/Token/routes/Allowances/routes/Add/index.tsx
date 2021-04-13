@@ -55,7 +55,7 @@ export default function Add(): JSX.Element {
     (async function updateCw20Token() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(t("error.noCw20Found", { contractAddress })));
+        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
         return;
       }
 
@@ -68,7 +68,7 @@ export default function Add(): JSX.Element {
   }, [address, contractAddress, handleError, signingClient, t]);
 
   async function submitAddAllowance(values: FormAddAllowanceFields): Promise<void> {
-    setLoading(layoutDispatch, "Adding allowance...");
+    setLoading(layoutDispatch, `${t("cw20Wallet:adding")}`);
 
     const { address: spenderAddress, amount: newAmount } = values;
     const cw20Contract = CW20(signingClient).use(contractAddress);

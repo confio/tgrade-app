@@ -47,7 +47,7 @@ export default function List(): JSX.Element {
       const cw20Contract = CW20(signingClient).use(contractAddress);
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(t("error.noCw20Found", { contractAddress })));
+        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
         return;
       }
 

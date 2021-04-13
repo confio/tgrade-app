@@ -22,11 +22,6 @@
   "enterMintCap": "Enter Amount",
   "create": "Create",
   "creating": "Creating token...",
-  "error": {
-    "missingCodeId": "Missing Code Id in configuration file.",
-    "expectedCodeId": "Expected Code Id and instead got: {{codeId}}",
-    "noCw20Found": "No CW20 token at address: {{contractAddress}}"
-  },
   "createSuccess": "{{amount}} {{tokenName}} successfully created",
   "tokenDetail": "Token Detail",
   "createFail": "Token creation failed:",

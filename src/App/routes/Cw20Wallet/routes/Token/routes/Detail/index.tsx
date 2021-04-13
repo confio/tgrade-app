@@ -53,7 +53,7 @@ export default function Detail(): JSX.Element {
     (async function updateCw20TokenAndAllowance() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(t("error.noCw20Found", { contractAddress })));
+        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
         return;
       }
 
@@ -119,7 +119,7 @@ export default function Detail(): JSX.Element {
 
   async function sendTokensAction(values: FormSendTokensFields) {
     if (!cw20Token) return;
-    setLoading(layoutDispatch, `Sending ${cw20Token.symbol}...`);
+    setLoading(layoutDispatch, `${t("sending", { symbol: cw20Token.symbol })}`);
 
     const { address: recipientAddress, amount } = values;
     const cw20Contract = CW20(signingClient).use(contractAddress);

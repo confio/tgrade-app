@@ -62,7 +62,7 @@ export default function TokenDetail(): JSX.Element {
   }, [balance, handleError, tokenName]);
 
   async function sendTokensAction(values: FormSendTokensValues): Promise<void> {
-    setLoading(layoutDispatch, `Sending ${nameToDisplay}...`);
+    setLoading(layoutDispatch, `${t("sending", { nameToDisplay })}`);
     const { address: recipientAddress, amount } = values;
 
     try {

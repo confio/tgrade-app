@@ -39,7 +39,7 @@ export default function Undelegate(): JSX.Element {
   const validator = useStakingValidator(validatorAddress);
 
   async function submitUndelegateBalance({ amount }: FormUndelegateBalanceFields) {
-    setLoading(layoutDispatch, "Undelegating...");
+    setLoading(layoutDispatch, `${t("undelegating")}`);
 
     try {
       const nativeAmountString = displayAmountToNative(amount, config.coinMap, config.stakingToken);
