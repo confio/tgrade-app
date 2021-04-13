@@ -17,8 +17,9 @@ type YourAccountProps = ComponentProps<typeof Stack> & {
 
 export default function YourAccount({ tag, hideTitle, hideBalance }: YourAccountProps): JSX.Element {
   const { t } = useTranslation("common");
-  const { getAddress } = useSdk();
-  const address = getAddress();
+  const {
+    sdkState: { address },
+  } = useSdk();
   const balance = useBalance();
 
   return (

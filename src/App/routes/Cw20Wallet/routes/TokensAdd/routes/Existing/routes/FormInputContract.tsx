@@ -22,7 +22,9 @@ export default function FormInputContract(): JSX.Element {
   const { url: pathExisting } = useRouteMatch();
   const history = useHistory();
   const { handleError } = useError();
-  const { getConfig, getSigningClient } = useSdk();
+  const {
+    sdkState: { config, signingClient },
+  } = useSdk();
   const { addContract } = useContracts();
 
   async function submitInputContract({ codeIdOrAddress }: FormInputContractFields) {
@@ -33,7 +35,7 @@ export default function FormInputContract(): JSX.Element {
     }
 
     const contractAddress = codeIdOrAddress;
-    const newCw20Contract = CW20(getSigningClient()).use(contractAddress);
+    const newCw20Contract = CW20(signingClient).use(contractAddress);
 
     try {
       // If the new contract has no tokenInfo, it throws
@@ -70,7 +72,7 @@ export default function FormInputContract(): JSX.Element {
         return Yup.number().positive(t("form.codeId.positive"));
       }
 
-      return getAddressField(t, getConfig().addressPrefix);
+      return getAddressField(t, config.addressPrefix);
     }),
   });
 

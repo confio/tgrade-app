@@ -6,8 +6,7 @@ import copyToClipboard from "clipboard-copy";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, useLayout } from "service/layout";
+import { setInitialLayoutState, useError, useLayout, useSdk } from "service";
 import { useLocalStorage } from "utils/cw20";
 import { isWalletEncrypted } from "utils/sdk";
 import { runAfterLoad } from "utils/ui";
@@ -26,8 +25,9 @@ export default function Account(): JSX.Element {
 
   const [loadingMsg, setLoadingMsg] = useState<string>();
   const { handleError } = useError();
-  const { getAddress } = useSdk();
-  const address = getAddress();
+  const {
+    sdkState: { address },
+  } = useSdk();
   const [mnemonic, setMnemonic] = useLocalStorage<string>("burner-wallet", "");
   const isMnemonicEncrypted = isWalletEncrypted(mnemonic);
   const [decryptedMnemonic, setDecryptedMnemonic] = useState<string>();

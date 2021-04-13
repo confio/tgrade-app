@@ -3,8 +3,7 @@ import { i18n } from "i18n/config";
 import * as React from "react";
 import { I18nextProvider } from "react-i18next";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { ContractsProvider, ErrorProvider, SdkProvider } from "service";
-import LayoutProvider from "service/layout";
+import { ContractsProvider, ErrorProvider, LayoutProvider, SdkProvider } from "service";
 import GlobalStyle from "theme/GlobalStyle";
 import { MenuPageLayout, ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
@@ -23,8 +22,8 @@ export default function App(): JSX.Element {
         <SdkProvider config={config}>
           <ContractsProvider>
             <GlobalStyle />
-            <LayoutProvider>
-              <Router basename={process.env.PUBLIC_URL}>
+            <Router basename={process.env.PUBLIC_URL}>
+              <LayoutProvider>
                 <MenuPageLayout>
                   <Switch>
                     <Route exact path="/">
@@ -55,8 +54,8 @@ export default function App(): JSX.Element {
                     </ProtectedSwitch>
                   </Switch>
                 </MenuPageLayout>
-              </Router>
-            </LayoutProvider>
+              </LayoutProvider>
+            </Router>
           </ContractsProvider>
         </SdkProvider>
       </ErrorProvider>

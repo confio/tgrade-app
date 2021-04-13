@@ -7,8 +7,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, useLayout } from "service/layout";
+import { setInitialLayoutState, useError, useLayout, useSdk } from "service";
 import { AllowanceInfo, CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { AllowanceButton } from "./style";
 
@@ -33,8 +32,9 @@ export default function List(): JSX.Element {
   ]);
 
   const { handleError } = useError();
-  const { getSigningClient, getAddress } = useSdk();
-  const address = getAddress();
+  const {
+    sdkState: { signingClient, address },
+  } = useSdk();
 
   const [allowances, setAllowances] = useState<readonly AllowanceInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +44,7 @@ export default function List(): JSX.Element {
     let mounted = true;
 
     (async function updateCw20TokenAndAllowances() {
-      const cw20Contract = CW20(getSigningClient()).use(contractAddress);
+      const cw20Contract = CW20(signingClient).use(contractAddress);
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
         handleError(new Error(t("error.noCw20Found", { contractAddress })));
@@ -64,7 +64,7 @@ export default function List(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, contractAddress, getSigningClient, handleError, t]);
+  }, [address, contractAddress, handleError, signingClient, t]);
 
   function goToAllowanceDetail(spenderAddress: string) {
     history.push(`${pathAllowancesMatched}/${spenderAddress}`);

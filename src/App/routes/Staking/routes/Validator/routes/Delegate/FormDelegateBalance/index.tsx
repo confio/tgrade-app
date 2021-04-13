@@ -26,8 +26,9 @@ export default function FormDelegateBalance({
   submitDelegateBalance,
 }: FormDelegateBalanceProps): JSX.Element {
   const { t } = useTranslation(["common", "staking"]);
-  const { getConfig } = useSdk();
-  const config = getConfig();
+  const {
+    sdkState: { config },
+  } = useSdk();
   const balance = useBalance();
   const [maxAmount, setMaxAmount] = useState(Decimal.fromAtomics("0", 0));
 

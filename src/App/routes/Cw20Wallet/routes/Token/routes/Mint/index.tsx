@@ -8,8 +8,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useError, useLayout, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormMintTokens, { FormMintTokensFields } from "./FormMintTokens";
@@ -35,16 +34,16 @@ export default function Mint(): JSX.Element {
   ]);
 
   const { handleError } = useError();
-  const { getSigningClient, getAddress } = useSdk();
-  const client = getSigningClient();
-  const address = getAddress();
+  const {
+    sdkState: { signingClient, address },
+  } = useSdk();
 
   const [cw20Token, setCw20Token] = useState<Cw20Token>();
   const [mintCap, setMintCap] = useState<string>();
 
   useEffect(() => {
     let mounted = true;
-    const cw20Contract = CW20(client).use(contractAddress);
+    const cw20Contract = CW20(signingClient).use(contractAddress);
 
     (async function updateCw20TokenAndMintCap() {
       const cw20Token = await getCw20Token(cw20Contract, address);
@@ -61,14 +60,14 @@ export default function Mint(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, client, contractAddress, handleError, t]);
+  }, [address, contractAddress, handleError, signingClient, t]);
 
   async function mintTokensAction(values: FormMintTokensFields) {
     if (!cw20Token) return;
     setLoading(layoutDispatch, `Minting ${cw20Token.symbol}...`);
 
     const { address: recipientAddress, amount } = values;
-    const cw20Contract = CW20(client).use(contractAddress);
+    const cw20Contract = CW20(signingClient).use(contractAddress);
 
     try {
       const mintAmount = Decimal.fromUserInput(amount, cw20Token.decimals).atomics;

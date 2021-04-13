@@ -1,3 +1,24 @@
 export { default as ContractsProvider, useContracts } from "./contracts";
 export { default as ErrorProvider, useError } from "./error";
-export { default as SdkProvider, useSdk } from "./sdk";
+export {
+  closeMenu,
+  default as LayoutProvider,
+  hideMenu,
+  openMenu,
+  setBackButtonProps,
+  setInitialLayoutState,
+  setLoading,
+  showMenu,
+  useLayout,
+} from "./layout";
+export type { LoadingState } from "./layout";
+export {
+  default as SdkProvider,
+  hitFaucetIfNeeded,
+  initSdk,
+  isSdkInitialized,
+  resetSdk,
+  setSigner,
+  useSdk,
+  useSdkInit,
+} from "./sdk";

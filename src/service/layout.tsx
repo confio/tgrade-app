@@ -1,8 +1,10 @@
-import { BackButton } from "App/components/logic";
+import { BackButton, RedirectLocation } from "App/components/logic";
+import { paths } from "App/paths";
 import * as React from "react";
 import { ComponentProps, createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
 import { useTranslation } from "react-i18next";
-import { useSdk } from "service";
+import { useHistory } from "react-router-dom";
+import { hitFaucetIfNeeded, isSdkInitialized, useSdkInit } from "service";
 
 type MenuState = "open" | "closed" | "hidden";
 export type LoadingState = "idle" | "preloading" | "loading";
@@ -110,18 +112,27 @@ export const useLayout = (): NonNullable<LayoutContextType> => {
 
 export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   const { t } = useTranslation("login");
-  const { initialized: isSdkInitialized } = useSdk();
+  const history = useHistory();
+  const state = history.location.state as RedirectLocation;
+  const { sdkState } = useSdkInit();
 
-  const [layoutState, layoutDispatch] = useReducer<typeof layoutReducer>(layoutReducer, {
-    menuState: "hidden",
-    isLoading: false,
-  });
+  const [layoutState, layoutDispatch] = useReducer(layoutReducer, { menuState: "hidden", isLoading: false });
 
   useEffect(() => {
-    if (isSdkInitialized && layoutState.loadingMsg === t("initializing")) {
+    (async function loginIfInitialized() {
+      if (!isSdkInitialized(sdkState) || layoutState.loadingMsg !== t("initializing")) return;
+
+      await hitFaucetIfNeeded(sdkState);
+
+      if (state) {
+        history.push(state.redirectPathname, state.redirectState);
+      } else {
+        history.push(paths.wallet.prefix);
+      }
+
       setLoading(layoutDispatch, false);
-    }
-  }, [isSdkInitialized, layoutState.loadingMsg, t]);
+    })();
+  }, [history, layoutState.loadingMsg, sdkState, state, t]);
 
   return <LayoutContext.Provider value={{ layoutState, layoutDispatch }}>{children}</LayoutContext.Provider>;
 }

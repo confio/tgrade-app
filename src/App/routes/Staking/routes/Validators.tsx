@@ -5,8 +5,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { useSdk } from "service";
-import { setInitialLayoutState, useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout, useSdk } from "service";
 
 const { Title, Text } = Typography;
 
@@ -33,7 +32,9 @@ export default function Validators(): JSX.Element {
   const { layoutDispatch } = useLayout();
   useEffect(() => setInitialLayoutState(layoutDispatch), [layoutDispatch]);
 
-  const { getQueryClient } = useSdk();
+  const {
+    sdkState: { queryClient },
+  } = useSdk();
 
   const [validatorsData, setValidatorsData] = useState<readonly ValidatorData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,7 +43,7 @@ export default function Validators(): JSX.Element {
     let mounted = true;
 
     (async function updateValidatorsData() {
-      const { validators } = await getQueryClient().staking.unverified.validators("BOND_STATUS_BONDED");
+      const { validators } = await queryClient.staking.unverified.validators("BOND_STATUS_BONDED");
       if (!validators) {
         throw new Error(t("error.noBondedValidators"));
       }
@@ -67,7 +68,7 @@ export default function Validators(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [getQueryClient, t]);
+  }, [queryClient.staking.unverified, t]);
 
   function goToValidator(address: string) {
     history.push(`${pathValidatorsMatched}/${address}`);

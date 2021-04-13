@@ -1,6 +1,6 @@
 import * as React from "react";
 import { HTMLAttributes } from "react";
-import { closeMenu, openMenu, useLayout } from "service/layout";
+import { closeMenu, openMenu, useLayout } from "service";
 import { useWindowSize } from "utils/ui";
 import { ErrorAlert, Loading, Menu, NavHeader } from ".";
 import { PageLayout } from "../layout";

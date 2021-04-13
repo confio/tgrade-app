@@ -3,8 +3,7 @@ import { Stack } from "App/components/layout";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSdk } from "service";
-import { setInitialLayoutState, useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout, useSdk } from "service";
 import FormSearchAddress from "./components/FormSearchAddress";
 import TokenList from "./components/TokenList";
 
@@ -15,8 +14,9 @@ export default function Tokens(): JSX.Element {
   const { layoutDispatch } = useLayout();
   useEffect(() => setInitialLayoutState(layoutDispatch), [layoutDispatch]);
 
-  const { getAddress } = useSdk();
-  const address = getAddress();
+  const {
+    sdkState: { address },
+  } = useSdk();
 
   const [currentAddress, setCurrentAddress] = useState(address);
 

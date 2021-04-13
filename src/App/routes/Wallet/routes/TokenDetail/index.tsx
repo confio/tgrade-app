@@ -9,8 +9,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useError, useLayout, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay, useBalance } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import FormSendTokens, { FormSendTokensValues } from "./FormSendTokens";
@@ -36,8 +35,9 @@ export default function TokenDetail(): JSX.Element {
   ]);
 
   const { handleError } = useError();
-  const { getConfig, getAddress, getSigningClient } = useSdk();
-  const config = getConfig();
+  const {
+    sdkState: { config, address, signingClient },
+  } = useSdk();
   const balance = useBalance();
 
   const [tokenAmount, setTokenAmount] = useState("0");
@@ -70,7 +70,7 @@ export default function TokenDetail(): JSX.Element {
       const nativeTokenToTransfer: Coin = { denom: tokenName, amount: amountToTransfer };
       const transferAmount: readonly Coin[] = [nativeTokenToTransfer];
 
-      const response = await getSigningClient().sendTokens(getAddress(), recipientAddress, transferAmount);
+      const response = await signingClient.sendTokens(address, recipientAddress, transferAmount);
       if (isBroadcastTxFailure(response)) {
         throw new Error(response.rawLog);
       }

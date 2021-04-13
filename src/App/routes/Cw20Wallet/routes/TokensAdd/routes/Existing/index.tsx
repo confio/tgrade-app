@@ -5,7 +5,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Route, Switch, useParams } from "react-router-dom";
-import { setInitialLayoutState, useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout } from "service";
 import FormInputContract from "./routes/FormInputContract";
 import FormSelectContracts from "./routes/FormSelectContracts";
 

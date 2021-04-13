@@ -29,13 +29,15 @@ export default function FormSendTokens({
   sendTokensAction,
 }: FormSendTokensProps): JSX.Element {
   const { t } = useTranslation(["common", "cw20Wallet"]);
-  const { getConfig } = useSdk();
+  const {
+    sdkState: { config },
+  } = useSdk();
 
   const validationSchema = Yup.object().shape({
     amount: !maxAmount
       ? getAmountField(t)
       : getAmountField(t, maxAmount.toFloatApproximation(), maxAmount.toString()),
-    address: getAddressField(t, getConfig().addressPrefix),
+    address: getAddressField(t, config.addressPrefix),
   });
 
   return (

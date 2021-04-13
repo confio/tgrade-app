@@ -8,8 +8,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useError, useLayout, useSdk } from "service";
 import { CW20, Cw20Token, getCw20Token } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { AddressText } from "./style";
@@ -36,16 +35,16 @@ export default function Detail(): JSX.Element {
   ]);
 
   const { handleError } = useError();
-  const { getSigningClient, getAddress } = useSdk();
-  const client = getSigningClient();
-  const address = getAddress();
+  const {
+    sdkState: { signingClient, address },
+  } = useSdk();
 
   const [cw20Token, setCw20Token] = useState<Cw20Token>();
   const [allowanceAmount, setAllowanceAmount] = useState("0");
 
   useEffect(() => {
     let mounted = true;
-    const cw20Contract = CW20(client).use(contractAddress);
+    const cw20Contract = CW20(signingClient).use(contractAddress);
 
     (async function updateCw20TokenAndAllowance() {
       const cw20Token = await getCw20Token(cw20Contract, address);
@@ -62,7 +61,7 @@ export default function Detail(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [address, client, contractAddress, handleError, spenderAddress, t]);
+  }, [address, contractAddress, handleError, signingClient, spenderAddress, t]);
 
   function goToAllowancesEdit() {
     history.push(`${pathAllowancesMatched}${paths.cw20Wallet.edit}`);
@@ -70,7 +69,7 @@ export default function Detail(): JSX.Element {
 
   async function submitRemove() {
     setLoading(layoutDispatch, "Removing allowance...");
-    const cw20Contract = CW20(client).use(contractAddress);
+    const cw20Contract = CW20(signingClient).use(contractAddress);
 
     try {
       const { allowance } = await cw20Contract.allowance(address, spenderAddress);

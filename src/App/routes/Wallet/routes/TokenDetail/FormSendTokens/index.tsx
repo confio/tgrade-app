@@ -28,11 +28,13 @@ export default function FormSendTokens({
   sendTokensAction,
 }: FormSendTokensProps): JSX.Element {
   const { t } = useTranslation(["common", "wallet"]);
-  const { getConfig } = useSdk();
+  const {
+    sdkState: { config },
+  } = useSdk();
 
   const validationSchema = Yup.object().shape({
     amount: getAmountField(t, parseFloat(maxAmount), maxAmount),
-    address: getAddressField(t, getConfig().addressPrefix),
+    address: getAddressField(t, config.addressPrefix),
   });
 
   return (
