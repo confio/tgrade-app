@@ -49,7 +49,7 @@ export default function Edit(): JSX.Element {
     (async function updateCw20TokenAndAllowance() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(t("error.noCw20Found", { contractAddress })));
+        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
         return;
       }
 
@@ -64,7 +64,7 @@ export default function Edit(): JSX.Element {
   }, [address, contractAddress, handleError, signingClient, spenderAddress, t]);
 
   async function submitChangeAmount(values: FormChangeAmountFields): Promise<void> {
-    setLoading(layoutDispatch, "Changing allowance...");
+    setLoading(layoutDispatch, `${t("editing")}`);
 
     const { amount: newAmount } = values;
     const cw20Contract = CW20(signingClient).use(contractAddress);

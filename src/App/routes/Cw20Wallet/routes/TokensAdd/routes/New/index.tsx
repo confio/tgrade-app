@@ -53,7 +53,7 @@ export default function New(): JSX.Element {
 
     try {
       if (!codeId) {
-        throw new Error(t("cw20Wallet:error.missingCodeId"));
+        throw new Error("Missing Code Id in configuration file");
       }
 
       const decimals = parseInt(values.tokenDecimals, 10);

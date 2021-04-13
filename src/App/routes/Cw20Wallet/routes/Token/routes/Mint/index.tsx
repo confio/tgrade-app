@@ -48,7 +48,7 @@ export default function Mint(): JSX.Element {
     (async function updateCw20TokenAndMintCap() {
       const cw20Token = await getCw20Token(cw20Contract, address);
       if (!cw20Token) {
-        handleError(new Error(t("error.noCw20Found", { contractAddress })));
+        handleError(new Error(`No CW20 token at address: ${contractAddress}`));
         return;
       }
       if (mounted) setCw20Token(cw20Token);
@@ -64,7 +64,7 @@ export default function Mint(): JSX.Element {
 
   async function mintTokensAction(values: FormMintTokensFields) {
     if (!cw20Token) return;
-    setLoading(layoutDispatch, `Minting ${cw20Token.symbol}...`);
+    setLoading(layoutDispatch, `${t("minting", { symbol: cw20Token.symbol })}`);
 
     const { address: recipientAddress, amount } = values;
     const cw20Contract = CW20(signingClient).use(contractAddress);

@@ -45,7 +45,7 @@ export default function Validators(): JSX.Element {
     (async function updateValidatorsData() {
       const { validators } = await queryClient.staking.unverified.validators("BOND_STATUS_BONDED");
       if (!validators) {
-        throw new Error(t("error.noBondedValidators"));
+        throw new Error("No bonded validators found");
       }
 
       const validatorsData: readonly ValidatorData[] = validators

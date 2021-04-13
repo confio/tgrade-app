@@ -41,7 +41,7 @@ export default function FormSelectContracts(): JSX.Element {
       try {
         const numCodeId = Number.parseInt(codeId, 10);
         if (Number.isNaN(numCodeId)) {
-          throw new Error(t("error.expectedCodeId", { codeId }));
+          throw new Error(`Expected Code Id and instead got ${codeId}`);
         }
 
         const contracts = await signingClient.getContracts(numCodeId);
