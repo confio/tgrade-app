@@ -55,7 +55,7 @@
   "edit": "Editar",
   "remove": "Quitar",
   "removing": "Quitando concesión...",
-  "removeSuccess": "{Concesión de {symbol} para {{spenderAddress}} quitada con éxito",
+  "removeSuccess": "Concesión de {{symbol}} para {{spenderAddress}} quitada con éxito",
   "removeFail": "No se pudo quitar concesión:",
   "addAllowance": "Añadir Concesión",
   "add": "Añadir",
