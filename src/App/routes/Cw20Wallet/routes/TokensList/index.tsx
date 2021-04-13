@@ -53,13 +53,15 @@ export default function TokensList(): JSX.Element {
 
   const [cw20Tokens, setCw20Tokens] = useState<Cw20Token[]>([]);
   const [tokenNameFilter, setTokenNameFilter] = useState("");
-  const [sortBy, setSortBy] = useState<"alphabetically" | "favourites">("alphabetically");
+
   const [favTokens, setFavTokens] = useLocalStorage<readonly string[]>(
     "fav-tokens",
     [],
     JSON.stringify,
     JSON.parse,
   );
+  const defaultSortBy = favTokens.length ? "favourites" : "alphabetically";
+  const [sortBy, setSortBy] = useState<"alphabetically" | "favourites">(defaultSortBy);
 
   const searchedCw20Tokens = cw20Tokens.filter((token) =>
     token.symbol.toLowerCase().startsWith(tokenNameFilter.toLowerCase()),
@@ -117,7 +119,7 @@ export default function TokensList(): JSX.Element {
       <Title>{t("tokens")}</Title>
       {cw20Tokens.length ? (
         <Formik
-          initialValues={{ tokenName: "", sortBy: "alphabetically" }}
+          initialValues={{ tokenName: "", sortBy: defaultSortBy }}
           onSubmit={({ tokenName, sortBy }) => {
             setTokenNameFilter(tokenName);
             setSortBy(sortBy === "favourites" ? sortBy : "alphabetically");
@@ -135,7 +137,7 @@ export default function TokensList(): JSX.Element {
                 />
               </FormItem>
               <FormItem name="sortBy">
-                <Select name="sortBy" defaultValue="alphabetically" onChange={formikProps.submitForm}>
+                <Select name="sortBy" defaultValue={defaultSortBy} onChange={formikProps.submitForm}>
                   <Option value="alphabetically">{t("sortAlphabetically")}</Option>
                   <Option value="favourites">{t("sortFavourites")}</Option>
                 </Select>
