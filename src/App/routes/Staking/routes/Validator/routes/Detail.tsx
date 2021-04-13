@@ -8,8 +8,7 @@ import * as React from "react";
 import { ComponentProps, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useSdk } from "service";
-import { setInitialLayoutState, useLayout } from "service/layout";
+import { setInitialLayoutState, useLayout, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
 import { useStakingValidator } from "utils/staking";
 
@@ -33,8 +32,9 @@ export default function Detail(): JSX.Element {
     layoutDispatch,
   ]);
 
-  const { getConfig, getAddress, getQueryClient } = useSdk();
-  const config = getConfig();
+  const {
+    sdkState: { config, address, queryClient },
+  } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
   const [stakedTokens, setStakedTokens] = useState<Decimal>(Decimal.fromUserInput("0", 0));
@@ -44,8 +44,8 @@ export default function Detail(): JSX.Element {
 
     (async function updateStakedTokens() {
       try {
-        const { delegationResponse } = await getQueryClient().staking.unverified.delegation(
-          getAddress(),
+        const { delegationResponse } = await queryClient.staking.unverified.delegation(
+          address,
           validatorAddress,
         );
         const stakedTokens = Decimal.fromAtomics(
@@ -62,7 +62,7 @@ export default function Detail(): JSX.Element {
         mounted = false;
       };
     })();
-  }, [config.coinMap, config.stakingToken, getAddress, getQueryClient, validatorAddress]);
+  }, [address, config.coinMap, config.stakingToken, queryClient.staking.unverified, validatorAddress]);
 
   function getValidatorMap(): ComponentProps<typeof DataList> {
     if (!validator) return {};

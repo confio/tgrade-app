@@ -7,8 +7,7 @@ import * as React from "react";
 import { ComponentProps, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useError, useLayout, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
@@ -34,9 +33,9 @@ export default function Rewards(): JSX.Element {
   ]);
 
   const { handleError } = useError();
-  const { getConfig, getAddress, getQueryClient, withdrawRewards } = useSdk();
-  const config = getConfig();
-  const delegatorAddress = getAddress();
+  const {
+    sdkState: { config, address, queryClient, withdrawRewards },
+  } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
   const [rewards, setRewards] = useState<readonly Coin[]>([]);
@@ -46,8 +45,8 @@ export default function Rewards(): JSX.Element {
 
     (async function updateRewards() {
       try {
-        const { rewards } = await getQueryClient().distribution.unverified.delegationRewards(
-          delegatorAddress,
+        const { rewards } = await queryClient.distribution.unverified.delegationRewards(
+          address,
           validatorAddress,
         );
         const nonNullRewards: readonly Coin[] = rewards
@@ -68,7 +67,7 @@ export default function Rewards(): JSX.Element {
     return () => {
       mounted = false;
     };
-  }, [delegatorAddress, getQueryClient, validatorAddress]);
+  }, [address, queryClient.distribution.unverified, validatorAddress]);
 
   async function submitWithdrawRewards() {
     setLoading(layoutDispatch, "Withdrawing rewards...");

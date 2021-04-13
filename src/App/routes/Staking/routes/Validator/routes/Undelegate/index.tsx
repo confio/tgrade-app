@@ -6,8 +6,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { setInitialLayoutState, setLoading, useError, useLayout, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
@@ -34,12 +33,13 @@ export default function Undelegate(): JSX.Element {
   ]);
 
   const { handleError } = useError();
-  const { getConfig, undelegateTokens } = useSdk();
+  const {
+    sdkState: { config, undelegateTokens },
+  } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
   async function submitUndelegateBalance({ amount }: FormUndelegateBalanceFields) {
     setLoading(layoutDispatch, "Undelegating...");
-    const config = getConfig();
 
     try {
       const nativeAmountString = displayAmountToNative(amount, config.coinMap, config.stakingToken);

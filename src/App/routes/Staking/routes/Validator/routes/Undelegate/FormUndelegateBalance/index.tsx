@@ -27,19 +27,19 @@ export default function FormUndelegateBalance({
   submitUndelegateBalance,
 }: FormUndelegateBalanceProps): JSX.Element {
   const { t } = useTranslation(["common", "staking"]);
-  const { getConfig, getAddress, getQueryClient } = useSdk();
+  const {
+    sdkState: { config, address, queryClient },
+  } = useSdk();
 
   const [balance, setBalance] = useState<Decimal>(Decimal.fromAtomics("0", 0));
 
   useEffect(() => {
     let mounted = true;
-    const delegatorAddress = getAddress();
-    const config = getConfig();
 
     (async function updateBalance() {
       try {
-        const { delegationResponse } = await getQueryClient().staking.unverified.delegation(
-          delegatorAddress,
+        const { delegationResponse } = await queryClient.staking.unverified.delegation(
+          address,
           validatorAddress,
         );
 
@@ -57,7 +57,7 @@ export default function FormUndelegateBalance({
     return () => {
       mounted = false;
     };
-  }, [getAddress, getConfig, getQueryClient, validatorAddress]);
+  }, [address, config.coinMap, config.stakingToken, queryClient.staking.unverified, validatorAddress]);
 
   const validationSchema = Yup.object().shape({
     amount: getAmountField(t, balance.toFloatApproximation(), balance.toString()),
