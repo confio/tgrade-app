@@ -61,7 +61,9 @@ export function displayAmountToNative(
 }
 
 export function useBalance(): readonly Coin[] {
-  const { getBalance } = useSdk();
+  const {
+    sdkState: { getBalance },
+  } = useSdk();
   const [currentBalance, setCurrentBalance] = useState<readonly Coin[]>([]);
 
   useEffect(() => {

@@ -1,6 +1,5 @@
 import { coins, StdFee } from "@cosmjs/launchpad";
 import { Decimal } from "@cosmjs/math";
-
 // TODO: better import
 import { Validator } from "@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/staking";
 import { NetworkConfig } from "config/network";
@@ -14,7 +13,9 @@ export type StakingValidator = Validator;
 
 export function useStakingValidator(validatorAddress: string): StakingValidator | undefined {
   const { handleError } = useError();
-  const { getQueryClient } = useSdk();
+  const {
+    sdkState: { queryClient },
+  } = useSdk();
   const [validator, setValidator] = useState<StakingValidator>();
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export function useStakingValidator(validatorAddress: string): StakingValidator 
 
     (async function updateValidator() {
       try {
-        const { validator } = await getQueryClient().staking.unverified.validator(validatorAddress);
+        const { validator } = await queryClient.staking.unverified.validator(validatorAddress);
         if (!validator) {
           throw new Error(`No validator found with address: ${validatorAddress}`);
         }
@@ -35,7 +36,7 @@ export function useStakingValidator(validatorAddress: string): StakingValidator 
     return () => {
       mounted = false;
     };
-  }, [getQueryClient, handleError, validatorAddress]);
+  }, [handleError, queryClient.staking.unverified, validatorAddress]);
 
   return validator;
 }
