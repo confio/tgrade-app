@@ -7,8 +7,7 @@ import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { initSdk, setInitialLayoutState, setLoading, useError, useLayout, useSdkInit } from "service";
 import { importWallet } from "utils/sdk";
 import { runAfterLoad } from "utils/ui";
 import * as Yup from "yup";
@@ -36,8 +35,10 @@ export default function ImportAccount(): JSX.Element {
   );
 
   const { handleError } = useError();
-  const sdk = useSdk();
-  const config = sdk.getConfig();
+  const {
+    sdkState: { config },
+    sdkDispatch,
+  } = useSdkInit();
 
   function submitImportAccount({ password, mnemonic }: FormImportAccountFields) {
     setLoading(layoutDispatch, `${t("login:initializing")}`);
@@ -45,7 +46,7 @@ export default function ImportAccount(): JSX.Element {
     runAfterLoad(async () => {
       try {
         const signer = await importWallet(config, password, mnemonic);
-        sdk.init(signer);
+        initSdk(sdkDispatch, signer);
       } catch (error) {
         handleError(error);
         setLoading(layoutDispatch, false);

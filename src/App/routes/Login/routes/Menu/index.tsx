@@ -8,8 +8,7 @@ import { useEffect } from "react";
 import { isChrome, isDesktop } from "react-device-detect";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { initSdk, setInitialLayoutState, setLoading, useError, useLayout, useSdkInit } from "service";
 import {
   getWallet,
   isWalletEncrypted,
@@ -42,8 +41,10 @@ export default function Menu(): JSX.Element {
   useEffect(() => setInitialLayoutState(layoutDispatch, { menuState: "hidden" }), [layoutDispatch]);
 
   const { handleError } = useError();
-  const sdk = useSdk();
-  const config = sdk.getConfig();
+  const {
+    sdkState: { config },
+    sdkDispatch,
+  } = useSdkInit();
 
   async function init(loadWallet: WalletLoader) {
     setLoading(layoutDispatch, `${t("initializing")}`);
@@ -51,7 +52,7 @@ export default function Menu(): JSX.Element {
     runAfterLoad(async () => {
       try {
         const signer = await loadWallet(config);
-        sdk.init(signer);
+        initSdk(sdkDispatch, signer);
       } catch (error) {
         handleError(error);
         setLoading(layoutDispatch, false);

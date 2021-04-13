@@ -7,8 +7,7 @@ import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useError, useSdk } from "service";
-import { setInitialLayoutState, setLoading, useLayout } from "service/layout";
+import { initSdk, setInitialLayoutState, setLoading, useError, useLayout, useSdkInit } from "service";
 import { unlockWallet } from "utils/sdk";
 import { runAfterLoad } from "utils/ui";
 import * as Yup from "yup";
@@ -34,8 +33,10 @@ export default function UnlockAccount(): JSX.Element {
   );
 
   const { handleError } = useError();
-  const sdk = useSdk();
-  const config = sdk.getConfig();
+  const {
+    sdkState: { config },
+    sdkDispatch,
+  } = useSdkInit();
 
   function submitUnlockForm({ password }: FormUnlockAccountFields) {
     setLoading(layoutDispatch, `${t("login:initializing")}`);
@@ -43,7 +44,7 @@ export default function UnlockAccount(): JSX.Element {
     runAfterLoad(async () => {
       try {
         const signer = await unlockWallet(config, password);
-        sdk.init(signer);
+        initSdk(sdkDispatch, signer);
       } catch (error) {
         handleError(error);
         setLoading(layoutDispatch, false);
