@@ -70,7 +70,7 @@ export default function Rewards(): JSX.Element {
   }, [address, queryClient.distribution.unverified, validatorAddress]);
 
   async function submitWithdrawRewards() {
-    setLoading(layoutDispatch, "Withdrawing rewards...");
+    setLoading(layoutDispatch, `${t("withdrawing")}`);
 
     try {
       await withdrawRewards(validatorAddress);

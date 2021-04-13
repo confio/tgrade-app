@@ -49,7 +49,7 @@ export default function New(): JSX.Element {
   const { addContract } = useContracts();
 
   async function submitCreateToken(values: FormCreateTokenFields) {
-    setLoading(layoutDispatch, "Creating token...");
+    setLoading(layoutDispatch, `${t("cw20Wallet:creating")}`);
 
     try {
       if (!codeId) {
