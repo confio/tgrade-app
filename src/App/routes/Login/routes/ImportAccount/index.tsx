@@ -82,6 +82,8 @@ export default function ImportAccount(): JSX.Element {
                   name="mnemonic"
                   placeholder={t("login:securityWords")}
                   autoSize={{ minRows: 8, maxRows: 8 }}
+                  // This element does not work without this after deps upgrade
+                  onChange={(e) => formikProps.setFieldValue("mnemonic", e.target.value, true)}
                 />
               </FormItem>
               <FormItem name="password">
