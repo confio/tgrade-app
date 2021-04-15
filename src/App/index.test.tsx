@@ -1,4 +1,4 @@
-import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import App from "./";
@@ -79,9 +79,12 @@ describe("should have a happy path for", () => {
     const initialSupplyInput = screen.getByLabelText(/initial supply/i) as HTMLInputElement;
     await userEvent.type(initialSupplyInput, initialSupply, { delay: 1 });
     userEvent.click(screen.getByRole("combobox"));
-    userEvent.click(screen.getByText("Fixed cap"));
+    // Does not work with userEvent.click() because Antd's Select does not work well with testing
+    fireEvent.click(screen.getByText(/fixed cap/i));
     const mintCapInput = screen.getByLabelText(/mint cap/i) as HTMLInputElement;
-    const createButton = screen.getByRole("button", { name: /create/i });
+    await waitFor(() => expect(mintCapInput).not.toBeDisabled(), { interval: 1_000, timeout: 10_000 });
+    await userEvent.type(mintCapInput, mintCapAmount, { delay: 200 });
+    expect(mintCapInput.value).toBe(mintCapAmount);
     await waitFor(
       async () => {
         // Clear and write input until mintCap takes value
@@ -91,11 +94,7 @@ describe("should have a happy path for", () => {
       },
       { timeout: 10_000 },
     );
-
-    // Wait input until mintCap validates
-    await waitForElementToBeRemoved(() =>
-      screen.getByText("Mint cap must be equal or greater than initial supply"),
-    );
+    const createButton = screen.getByRole("button", { name: /create/i });
     await waitFor(() => expect(createButton).not.toBeDisabled());
     userEvent.click(createButton);
     await screen.findByText(`${initialSupplyToDisplay} ${tokenName} successfully created`, undefined, {
