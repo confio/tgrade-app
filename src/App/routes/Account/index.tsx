@@ -1,5 +1,5 @@
 import { makeCosmoshubPath, Secp256k1HdWallet } from "@cosmjs/launchpad";
-import { Typography } from "antd";
+import { Tooltip, Typography } from "antd";
 import { Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import copyToClipboard from "clipboard-copy";
@@ -79,10 +79,12 @@ export default function Account(): JSX.Element {
   return (
     <Stack gap="s4">
       <Title>{t("account")}</Title>
-      <CopyAddressButton type="default" onClick={() => copyToClipboard(address)}>
-        <Text>{address}</Text>
-        <img src={copyIcon} alt="Copy icon" />
-      </CopyAddressButton>
+      <Tooltip trigger="click" title={t("copied")}>
+        <CopyAddressButton type="default" onClick={() => copyToClipboard(address)}>
+          <Text>{address}</Text>
+          <img src={copyIcon} alt="Copy icon" />
+        </CopyAddressButton>
+      </Tooltip>
       {showMnemonicForm ? (
         <Loading loading={loadingMsg}>
           {isMnemonicEncrypted && !decryptedMnemonic ? (
