@@ -4,8 +4,8 @@ import { Stack } from "App/components/layout";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { useSdk } from "service";
 import { getAmountField } from "utils/forms";
 import * as Yup from "yup";
@@ -13,60 +13,41 @@ import { FormField } from "./style";
 
 const { Text } = Typography;
 
-export interface FormUndelegateBalanceFields {
+export interface FormUndelegateTokensFields {
   readonly amount: string;
 }
 
-interface FormUndelegateBalanceProps {
+interface FormUndelegateTokensProps {
   readonly validatorAddress: string;
-  readonly submitUndelegateBalance: (values: FormUndelegateBalanceFields) => Promise<void>;
+  readonly submitUndelegateTokens: (values: FormUndelegateTokensFields) => void;
 }
 
-export default function FormUndelegateBalance({
+export default function FormUndelegateTokens({
   validatorAddress,
-  submitUndelegateBalance,
-}: FormUndelegateBalanceProps): JSX.Element {
+  submitUndelegateTokens,
+}: FormUndelegateTokensProps): JSX.Element {
   const { t } = useTranslation(["common", "staking"]);
   const {
     sdkState: { config, address, queryClient },
   } = useSdk();
 
-  const [balance, setBalance] = useState<Decimal>(Decimal.fromAtomics("0", 0));
+  const { data: stakedTokensData } = useQuery("stakedTokens", () =>
+    queryClient.staking.unverified.delegation(address, validatorAddress),
+  );
 
-  useEffect(() => {
-    let mounted = true;
-
-    (async function updateBalance() {
-      try {
-        const { delegationResponse } = await queryClient.staking.unverified.delegation(
-          address,
-          validatorAddress,
-        );
-
-        const balanceDecimal = Decimal.fromAtomics(
-          delegationResponse?.balance?.amount || "0",
-          config.coinMap[config.stakingToken].fractionalDigits,
-        );
-
-        if (mounted) setBalance(balanceDecimal);
-      } catch {
-        // Do nothing because it throws if delegation does not exist, i.e balance = 0
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, [address, config.coinMap, config.stakingToken, queryClient.staking.unverified, validatorAddress]);
+  const stakedTokens = Decimal.fromAtomics(
+    stakedTokensData?.delegationResponse?.balance?.amount || "0",
+    config.coinMap[config.stakingToken].fractionalDigits,
+  );
 
   const validationSchema = Yup.object().shape({
-    amount: getAmountField(t, balance.toFloatApproximation(), balance.toString()),
+    amount: getAmountField(t, stakedTokens.toFloatApproximation(), stakedTokens.toString()),
   });
 
   return (
     <Formik
       initialValues={{ amount: "" }}
-      onSubmit={submitUndelegateBalance}
+      onSubmit={submitUndelegateTokens}
       validationSchema={validationSchema}
     >
       {(formikProps) => (
@@ -75,7 +56,7 @@ export default function FormUndelegateBalance({
             <Stack>
               <FormField>
                 <Text>{t("staking:balance")}</Text>
-                <Text>{balance.toString()}</Text>
+                <Text>{stakedTokens.toString()}</Text>
               </FormField>
               <FormField>
                 <Text id="amount-label">{t("staking:undelegate")}</Text>

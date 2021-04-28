@@ -14,18 +14,17 @@ import { FormField } from "./style";
 
 const { Text } = Typography;
 
-export interface FormDelegateBalanceFields {
+export interface FormDelegateTokensFields {
   readonly amount: string;
 }
 
-interface FormDelegateBalanceProps {
-  readonly submitDelegateBalance: (values: FormDelegateBalanceFields) => Promise<void>;
+interface FormDelegateTokensProps {
+  readonly submitDelegateTokens: (values: FormDelegateTokensFields) => void;
 }
 
-export default function FormDelegateBalance({
-  submitDelegateBalance,
-}: FormDelegateBalanceProps): JSX.Element {
+export default function FormDelegateTokens({ submitDelegateTokens }: FormDelegateTokensProps): JSX.Element {
   const { t } = useTranslation(["common", "staking"]);
+
   const {
     sdkState: { config },
   } = useSdk();
@@ -57,7 +56,7 @@ export default function FormDelegateBalance({
   return (
     <Formik
       initialValues={{ amount: "" }}
-      onSubmit={submitDelegateBalance}
+      onSubmit={submitDelegateTokens}
       validationSchema={validationSchema}
     >
       {(formikProps) => {

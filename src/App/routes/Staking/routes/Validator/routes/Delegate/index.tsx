@@ -5,14 +5,21 @@ import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { setInitialLayoutState, setLoading, useError, useLayout, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
-import FormDelegateBalance, { FormDelegateBalanceFields } from "./FormDelegateBalance";
+import FormDelegateTokens, { FormDelegateTokensFields } from "./FormDelegateTokens";
 
 const { Title } = Typography;
+
+interface MutationVariables {
+  readonly denomToDisplay: string;
+  readonly amountToDisplay: string;
+  readonly coinToDelegate: Coin;
+}
 
 interface DelegateParams {
   readonly validatorAddress: string;
@@ -38,30 +45,14 @@ export default function Delegate(): JSX.Element {
   } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
-  async function submitDelegateBalance({ amount }: FormDelegateBalanceFields) {
-    setLoading(layoutDispatch, `${t("delegating")}`);
+  async function mutationFn({ coinToDelegate }: MutationVariables) {
+    await delegateTokens(validatorAddress, coinToDelegate);
+  }
 
-    try {
-      const nativeAmountString = displayAmountToNative(amount, config.coinMap, config.stakingToken);
-      const delegateAmount: Coin = { amount: nativeAmountString, denom: config.stakingToken };
-
-      await delegateTokens(validatorAddress, delegateAmount);
-
-      const denom = config.coinMap[config.stakingToken].denom;
-      setLoading(layoutDispatch, false);
-
-      history.push({
-        pathname: paths.operationResult,
-        state: {
-          success: true,
-          message: t("delegateSuccess", { amount, denom }),
-          customButtonText: t("validatorHome"),
-          customButtonActionPath: pathValidator,
-        },
-      });
-    } catch (stackTrace) {
+  const mutationOptions = {
+    mutationKey: "delegateTokens",
+    onError: (stackTrace: Error) => {
       handleError(stackTrace);
-      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
@@ -72,6 +63,35 @@ export default function Delegate(): JSX.Element {
           customButtonActionPath: pathDelegateMatched,
         },
       });
+    },
+    onSuccess: (_: void, { amountToDisplay: amount, denomToDisplay: denom }: MutationVariables) => {
+      history.push({
+        pathname: paths.operationResult,
+        state: {
+          success: true,
+          message: t("delegateSuccess", { amount, denom }),
+          customButtonText: t("validatorHome"),
+          customButtonActionPath: pathValidator,
+        },
+      });
+    },
+    onSettled: () => setLoading(layoutDispatch, false),
+  };
+
+  const { mutate } = useMutation(mutationFn, mutationOptions);
+
+  function submitDelegateBalance({ amount: amountToDisplay }: FormDelegateTokensFields) {
+    setLoading(layoutDispatch, `${t("delegating")}`);
+
+    try {
+      const denomToDisplay = config.coinMap[config.stakingToken].denom;
+      const nativeAmount = displayAmountToNative(amountToDisplay, config.coinMap, config.stakingToken);
+      const coinToDelegate: Coin = { amount: nativeAmount, denom: config.stakingToken };
+
+      mutate({ denomToDisplay, amountToDisplay, coinToDelegate });
+    } catch (stackTrace) {
+      handleError(stackTrace);
+      setLoading(layoutDispatch, false);
     }
   }
 
@@ -81,7 +101,7 @@ export default function Delegate(): JSX.Element {
         <Title>{t("delegate")}</Title>
         <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
       </Stack>
-      <FormDelegateBalance submitDelegateBalance={submitDelegateBalance} />
+      <FormDelegateTokens submitDelegateTokens={submitDelegateBalance} />
     </Stack>
   );
 }
