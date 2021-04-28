@@ -8,7 +8,7 @@ import {
 } from "react-query";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ContractsProvider, ErrorProvider, LayoutProvider, SdkProvider } from "service";
-import GlobalStyle from "theme/GlobalStyle";
+import ThemeProvider from "service/theme";
 import { MenuPageLayout, ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
 import Account from "./routes/Account";
@@ -26,41 +26,42 @@ export default function App(): JSX.Element {
         <ReactQueryClientProvider client={new ReactQueryClient()}>
           <SdkProvider config={config}>
             <ContractsProvider>
-              <GlobalStyle />
-              <Router basename={process.env.PUBLIC_URL}>
-                <LayoutProvider>
-                  <MenuPageLayout>
-                    <Switch>
-                      <Route exact path="/">
-                        <Login />
-                      </Route>
-                      <Route path={paths.login.prefix}>
-                        <Login />
-                      </Route>
-                      <ProtectedSwitch authPath={paths.login.prefix}>
-                        <Route path={paths.logout}>
-                          <Logout />
+              <ThemeProvider>
+                <Router basename={process.env.PUBLIC_URL}>
+                  <LayoutProvider>
+                    <MenuPageLayout>
+                      <Switch>
+                        <Route exact path="/">
+                          <Login />
                         </Route>
-                        <Route path={paths.operationResult}>
-                          <OperationResult />
+                        <Route path={paths.login.prefix}>
+                          <Login />
                         </Route>
-                        <Route path={paths.account.prefix}>
-                          <Account />
-                        </Route>
-                        <Route path={paths.wallet.prefix}>
-                          <Wallet />
-                        </Route>
-                        <Route path={paths.cw20Wallet.prefix}>
-                          <Cw20Wallet />
-                        </Route>
-                        <Route path={paths.staking.prefix}>
-                          <Staking />
-                        </Route>
-                      </ProtectedSwitch>
-                    </Switch>
-                  </MenuPageLayout>
-                </LayoutProvider>
-              </Router>
+                        <ProtectedSwitch authPath={paths.login.prefix}>
+                          <Route path={paths.logout}>
+                            <Logout />
+                          </Route>
+                          <Route path={paths.operationResult}>
+                            <OperationResult />
+                          </Route>
+                          <Route path={paths.account.prefix}>
+                            <Account />
+                          </Route>
+                          <Route path={paths.wallet.prefix}>
+                            <Wallet />
+                          </Route>
+                          <Route path={paths.cw20Wallet.prefix}>
+                            <Cw20Wallet />
+                          </Route>
+                          <Route path={paths.staking.prefix}>
+                            <Staking />
+                          </Route>
+                        </ProtectedSwitch>
+                      </Switch>
+                    </MenuPageLayout>
+                  </LayoutProvider>
+                </Router>
+              </ThemeProvider>
             </ContractsProvider>
           </SdkProvider>
         </ReactQueryClientProvider>
