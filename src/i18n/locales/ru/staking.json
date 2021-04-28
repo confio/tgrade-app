@@ -1,5 +1,7 @@
 {
   "validators": "Валидаторы",
+  "loadingValidators": "Валидаторы загрузки...",
+  "validatorsNotFound": "Валидаторы не найдены",
   "delegate": "Делегат",
   "undelegate": "Вывод",
   "rewards": "Награды",

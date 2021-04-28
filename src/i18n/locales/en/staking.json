@@ -1,5 +1,7 @@
 {
   "validators": "Validators",
+  "loadingValidators": "Loading validators...",
+  "validatorsNotFound": "No validators found",
   "delegate": "Delegate",
   "undelegate": "Undelegate",
   "rewards": "Rewards",
