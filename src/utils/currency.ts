@@ -33,10 +33,10 @@ export interface CoinMap {
 }
 
 export function nativeCoinToDisplay(coin: Coin, coinMap: CoinMap): Coin {
-  if (!coinMap) return coin;
+  if (!coinMap) throw new Error("Coin map not found");
 
   const coinToDisplay = coinMap[coin.denom];
-  if (!coinToDisplay) return coin;
+  if (!coinToDisplay) throw new Error("Coin not found in map");
 
   const amountToDisplay = Decimal.fromAtomics(coin.amount, coinToDisplay.fractionalDigits).toString();
 
@@ -52,7 +52,6 @@ export function displayAmountToNative(
 ): string {
   const fractionalDigits = coinMap[nativeDenom]?.fractionalDigits;
   if (fractionalDigits) {
-    // use https://github.com/CosmWasm/cosmjs/blob/v0.22.2/packages/math/src/decimal.ts
     const decimalAmount = Decimal.fromUserInput(amountToDisplay, fractionalDigits);
     return decimalAmount.atomics;
   }
