@@ -59,7 +59,7 @@ export function displayAmountToNative(
   return amountToDisplay;
 }
 
-export function useBalance(): readonly Coin[] {
+export function useBalance(address?: string): readonly Coin[] {
   const {
     sdkState: { getBalance },
   } = useSdk();
@@ -69,14 +69,14 @@ export function useBalance(): readonly Coin[] {
     let mounted = true;
 
     (async function updateBalance() {
-      const balance = await getBalance();
+      const balance = await getBalance(address);
       if (mounted) setCurrentBalance(balance);
     })();
 
     return () => {
       mounted = false;
     };
-  }, [getBalance]);
+  }, [address, getBalance]);
 
   return currentBalance;
 }

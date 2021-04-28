@@ -45,7 +45,7 @@ type SdkAction =
     }
   | {
       readonly type: "setGetBalance";
-      readonly payload?: () => Promise<readonly Coin[]>;
+      readonly payload?: (address?: string) => Promise<readonly Coin[]>;
     }
   | {
       readonly type: "setHitFaucet";
@@ -72,7 +72,7 @@ type SdkState = {
   readonly signer?: OfflineSigner;
   readonly address?: string;
   readonly signingClient?: SigningCosmWasmClient;
-  readonly getBalance?: () => Promise<readonly Coin[]>;
+  readonly getBalance?: (address?: string) => Promise<readonly Coin[]>;
   readonly hitFaucet?: () => Promise<void>;
   readonly delegateTokens?: (validatorAddress: string, delegateAmount: Coin) => Promise<void>;
   readonly undelegateTokens?: (validatorAddress: string, undelegateAmount: Coin) => Promise<void>;
@@ -273,13 +273,14 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
       return;
     }
 
-    async function getBalance(): Promise<readonly Coin[]> {
+    async function getBalance(address?: string): Promise<readonly Coin[]> {
       if (!sdkState.queryClient || !sdkState.address) return [];
 
+      const queryAddress = address ?? sdkState.address;
       const balance: Coin[] = [];
       try {
         for (const denom in sdkState.config.coinMap) {
-          const res = await sdkState.queryClient.bank.unverified.balance(sdkState.address, denom);
+          const res = await sdkState.queryClient.bank.unverified.balance(queryAddress, denom);
           const coin = res ? coinFromProto(res) : null;
           if (coin) {
             balance.push(coin);
