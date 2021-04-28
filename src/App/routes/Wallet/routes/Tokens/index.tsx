@@ -11,6 +11,7 @@ const { Title } = Typography;
 
 export default function Tokens(): JSX.Element {
   const { t } = useTranslation("wallet");
+
   const { layoutDispatch } = useLayout();
   useEffect(() => setInitialLayoutState(layoutDispatch), [layoutDispatch]);
 
