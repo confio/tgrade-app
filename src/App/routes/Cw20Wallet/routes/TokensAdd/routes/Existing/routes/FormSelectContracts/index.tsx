@@ -1,4 +1,3 @@
-import { Contract } from "@cosmjs/cosmwasm";
 import { Button } from "antd";
 import { TransferItem } from "antd/lib/transfer";
 import { Stack } from "App/components/layout";
@@ -7,8 +6,9 @@ import { OperationResultState } from "App/routes/OperationResult";
 import { Formik } from "formik";
 import { Form, Transfer } from "formik-antd";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useMutation, useQuery } from "react-query";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useContracts, useError, useSdk } from "service";
 import { CW20 } from "utils/cw20";
@@ -31,48 +31,35 @@ export default function FormSelectContracts(): JSX.Element {
   } = useSdk();
   const { addContract } = useContracts();
 
-  const [contracts, setContracts] = useState<readonly Contract[]>([]);
+  const { data: contracts = [] } = useQuery(
+    "contracts",
+    async () => {
+      const numCodeId = Number.parseInt(codeId, 10);
+      if (Number.isNaN(numCodeId)) {
+        throw new Error(`Expected Code Id and instead got ${codeId}`);
+      }
+
+      return await signingClient.getContracts(numCodeId);
+    },
+    {
+      onError: (error: Error) => {
+        handleError(error);
+      },
+    },
+  );
+
   const [selectedContractAddresses, setSelectedContractAddresses] = useState<string[]>([]);
 
-  useEffect(() => {
-    let mounted = true;
+  async function mutationFn() {
+    const cw20Contracts = selectedContractAddresses.map((address) => CW20(signingClient).use(address));
+    // If any of the selected contracts has no tokenInfo, it throws
+    await Promise.all(cw20Contracts.map((contract) => contract.tokenInfo()));
+    cw20Contracts.forEach(addContract);
+  }
 
-    (async function updateContracts() {
-      try {
-        const numCodeId = Number.parseInt(codeId, 10);
-        if (Number.isNaN(numCodeId)) {
-          throw new Error(`Expected Code Id and instead got ${codeId}`);
-        }
-
-        const contracts = await signingClient.getContracts(numCodeId);
-        if (mounted) setContracts(contracts);
-      } catch (error) {
-        handleError(error);
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, [codeId, handleError, signingClient, t]);
-
-  async function submitSelectContracts() {
-    try {
-      const cw20Contracts = selectedContractAddresses.map((address) => CW20(signingClient).use(address));
-      // If any of the selected contracts has no tokenInfo, it throws
-      await Promise.all(cw20Contracts.map((contract) => contract.tokenInfo()));
-      cw20Contracts.forEach(addContract);
-
-      history.push({
-        pathname: paths.operationResult,
-        state: {
-          success: true,
-          message: t("addCodeIdSuccess", { codeId }),
-          customButtonText: t("tokens"),
-          customButtonActionPath: pathTokens,
-        } as OperationResultState,
-      });
-    } catch (stackTrace) {
+  const mutationOptions = {
+    mutationKey: "addCodeId",
+    onError: (stackTrace: Error) => {
       handleError(stackTrace);
 
       history.push({
@@ -84,8 +71,22 @@ export default function FormSelectContracts(): JSX.Element {
           customButtonActionPath: pathExisting,
         } as OperationResultState,
       });
-    }
-  }
+    },
+    onSuccess: () => {
+      history.push({
+        pathname: paths.operationResult,
+        state: {
+          success: true,
+          message: t("addCodeIdSuccess", { codeId }),
+          customButtonText: t("tokens"),
+          customButtonActionPath: pathTokens,
+        } as OperationResultState,
+      });
+    },
+  };
+
+  const { mutate } = useMutation(mutationFn, mutationOptions);
+  const submitSelectContracts = () => mutate();
 
   function filterCaseInsensitive(input: string, option: TransferItem) {
     return option.title ? option.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 : false;

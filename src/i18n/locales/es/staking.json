@@ -1,5 +1,7 @@
 {
   "validators": "Validadores",
+  "loadingValidators": "Cargando validadores...",
+  "validatorsNotFound": "No se encontraron validadores",
   "delegate": "Depositar",
   "undelegate": "Retirar",
   "rewards": "Recompensas",

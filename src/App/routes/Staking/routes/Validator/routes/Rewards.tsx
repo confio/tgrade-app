@@ -4,8 +4,9 @@ import { Stack } from "App/components/layout";
 import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useMutation, useQuery } from "react-query";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { setInitialLayoutState, setLoading, useError, useLayout, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
@@ -13,6 +14,10 @@ import { getErrorFromStackTrace } from "utils/errors";
 import { useStakingValidator } from "utils/staking";
 
 const { Title, Text } = Typography;
+
+interface MutationVariables {
+  readonly validatorAddress: string;
+}
 
 interface RewardsParams {
   readonly validatorAddress: string;
@@ -38,57 +43,27 @@ export default function Rewards(): JSX.Element {
   } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
-  const [rewards, setRewards] = useState<readonly Coin[]>([]);
+  const { data: rewardsData } = useQuery("rewards", () =>
+    queryClient.distribution.unverified.delegationRewards(address, validatorAddress),
+  );
 
-  useEffect(() => {
-    let mounted = true;
+  const rewards: readonly Coin[] = rewardsData
+    ? rewardsData.rewards
+        .map((coin) => ({
+          amount: coin.amount ? coin.amount.slice(0, -18) : "",
+          denom: coin.denom || "",
+        }))
+        .filter((coin) => coin.amount.length && coin.denom.length)
+    : [];
 
-    (async function updateRewards() {
-      try {
-        const { rewards } = await queryClient.distribution.unverified.delegationRewards(
-          address,
-          validatorAddress,
-        );
-        const nonNullRewards: readonly Coin[] = rewards
-          ? rewards
-              .map((coin) => ({
-                amount: coin.amount ? coin.amount.slice(0, -18) : "",
-                denom: coin.denom || "",
-              }))
-              .filter((coin) => coin.amount.length && coin.denom.length)
-          : [];
+  async function mutationFn({ validatorAddress }: MutationVariables) {
+    await withdrawRewards(validatorAddress);
+  }
 
-        if (mounted) setRewards(nonNullRewards);
-      } catch {
-        // Do nothing because it throws if delegation does not exist, i.e balance = 0
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, [address, queryClient.distribution.unverified, validatorAddress]);
-
-  async function submitWithdrawRewards() {
-    setLoading(layoutDispatch, `${t("withdrawing")}`);
-
-    try {
-      await withdrawRewards(validatorAddress);
-
-      setLoading(layoutDispatch, false);
-
-      history.push({
-        pathname: paths.operationResult,
-        state: {
-          success: true,
-          message: t("withdrawSuccess"),
-          customButtonText: t("validatorHome"),
-          customButtonActionPath: pathValidator,
-        },
-      });
-    } catch (stackTrace) {
+  const mutationOptions = {
+    mutationKey: "withdrawRewards",
+    onError: (stackTrace: Error) => {
       handleError(stackTrace);
-      setLoading(layoutDispatch, false);
 
       history.push({
         pathname: paths.operationResult,
@@ -99,7 +74,26 @@ export default function Rewards(): JSX.Element {
           customButtonActionPath: pathRewardsMatched,
         },
       });
-    }
+    },
+    onSuccess: () => {
+      history.push({
+        pathname: paths.operationResult,
+        state: {
+          success: true,
+          message: t("withdrawSuccess"),
+          customButtonText: t("validatorHome"),
+          customButtonActionPath: pathValidator,
+        },
+      });
+    },
+    onSettled: () => setLoading(layoutDispatch, false),
+  };
+
+  const { mutate } = useMutation(mutationFn, mutationOptions);
+
+  function submitWithdrawRewards() {
+    setLoading(layoutDispatch, `${t("withdrawing")}`);
+    mutate({ validatorAddress });
   }
 
   function getRewardsMap(): ComponentProps<typeof DataList> {

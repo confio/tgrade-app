@@ -1,7 +1,7 @@
 import { paths } from "App/paths";
 import * as React from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
-import TokenDetail from "./routes/TokenDetail";
+import Token from "./routes/Token";
 import Tokens from "./routes/Tokens";
 
 const {
@@ -21,7 +21,7 @@ export default function Wallet(): JSX.Element {
         <Tokens />
       </Route>
       <Route path={`${basePath}${walletPaths.tokens}${walletParams.tokenName}`}>
-        <TokenDetail />
+        <Token />
       </Route>
     </Switch>
   );

@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
 import { Stack } from "App/components/layout";
 import { Formik } from "formik";
@@ -17,15 +18,15 @@ export interface FormSendTokensValues {
 }
 
 interface FormSendTokensProps {
-  readonly tokenName: string;
-  readonly maxAmount: string;
-  readonly sendTokensAction: (values: FormSendTokensValues) => Promise<void>;
+  readonly denomToDisplay: string;
+  readonly decimalBalance: Decimal;
+  readonly sendTokens: (values: FormSendTokensValues) => void;
 }
 
 export default function FormSendTokens({
-  tokenName,
-  maxAmount,
-  sendTokensAction,
+  denomToDisplay,
+  decimalBalance,
+  sendTokens,
 }: FormSendTokensProps): JSX.Element {
   const { t } = useTranslation(["common", "wallet"]);
   const {
@@ -33,14 +34,14 @@ export default function FormSendTokens({
   } = useSdk();
 
   const validationSchema = Yup.object().shape({
-    amount: getAmountField(t, parseFloat(maxAmount), maxAmount),
+    amount: getAmountField(t, decimalBalance.toFloatApproximation(), decimalBalance.toString()),
     address: getAddressField(t, config.addressPrefix),
   });
 
   return (
     <Formik
       initialValues={{ amount: "", address: "" }}
-      onSubmit={sendTokensAction}
+      onSubmit={sendTokens}
       validationSchema={validationSchema}
     >
       {(formikProps) => (
@@ -51,7 +52,7 @@ export default function FormSendTokens({
               <FormItem name="amount">
                 <Input aria-labelledby="amount-label" name="amount" placeholder={t("wallet:enterAmount")} />
               </FormItem>
-              <Text>{tokenName}</Text>
+              <Text>{denomToDisplay}</Text>
             </FormField>
             <FormField>
               <Text id="address-label">{t("wallet:to")}</Text>

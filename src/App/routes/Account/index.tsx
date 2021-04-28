@@ -20,14 +20,16 @@ const { Title, Text } = Typography;
 
 export default function Account(): JSX.Element {
   const { t } = useTranslation("account");
+
   const { layoutDispatch } = useLayout();
   useEffect(() => setInitialLayoutState(layoutDispatch), [layoutDispatch]);
 
-  const [loadingMsg, setLoadingMsg] = useState<string>();
   const { handleError } = useError();
   const {
     sdkState: { address, signer },
   } = useSdk();
+
+  const [loadingMsg, setLoadingMsg] = useState<string>();
   const [mnemonic, setMnemonic] = useLocalStorage<string>("burner-wallet", "");
   const isMnemonicEncrypted = isWalletEncrypted(mnemonic);
   const [decryptedMnemonic, setDecryptedMnemonic] = useState<string>();

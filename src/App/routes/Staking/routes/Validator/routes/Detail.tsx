@@ -5,8 +5,9 @@ import { Stack } from "App/components/layout";
 import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
 import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { setInitialLayoutState, useLayout, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
@@ -37,32 +38,14 @@ export default function Detail(): JSX.Element {
   } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
-  const [stakedTokens, setStakedTokens] = useState<Decimal>(Decimal.fromUserInput("0", 0));
+  const { data: stakedTokensData } = useQuery("stakedTokens", () =>
+    queryClient.staking.unverified.delegation(address, validatorAddress),
+  );
 
-  useEffect(() => {
-    let mounted = true;
-
-    (async function updateStakedTokens() {
-      try {
-        const { delegationResponse } = await queryClient.staking.unverified.delegation(
-          address,
-          validatorAddress,
-        );
-        const stakedTokens = Decimal.fromAtomics(
-          delegationResponse?.balance?.amount || "0",
-          config.coinMap[config.stakingToken].fractionalDigits,
-        );
-
-        if (mounted) setStakedTokens(stakedTokens);
-      } catch {
-        // Do nothing because it throws if delegation does not exist, i.e balance = 0
-      }
-
-      return () => {
-        mounted = false;
-      };
-    })();
-  }, [address, config.coinMap, config.stakingToken, queryClient.staking.unverified, validatorAddress]);
+  const stakedTokens = Decimal.fromAtomics(
+    stakedTokensData?.delegationResponse?.balance?.amount || "0",
+    config.coinMap[config.stakingToken].fractionalDigits,
+  );
 
   function getValidatorMap(): ComponentProps<typeof DataList> {
     if (!validator) return {};

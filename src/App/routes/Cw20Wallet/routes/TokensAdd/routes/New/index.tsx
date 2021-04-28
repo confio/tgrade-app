@@ -8,6 +8,7 @@ import { Form, FormItem, Input, Select } from "formik-antd";
 import * as React from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useMutation } from "react-query";
 import { useHistory } from "react-router-dom";
 import { setInitialLayoutState, setLoading, useContracts, useError, useLayout, useSdk } from "service";
 import { CW20, MinterResponse } from "utils/cw20";
@@ -19,6 +20,18 @@ const { Title, Text } = Typography;
 const { Option } = Select;
 
 const pathTokensAdd = `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`;
+
+interface MutationVariables {
+  readonly codeId: number;
+  readonly msg: any;
+  readonly tokenName: string;
+  readonly tokenSymbol: string;
+  readonly amount: string;
+}
+
+interface MutationData {
+  readonly contractAddress: string;
+}
 
 export interface FormCreateTokenFields {
   readonly tokenSymbol: string;
@@ -48,6 +61,48 @@ export default function New(): JSX.Element {
   } = useSdk();
   const { addContract } = useContracts();
 
+  async function mutationFn({ codeId, msg, tokenSymbol }: MutationVariables) {
+    const { contractAddress } = await signingClient.instantiate(address, codeId, msg, tokenSymbol, {
+      admin: address,
+    });
+
+    return { contractAddress };
+  }
+
+  const mutationOptions = {
+    mutationKey: "createToken",
+    onError: (stackTrace: Error) => {
+      handleError(stackTrace);
+
+      history.push({
+        pathname: paths.operationResult,
+        state: {
+          success: false,
+          message: t("cw20Wallet:createFail"),
+          error: getErrorFromStackTrace(stackTrace),
+          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAddNew}`,
+        } as OperationResultState,
+      });
+    },
+    onSuccess: ({ contractAddress }: MutationData, { amount, tokenName }: MutationVariables) => {
+      const newCw20Contract = CW20(signingClient).use(contractAddress);
+      addContract(newCw20Contract);
+
+      history.push({
+        pathname: paths.operationResult,
+        state: {
+          success: true,
+          message: t("cw20Wallet:createSuccess", { amount, tokenName }),
+          customButtonText: t("cw20Wallet:tokenDetail"),
+          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`,
+        } as OperationResultState,
+      });
+    },
+    onSettled: () => setLoading(layoutDispatch, false),
+  };
+
+  const { mutate } = useMutation(mutationFn, mutationOptions);
+
   async function submitCreateToken(values: FormCreateTokenFields) {
     setLoading(layoutDispatch, `${t("cw20Wallet:creating")}`);
 
@@ -68,46 +123,21 @@ export default function New(): JSX.Element {
       const canMint = values.tokenMint === "fixed" || values.tokenMint === "unlimited";
       const mint: MinterResponse | undefined = canMint ? { minter: address, cap } : undefined;
 
+      const tokenName = values.tokenName;
+      const tokenSymbol = values.tokenSymbol;
+
       const msg: any = {
-        name: values.tokenName,
-        symbol: values.tokenSymbol,
+        name: tokenName,
+        symbol: tokenSymbol,
         decimals,
         initial_balances: [{ address, amount }],
         mint,
       };
 
-      const { contractAddress } = await signingClient.instantiate(address, codeId, msg, values.tokenSymbol, {
-        admin: address,
-      });
-
-      const newCw20Contract = CW20(signingClient).use(contractAddress);
-      addContract(newCw20Contract);
-
-      const tokenName = values.tokenName;
-      setLoading(layoutDispatch, false);
-
-      history.push({
-        pathname: paths.operationResult,
-        state: {
-          success: true,
-          message: t("cw20Wallet:createSuccess", { amount, tokenName }),
-          customButtonText: t("cw20Wallet:tokenDetail"),
-          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokens}/${contractAddress}`,
-        } as OperationResultState,
-      });
+      mutate({ codeId, msg, tokenName, tokenSymbol, amount });
     } catch (stackTrace) {
       handleError(stackTrace);
       setLoading(layoutDispatch, false);
-
-      history.push({
-        pathname: paths.operationResult,
-        state: {
-          success: false,
-          message: t("cw20Wallet:createFail"),
-          error: getErrorFromStackTrace(stackTrace),
-          customButtonActionPath: `${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAddNew}`,
-        } as OperationResultState,
-      });
     }
   }
 
