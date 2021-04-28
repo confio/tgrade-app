@@ -7,7 +7,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ES2018"],
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "module": "esnext",
     "moduleResolution": "node",
     "newLine": "LF",
