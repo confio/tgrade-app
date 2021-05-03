@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
@@ -128,43 +128,45 @@ export default function Add(): JSX.Element {
   });
 
   return (
-    <Stack gap="s7">
-      <Title>{t("cw20Wallet:addAllowance")}</Title>
-      <TokenAmount>
-        <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-        {amountDecimal && <Text>{amountDecimal}</Text>}
-        <Text>{` ${t("cw20Wallet:tokens")}`}</Text>
-      </TokenAmount>
-      <Formik
-        initialValues={{ address: "", amount: "" }}
-        onSubmit={submitAddAllowance}
-        validationSchema={validationSchema}
-      >
-        {(formikProps) => (
-          <Form>
-            <Stack gap="s7">
-              <Stack gap="s2">
-                <FormAmount>
-                  <FormItem name="amount">
-                    <Input name="amount" placeholder={t("cw20Wallet:enterAmount")} />
+    <OldPageLayout>
+      <Stack gap="s7">
+        <Title>{t("cw20Wallet:addAllowance")}</Title>
+        <TokenAmount>
+          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+          {amountDecimal && <Text>{amountDecimal}</Text>}
+          <Text>{` ${t("cw20Wallet:tokens")}`}</Text>
+        </TokenAmount>
+        <Formik
+          initialValues={{ address: "", amount: "" }}
+          onSubmit={submitAddAllowance}
+          validationSchema={validationSchema}
+        >
+          {(formikProps) => (
+            <Form>
+              <Stack gap="s7">
+                <Stack gap="s2">
+                  <FormAmount>
+                    <FormItem name="amount">
+                      <Input name="amount" placeholder={t("cw20Wallet:enterAmount")} />
+                    </FormItem>
+                    <Text>{cw20Token?.symbol || ""}</Text>
+                  </FormAmount>
+                  <FormItem name="address">
+                    <Input name="address" placeholder={t("cw20Wallet:enterAddress")} />
                   </FormItem>
-                  <Text>{cw20Token?.symbol || ""}</Text>
-                </FormAmount>
-                <FormItem name="address">
-                  <Input name="address" placeholder={t("cw20Wallet:enterAddress")} />
-                </FormItem>
+                </Stack>
+                <Button
+                  type="primary"
+                  onClick={formikProps.submitForm}
+                  disabled={!(formikProps.isValid && formikProps.dirty)}
+                >
+                  {t("cw20Wallet:add")}
+                </Button>
               </Stack>
-              <Button
-                type="primary"
-                onClick={formikProps.submitForm}
-                disabled={!(formikProps.isValid && formikProps.dirty)}
-              >
-                {t("cw20Wallet:add")}
-              </Button>
-            </Stack>
-          </Form>
-        )}
-      </Formik>
-    </Stack>
+            </Form>
+          )}
+        </Formik>
+      </Stack>
+    </OldPageLayout>
   );
 }

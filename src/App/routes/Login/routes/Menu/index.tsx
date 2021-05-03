@@ -1,6 +1,6 @@
 import { Button, Typography } from "antd";
 import cosmWasmLogo from "App/assets/cosmWasmLogo.svg";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -79,29 +79,31 @@ export default function Menu(): JSX.Element {
   }
 
   return (
-    <Stack gap="s5">
-      <Logo src={cosmWasmLogo} alt="CosmWasm logo" />
-      <Stack gap="s3">
-        <Stack gap="s-1">
-          <Title level={1}>{t("hello")}</Title>
-          <LightText>{t("welcome")}</LightText>
-          <LightText>{t("select")}</LightText>
-        </Stack>
-        <Stack>
-          <Button data-size="large" type="primary" onClick={initBrowser}>
-            {t("browserButton")}
-          </Button>
-          <Button data-size="large" type="primary" onClick={goToImportAccount}>
-            {t("importButton")}
-          </Button>
-          <Button data-size="large" type="primary" disabled={disableLedgerLogin()} onClick={initLedger}>
-            {t("ledgerButton")}
-          </Button>
-          <Button data-size="large" type="primary" disabled={disableKeplrLogin()} onClick={initKeplr}>
-            {t("keplrButton")}
-          </Button>
+    <OldPageLayout>
+      <Stack gap="s5">
+        <Logo src={cosmWasmLogo} alt="CosmWasm logo" />
+        <Stack gap="s3">
+          <Stack gap="s-1">
+            <Title level={1}>{t("hello")}</Title>
+            <LightText>{t("welcome")}</LightText>
+            <LightText>{t("select")}</LightText>
+          </Stack>
+          <Stack>
+            <Button data-size="large" type="primary" onClick={initBrowser}>
+              {t("browserButton")}
+            </Button>
+            <Button data-size="large" type="primary" onClick={goToImportAccount}>
+              {t("importButton")}
+            </Button>
+            <Button data-size="large" type="primary" disabled={disableLedgerLogin()} onClick={initLedger}>
+              {t("ledgerButton")}
+            </Button>
+            <Button data-size="large" type="primary" disabled={disableKeplrLogin()} onClick={initKeplr}>
+              {t("keplrButton")}
+            </Button>
+          </Stack>
         </Stack>
       </Stack>
-    </Stack>
+    </OldPageLayout>
   );
 }

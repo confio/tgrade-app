@@ -2,7 +2,7 @@ import { Coin } from "@cosmjs/launchpad";
 import { Decimal } from "@cosmjs/math";
 import { isBroadcastTxFailure } from "@cosmjs/stargate";
 import { Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
@@ -133,18 +133,20 @@ export default function Token(): JSX.Element {
   }, [config.coinMap, handleError, nativeToken.amount, nativeToken.denom]);
 
   return (
-    <Stack gap="s4">
-      <Title>{tokenToDisplay.denom}</Title>
-      <TokenAmount>
-        <Text>{`${integerAmountToDisplay}${decimalAmountToDisplay ? "." : ""}`}</Text>
-        {decimalAmountToDisplay && <Text>{decimalAmountToDisplay}</Text>}
-        <Text>{` ${t("tokens")}`}</Text>
-      </TokenAmount>
-      <FormSendTokens
-        denomToDisplay={tokenToDisplay.denom}
-        decimalBalance={decimalBalance}
-        sendTokens={sendTokens}
-      />
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s4">
+        <Title>{tokenToDisplay.denom}</Title>
+        <TokenAmount>
+          <Text>{`${integerAmountToDisplay}${decimalAmountToDisplay ? "." : ""}`}</Text>
+          {decimalAmountToDisplay && <Text>{decimalAmountToDisplay}</Text>}
+          <Text>{` ${t("tokens")}`}</Text>
+        </TokenAmount>
+        <FormSendTokens
+          denomToDisplay={tokenToDisplay.denom}
+          decimalBalance={decimalBalance}
+          sendTokens={sendTokens}
+        />
+      </Stack>
+    </OldPageLayout>
   );
 }

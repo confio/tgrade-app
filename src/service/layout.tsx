@@ -1,10 +1,11 @@
-import { BackButton, RedirectLocation } from "App/components/logic";
+import { BackButton, Menu, RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { ComponentProps, createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { hitFaucetIfNeeded, isSdkInitialized, useSdkInit } from "service";
+import { useWindowSize } from "utils/ui";
 
 type MenuState = "open" | "closed" | "hidden";
 export type LoadingState = "idle" | "preloading" | "loading";
@@ -115,7 +116,6 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
   const history = useHistory();
   const state = history.location.state as RedirectLocation;
   const { sdkState } = useSdkInit();
-
   const [layoutState, layoutDispatch] = useReducer(layoutReducer, { menuState: "hidden", isLoading: false });
 
   useEffect(() => {
@@ -134,5 +134,21 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
     })();
   }, [history, layoutState.loadingMsg, sdkState, state, t]);
 
-  return <LayoutContext.Provider value={{ layoutState, layoutDispatch }}>{children}</LayoutContext.Provider>;
+  const showMenu = layoutState.menuState !== "hidden" && !layoutState.isLoading;
+  const { width } = useWindowSize();
+
+  return (
+    <LayoutContext.Provider value={{ layoutState, layoutDispatch }}>
+      <>
+        {showMenu ? (
+          <Menu
+            isBigViewport={width >= 1040}
+            isOpen={layoutState.menuState === "open"}
+            closeMenu={() => closeMenu(layoutDispatch)}
+          />
+        ) : null}
+        {children}
+      </>
+    </LayoutContext.Provider>
+  );
 }

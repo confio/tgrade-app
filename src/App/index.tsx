@@ -9,7 +9,7 @@ import {
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ContractsProvider, ErrorProvider, LayoutProvider, SdkProvider } from "service";
 import ThemeProvider from "service/theme";
-import { MenuPageLayout, ProtectedSwitch } from "./components/logic";
+import { ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
 import Account from "./routes/Account";
 import Cw20Wallet from "./routes/Cw20Wallet";
@@ -29,36 +29,34 @@ export default function App(): JSX.Element {
               <ThemeProvider>
                 <Router basename={process.env.PUBLIC_URL}>
                   <LayoutProvider>
-                    <MenuPageLayout>
-                      <Switch>
-                        <Route exact path="/">
-                          <Login />
+                    <Switch>
+                      <Route exact path="/">
+                        <Login />
+                      </Route>
+                      <Route path={paths.login.prefix}>
+                        <Login />
+                      </Route>
+                      <ProtectedSwitch authPath={paths.login.prefix}>
+                        <Route path={paths.logout}>
+                          <Logout />
                         </Route>
-                        <Route path={paths.login.prefix}>
-                          <Login />
+                        <Route path={paths.operationResult}>
+                          <OperationResult />
                         </Route>
-                        <ProtectedSwitch authPath={paths.login.prefix}>
-                          <Route path={paths.logout}>
-                            <Logout />
-                          </Route>
-                          <Route path={paths.operationResult}>
-                            <OperationResult />
-                          </Route>
-                          <Route path={paths.account.prefix}>
-                            <Account />
-                          </Route>
-                          <Route path={paths.wallet.prefix}>
-                            <Wallet />
-                          </Route>
-                          <Route path={paths.cw20Wallet.prefix}>
-                            <Cw20Wallet />
-                          </Route>
-                          <Route path={paths.staking.prefix}>
-                            <Staking />
-                          </Route>
-                        </ProtectedSwitch>
-                      </Switch>
-                    </MenuPageLayout>
+                        <Route path={paths.account.prefix}>
+                          <Account />
+                        </Route>
+                        <Route path={paths.wallet.prefix}>
+                          <Wallet />
+                        </Route>
+                        <Route path={paths.cw20Wallet.prefix}>
+                          <Cw20Wallet />
+                        </Route>
+                        <Route path={paths.staking.prefix}>
+                          <Staking />
+                        </Route>
+                      </ProtectedSwitch>
+                    </Switch>
                   </LayoutProvider>
                 </Router>
               </ThemeProvider>

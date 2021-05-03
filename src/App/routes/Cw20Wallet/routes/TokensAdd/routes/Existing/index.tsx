@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect } from "react";
@@ -31,16 +31,18 @@ export default function Existing(): JSX.Element {
   ]);
 
   return (
-    <Stack gap="s4">
-      <Title>{t("addExisting")}</Title>
-      <Switch>
-        <Route exact path={basePath}>
-          <FormInputContract />
-        </Route>
-        <Route path={`${basePath}${paths.cw20Wallet.params.codeId}`}>
-          <FormSelectContracts />
-        </Route>
-      </Switch>
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s4">
+        <Title>{t("addExisting")}</Title>
+        <Switch>
+          <Route exact path={basePath}>
+            <FormInputContract />
+          </Route>
+          <Route path={`${basePath}${paths.cw20Wallet.params.codeId}`}>
+            <FormSelectContracts />
+          </Route>
+        </Switch>
+      </Stack>
+    </OldPageLayout>
   );
 }

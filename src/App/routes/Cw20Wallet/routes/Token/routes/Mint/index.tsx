@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
@@ -106,18 +106,20 @@ export default function Mint(): JSX.Element {
   const maxAmount = mintCap ? Decimal.fromAtomics(mintCap, cw20Token?.decimals ?? 0) : undefined;
 
   return (
-    <Stack gap="s4">
-      <Title>{cw20Token?.symbol || ""}</Title>
-      <TokenAmount>
-        <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-        {amountDecimal && <Text>{amountDecimal}</Text>}
-        <Text>{` ${t("cap")}`}</Text>
-      </TokenAmount>
-      <FormMintTokens
-        tokenName={cw20Token?.symbol || ""}
-        maxAmount={maxAmount}
-        mintTokensAction={mintTokensAction}
-      />
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s4">
+        <Title>{cw20Token?.symbol || ""}</Title>
+        <TokenAmount>
+          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+          {amountDecimal && <Text>{amountDecimal}</Text>}
+          <Text>{` ${t("cap")}`}</Text>
+        </TokenAmount>
+        <FormMintTokens
+          tokenName={cw20Token?.symbol || ""}
+          maxAmount={maxAmount}
+          mintTokensAction={mintTokensAction}
+        />
+      </Stack>
+    </OldPageLayout>
   );
 }

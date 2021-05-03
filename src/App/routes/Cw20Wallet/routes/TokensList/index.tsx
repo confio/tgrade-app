@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { Loading, NavPagination, pageSize, Search } from "App/components/logic";
 import { paths } from "App/paths";
 import { Formik } from "formik";
@@ -115,64 +115,66 @@ export default function TokensList(): JSX.Element {
   }
 
   return (
-    <Stack gap="s4">
-      <Title>{t("tokens")}</Title>
-      {cw20Tokens.length ? (
-        <Formik
-          initialValues={{ tokenName: "", sortBy: defaultSortBy }}
-          onSubmit={({ tokenName, sortBy }) => {
-            setTokenNameFilter(tokenName);
-            setSortBy(sortBy === "favourites" ? sortBy : "alphabetically");
-          }}
-        >
-          {(formikProps) => (
-            <DoubleForm>
-              <FormItem name="tokenName">
-                <Search
-                  aria-label="search-input"
-                  name="tokenName"
-                  placeholder={t("search")}
-                  enterButton
-                  onChange={formikProps.submitForm}
-                />
-              </FormItem>
-              <FormItem name="sortBy">
-                <Select name="sortBy" defaultValue={defaultSortBy} onChange={formikProps.submitForm}>
-                  <Option value="alphabetically">{t("sortAlphabetically")}</Option>
-                  <Option value="favourites">{t("sortFavourites")}</Option>
-                </Select>
-              </FormItem>
-            </DoubleForm>
-          )}
-        </Formik>
-      ) : null}
-      <NavPagination
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        total={searchedCw20Tokens.length}
-      />
-      <Loading loading={!cw20Tokens.length ? "" : undefined}>
-        <Stack>
-          {currentTokens.map((token) => {
-            const amountToDisplay = Decimal.fromAtomics(token.amount, token.decimals).toString();
-            const isFav = favTokens.includes(token.address);
+    <OldPageLayout>
+      <Stack gap="s4">
+        <Title>{t("tokens")}</Title>
+        {cw20Tokens.length ? (
+          <Formik
+            initialValues={{ tokenName: "", sortBy: defaultSortBy }}
+            onSubmit={({ tokenName, sortBy }) => {
+              setTokenNameFilter(tokenName);
+              setSortBy(sortBy === "favourites" ? sortBy : "alphabetically");
+            }}
+          >
+            {(formikProps) => (
+              <DoubleForm>
+                <FormItem name="tokenName">
+                  <Search
+                    aria-label="search-input"
+                    name="tokenName"
+                    placeholder={t("search")}
+                    enterButton
+                    onChange={formikProps.submitForm}
+                  />
+                </FormItem>
+                <FormItem name="sortBy">
+                  <Select name="sortBy" defaultValue={defaultSortBy} onChange={formikProps.submitForm}>
+                    <Option value="alphabetically">{t("sortAlphabetically")}</Option>
+                    <Option value="favourites">{t("sortFavourites")}</Option>
+                  </Select>
+                </FormItem>
+              </DoubleForm>
+            )}
+          </Formik>
+        ) : null}
+        <NavPagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          total={searchedCw20Tokens.length}
+        />
+        <Loading loading={!cw20Tokens.length ? "" : undefined}>
+          <Stack>
+            {currentTokens.map((token) => {
+              const amountToDisplay = Decimal.fromAtomics(token.amount, token.decimals).toString();
+              const isFav = favTokens.includes(token.address);
 
-            return (
-              <TokenButton
-                key={token.address}
-                denom={token.symbol}
-                amount={amountToDisplay}
-                isFav={isFav}
-                onFav={() => updateFav(token.address, isFav)}
-                onClick={() => goTokenDetail(token.address)}
-              />
-            );
-          })}
-        </Stack>
-      </Loading>
-      <Link to={`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`}>
-        <Button type="primary">{t("addAnother")}</Button>
-      </Link>
-    </Stack>
+              return (
+                <TokenButton
+                  key={token.address}
+                  denom={token.symbol}
+                  amount={amountToDisplay}
+                  isFav={isFav}
+                  onFav={() => updateFav(token.address, isFav)}
+                  onClick={() => goTokenDetail(token.address)}
+                />
+              );
+            })}
+          </Stack>
+        </Loading>
+        <Link to={`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAdd}`}>
+          <Button type="primary">{t("addAnother")}</Button>
+        </Link>
+      </Stack>
+    </OldPageLayout>
   );
 }

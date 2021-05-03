@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
@@ -120,20 +120,22 @@ export default function Edit(): JSX.Element {
   const [allowanceInteger, allowanceDecimal] = allowanceToDisplay.split(".");
 
   return (
-    <Stack gap="s3">
-      <Title>{t("editAllowance")}</Title>
-      <AddressText>{spenderAddress}</AddressText>
-      <TokenAmount>
-        <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-        {amountDecimal && <Text>{amountDecimal}</Text>}
-        <Text>{` ${t("tokens")}`}</Text>
-      </TokenAmount>
-      <TokenAmount>
-        <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
-        {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-        <Text>{` ${t("allowance")}`}</Text>
-      </TokenAmount>
-      <FormChangeAmount tokenName={cw20Token?.symbol || ""} submitChangeAmount={submitChangeAmount} />
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s3">
+        <Title>{t("editAllowance")}</Title>
+        <AddressText>{spenderAddress}</AddressText>
+        <TokenAmount>
+          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+          {amountDecimal && <Text>{amountDecimal}</Text>}
+          <Text>{` ${t("tokens")}`}</Text>
+        </TokenAmount>
+        <TokenAmount>
+          <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
+          {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
+          <Text>{` ${t("allowance")}`}</Text>
+        </TokenAmount>
+        <FormChangeAmount tokenName={cw20Token?.symbol || ""} submitChangeAmount={submitChangeAmount} />
+      </Stack>
+    </OldPageLayout>
   );
 }
