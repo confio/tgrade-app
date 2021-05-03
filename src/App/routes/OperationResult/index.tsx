@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect } from "react";
@@ -68,13 +68,15 @@ export default function OperationResult(): JSX.Element {
     : buttonAction;
 
   return (
-    <Stack gap="s3">
-      <ResultIcon src={icon} alt="Result icon" />
-      <ResultText data-result={result}>{message}</ResultText>
-      {error && <ResultText data-result={result}>{error}</ResultText>}
-      <Button type="primary" onClick={chosenButtonAction}>
-        {chosenButtonText}
-      </Button>
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s3">
+        <ResultIcon src={icon} alt="Result icon" />
+        <ResultText data-result={result}>{message}</ResultText>
+        {error && <ResultText data-result={result}>{error}</ResultText>}
+        <Button type="primary" onClick={chosenButtonAction}>
+          {chosenButtonText}
+        </Button>
+      </Stack>
+    </OldPageLayout>
   );
 }

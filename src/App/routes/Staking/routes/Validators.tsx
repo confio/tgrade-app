@@ -1,5 +1,5 @@
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { Loading, NavPagination, pageSize } from "App/components/logic";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -73,27 +73,29 @@ export default function Validators(): JSX.Element {
   }
 
   return (
-    <Stack gap="s5">
-      <Title>{t("validators")}</Title>
-      <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={validators.length} />
-      {validators.length ? (
-        <Loading loading={hasNextPage ? t("loadingValidators") : undefined}>
-          <Stack>
-            {validators.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((validator) => (
-              <Button
-                key={validator.name}
-                data-size="large"
-                type="primary"
-                onClick={() => goToValidator(validator.address)}
-              >
-                <Text>{validator.name}</Text>
-              </Button>
-            ))}
-          </Stack>
-        </Loading>
-      ) : (
-        <Text>{t("validatorsNotFound")}</Text>
-      )}
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s5">
+        <Title>{t("validators")}</Title>
+        <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={validators.length} />
+        {validators.length ? (
+          <Loading loading={hasNextPage ? t("loadingValidators") : undefined}>
+            <Stack>
+              {validators.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((validator) => (
+                <Button
+                  key={validator.name}
+                  data-size="large"
+                  type="primary"
+                  onClick={() => goToValidator(validator.address)}
+                >
+                  <Text>{validator.name}</Text>
+                </Button>
+              ))}
+            </Stack>
+          </Loading>
+        ) : (
+          <Text>{t("validatorsNotFound")}</Text>
+        )}
+      </Stack>
+    </OldPageLayout>
   );
 }

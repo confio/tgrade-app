@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
@@ -197,54 +197,56 @@ export default function Detail(): JSX.Element {
   const maxAmount = Decimal.fromAtomics(cw20Token?.amount || "0", cw20Token?.decimals ?? 0);
 
   return (
-    <Stack gap="s4">
-      <Stack gap="s-2">
-        <Title>{cw20Token?.symbol || ""}</Title>
-        <FormSearchAllowing initialAddress={allowingAddress} setSearchedAddress={updateAllowance} />
-        {allowingAddress ? (
-          <Button type="default" onClick={() => updateAllowance()}>
-            {t("backToAccount")}
-          </Button>
-        ) : null}
-      </Stack>
-      <Stack gap="s-2">
-        <TokenAmount>
-          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-          {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{` ${t("tokens")}`}</Text>
-        </TokenAmount>
-        {allowingAddress ? (
+    <OldPageLayout>
+      <Stack gap="s4">
+        <Stack gap="s-2">
+          <Title>{cw20Token?.symbol || ""}</Title>
+          <FormSearchAllowing initialAddress={allowingAddress} setSearchedAddress={updateAllowance} />
+          {allowingAddress ? (
+            <Button type="default" onClick={() => updateAllowance()}>
+              {t("backToAccount")}
+            </Button>
+          ) : null}
+        </Stack>
+        <Stack gap="s-2">
           <TokenAmount>
-            <Text>{`${allowingBalanceInteger}${allowingBalanceDecimal ? "." : ""}`}</Text>
-            {allowingBalanceDecimal && <Text>{allowingBalanceDecimal}</Text>}
-            <Text>{` ${t("allowingTokens")}`}</Text>
+            <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+            {amountDecimal && <Text>{amountDecimal}</Text>}
+            <Text>{` ${t("tokens")}`}</Text>
           </TokenAmount>
-        ) : null}
-        {allowance ? (
-          <TokenAmount>
-            <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
-            {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-            <Text>{` ${t("allowance")}`}</Text>
-          </TokenAmount>
-        ) : null}
+          {allowingAddress ? (
+            <TokenAmount>
+              <Text>{`${allowingBalanceInteger}${allowingBalanceDecimal ? "." : ""}`}</Text>
+              {allowingBalanceDecimal && <Text>{allowingBalanceDecimal}</Text>}
+              <Text>{` ${t("allowingTokens")}`}</Text>
+            </TokenAmount>
+          ) : null}
+          {allowance ? (
+            <TokenAmount>
+              <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
+              {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
+              <Text>{` ${t("allowance")}`}</Text>
+            </TokenAmount>
+          ) : null}
+        </Stack>
+        <FormSendTokens
+          tokenName={cw20Token?.symbol || ""}
+          maxAmount={maxAmount}
+          sendTokensAction={sendTokensAction}
+        />
+        <Stack>
+          {!allowingAddress && isUserMinter ? (
+            <Button type="primary" onClick={goToMint}>
+              {t("mintTokens")}
+            </Button>
+          ) : null}
+          {!allowingAddress ? (
+            <Button type="primary" onClick={goToAllowances}>
+              {t("myAllowances")}
+            </Button>
+          ) : null}
+        </Stack>
       </Stack>
-      <FormSendTokens
-        tokenName={cw20Token?.symbol || ""}
-        maxAmount={maxAmount}
-        sendTokensAction={sendTokensAction}
-      />
-      <Stack>
-        {!allowingAddress && isUserMinter ? (
-          <Button type="primary" onClick={goToMint}>
-            {t("mintTokens")}
-          </Button>
-        ) : null}
-        {!allowingAddress ? (
-          <Button type="primary" onClick={goToAllowances}>
-            {t("myAllowances")}
-          </Button>
-        ) : null}
-      </Stack>
-    </Stack>
+    </OldPageLayout>
   );
 }

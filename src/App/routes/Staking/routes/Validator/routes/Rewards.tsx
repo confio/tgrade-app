@@ -1,6 +1,6 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -108,21 +108,23 @@ export default function Rewards(): JSX.Element {
   }
 
   return (
-    <Stack gap="s6">
-      <Stack>
-        <Title>{t("pendingRewards")}</Title>
-        <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
+    <OldPageLayout>
+      <Stack gap="s6">
+        <Stack>
+          <Title>{t("pendingRewards")}</Title>
+          <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
+        </Stack>
+        {rewards.length ? (
+          <>
+            <DataList {...getRewardsMap()} />
+            <Button type="primary" onClick={submitWithdrawRewards}>
+              {t("withdrawRewards")}
+            </Button>
+          </>
+        ) : (
+          <Text>{t("noRewardsFound")}</Text>
+        )}
       </Stack>
-      {rewards.length ? (
-        <>
-          <DataList {...getRewardsMap()} />
-          <Button type="primary" onClick={submitWithdrawRewards}>
-            {t("withdrawRewards")}
-          </Button>
-        </>
-      ) : (
-        <Text>{t("noRewardsFound")}</Text>
-      )}
-    </Stack>
+    </OldPageLayout>
   );
 }

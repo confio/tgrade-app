@@ -1,7 +1,7 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { DataList } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -76,20 +76,22 @@ export default function Detail(): JSX.Element {
   }
 
   return (
-    <Stack gap="s5">
-      <Title>{validator?.description?.moniker ?? ""}</Title>
-      <DataList {...getValidatorMap()} />
-      <Stack>
-        <Button type="primary" onClick={goToDelegate}>
-          {t("delegate")}
-        </Button>
-        <Button type="primary" onClick={goToUndelegate}>
-          {t("undelegate")}
-        </Button>
-        <Button type="primary" onClick={goToRewards}>
-          {t("rewards")}
-        </Button>
+    <OldPageLayout>
+      <Stack gap="s5">
+        <Title>{validator?.description?.moniker ?? ""}</Title>
+        <DataList {...getValidatorMap()} />
+        <Stack>
+          <Button type="primary" onClick={goToDelegate}>
+            {t("delegate")}
+          </Button>
+          <Button type="primary" onClick={goToUndelegate}>
+            {t("undelegate")}
+          </Button>
+          <Button type="primary" onClick={goToRewards}>
+            {t("rewards")}
+          </Button>
+        </Stack>
       </Stack>
-    </Stack>
+    </OldPageLayout>
   );
 }

@@ -1,5 +1,5 @@
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,15 +22,17 @@ export default function Tokens(): JSX.Element {
   const [currentAddress, setCurrentAddress] = useState(address);
 
   return (
-    <Stack gap="s4">
-      <Title>{t("tokens")}</Title>
-      <FormSearchAddress currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />
-      <TokenList currentAddress={currentAddress} />
-      {currentAddress !== address ? (
-        <Button type="default" onClick={() => setCurrentAddress(address)}>
-          {t("backToAccount")}
-        </Button>
-      ) : null}
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s4">
+        <Title>{t("tokens")}</Title>
+        <FormSearchAddress currentAddress={currentAddress} setCurrentAddress={setCurrentAddress} />
+        <TokenList currentAddress={currentAddress} />
+        {currentAddress !== address ? (
+          <Button type="default" onClick={() => setCurrentAddress(address)}>
+            {t("backToAccount")}
+          </Button>
+        ) : null}
+      </Stack>
+    </OldPageLayout>
   );
 }

@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import { OperationResultState } from "App/routes/OperationResult";
@@ -106,20 +106,22 @@ export default function Detail(): JSX.Element {
   const [allowanceInteger, allowanceDecimal] = allowanceToDisplay.split(".");
 
   return (
-    <Stack gap="s3">
-      <Title>{`${cw20Token?.symbol || ""} ${t("allowance")}`}</Title>
-      <TokenAmount>
-        <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
-        {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
-        <Text>{` ${t("tokens")}`}</Text>
-      </TokenAmount>
-      <AddressText>{spenderAddress}</AddressText>
-      <Button type="primary" onClick={() => goToAllowancesEdit()}>
-        {t("edit")}
-      </Button>
-      <Button type="primary" onClick={submitRemove}>
-        {t("remove")}
-      </Button>
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s3">
+        <Title>{`${cw20Token?.symbol || ""} ${t("allowance")}`}</Title>
+        <TokenAmount>
+          <Text>{`${allowanceInteger}${allowanceDecimal ? "." : ""}`}</Text>
+          {allowanceDecimal && <Text>{allowanceDecimal}</Text>}
+          <Text>{` ${t("tokens")}`}</Text>
+        </TokenAmount>
+        <AddressText>{spenderAddress}</AddressText>
+        <Button type="primary" onClick={() => goToAllowancesEdit()}>
+          {t("edit")}
+        </Button>
+        <Button type="primary" onClick={submitRemove}>
+          {t("remove")}
+        </Button>
+      </Stack>
+    </OldPageLayout>
   );
 }

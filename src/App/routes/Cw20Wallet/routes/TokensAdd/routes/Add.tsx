@@ -1,5 +1,5 @@
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect } from "react";
@@ -21,20 +21,22 @@ export default function Add(): JSX.Element {
   ]);
 
   return (
-    <Stack gap="s4">
-      <Title>{t("addAnother")}</Title>
-      <Button
-        type="primary"
-        onClick={() => history.push(`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAddExisting}`)}
-      >
-        {t("existing")}
-      </Button>
-      <Button
-        type="primary"
-        onClick={() => history.push(`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAddNew}`)}
-      >
-        {t("new")}
-      </Button>
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s4">
+        <Title>{t("addAnother")}</Title>
+        <Button
+          type="primary"
+          onClick={() => history.push(`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAddExisting}`)}
+        >
+          {t("existing")}
+        </Button>
+        <Button
+          type="primary"
+          onClick={() => history.push(`${paths.cw20Wallet.prefix}${paths.cw20Wallet.tokensAddNew}`)}
+        >
+          {t("new")}
+        </Button>
+      </Stack>
+    </OldPageLayout>
   );
 }

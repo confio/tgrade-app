@@ -1,6 +1,6 @@
 import { makeCosmoshubPath, Secp256k1HdWallet } from "@cosmjs/launchpad";
 import { Tooltip, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
 import copyToClipboard from "clipboard-copy";
 import * as React from "react";
@@ -79,23 +79,25 @@ export default function Account(): JSX.Element {
   const showMnemonicForm = !(signer as any).ledger && !(signer as any).keplr;
 
   return (
-    <Stack gap="s4">
-      <Title>{t("account")}</Title>
-      <Tooltip trigger="click" title={t("copied")}>
-        <CopyAddressButton type="default" onClick={() => copyToClipboard(address)}>
-          <Text>{address}</Text>
-          <img src={copyIcon} alt="Copy icon" />
-        </CopyAddressButton>
-      </Tooltip>
-      {showMnemonicForm ? (
-        <Loading loading={loadingMsg}>
-          {isMnemonicEncrypted && !decryptedMnemonic ? (
-            <UnlockAccount submitUnlockAccount={submitUnlockAccount} />
-          ) : null}
-          {!isMnemonicEncrypted ? <LockAccount submitLockAccount={submitLockAccount} /> : null}
-          {decryptedMnemonic ? <Mnemonic mnemonic={decryptedMnemonic} /> : null}
-        </Loading>
-      ) : null}
-    </Stack>
+    <OldPageLayout>
+      <Stack gap="s4">
+        <Title>{t("account")}</Title>
+        <Tooltip trigger="click" title={t("copied")}>
+          <CopyAddressButton type="default" onClick={() => copyToClipboard(address)}>
+            <Text>{address}</Text>
+            <img src={copyIcon} alt="Copy icon" />
+          </CopyAddressButton>
+        </Tooltip>
+        {showMnemonicForm ? (
+          <Loading loading={loadingMsg}>
+            {isMnemonicEncrypted && !decryptedMnemonic ? (
+              <UnlockAccount submitUnlockAccount={submitUnlockAccount} />
+            ) : null}
+            {!isMnemonicEncrypted ? <LockAccount submitLockAccount={submitLockAccount} /> : null}
+            {decryptedMnemonic ? <Mnemonic mnemonic={decryptedMnemonic} /> : null}
+          </Loading>
+        ) : null}
+      </Stack>
+    </OldPageLayout>
   );
 }

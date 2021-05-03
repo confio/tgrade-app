@@ -1,6 +1,6 @@
 import { Coin } from "@cosmjs/launchpad";
 import { Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect } from "react";
@@ -96,12 +96,14 @@ export default function Delegate(): JSX.Element {
   }
 
   return (
-    <Stack gap="s6">
-      <Stack>
-        <Title>{t("delegate")}</Title>
-        <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
+    <OldPageLayout>
+      <Stack gap="s6">
+        <Stack>
+          <Title>{t("delegate")}</Title>
+          <Title level={2}>{validator?.description?.moniker ?? ""}</Title>
+        </Stack>
+        <FormDelegateTokens submitDelegateTokens={submitDelegateBalance} />
       </Stack>
-      <FormDelegateTokens submitDelegateTokens={submitDelegateBalance} />
-    </Stack>
+    </OldPageLayout>
   );
 }

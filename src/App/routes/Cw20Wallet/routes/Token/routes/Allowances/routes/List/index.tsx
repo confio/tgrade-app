@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { OldPageLayout, Stack } from "App/components/layout";
 import { NavPagination, pageSize, TokenAmount } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -87,38 +87,40 @@ export default function List(): JSX.Element {
   const [allowancesInteger, allowancesDecimal] = allowancesToDisplay.split(".");
 
   return (
-    <Stack gap="s7">
-      <Stack gap="s2">
-        <Title>{t("allowances")}</Title>
-        <TokenAmount>
-          <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
-          {amountDecimal && <Text>{amountDecimal}</Text>}
-          <Text>{` ${t("tokens")}`}</Text>
-        </TokenAmount>
-        <TokenAmount>
-          <Text>{`${allowancesInteger}${allowancesDecimal ? "." : ""}`}</Text>
-          {allowancesDecimal && <Text>{allowancesDecimal}</Text>}
-          <Text>{` ${t("allowance")}`}</Text>
-        </TokenAmount>
-      </Stack>
-      <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={allowances.length} />
-      {allowances.length ? (
-        <Stack>
-          {allowances.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((allowanceInfo) => (
-            <AllowanceButton
-              key={allowanceInfo.spender}
-              data-size="large"
-              type="primary"
-              onClick={() => goToAllowanceDetail(allowanceInfo.spender)}
-            >
-              {allowanceInfo.spender}
-            </AllowanceButton>
-          ))}
+    <OldPageLayout>
+      <Stack gap="s7">
+        <Stack gap="s2">
+          <Title>{t("allowances")}</Title>
+          <TokenAmount>
+            <Text>{`${amountInteger}${amountDecimal ? "." : ""}`}</Text>
+            {amountDecimal && <Text>{amountDecimal}</Text>}
+            <Text>{` ${t("tokens")}`}</Text>
+          </TokenAmount>
+          <TokenAmount>
+            <Text>{`${allowancesInteger}${allowancesDecimal ? "." : ""}`}</Text>
+            {allowancesDecimal && <Text>{allowancesDecimal}</Text>}
+            <Text>{` ${t("allowance")}`}</Text>
+          </TokenAmount>
         </Stack>
-      ) : null}
-      <Button type="primary" onClick={goToAllowancesAdd}>
-        {t("addNew")}
-      </Button>
-    </Stack>
+        <NavPagination currentPage={currentPage} setCurrentPage={setCurrentPage} total={allowances.length} />
+        {allowances.length ? (
+          <Stack>
+            {allowances.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((allowanceInfo) => (
+              <AllowanceButton
+                key={allowanceInfo.spender}
+                data-size="large"
+                type="primary"
+                onClick={() => goToAllowanceDetail(allowanceInfo.spender)}
+              >
+                {allowanceInfo.spender}
+              </AllowanceButton>
+            ))}
+          </Stack>
+        ) : null}
+        <Button type="primary" onClick={goToAllowancesAdd}>
+          {t("addNew")}
+        </Button>
+      </Stack>
+    </OldPageLayout>
   );
 }
