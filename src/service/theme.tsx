@@ -62,7 +62,7 @@ export const useTheme = (): NonNullable<ThemeContextType> => {
 };
 
 export default function ThemeProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
-  const [themeState, themeDispatch] = useReducer(themeReducer, { theme: "dark" });
+  const [themeState, themeDispatch] = useReducer(themeReducer, { theme: "light" });
 
   return (
     <ThemeContext.Provider value={{ themeState, themeDispatch }}>
