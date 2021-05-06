@@ -1,4 +1,4 @@
-import { CorporateBannerLayout } from "App/components/layout";
+import CorporateBannerLayout from "App/components/layout/CorporateBannerLayout";
 import { BackButton, Menu, RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
