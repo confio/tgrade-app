@@ -1,4 +1,8 @@
 export const paths = {
+  setup: {
+    prefix: "/setup",
+    welcome: "/welcome",
+  },
   login: {
     prefix: "/login",
     unlock: "/unlock",
