@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Center } from "..";
 
 export const StyledCenter = styled(Center)`
-  --max-width: 30rem;
+  --max-width: 29rem;
   max-width: var(--max-width);
   overflow: hidden;
 
