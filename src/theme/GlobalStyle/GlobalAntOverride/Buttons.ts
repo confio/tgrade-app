@@ -53,13 +53,13 @@ export const Buttons = styled.createGlobalStyle`
       margin: calc(-1 * var(--border-width));
       border-radius: inherit;
 
-      background: var(--grad-button-primary);
+      background: var(--bg-button-1ary);
     }
   }
 
   .ant-btn-primary:focus,
   .ant-btn-primary:focus:hover {
-    background: var(--grad-button-primary-focus);
+    background: var(--bg-button-1ary-focus);
     border: none;
 
     &::after {
@@ -69,7 +69,7 @@ export const Buttons = styled.createGlobalStyle`
 
   .ant-btn-default,
   .ant-btn-default:hover {
-    background: var(--grad-button-default);
+    background: var(--bg-button-default);
     border: none;
   }
 
@@ -80,7 +80,7 @@ export const Buttons = styled.createGlobalStyle`
 
   .ant-btn-default:focus,
   .ant-btn-default:focus:hover {
-    background: var(--grad-button-default-focus);
+    background: var(--bg-button-default-focus);
     border: none;
   }
 
@@ -97,7 +97,7 @@ export const Buttons = styled.createGlobalStyle`
     border-radius: var(--border-radius);
 
     color: white;
-    background: var(--grad-button-large);
+    background: var(--bg-button-large);
     white-space: normal;
     font-family: var(--ff-iceland);
     font-size: var(--s2);
@@ -107,7 +107,7 @@ export const Buttons = styled.createGlobalStyle`
     }
 
     &:focus {
-      background: var(--grad-button-large-focus);
+      background: var(--bg-button-large-focus);
     }
 
     &:disabled,

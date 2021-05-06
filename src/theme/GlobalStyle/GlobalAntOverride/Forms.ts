@@ -121,7 +121,7 @@ export const Forms = styled.createGlobalStyle`
         border-bottom: var(--border-width) solid var(--color-form);
 
         span {
-          color: var(--color-text);
+          color: var(--color-text-1ary);
         }
       }
 
