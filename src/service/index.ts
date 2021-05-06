@@ -11,7 +11,6 @@ export {
   showMenu,
   useLayout,
 } from "./layout";
-export type { LoadingState } from "./layout";
 export {
   default as SdkProvider,
   hitFaucetIfNeeded,
