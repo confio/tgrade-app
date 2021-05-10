@@ -13,9 +13,9 @@ import { ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
 import Account from "./routes/Account";
 import Cw20Wallet from "./routes/Cw20Wallet";
-import Login from "./routes/Login";
 import Logout from "./routes/Logout";
 import OperationResult from "./routes/OperationResult";
+import Setup from "./routes/Setup";
 import Staking from "./routes/Staking";
 import Wallet from "./routes/Wallet";
 
@@ -31,12 +31,12 @@ export default function App(): JSX.Element {
                   <LayoutProvider>
                     <Switch>
                       <Route exact path="/">
-                        <Login />
+                        <Setup />
                       </Route>
-                      <Route path={paths.login.prefix}>
-                        <Login />
+                      <Route path={paths.setup.prefix}>
+                        <Setup />
                       </Route>
-                      <ProtectedSwitch authPath={paths.login.prefix}>
+                      <ProtectedSwitch authPath={paths.setup.prefix}>
                         <Route path={paths.logout}>
                           <Logout />
                         </Route>

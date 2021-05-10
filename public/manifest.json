@@ -1,6 +1,6 @@
 {
-  "short_name": "Wallet",
-  "name": "Create React App Wallet",
+  "short_name": "Tgrade App",
+  "name": "Tgrade App",
   "icons": [
     {
       "src": "cosmWasmLogo.svg",

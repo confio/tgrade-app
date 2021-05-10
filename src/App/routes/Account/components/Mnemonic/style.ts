@@ -11,7 +11,7 @@ export const MnemonicGrid = styled.div`
   & > div {
     padding: var(--s-1);
     color: white;
-    background: var(--grad-button-default);
+    background: var(--bg-button-default);
     border-radius: var(--border-radius);
     font-family: var(--ff-iceland);
     font-size: var(--s0);

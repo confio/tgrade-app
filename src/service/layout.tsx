@@ -1,3 +1,4 @@
+import CorporateBannerLayout from "App/components/layout/CorporateBannerLayout";
 import { BackButton, Menu, RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -8,7 +9,6 @@ import { hitFaucetIfNeeded, isSdkInitialized, useSdkInit } from "service";
 import { useWindowSize } from "utils/ui";
 
 type MenuState = "open" | "closed" | "hidden";
-export type LoadingState = "idle" | "preloading" | "loading";
 
 type LayoutAction =
   | {
@@ -134,8 +134,9 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
     })();
   }, [history, layoutState.loadingMsg, sdkState, state, t]);
 
-  const showMenu = layoutState.menuState !== "hidden" && !layoutState.isLoading;
   const { width } = useWindowSize();
+  const showMenu = layoutState.menuState !== "hidden" && !layoutState.isLoading;
+  const showCorporateBanner = true;
 
   return (
     <LayoutContext.Provider value={{ layoutState, layoutDispatch }}>
@@ -147,7 +148,7 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
             closeMenu={() => closeMenu(layoutDispatch)}
           />
         ) : null}
-        {children}
+        {showCorporateBanner ? <CorporateBannerLayout>{children}</CorporateBannerLayout> : children}
       </>
     </LayoutContext.Provider>
   );

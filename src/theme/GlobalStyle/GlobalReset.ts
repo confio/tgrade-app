@@ -13,9 +13,9 @@ export const GlobalReset = styled.createGlobalStyle`
 
   body {
     min-height: 100vh;
-    line-height: 1.5;
+    line-height: var(--ratio);
     text-rendering: optimizeSpeed;
-    background: var(--grad-body);
+    background: var(--bg-body);
   }
 
   #root {

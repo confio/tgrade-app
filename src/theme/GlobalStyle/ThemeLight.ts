@@ -2,8 +2,9 @@ import * as styled from "styled-components";
 
 export const ThemeLight = styled.createGlobalStyle`
   :root {
-    --color-primary: var(--color-blue-100-74);
-    --color-text: var(--color-blue-100-74);
+    --color-primary: var(--color-green-88-37);
+    --color-text-1ary: var(--color-blue-14-16);
+    --color-text-2ary: var(--color-blue-15-59);
 
     --color-result-success: var(--color-green-63-42);
     --color-result-failure: var(--color-red-79-63);
@@ -22,13 +23,13 @@ export const ThemeLight = styled.createGlobalStyle`
     --color-form-disabled: var(--color-gray-0-51);
     --color-form-disabled-bg: var(--color-gray-0-20);
 
-    --grad-body: var(--grad-1);
+    --bg-body: var(--color-gray-0-98);
     --grad-primary: var(--grad-2);
-    --grad-button-primary: var(--grad-3);
-    --grad-button-primary-focus: var(--grad-2);
-    --grad-button-default: var(--grad-4);
-    --grad-button-default-focus: var(--grad-5);
-    --grad-button-large: var(--grad-6);
-    --grad-button-large-focus: var(--grad-5);
+    --bg-button-1ary: var(--grad-3);
+    --bg-button-1ary-focus: var(--grad-2);
+    --bg-button-default: var(--grad-4);
+    --bg-button-default-focus: var(--grad-5);
+    --bg-button-large: var(--grad-6);
+    --bg-button-large-focus: var(--grad-5);
   }
 `;
