@@ -5,18 +5,17 @@ export const BannerContainer = styled.div`
   min-height: 100vh;
 
   display: flex;
-  align-items: center;
+  align-self: stretch;
   justify-content: center;
   flex-wrap: wrap-reverse;
 `;
 
-export const CorporateBannerStack = styled(Stack)<{ backgroundImageUrl: string }>`
-  align-self: stretch;
+export const CorporateBannerStack = styled(Stack)<{ "background-image-url": string }>`
   flex-basis: 29rem;
   padding: clamp(var(--s0), calc(2vw + var(--s0)), var(--s4));
   padding-bottom: calc(clamp(var(--s0), calc(2vw + var(--s0)), var(--s4)) * 2);
   background: linear-gradient(0deg, rgba(4, 119, 120, 0.9), rgba(4, 119, 120, 0.9)),
-    url(${(p) => p.backgroundImageUrl});
+    url(${(p) => p["background-image-url"]});
 
   display: flex;
   flex-direction: column;
