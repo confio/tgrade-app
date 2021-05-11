@@ -2,6 +2,7 @@ export const paths = {
   setup: {
     prefix: "/setup",
     welcome: "/welcome",
+    tutorial: "/tutorial",
   },
   login: {
     prefix: "/login",
