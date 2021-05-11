@@ -6,6 +6,7 @@ import backArrow from "./assets/backArrow.svg";
 interface BackButtonProps extends HTMLAttributes<HTMLOrSVGElement> {
   readonly path?: string;
   readonly state?: any;
+  readonly text?: string;
 }
 
 export default function BackButton({ path, state, ...props }: BackButtonProps): JSX.Element {
