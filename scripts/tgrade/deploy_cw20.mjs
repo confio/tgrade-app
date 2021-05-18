@@ -17,32 +17,32 @@ const musselnetConfig = {
   bech32prefix: "wasm",
   feeDenom: "umayo",
   gasPrice: GasPrice.fromString("0.025umayo"),
-  wasmUrl: "https://github.com/CosmWasm/cosmwasm-plus/releases/download/v0.5.0/cw20_base.wasm",
+  wasmUrl: "https://github.com/CosmWasm/cosmwasm-plus/releases/download/v0.6.0/cw20_base.wasm",
 };
 
 const localConfig = {
   endpoint: "http://localhost:26657",
   faucet: "http://localhost:8000",
-  bech32prefix: "wasm",
-  feeDenom: "ucosm",
-  gasPrice: GasPrice.fromString("0.025ucosm"),
-  wasmUrl: "https://github.com/CosmWasm/cosmwasm-plus/releases/download/v0.5.0/cw20_base.wasm",
+  bech32prefix: "tgrade",
+  feeDenom: "utgd",
+  gasPrice: GasPrice.fromString("0.025utgd"),
+  wasmUrl: "https://github.com/CosmWasm/cosmwasm-plus/releases/download/v0.6.0/cw20_base.wasm",
 };
 
 const config = PRODUCTION ? musselnetConfig : localConfig;
 
 const codeMeta = {
-  source: "https://github.com/CosmWasm/cosmwasm-plus/tree/v0.5.0/contracts/cw20-base",
+  source: "https://github.com/CosmWasm/cosmwasm-plus/tree/v0.6.0/contracts/cw20-base",
   builder: "cosmwasm/workspace-optimizer:0.10.7",
 };
 
 const addresses = [
-  "wasm1lk46aknye76sgfv65v5zcyyld0fnuu5jg02hs8",
-  "wasm13crj2rx0hqar8rjn3zp0xl4tqw6ec7tpmmtxyu",
-  "wasm1kw62mwcjy74myqc0xxp2573fpm0kkfhdhqx0cx",
-  "wasm17kcwckd3v8ryyxk8qe6lc8sp9jxf63u963wrsq",
-  "wasm1d4ut3z9c0kplgz5ma9t6ee637tagjqfykfpnd5",
-  "wasm1eldfm7jktevnscwr6prdravd8yuq7j87q6d9vx"
+  "tgrade1qx0glvm6eu02nlhwhqnqvuffukts3unx5l7w8j",
+  "tgrade1emflgfe0q30chgk4gkcpguakklw2tlf5frkuq6",
+  "tgrade1mzpxpphv5z32rpfytvde74zyx5wm6zmj2jnffk",
+  "tgrade1zcz7l2fqrtf6huevj9h543zda5c06c62r33y2h",
+  "tgrade1aaqfn5w3m65d4hvdz8eu3pzm27e003u89t7w6z",
+  "tgrade1m34qfcettdfrlzvq5mhfk0zfes2vhdfcj7j4t4"
 ];
 
 const initDataHash = {

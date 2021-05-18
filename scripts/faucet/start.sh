@@ -9,10 +9,10 @@ source "$SCRIPT_DIR"/env
 
 export FAUCET_CONCURRENCY=2
 export FAUCET_MNEMONIC="now mesh clog card twin rather knee head fancy matrix sponsor pill"
-# address: wasm1syn8janzh5t6rggtmlsuzs5w7qqfxqglvk5k0d
-export FAUCET_GAS_PRICE=0.025ucosm
-export FAUCET_ADDRESS_PREFIX=wasm
-export FAUCET_TOKENS=ucosm,ustake
+# address: tgrade1syn8janzh5t6rggtmlsuzs5w7qqfxqgld2dagk
+export FAUCET_GAS_PRICE=0.025utgd
+export FAUCET_ADDRESS_PREFIX=tgrade
+export FAUCET_TOKENS=utgd
 
 # docker pull "$REPOSITORY:$VERSION"
 
