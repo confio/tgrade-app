@@ -6,7 +6,7 @@ import {
   QueryClient as ReactQueryClient,
   QueryClientProvider as ReactQueryClientProvider,
 } from "react-query";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { ContractsProvider, ErrorProvider, LayoutProvider, SdkProvider } from "service";
 import ThemeProvider from "service/theme";
 import { ProtectedSwitch } from "./components/logic";
@@ -31,7 +31,7 @@ export default function App(): JSX.Element {
                   <LayoutProvider>
                     <Switch>
                       <Route exact path="/">
-                        <Setup />
+                        <Redirect to={paths.setup.prefix} />
                       </Route>
                       <Route path={paths.setup.prefix}>
                         <Setup />

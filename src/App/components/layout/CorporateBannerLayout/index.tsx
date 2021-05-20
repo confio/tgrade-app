@@ -23,7 +23,7 @@ const { Title, Paragraph } = Typography;
 export default function CorporateBannerLayout({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   return (
     <BannerContainer>
-      <CorporateBannerStack tag="aside" gap="s2" backgroundImageUrl={blockchainArt}>
+      <CorporateBannerStack tag="aside" gap="s2" background-image-url={blockchainArt}>
         <TgradeLogo className="tgrade-logo" src={tgradeLogoTitle} alt="Tgrade logo with title" />
         <CornerStack gap="s1">
           <CornerTopLeft src={cornerTopLeft} alt="" />

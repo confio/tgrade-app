@@ -11,3 +11,9 @@ export const TextStack = styled(Stack)`
     line-height: 1.75rem;
   }
 `;
+
+export const TutorialStack = styled(Stack)`
+  & .ant-btn {
+    align-self: flex-end;
+  }
+`;

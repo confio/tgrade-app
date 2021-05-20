@@ -25,8 +25,8 @@ export const ThemeLight = styled.createGlobalStyle`
 
     --bg-body: var(--color-gray-0-98);
     --grad-primary: var(--grad-2);
-    --bg-button-1ary: var(--grad-3);
-    --bg-button-1ary-focus: var(--grad-2);
+    --bg-button-1ary: var(--color-green-88-37);
+    --bg-button-1ary-focus: var(--color-green-88-37);
     --bg-button-default: var(--grad-4);
     --bg-button-default-focus: var(--grad-5);
     --bg-button-large: var(--grad-6);
