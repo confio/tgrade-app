@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { encodeSecp256k1Pubkey, makeCosmoshubPath, Secp256k1HdWallet } = require("@cosmjs/launchpad");
 
-const prefix = "wasm";
+const prefix = "tgrade";
 const accountsToCreate = [
   {
     mnemonic:

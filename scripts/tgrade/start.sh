@@ -14,15 +14,15 @@ SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 source "$SCRIPT_DIR"/env
 
 # Use a fresh volume for every start
-docker volume rm -f wasmd_data
+docker volume rm -f tgrade_data
 # docker pull "$REPOSITORY:$VERSION"
 
-# This starts up wasmd
+# This starts up tgrade
 docker run --rm \
   --name "$CONTAINER_NAME" \
   -p "$TENDERMINT_PORT_HOST":"$TENDERMINT_PORT_GUEST" \
   -p "$LCD_API_PORT_HOST":"$LCD_API_PORT_GUEST" \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/template \
-  --mount type=volume,source=wasmd_data,target=/root \
+  --mount type=volume,source=tgrade_data,target=/root \
   "$REPOSITORY:$VERSION" \
-  ./run_wasmd.sh /template 2>&1 | grep 'Executed block'
+  tgrade start --trace --home=/template/node0/tgrade 2>&1 | grep 'executed block'

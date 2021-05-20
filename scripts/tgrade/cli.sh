@@ -13,9 +13,9 @@ HOME_DIR="/root"
 docker run \
   --rm \
   -it \
-  --mount type=volume,source=wasmd_data,target=/root/.wasmd \
+  --mount type=volume,source=tgrade_data,target=/root/.tgrade \
   -w "$HOME_DIR" \
   --env "HOME=$HOME_DIR" \
   --net "container:$CONTAINER_NAME" \
   "$REPOSITORY:$VERSION" \
-  wasmd "$@"
+  tgrade "$@"
