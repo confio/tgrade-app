@@ -15,6 +15,8 @@ echo "Wait for faucet to start up..."
 timeout 60 bash -c "until curl -s http://localhost:8000/status > /dev/null; do sleep 0.5; done"
 sleep 1
 
-"$SCRIPT_DIR/tgrade/init.sh"
+pushd "$SCRIPT_DIR"/tgrade
+./init.sh
+popd
 
 echo "All systems go - start your webapp!"
