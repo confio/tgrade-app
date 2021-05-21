@@ -25,4 +25,4 @@ docker run --rm \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/template \
   --mount type=volume,source=tgrade_data,target=/root \
   "$REPOSITORY:$VERSION" \
-  tgrade start --trace --home=/template/node0/tgrade 2>&1 | grep 'executed block'
+  /bin/sh -c "cp -r /template/node0/tgrade /root; tgrade start --trace --home=/root/tgrade 2>&1 | grep 'executed block'"
