@@ -11,6 +11,7 @@ export const GlobalColors = styled.createGlobalStyle`
     --color-green-63-42: hsl(145, 63%, 42%);
     --color-green-88-37: hsl(180, 88%, 37%);
     --color-blue-15-59: hsl(218, 15%, 59%);
+    --color-blue-12-90: hsl(220, 12%, 90%);
     --color-blue-30-38: hsl(222, 30%, 38%);
     --color-blue-14-16: hsl(225, 14%, 16%);
     --color-blue-100-74: hsl(229, 100%, 74%);
