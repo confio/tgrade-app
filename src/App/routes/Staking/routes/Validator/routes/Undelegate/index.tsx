@@ -41,12 +41,12 @@ export default function Undelegate(): JSX.Element {
 
   const { handleError } = useError();
   const {
-    sdkState: { config, undelegateTokens },
+    sdkState: { config, signingClient, address },
   } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
   async function mutationFn({ coinToUndelegate }: MutationVariables) {
-    await undelegateTokens(validatorAddress, coinToUndelegate);
+    await signingClient.undelegateTokens(address, validatorAddress, coinToUndelegate);
   }
 
   const mutationOptions = {

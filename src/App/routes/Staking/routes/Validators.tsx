@@ -41,9 +41,10 @@ export default function Validators(): JSX.Element {
 
   const { hasNextPage, fetchNextPage, data: validatorsData } = useInfiniteQuery(
     "validators",
-    ({ pageParam = undefined }) => queryClient.staking.unverified.validators("BOND_STATUS_BONDED", pageParam),
+    ({ pageParam = undefined }) => queryClient.staking.validators("BOND_STATUS_BONDED", pageParam),
     {
-      getNextPageParam: (lastPage) => lastPage.pagination?.nextKey,
+      getNextPageParam: (lastPage) =>
+        lastPage.pagination?.nextKey.length ? lastPage.pagination.nextKey : undefined,
       onError: (queryError) => handleError(new Error(queryError as any)),
     },
   );

@@ -41,12 +41,12 @@ export default function Delegate(): JSX.Element {
 
   const { handleError } = useError();
   const {
-    sdkState: { config, delegateTokens },
+    sdkState: { config, signingClient, address },
   } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
   async function mutationFn({ coinToDelegate }: MutationVariables) {
-    await delegateTokens(validatorAddress, coinToDelegate);
+    await signingClient.delegateTokens(address, validatorAddress, coinToDelegate);
   }
 
   const mutationOptions = {

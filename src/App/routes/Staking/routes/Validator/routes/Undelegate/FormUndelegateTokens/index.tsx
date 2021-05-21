@@ -31,8 +31,10 @@ export default function FormUndelegateTokens({
     sdkState: { config, address, queryClient },
   } = useSdk();
 
-  const { data: stakedTokensData } = useQuery("stakedTokens", () =>
-    queryClient.staking.unverified.delegation(address, validatorAddress),
+  const { data: stakedTokensData } = useQuery(
+    "stakedTokens",
+    () => queryClient.staking.delegation(address, validatorAddress),
+    { onError: () => {}, refetchOnMount: true },
   );
 
   const stakedTokens = Decimal.fromAtomics(

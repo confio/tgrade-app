@@ -39,12 +39,14 @@ export default function Rewards(): JSX.Element {
 
   const { handleError } = useError();
   const {
-    sdkState: { config, address, queryClient, withdrawRewards },
+    sdkState: { config, address, queryClient, signingClient },
   } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
-  const { data: rewardsData } = useQuery("rewards", () =>
-    queryClient.distribution.unverified.delegationRewards(address, validatorAddress),
+  const { data: rewardsData } = useQuery(
+    "rewards",
+    () => queryClient.distribution.delegationRewards(address, validatorAddress),
+    { onError: () => {}, refetchOnMount: true },
   );
 
   const rewards: readonly Coin[] = rewardsData
@@ -57,7 +59,7 @@ export default function Rewards(): JSX.Element {
     : [];
 
   async function mutationFn({ validatorAddress }: MutationVariables) {
-    await withdrawRewards(validatorAddress);
+    await signingClient.withdrawRewards(address, validatorAddress);
   }
 
   const mutationOptions = {
