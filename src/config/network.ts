@@ -8,11 +8,14 @@ export interface NetworkConfig {
   readonly httpUrl: string;
   readonly faucetUrl: string;
   readonly feeToken: string;
-  readonly faucetTokens?: string[];
+  readonly faucetTokens?: readonly [string, ...string[]];
   readonly stakingToken: string;
   readonly coinMap: CoinMap;
   readonly gasPrice: number;
-  readonly codeId?: number;
+  readonly codeIds?: {
+    readonly cw20Tokens?: readonly [number, ...number[]];
+    readonly tgradeDso?: readonly [number, ...number[]];
+  };
 }
 
 export interface NetworkConfigs {
@@ -35,22 +38,20 @@ export function getAppConfig(configs: NetworkConfigs): NetworkConfig {
 const local: NetworkConfig = {
   chainId: "testing",
   chainName: "Testing",
-  addressPrefix: "wasm",
+  addressPrefix: "tgrade",
   rpcUrl: "http://localhost:26657",
   httpUrl: "http://localhost:1317",
   faucetUrl: "http://localhost:8000",
-  feeToken: "ucosm",
-  stakingToken: "ustake",
-  faucetTokens: ["ucosm", "ustake"],
+  feeToken: "utgd",
+  stakingToken: "utgd",
+  faucetTokens: ["utgd"],
   coinMap: {
-    ucosm: { denom: "COSM", fractionalDigits: 6 },
-    ustake: { denom: "STAKE", fractionalDigits: 6 },
+    utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: 0.025,
-  codeId: 1,
 };
 
-const musselnet: NetworkConfig = {
+/* const musselnet: NetworkConfig = {
   chainId: "musselnet-4",
   chainName: "Musselnet",
   addressPrefix: "wasm",
@@ -65,7 +66,26 @@ const musselnet: NetworkConfig = {
   },
   gasPrice: 0.025,
   codeId: 1,
+}; */
+
+const tgradeinternal: NetworkConfig = {
+  chainId: "tgrade-internal-1",
+  chainName: "Tgrade-internal-1",
+  addressPrefix: "tgrade",
+  rpcUrl: "https://rpc.internal-1.tgrade.io",
+  httpUrl: "https://lcd.internal-1.tgrade.io",
+  faucetUrl: "https://faucet.internal-1.tgrade.io",
+  feeToken: "utgd",
+  stakingToken: "utgd",
+  faucetTokens: ["utgd"],
+  coinMap: {
+    utgd: { denom: "TGD", fractionalDigits: 6 },
+  },
+  gasPrice: 0.0001,
+  codeIds: {
+    tgradeDso: [1],
+  },
 };
 
-const configs: NetworkConfigs = { local, musselnet };
+const configs: NetworkConfigs = { local, tgradeinternal };
 export const config = getAppConfig(configs);

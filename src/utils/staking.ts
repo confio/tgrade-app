@@ -23,7 +23,7 @@ export function useStakingValidator(validatorAddress: string): StakingValidator 
 
     (async function updateValidator() {
       try {
-        const { validator } = await queryClient.staking.unverified.validator(validatorAddress);
+        const { validator } = await queryClient.staking.validator(validatorAddress);
         if (!validator) {
           throw new Error(`No validator found with address: ${validatorAddress}`);
         }
@@ -36,7 +36,7 @@ export function useStakingValidator(validatorAddress: string): StakingValidator 
     return () => {
       mounted = false;
     };
-  }, [handleError, queryClient.staking.unverified, validatorAddress]);
+  }, [handleError, queryClient.staking, validatorAddress]);
 
   return validator;
 }

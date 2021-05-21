@@ -1,3 +1,4 @@
+import { Contract } from "@cosmjs/cosmwasm-stargate";
 import { Button } from "antd";
 import { TransferItem } from "antd/lib/transfer";
 import { Stack } from "App/components/layout";
@@ -13,6 +14,7 @@ import { useHistory, useParams, useRouteMatch } from "react-router-dom";
 import { useContracts, useError, useSdk } from "service";
 import { CW20 } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
+import { useQueriesTyped } from "utils/query";
 import { TransferFormItem } from "./style";
 
 interface FormSelectContractsParams {
@@ -31,8 +33,8 @@ export default function FormSelectContracts(): JSX.Element {
   } = useSdk();
   const { addContract } = useContracts();
 
-  const { data: contracts = [] } = useQuery(
-    "contracts",
+  const { data: contractAddresses = [] } = useQuery(
+    "contractAddresses",
     async () => {
       const numCodeId = Number.parseInt(codeId, 10);
       if (Number.isNaN(numCodeId)) {
@@ -47,6 +49,18 @@ export default function FormSelectContracts(): JSX.Element {
       },
     },
   );
+
+  const contracts = useQueriesTyped(
+    contractAddresses.map((address) => ({
+      queryKey: `contract${address}`,
+      queryFn: () => signingClient.getContract(address),
+      onError: (error: unknown) => {
+        handleError(error as Error);
+      },
+    })),
+  )
+    .map(({ data }) => data)
+    .filter((contract): contract is Contract => contract !== undefined);
 
   const [selectedContractAddresses, setSelectedContractAddresses] = useState<string[]>([]);
 

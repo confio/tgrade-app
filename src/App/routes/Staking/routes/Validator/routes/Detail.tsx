@@ -38,8 +38,10 @@ export default function Detail(): JSX.Element {
   } = useSdk();
   const validator = useStakingValidator(validatorAddress);
 
-  const { data: stakedTokensData } = useQuery("stakedTokens", () =>
-    queryClient.staking.unverified.delegation(address, validatorAddress),
+  const { data: stakedTokensData } = useQuery(
+    "stakedTokens",
+    () => queryClient.staking.delegation(address, validatorAddress),
+    { onError: () => {}, refetchOnMount: true },
   );
 
   const stakedTokens = Decimal.fromAtomics(

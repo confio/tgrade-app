@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# /scripts generated files
+/scripts/tgrade/template
+
 # testing
 /coverage
 

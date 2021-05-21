@@ -54,7 +54,7 @@ export default function New(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: {
-      config: { codeId },
+      config: { codeIds },
       signingClient,
       address,
     },
@@ -107,7 +107,7 @@ export default function New(): JSX.Element {
     setLoading(layoutDispatch, `${t("cw20Wallet:creating")}`);
 
     try {
-      if (!codeId) {
+      if (!codeIds?.cw20Tokens) {
         throw new Error("Missing Code Id in configuration file");
       }
 
@@ -133,6 +133,8 @@ export default function New(): JSX.Element {
         initial_balances: [{ address, amount }],
         mint,
       };
+
+      const codeId = codeIds.cw20Tokens[0];
 
       mutate({ codeId, msg, tokenName, tokenSymbol, amount });
     } catch (stackTrace) {

@@ -2,11 +2,11 @@
 /*jshint esversion: 8 */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Bip39, Random } from "@cosmjs/crypto";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
+import { GasPrice, makeCosmoshubPath } from "@cosmjs/launchpad";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import { GasPrice } from "@cosmjs/launchpad";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -40,7 +40,10 @@ const codeMeta = {
 async function main() {
   // build signing client
   const mnemonic = Bip39.encode(Random.getBytes(16)).toString();
-  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, undefined, config.bech32prefix);
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.bech32prefix,
+  });
   const options = { prefix: config.bech32prefix, gasPrice: config.gasPrice };
   const client = await SigningCosmWasmClient.connectWithSigner(config.endpoint, wallet, options);
 
