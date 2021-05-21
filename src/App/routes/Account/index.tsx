@@ -63,7 +63,7 @@ export default function Account(): JSX.Element {
     runAfterLoad(async () => {
       try {
         const encryptedMnemonic = await (
-          await Secp256k1HdWallet.fromMnemonic(mnemonic, makeCosmoshubPath(0), "wasm")
+          await Secp256k1HdWallet.fromMnemonic(mnemonic, { hdPaths: [makeCosmoshubPath(0)], prefix: "wasm" })
         ).serialize(password.normalize());
 
         setMnemonic(encryptedMnemonic);
