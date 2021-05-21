@@ -1,19 +1,11 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { Coin, OfflineSigner } from "@cosmjs/launchpad";
-import {
-  BankExtension,
-  coinFromProto,
-  DistributionExtension,
-  isBroadcastTxFailure,
-  QueryClient,
-  StakingExtension,
-} from "@cosmjs/stargate";
+import { BankExtension, DistributionExtension, QueryClient, StakingExtension } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import * as React from "react";
 import { createContext, useContext, useEffect, useReducer } from "react";
 import { createQueryClient, createSigningClient } from "utils/sdk";
-import { getDelegationFee, MsgDelegate, MsgUndelegate, MsgWithdrawDelegatorReward } from "utils/staking";
 import { useError } from "./error";
 
 type ExtendedQueryClient = QueryClient & BankExtension & StakingExtension & DistributionExtension;
@@ -50,18 +42,6 @@ type SdkAction =
   | {
       readonly type: "setHitFaucet";
       readonly payload?: () => Promise<void>;
-    }
-  | {
-      readonly type: "setDelegateTokens";
-      readonly payload?: (validatorAddress: string, delegateAmount: Coin) => Promise<void>;
-    }
-  | {
-      readonly type: "setUndelegateTokens";
-      readonly payload?: (validatorAddress: string, undelegateAmount: Coin) => Promise<void>;
-    }
-  | {
-      readonly type: "setWithdrawRewards";
-      readonly payload?: (validatorAddress: string) => Promise<void>;
     };
 
 type SdkDispatch = (action: SdkAction) => void;
@@ -74,9 +54,6 @@ type SdkState = {
   readonly signingClient?: SigningCosmWasmClient;
   readonly getBalance?: (address?: string) => Promise<readonly Coin[]>;
   readonly hitFaucet?: () => Promise<void>;
-  readonly delegateTokens?: (validatorAddress: string, delegateAmount: Coin) => Promise<void>;
-  readonly undelegateTokens?: (validatorAddress: string, undelegateAmount: Coin) => Promise<void>;
-  readonly withdrawRewards?: (validatorAddress: string) => Promise<void>;
 };
 
 function sdkReducer(state: SdkState, action: SdkAction): SdkState {
@@ -90,9 +67,6 @@ function sdkReducer(state: SdkState, action: SdkAction): SdkState {
         signingClient: undefined,
         getBalance: undefined,
         hitFaucet: undefined,
-        delegateTokens: undefined,
-        undelegateTokens: undefined,
-        withdrawRewards: undefined,
       };
     }
     case "setConfig": {
@@ -115,15 +89,6 @@ function sdkReducer(state: SdkState, action: SdkAction): SdkState {
     }
     case "setHitFaucet": {
       return { ...state, hitFaucet: action.payload };
-    }
-    case "setDelegateTokens": {
-      return { ...state, delegateTokens: action.payload };
-    }
-    case "setUndelegateTokens": {
-      return { ...state, undelegateTokens: action.payload };
-    }
-    case "setWithdrawRewards": {
-      return { ...state, withdrawRewards: action.payload };
     }
     default: {
       throw new Error("Unhandled action type");
@@ -207,9 +172,6 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
     signingClient: undefined,
     getBalance: undefined,
     hitFaucet: undefined,
-    delegateTokens: undefined,
-    undelegateTokens: undefined,
-    withdrawRewards: undefined,
   });
 
   useEffect(() => {
@@ -280,11 +242,8 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
       const balance: Coin[] = [];
       try {
         for (const denom in sdkState.config.coinMap) {
-          const res = await sdkState.queryClient.bank.unverified.balance(queryAddress, denom);
-          const coin = res ? coinFromProto(res) : null;
-          if (coin) {
-            balance.push(coin);
-          }
+          const coin = await sdkState.queryClient.bank.balance(queryAddress, denom);
+          balance.push(coin);
         }
         return balance;
       } catch (error) {
@@ -320,90 +279,6 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
 
     sdkDispatch({ type: "setHitFaucet", payload: hitFaucet });
   }, [handleError, sdkState.address, sdkState.config]);
-
-  useEffect(() => {
-    if (!sdkState.address || !sdkState.signingClient) {
-      sdkDispatch({ type: "setDelegateTokens" });
-      return;
-    }
-
-    async function delegateTokens(validatorAddress: string, delegateAmount: Coin): Promise<void> {
-      if (!sdkState.address || !sdkState.signingClient) return;
-
-      const delegatorAddress = sdkState.address;
-      const delegateMsg = {
-        typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
-        value: MsgDelegate.fromPartial({ delegatorAddress, validatorAddress, amount: delegateAmount }),
-      };
-
-      const response = await sdkState.signingClient.signAndBroadcast(
-        delegatorAddress,
-        [delegateMsg],
-        getDelegationFee(sdkState.config),
-      );
-      if (isBroadcastTxFailure(response)) {
-        throw new Error("Delegate failed");
-      }
-    }
-
-    sdkDispatch({ type: "setDelegateTokens", payload: delegateTokens });
-  }, [sdkState.address, sdkState.config, sdkState.signingClient]);
-
-  useEffect(() => {
-    if (!sdkState.address || !sdkState.signingClient) {
-      sdkDispatch({ type: "setUndelegateTokens" });
-      return;
-    }
-
-    async function undelegateTokens(validatorAddress: string, undelegateAmount: Coin): Promise<void> {
-      if (!sdkState.address || !sdkState.signingClient) return;
-
-      const delegatorAddress = sdkState.address;
-      const undelegateMsg = {
-        typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
-        value: MsgUndelegate.fromPartial({ delegatorAddress, validatorAddress, amount: undelegateAmount }),
-      };
-
-      const response = await sdkState.signingClient.signAndBroadcast(
-        delegatorAddress,
-        [undelegateMsg],
-        getDelegationFee(sdkState.config),
-      );
-      if (isBroadcastTxFailure(response)) {
-        throw new Error("Undelegate failed");
-      }
-    }
-
-    sdkDispatch({ type: "setUndelegateTokens", payload: undelegateTokens });
-  }, [sdkState.address, sdkState.config, sdkState.signingClient]);
-
-  useEffect(() => {
-    if (!sdkState.address || !sdkState.signingClient) {
-      sdkDispatch({ type: "setWithdrawRewards" });
-      return;
-    }
-
-    async function withdrawRewards(validatorAddress: string): Promise<void> {
-      if (!sdkState.address || !sdkState.signingClient) return;
-
-      const delegatorAddress = sdkState.address;
-      const withdrawRewardsMsg = {
-        typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
-        value: MsgWithdrawDelegatorReward.fromPartial({ delegatorAddress, validatorAddress }),
-      };
-
-      const response = await sdkState.signingClient.signAndBroadcast(
-        delegatorAddress,
-        [withdrawRewardsMsg],
-        getDelegationFee(sdkState.config),
-      );
-      if (isBroadcastTxFailure(response)) {
-        throw new Error("Rewards withdrawal failed");
-      }
-    }
-
-    sdkDispatch({ type: "setWithdrawRewards", payload: withdrawRewards });
-  }, [sdkState.address, sdkState.config, sdkState.signingClient]);
 
   return <SdkContext.Provider value={{ sdkState, sdkDispatch }}>{children}</SdkContext.Provider>;
 }
