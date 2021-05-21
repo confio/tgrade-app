@@ -44,7 +44,7 @@ export default function TokensList(): JSX.Element {
 
   const {
     sdkState: {
-      config: { codeId },
+      config: { codeIds },
       signingClient,
       address,
     },
@@ -75,15 +75,14 @@ export default function TokensList(): JSX.Element {
 
   useEffect(() => {
     (async function updateContracts() {
-      if (!codeId) return;
+      if (!codeIds?.cw20Tokens) return;
 
       const client = signingClient;
-      const contracts = await client.getContracts(codeId);
-
-      const cw20Contracts = contracts.map((contract) => CW20(client).use(contract.address));
+      const contractsAddresses = await client.getContracts(codeIds.cw20Tokens[0]);
+      const cw20Contracts = contractsAddresses.map((address) => CW20(client).use(address));
       cw20Contracts.forEach(addContract);
     })();
-  }, [addContract, codeId, signingClient]);
+  }, [addContract, codeIds?.cw20Tokens, signingClient]);
 
   useEffect(() => {
     let mounted = true;
