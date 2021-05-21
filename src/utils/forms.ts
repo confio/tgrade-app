@@ -2,6 +2,11 @@ import { Bech32 } from "@cosmjs/encoding";
 import { TFunction } from "i18next";
 import * as Yup from "yup";
 
+export function getFormItemName(label: string): string {
+  const labelKebabCase = label.toLowerCase().replace(/ /g, "-");
+  return `form-item-name-${labelKebabCase}`;
+}
+
 type DecodedAddress = {
   readonly prefix: string;
   readonly data: Uint8Array;
