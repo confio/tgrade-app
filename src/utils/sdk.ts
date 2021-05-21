@@ -46,7 +46,10 @@ export const loadOrCreateWallet: WalletLoader = async ({ addressPrefix }) => {
   const mnemonic = loadOrCreateMnemonic();
   if (isWalletEncrypted(mnemonic)) throw new Error("Cannot load encrypted wallet");
 
-  const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, makeCosmoshubPath(0), addressPrefix);
+  const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: addressPrefix,
+  });
   return wallet;
 };
 
@@ -63,7 +66,10 @@ export const unlockWallet: WalletLoader = async (_, password) => {
 export const importWallet: WalletLoader = async ({ addressPrefix }, password, mnemonic) => {
   if (!mnemonic || !password) throw new Error("Mnemonic and password needed for importing wallet");
 
-  const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, makeCosmoshubPath(0), addressPrefix);
+  const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: addressPrefix,
+  });
   const serializedWallet = await wallet.serialize(password.normalize());
   setWallet(serializedWallet);
 
