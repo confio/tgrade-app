@@ -18,6 +18,9 @@ export const ThemeLight = styled.createGlobalStyle`
     --color-button-disabled: var(--color-gray-0-51);
     --color-button-disabled-bg: var(--color-gray-0-20);
 
+    --color-input-border: var(--color-blue-12-90);
+    --color-input-label-bg: var(--color-gray-0-98);
+
     --color-form: var(--color-blue-30-38);
     --color-form-focus: var(--color-blue-100-74);
     --color-form-disabled: var(--color-gray-0-51);

@@ -13,6 +13,7 @@ import { ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
 import Account from "./routes/Account";
 import Cw20Wallet from "./routes/Cw20Wallet";
+import Dso from "./routes/Dso";
 import Logout from "./routes/Logout";
 import OperationResult from "./routes/OperationResult";
 import Setup from "./routes/Setup";
@@ -54,6 +55,9 @@ export default function App(): JSX.Element {
                         </Route>
                         <Route path={paths.staking.prefix}>
                           <Staking />
+                        </Route>
+                        <Route path={paths.dso.prefix}>
+                          <Dso />
                         </Route>
                       </ProtectedSwitch>
                     </Switch>

@@ -50,4 +50,7 @@ export const paths = {
     undelegate: "/undelegate",
     rewards: "/rewards",
   },
+  dso: {
+    prefix: "/dso",
+  },
 };

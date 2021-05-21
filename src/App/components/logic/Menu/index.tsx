@@ -48,6 +48,9 @@ export default function Menu({ isBigViewport, isOpen, closeMenu, ...restProps }:
         <Link to={paths.staking.prefix} onClick={closeMenu}>
           <Title level={3}>{t("menu.staking")}</Title>
         </Link>
+        <Link to={paths.dso.prefix} onClick={closeMenu}>
+          <Title level={3}>DSO</Title>
+        </Link>
         <Link to={paths.logout} onClick={closeMenu}>
           <Title level={3}>{t("menu.logout")}</Title>
         </Link>
