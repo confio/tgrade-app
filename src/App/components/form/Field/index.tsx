@@ -10,9 +10,11 @@ interface FieldProps {
   readonly label: string;
   readonly placeholder: string;
   readonly units?: string;
+  readonly disabled?: boolean;
+  readonly onInputChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-export function Field({ label, placeholder, units }: FieldProps): JSX.Element {
+export function Field({ label, placeholder, units, disabled, onInputChange }: FieldProps): JSX.Element {
   const formItemName = getFormItemName(label);
   const labelKebabCase = label.toLowerCase().replace(/ /g, "-");
   const labelId = `label-id-${labelKebabCase}`;
@@ -25,10 +27,22 @@ export function Field({ label, placeholder, units }: FieldProps): JSX.Element {
           <div className="unit-wrapper">
             <Text>{units}</Text>
           </div>
-          <Input aria-labelledby={labelId} name={formItemName} placeholder={placeholder} />
+          <Input
+            aria-labelledby={labelId}
+            name={formItemName}
+            placeholder={placeholder}
+            disabled={disabled}
+            onChange={onInputChange}
+          />
         </div>
       ) : (
-        <UnitlessInput aria-labelledby={labelId} name={formItemName} placeholder={placeholder} />
+        <UnitlessInput
+          aria-labelledby={labelId}
+          name={formItemName}
+          placeholder={placeholder}
+          disabled={disabled}
+          onChange={onInputChange}
+        />
       )}
     </StyledFormItem>
   );

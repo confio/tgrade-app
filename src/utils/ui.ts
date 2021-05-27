@@ -30,3 +30,7 @@ const afterLoadDelay = 400;
 export function runAfterLoad(callback: () => void): void {
   setTimeout(callback, afterLoadDelay);
 }
+
+export function ellipsifyAddress(str: string): string {
+  return str.length > 12 ? `${str.slice(0, 6)}…${str.slice(-6)}` : str;
+}

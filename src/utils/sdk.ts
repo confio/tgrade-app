@@ -1,6 +1,7 @@
 import { CosmWasmFeeTable } from "@cosmjs/cosmwasm-launchpad";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
+import { Bech32 } from "@cosmjs/encoding";
 import { GasLimits, GasPrice, makeCosmoshubPath, OfflineSigner, Secp256k1HdWallet } from "@cosmjs/launchpad";
 import { LedgerSigner } from "@cosmjs/ledger-amino";
 import {
@@ -129,4 +130,16 @@ export async function createQueryClient(
     setupStakingExtension,
     setupDistributionExtension,
   );
+}
+
+export function isValidAddress(address: string, requiredPrefix: string): boolean {
+  try {
+    const { prefix, data } = Bech32.decode(address);
+    if (prefix !== requiredPrefix) {
+      return false;
+    }
+    return data.length === 20;
+  } catch {
+    return false;
+  }
 }
