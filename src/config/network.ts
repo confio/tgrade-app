@@ -36,7 +36,7 @@ export function getAppConfig(configs: NetworkConfigs): NetworkConfig {
 }
 
 const local: NetworkConfig = {
-  chainId: "testing",
+  chainId: "chain-5gDkX0",
   chainName: "Testing",
   addressPrefix: "tgrade",
   rpcUrl: "http://localhost:26657",
@@ -49,6 +49,9 @@ const local: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: 0.025,
+  codeIds: {
+    tgradeDso: [1],
+  },
 };
 
 /* const musselnet: NetworkConfig = {
@@ -83,7 +86,7 @@ const tgradeinternal: NetworkConfig = {
   },
   gasPrice: 0.0001,
   codeIds: {
-    tgradeDso: [1],
+    tgradeDso: [8],
   },
 };
 
