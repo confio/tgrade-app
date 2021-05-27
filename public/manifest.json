@@ -1,16 +1,19 @@
 {
-  "short_name": "Tgrade App",
-  "name": "Tgrade App",
+  "name": "Tgrade",
   "icons": [
     {
-      "src": "cosmWasmLogo.svg",
-      "type": "image/svg",
-      "sizes": "48x48 72x72 96x96 128x128 256x256",
-      "purpose": "maskable any"
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
-  "start_url": ".",
+  "background_color": "#fafafa",
+  "theme_color": "#fafafa",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "start_url": "."
 }
