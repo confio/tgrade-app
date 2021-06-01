@@ -7,8 +7,14 @@ import {
   QueryClientProvider as ReactQueryClientProvider,
 } from "react-query";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
-import { ContractsProvider, ErrorProvider, LayoutProvider, SdkProvider } from "service";
-import ThemeProvider from "service/theme";
+import {
+  ContractsProvider,
+  DsoProvider,
+  ErrorProvider,
+  LayoutProvider,
+  SdkProvider,
+  ThemeProvider,
+} from "service";
 import { ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
 import Account from "./routes/Account";
@@ -57,7 +63,9 @@ export default function App(): JSX.Element {
                           <Staking />
                         </Route>
                         <Route path={paths.dso.prefix}>
-                          <Dso />
+                          <DsoProvider>
+                            <Dso />
+                          </DsoProvider>
                         </Route>
                       </ProtectedSwitch>
                     </Switch>
