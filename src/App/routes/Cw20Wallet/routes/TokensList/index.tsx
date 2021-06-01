@@ -10,13 +10,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { setInitialLayoutState, useContracts, useLayout, useSdk } from "service";
-import {
-  CW20,
-  Cw20Token,
-  cw20TokenCompare as cw20TokenCompareNames,
-  getCw20Token,
-  useLocalStorage,
-} from "utils/cw20";
+import { CW20, Cw20Token, cw20TokenCompare as cw20TokenCompareNames, getCw20Token } from "utils/cw20";
+import { useLocalStorage } from "utils/storage";
 import TokenButton from "./components/TokenButton";
 import { DoubleForm } from "./style";
 

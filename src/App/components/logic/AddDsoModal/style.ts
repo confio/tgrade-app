@@ -36,7 +36,10 @@ export const ModalHeader = styled.header`
   }
 `;
 
-export const Separator = styled.hr``;
+export const Separator = styled.hr`
+  border: none;
+  border-top: var(--color-input-border);
+`;
 
 export const FieldGroup = styled.div`
   display: flex;

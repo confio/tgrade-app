@@ -52,5 +52,8 @@ export const paths = {
   },
   dso: {
     prefix: "/dso",
+    params: {
+      dsoAddress: "/:dsoAddress",
+    },
   },
 };

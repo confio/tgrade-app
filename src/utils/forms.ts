@@ -12,7 +12,7 @@ type DecodedAddress = {
   readonly data: Uint8Array;
 };
 
-function getDecodedAddress(address?: string): DecodedAddress | null {
+export function getDecodedAddress(address?: string): DecodedAddress | null {
   try {
     return Bech32.decode(address || "");
   } catch {

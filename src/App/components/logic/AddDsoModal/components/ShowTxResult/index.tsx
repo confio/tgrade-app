@@ -7,6 +7,7 @@ import failIcon from "./assets/warning.svg";
 import { ButtonStack, ResultDescription, ResultIcon, ResultText } from "./style";
 
 export interface TxResult {
+  readonly contractAddress?: string;
   readonly msg?: string;
   readonly error?: string;
 }

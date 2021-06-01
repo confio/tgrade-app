@@ -1,3 +1,4 @@
+import { Typography } from "antd";
 import Button from "App/components/form/Button";
 import { Field } from "App/components/form/Field";
 import { Formik } from "formik";
@@ -6,6 +7,8 @@ import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 import { FieldGroup, FormStack } from "./style";
+
+const { Text } = Typography;
 
 const dsoNameLabel = "DSO name";
 const votingDurationLabel = "Voting duration";
@@ -41,10 +44,12 @@ export interface FormDsoBasicDataValues {
 
 interface FormDsoBasicDataProps extends FormDsoBasicDataValues {
   readonly handleSubmit: (values: FormDsoBasicDataValues) => void;
+  readonly goToAddExistingDso: () => void;
 }
 
 export default function FormDsoBasicData({
   handleSubmit,
+  goToAddExistingDso,
   dsoName,
   votingDuration,
   quorum,
@@ -79,6 +84,7 @@ export default function FormDsoBasicData({
                 <Field label={quorumLabel} placeholder="Enter quorum" units="%" />
                 <Field label={thresholdLabel} placeholder="Enter threshold" units="%" />
               </FieldGroup>
+              <Text onClick={() => goToAddExistingDso()}>or Add Existing DSO</Text>
               <Button disabled={!isValid} onClick={() => submitForm()}>
                 <div>Next</div>
               </Button>
