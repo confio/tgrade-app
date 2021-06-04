@@ -1,6 +1,7 @@
 import { Typography } from "antd";
 import Button from "App/components/form/Button";
 import { Field } from "App/components/form/Field";
+import { TxResult } from "App/components/logic/ShowTxResult";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
@@ -10,7 +11,6 @@ import { getErrorFromStackTrace } from "utils/errors";
 import { getDecodedAddress, getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 import closeIcon from "../../assets/cross.svg";
-import { TxResult } from "../ShowTxResult";
 import { ModalHeader, Separator } from "./style";
 
 const { Title, Text } = Typography;
