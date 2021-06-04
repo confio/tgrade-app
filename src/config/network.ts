@@ -86,7 +86,7 @@ const tgradeinternal: NetworkConfig = {
   },
   gasPrice: 0.0001,
   codeIds: {
-    tgradeDso: [8],
+    tgradeDso: [9],
   },
 };
 
