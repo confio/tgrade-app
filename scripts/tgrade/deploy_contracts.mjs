@@ -44,7 +44,15 @@ async function main() {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: config.bech32prefix,
   });
-  const options = { prefix: config.bech32prefix, gasPrice: config.gasPrice };
+  const gasLimits = {
+    upload: 2000000,
+    init: 600000,
+    exec: 400000,
+    migrate: 600000,
+    send: 80000,
+    changeAdmin: 80000,
+  };
+  const options = { prefix: config.bech32prefix, gasPrice: config.gasPrice, gasLimits };
   const client = await SigningCosmWasmClient.connectWithSigner(config.endpoint, wallet, options);
 
   // get fee tokens
