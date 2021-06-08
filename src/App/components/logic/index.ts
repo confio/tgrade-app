@@ -1,5 +1,6 @@
 export { default as AddDsoModal } from "./AddDsoModal";
 export { default as BackButton } from "./BackButton";
+export { default as BackButtonOrLink } from "./BackButtonOrLink";
 export { default as BurgerButton } from "./BurgerButton";
 export { default as DataList } from "./DataList";
 export { default as ErrorAlert } from "./ErrorAlert";
