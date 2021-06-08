@@ -7,10 +7,10 @@ export const ThemeLight = styled.createGlobalStyle`
     --color-text-2ary: var(--color-blue-15-59);
 
     --color-result-success: var(--color-green-63-42);
-    --color-result-failure: var(--color-red-79-63);
+    --color-result-failure: var(--color-red-100-70);
 
-    --color-error-alert: var(--color-red-79-63);
-    --color-error-form: var(--color-red-79-63);
+    --color-error-alert: var(--color-red-100-70);
+    --color-error-form: var(--color-red-100-70);
 
     --color-hover: var(--color-yellow-91-73);
 

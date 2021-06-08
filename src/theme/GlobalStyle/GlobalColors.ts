@@ -6,7 +6,7 @@ export const GlobalColors = styled.createGlobalStyle`
     --color-gray-0-20: hsl(0, 0%, 20%);
     --color-gray-0-51: hsl(0, 0%, 51%);
     --color-gray-0-98: hsl(0, 0%, 98%);
-    --color-red-79-63: hsl(0, 79%, 63%);
+    --color-red-100-70: hsl(0, 100%, 70%);
     --color-yellow-91-73: hsl(29, 91%, 73%);
     --color-green-63-42: hsl(145, 63%, 42%);
     --color-green-88-37: hsl(180, 88%, 37%);
