@@ -1,7 +1,12 @@
-import { Steps, Typography } from "antd";
+import { Typography } from "antd";
+import Steps from "App/components/form/Steps";
+import { Stack } from "App/components/layout";
+import { TxResult } from "App/components/logic/ShowTxResult";
 import * as React from "react";
 import { useState } from "react";
-import { TxResult } from "../../../../../../components/logic/ShowTxResult";
+import { useParams } from "react-router-dom";
+import { useDso } from "service";
+import { DsoHomeParams } from "../..";
 import closeIcon from "./assets/cross.svg";
 import modalBg from "./assets/modal-background.jpg";
 import ProposalAddParticipants from "./components/ProposalAddParticipants";
@@ -11,7 +16,7 @@ import SelectProposal from "./components/SelectProposal";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { Step } = Steps;
 
 export enum ProposalType {
@@ -57,9 +62,15 @@ export default function CreateProposalModal({
   isModalOpen,
   closeModal,
 }: CreateProposalModalProps): JSX.Element {
+  const { dsoAddress }: DsoHomeParams = useParams();
+  const {
+    dsoState: { dsos },
+  } = useDso();
   const [proposalStep, setProposalStep] = useState<ProposalStep>();
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
+
+  const [, dsoName = "DSO"] = dsos.find(([address]) => address === dsoAddress) ?? [];
 
   function tryAgain() {
     setProposalStep(proposalStep ? { type: proposalStep.type } : undefined);
@@ -82,7 +93,13 @@ export default function CreateProposalModal({
       width="100%"
       bgTransparent={!!txResult}
       style={{
-        maxWidth: "59.5rem",
+        maxWidth: "63.25rem",
+        paddingRight: "60px",
+      }}
+      bodyStyle={{
+        position: "relative",
+        padding: "var(--s1)",
+        backgroundColor: txResult ? "transparent" : "var(--bg-body)",
       }}
       maskStyle={{
         background: `linear-gradient(0deg, rgba(4, 119, 120, 0.9), rgba(4, 119, 120, 0.9)), url(${modalBg})`,
@@ -97,10 +114,13 @@ export default function CreateProposalModal({
           resetModal={resetModal}
         />
       ) : (
-        <>
+        <Stack gap="s1">
           <ModalHeader>
-            <Title>{getTitleFromStep(proposalStep)}</Title>
-            <Steps current={getCurrentStepIndex(proposalStep)}>
+            <Typography>
+              <Title>{getTitleFromStep(proposalStep)}</Title>
+              <Text>{dsoName}</Text>
+            </Typography>
+            <Steps size="small" current={getCurrentStepIndex(proposalStep)}>
               <Step />
               <Step />
               <Step />
@@ -135,7 +155,7 @@ export default function CreateProposalModal({
               setTxResult={setTxResult}
             />
           ) : null}
-        </>
+        </Stack>
       )}
     </StyledModal>
   );
