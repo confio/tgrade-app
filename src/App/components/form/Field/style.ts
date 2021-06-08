@@ -44,6 +44,10 @@ export const StyledFormItem = styled(FormItem)`
       }
     }
   }
+
+  & [role="alert"] {
+    color: var(--color-error-form);
+  }
 `;
 
 export const UnitlessInput = styled(Input)`
