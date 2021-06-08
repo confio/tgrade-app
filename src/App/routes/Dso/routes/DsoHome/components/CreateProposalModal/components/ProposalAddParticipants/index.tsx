@@ -77,6 +77,7 @@ export default function ProposalAddParticipants({
       {proposalStep.confirmation ? (
         <ConfirmationAddParticipants
           members={members}
+          comment={comment}
           isSubmitting={isSubmitting}
           goBack={() => setProposalStep({ type: ProposalType.AddParticipants })}
           submitForm={submitCreateProposal}
