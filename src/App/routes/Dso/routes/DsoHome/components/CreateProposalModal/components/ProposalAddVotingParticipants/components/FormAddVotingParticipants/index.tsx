@@ -1,16 +1,17 @@
-import { Tag } from "antd";
+import { AddressList } from "App/components/form/AddressList";
 import Button from "App/components/form/Button";
 import { Field } from "App/components/form/Field";
+import { Stack } from "App/components/layout";
+import { BackButtonOrLink } from "App/components/logic";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
 import { useSdk } from "service";
 import { addressStringToArray, getFormItemName, isValidAddress } from "utils/forms";
-import { ellipsifyAddress } from "utils/ui";
 import * as Yup from "yup";
-import { ButtonGroup, FormStack } from "./style";
+import { ButtonGroup, Separator } from "./style";
 
-const membersLabel = "Voting participants";
+const membersLabel = "Voting participants to be added";
 const commentLabel = "Comment";
 
 export interface FormAddVotingParticipantsValues {
@@ -65,7 +66,7 @@ export default function FormAddVotingParticipants({
       {({ isValid, submitForm }) => (
         <>
           <Form>
-            <FormStack>
+            <Stack gap="s1">
               <Field
                 label={membersLabel}
                 placeholder="Type or paste addresses here"
@@ -75,32 +76,22 @@ export default function FormAddVotingParticipants({
                   setMembers(membersArray);
                 }}
               />
-              {members.length ? (
-                <div>
-                  {members.map((memberAddress, index) => (
-                    <Tag
-                      key={`${index}-${memberAddress}`}
-                      color={isValidAddress(memberAddress, addressPrefix) ? "default" : "error"}
-                      closable
-                      onClose={() => {
-                        setMembers(members.filter((member) => member !== memberAddress));
-                      }}
-                    >
-                      {ellipsifyAddress(memberAddress)}
-                    </Tag>
-                  ))}
-                </div>
-              ) : null}
+              <AddressList
+                addresses={members}
+                addressPrefix={addressPrefix}
+                handleClose={(memberAddress) =>
+                  setMembers(members.filter((member) => member !== memberAddress))
+                }
+              />
               <Field label={commentLabel} placeholder="Enter comment" />
+              <Separator />
               <ButtonGroup>
-                <Button onClick={() => goBack()}>
-                  <div>Back</div>
-                </Button>
+                <BackButtonOrLink onClick={() => goBack()} text="Back" />
                 <Button disabled={!isValid} onClick={() => submitForm()}>
-                  <div>Next</div>
+                  <div>Create proposal</div>
                 </Button>
               </ButtonGroup>
-            </FormStack>
+            </Stack>
           </Form>
         </>
       )}
