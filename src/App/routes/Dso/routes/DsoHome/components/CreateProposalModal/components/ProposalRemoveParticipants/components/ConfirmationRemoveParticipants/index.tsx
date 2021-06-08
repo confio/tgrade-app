@@ -1,13 +1,16 @@
-import { Tag } from "antd";
+import { Typography } from "antd";
+import { AddressList } from "App/components/form/AddressList";
 import Button from "App/components/form/Button";
+import { BackButtonOrLink } from "App/components/logic";
 import * as React from "react";
 import { useSdk } from "service";
-import { isValidAddress } from "utils/forms";
-import { ellipsifyAddress } from "utils/ui";
-import { ButtonGroup } from "./style";
+import { AddressStack, ButtonGroup, Separator, TextComment } from "./style";
+
+const { Text } = Typography;
 
 interface ConfirmationRemoveParticipantsProps {
   readonly members: readonly string[];
+  readonly comment: string;
   readonly isSubmitting: boolean;
   readonly goBack: () => void;
   readonly submitForm: () => void;
@@ -15,6 +18,7 @@ interface ConfirmationRemoveParticipantsProps {
 
 export default function ConfirmationRemoveParticipants({
   members,
+  comment,
   isSubmitting,
   goBack,
   submitForm,
@@ -27,22 +31,16 @@ export default function ConfirmationRemoveParticipants({
 
   return (
     <>
-      <div>
-        {members.map((memberAddress, index) => (
-          <Tag
-            key={`${index}-${memberAddress}`}
-            color={isValidAddress(memberAddress, addressPrefix) ? "default" : "error"}
-          >
-            {ellipsifyAddress(memberAddress)}
-          </Tag>
-        ))}
-      </div>
+      <AddressStack gap="s-3">
+        <Text>Non voting participant(s) to be removed</Text>
+        <AddressList addresses={members} addressPrefix={addressPrefix} />
+      </AddressStack>
+      <TextComment>{comment}</TextComment>
+      <Separator />
       <ButtonGroup>
-        <Button disabled={isSubmitting} onClick={() => goBack()}>
-          <div>Back</div>
-        </Button>
+        <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />
         <Button loading={isSubmitting} onClick={() => submitForm()}>
-          <div>Create proposal</div>
+          <div>Confirm proposal</div>
         </Button>
       </ButtonGroup>
     </>

@@ -37,8 +37,9 @@ export const ModalHeader = styled.header`
 `;
 
 export const Separator = styled.hr`
+  margin: 0 -20px 0 -20px;
   border: none;
-  border-top: var(--color-input-border);
+  border-top: 1px solid var(--color-input-border);
 `;
 
 export const FieldGroup = styled.div`

@@ -77,6 +77,7 @@ export default function ProposalRemoveParticipants({
       {proposalStep.confirmation ? (
         <ConfirmationRemoveParticipants
           members={members}
+          comment={comment}
           isSubmitting={isSubmitting}
           goBack={() => setProposalStep({ type: ProposalType.RemoveParticipants })}
           submitForm={submitCreateProposal}
