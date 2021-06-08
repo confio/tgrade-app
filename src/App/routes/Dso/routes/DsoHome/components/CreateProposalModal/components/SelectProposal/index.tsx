@@ -1,10 +1,14 @@
-import { Select } from "antd";
+import { Typography } from "antd";
+import { SelectValue } from "antd/lib/select";
 import Button from "App/components/form/Button";
+import Select from "App/components/form/Select";
 import * as React from "react";
 import { useState } from "react";
 import { proposalLabels, ProposalStep, ProposalType } from "../..";
+import { ProposalStack, Separator } from "./style";
 
 const { Option } = Select;
+const { Text } = Typography;
 
 interface SelectProposalProps {
   readonly setProposalStep: React.Dispatch<React.SetStateAction<ProposalStep | undefined>>;
@@ -15,20 +19,23 @@ export default function SelectProposal({ setProposalStep }: SelectProposalProps)
 
   return (
     <>
-      <Select
-        defaultActiveFirstOption
-        value={selectedProposal}
-        onChange={(proposalType: ProposalType) => setSelectedProposal(proposalType)}
-      >
-        {Object.values(ProposalType).map((proposalType) => (
-          <Option key={proposalType} value={proposalType}>
-            {proposalLabels[proposalType]}
-          </Option>
-        ))}
-      </Select>
-      <Button onClick={() => setProposalStep({ type: selectedProposal })}>
-        <div>Next</div>
-      </Button>
+      <ProposalStack gap="s-3">
+        <Text>Proposal</Text>
+        <Select
+          defaultActiveFirstOption
+          size="large"
+          value={selectedProposal}
+          onChange={(proposalType: SelectValue) => setSelectedProposal(proposalType as ProposalType)}
+        >
+          {Object.values(ProposalType).map((proposalType) => (
+            <Option key={proposalType} value={proposalType}>
+              {proposalLabels[proposalType]}
+            </Option>
+          ))}
+        </Select>
+      </ProposalStack>
+      <Separator />
+      <Button onClick={() => setProposalStep({ type: selectedProposal })}>Next</Button>
     </>
   );
 }

@@ -1,44 +1,23 @@
-import { Modal } from "antd";
 import { Stack } from "App/components/layout";
 import styled from "styled-components";
 
-export const StyledModal = styled(Modal)`
-  ${({ bgTransparent }: { bgTransparent?: boolean }) =>
-    bgTransparent &&
-    `
-  & .ant-modal-content {
-    background: none;
-    box-shadow: none;
-  }
-  `};
-`;
-
-export const FormStack = styled(Stack)`
-  & .ant-btn {
-    align-self: flex-end;
-  }
-`;
-
-export const ModalHeader = styled.header`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  & h1 {
-    font-size: var(--s3);
-    font-weight: 500;
-    line-height: 2.35rem;
+export const ProposalStack = styled(Stack)`
+  & span.ant-typography {
+    font-size: var(--s0);
+    color: var(--color-text-1ary);
   }
 
-  & img {
-    cursor: pointer;
-    height: 1.25rem;
+  & .ant-select {
+    align-self: flex-start;
+    width: 100%;
+    max-width: 22rem;
   }
 `;
 
 export const Separator = styled.hr`
+  margin: 0 -20px 0 -20px;
   border: none;
-  border-top: var(--color-input-border);
+  border-top: 1px solid var(--color-input-border);
 `;
 
 export const FieldGroup = styled.div`
