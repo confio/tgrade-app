@@ -21,7 +21,8 @@ export const FormStack = styled(Stack)`
 
 export const ModalHeader = styled.header`
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
   justify-content: space-between;
 
   & h1 {
@@ -31,14 +32,18 @@ export const ModalHeader = styled.header`
   }
 
   & img {
+    position: absolute;
+    top: 0;
+    right: -40px;
     cursor: pointer;
     height: 1.25rem;
   }
 `;
 
 export const Separator = styled.hr`
+  margin: 0 -20px 0 -20px;
   border: none;
-  border-top: var(--color-input-border);
+  border-top: 1px solid var(--color-input-border);
 `;
 
 export const FieldGroup = styled.div`

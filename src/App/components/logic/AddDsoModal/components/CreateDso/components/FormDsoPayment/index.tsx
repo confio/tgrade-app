@@ -1,11 +1,12 @@
 import Button from "App/components/form/Button";
 import { Field } from "App/components/form/Field";
+import { BackButtonOrLink } from "App/components/logic";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { ButtonGroup, FormStack } from "./style";
+import { ButtonGroup, FormStack, Separator } from "./style";
 
 const escrowLabel = "Escrow amount";
 
@@ -37,10 +38,9 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
         <Form>
           <FormStack>
             <Field disabled={isSubmitting} label={escrowLabel} placeholder="Enter escrow amount" />
+            <Separator />
             <ButtonGroup>
-              <Button disabled={isSubmitting} onClick={() => goBack()}>
-                <div>Back</div>
-              </Button>
+              <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />
               <Button loading={isSubmitting} disabled={!dirty || !isValid} onClick={() => submitForm()}>
                 <div>Sign transaction and pay escrow</div>
               </Button>

@@ -1,19 +1,19 @@
-import { Typography } from "antd";
 import Button from "App/components/form/Button";
+import Checkbox from "App/components/form/Checkbox";
 import { Field } from "App/components/form/Field";
+import { BackButtonOrLink } from "App/components/logic";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { FieldGroup, FormStack } from "./style";
-
-const { Text } = Typography;
+import { ButtonGroup, FieldGroup, FormStack, Separator } from "./style";
 
 const dsoNameLabel = "DSO name";
 const votingDurationLabel = "Voting duration";
 const quorumLabel = "Quorum";
 const thresholdLabel = "Threshold";
+const allowEndEarlyLabel = "Allow end early?";
 
 const validationSchema = Yup.object().shape({
   [getFormItemName(dsoNameLabel)]: Yup.string()
@@ -40,6 +40,7 @@ export interface FormDsoBasicDataValues {
   readonly votingDuration: string;
   readonly quorum: string;
   readonly threshold: string;
+  readonly allowEndEarly: boolean;
 }
 
 interface FormDsoBasicDataProps extends FormDsoBasicDataValues {
@@ -54,6 +55,7 @@ export default function FormDsoBasicData({
   votingDuration,
   quorum,
   threshold,
+  allowEndEarly,
 }: FormDsoBasicDataProps): JSX.Element {
   return (
     <Formik
@@ -62,32 +64,38 @@ export default function FormDsoBasicData({
         [getFormItemName(votingDurationLabel)]: votingDuration,
         [getFormItemName(quorumLabel)]: quorum,
         [getFormItemName(thresholdLabel)]: threshold,
+        [getFormItemName(allowEndEarlyLabel)]: allowEndEarly,
       }}
       enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) =>
         handleSubmit({
-          dsoName: values[getFormItemName(dsoNameLabel)],
-          votingDuration: values[getFormItemName(votingDurationLabel)],
-          quorum: values[getFormItemName(quorumLabel)],
-          threshold: values[getFormItemName(thresholdLabel)],
+          dsoName: values[getFormItemName(dsoNameLabel)].toString(),
+          votingDuration: values[getFormItemName(votingDurationLabel)].toString(),
+          quorum: values[getFormItemName(quorumLabel)].toString(),
+          threshold: values[getFormItemName(thresholdLabel)].toString(),
+          allowEndEarly: !!values[getFormItemName(allowEndEarlyLabel)],
         })
       }
     >
       {({ dirty, isValid, submitForm }) => (
         <>
           <Form>
-            <FormStack>
+            <FormStack gap="s1">
               <Field label={dsoNameLabel} placeholder="Enter DSO name" />
               <FieldGroup>
                 <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" />
                 <Field label={quorumLabel} placeholder="Enter quorum" units="%" />
                 <Field label={thresholdLabel} placeholder="Enter threshold" units="%" />
               </FieldGroup>
-              <Text onClick={() => goToAddExistingDso()}>or Add Existing DSO</Text>
-              <Button disabled={!isValid} onClick={() => submitForm()}>
-                <div>Next</div>
-              </Button>
+              <Checkbox name={getFormItemName(allowEndEarlyLabel)}>{allowEndEarlyLabel}</Checkbox>
+              <Separator />
+              <ButtonGroup>
+                <BackButtonOrLink onClick={() => goToAddExistingDso()} text="Back" />
+                <Button disabled={!isValid} onClick={() => submitForm()}>
+                  <div>Next</div>
+                </Button>
+              </ButtonGroup>
             </FormStack>
           </Form>
         </>
