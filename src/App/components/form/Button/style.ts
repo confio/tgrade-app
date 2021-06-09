@@ -13,7 +13,7 @@ export const StyledButton = styled(Button)`
   box-shadow: none;
 
   color: white;
-  background-color: var(--bg-button-1ary);
+  background-color: ${(props) => (props.danger ? `var(--bg-button-danger)` : "var(--bg-button-1ary)")};
 
   font-family: var(--ff-quicksand);
   font-size: var(--s0);
