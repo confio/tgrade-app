@@ -8,6 +8,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { openAddDsoModal, setInitialLayoutState, useDso, useLayout } from "service";
 import CreateProposalModal from "./components/CreateProposalModal";
 import DsoDetail from "./components/DsoDetail";
+import LeaveDsoModal from "./components/LeaveDsoModal";
 
 const { TabPane } = Tabs;
 
@@ -26,6 +27,7 @@ export default function DsoHome(): JSX.Element | null {
   const { dsoState, dsoDispatch } = useDso();
   const [loadedDsoAddress, setLoadedDsoAddress] = useState<string>();
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
+  const [isLeaveDsoModalOpen, setLeaveDsoModalOpen] = useState(false);
 
   useEffect(() => {
     const noStoredDsos = !dsoState.dsos.length;
@@ -57,6 +59,9 @@ export default function DsoHome(): JSX.Element | null {
         <Button onClick={() => openAddDsoModal(dsoDispatch)}>
           <div>Add DSO</div>
         </Button>
+        <Button onClick={() => setLeaveDsoModalOpen(true)}>
+          <div>Leave DSO</div>
+        </Button>
         <Button onClick={() => setCreateProposalModalOpen(true)}>
           <div>Create proposal</div>
         </Button>
@@ -65,6 +70,7 @@ export default function DsoHome(): JSX.Element | null {
         isModalOpen={isCreateProposalModalOpen}
         closeModal={() => setCreateProposalModalOpen(false)}
       />
+      <LeaveDsoModal isModalOpen={isLeaveDsoModalOpen} closeModal={() => setLeaveDsoModalOpen(false)} />
     </PageLayout>
   ) : null;
 }
