@@ -1,13 +1,13 @@
 import { Typography } from "antd";
+import { BackButtonOrLink } from "App/components/logic";
 import * as React from "react";
 import { ComponentProps, HTMLAttributes } from "react";
-import BackLink from "../BackLink";
 import { StyledHeader, TitleStack } from "./style";
 
 const { Title } = Typography;
 
 interface HeaderBackProps extends HTMLAttributes<HTMLOrSVGElement> {
-  readonly backButtonProps?: ComponentProps<typeof BackLink>;
+  readonly backButtonProps?: ComponentProps<typeof BackButtonOrLink>;
   readonly backButtonTitle?: string;
   readonly viewTitle?: string;
   readonly viewSubtitle?: string;
@@ -25,7 +25,7 @@ export default function HeaderBack({
     <>
       {showHeader ? (
         <StyledHeader>
-          {showBackButton ? <BackLink {...backButtonProps} /> : null}
+          {showBackButton ? <BackButtonOrLink {...backButtonProps} /> : null}
           <TitleStack>
             <Title level={3}>{viewSubtitle ?? ""}</Title>
             <Title level={2}>{viewTitle ?? ""}</Title>

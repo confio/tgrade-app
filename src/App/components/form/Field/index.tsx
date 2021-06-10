@@ -9,12 +9,20 @@ const { Text } = Typography;
 interface FieldProps {
   readonly label: string;
   readonly placeholder: string;
+  readonly value?: string;
   readonly units?: string;
   readonly disabled?: boolean;
   readonly onInputChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-export function Field({ label, placeholder, units, disabled, onInputChange }: FieldProps): JSX.Element {
+export function Field({
+  label,
+  placeholder,
+  value,
+  units,
+  disabled,
+  onInputChange,
+}: FieldProps): JSX.Element {
   const formItemName = getFormItemName(label);
   const labelKebabCase = label.toLowerCase().replace(/ /g, "-");
   const labelId = `label-id-${labelKebabCase}`;
@@ -31,6 +39,7 @@ export function Field({ label, placeholder, units, disabled, onInputChange }: Fi
             aria-labelledby={labelId}
             name={formItemName}
             placeholder={placeholder}
+            value={value}
             disabled={disabled}
             onChange={onInputChange}
           />

@@ -43,3 +43,21 @@ export function getAmountField(t: TFunction, maxAmountNum?: number, maxAmountStr
     ? yupNumber
     : yupNumber.max(maxAmountNum, t("form.amount.max", { maxAmountString }));
 }
+
+export function isValidAddress(address: string, requiredPrefix: string): boolean {
+  try {
+    const { prefix, data } = Bech32.decode(address);
+    if (prefix !== requiredPrefix) {
+      return false;
+    }
+    return data.length === 20;
+  } catch {
+    return false;
+  }
+}
+
+export function addressStringToArray(addressString: string): readonly string[] {
+  const membersArray = addressString.split(/[\s,]+/);
+  const nonEmptyOrDuplicateArray = [...new Set(membersArray.filter(Boolean))];
+  return nonEmptyOrDuplicateArray;
+}

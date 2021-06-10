@@ -1,5 +1,14 @@
 import styled from "styled-components";
 
+export const StyledButton = styled.button`
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  outline: inherit;
+`;
 export const ArrowTextContainer = styled.div`
   display: flex;
   flex-direction: row;

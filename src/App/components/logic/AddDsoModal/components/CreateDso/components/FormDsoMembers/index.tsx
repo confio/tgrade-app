@@ -1,13 +1,11 @@
-import { Tag } from "antd";
+import { AddressList } from "App/components/form/AddressList";
 import Button from "App/components/form/Button";
 import { Field } from "App/components/form/Field";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
 import { useSdk } from "service";
-import { getFormItemName } from "utils/forms";
-import { isValidAddress } from "utils/sdk";
-import { ellipsifyAddress } from "utils/ui";
+import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
 import { ButtonGroup, FormStack } from "./style";
 
@@ -62,20 +60,13 @@ export default function FormDsoMembers({
                 placeholder="Type or paste addresses here"
                 onInputChange={() => submitForm()}
               />
-              {members.length ? (
-                <div>
-                  {members.map((memberAddress, index) => (
-                    <Tag
-                      key={`${index}-${memberAddress}`}
-                      color={isValidAddress(memberAddress, addressPrefix) ? "default" : "error"}
-                      closable
-                      onClose={() => setMembers(members.filter((member) => member !== memberAddress))}
-                    >
-                      {ellipsifyAddress(memberAddress)}
-                    </Tag>
-                  ))}
-                </div>
-              ) : null}
+              <AddressList
+                addresses={members}
+                addressPrefix={addressPrefix}
+                handleClose={(memberAddress) =>
+                  setMembers(members.filter((member) => member !== memberAddress))
+                }
+              />
               <ButtonGroup>
                 <Button onClick={() => goBack()}>
                   <div>Back</div>

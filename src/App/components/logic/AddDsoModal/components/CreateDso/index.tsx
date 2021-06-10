@@ -1,11 +1,11 @@
 import { Typography } from "antd";
+import { TxResult } from "App/components/logic/ShowTxResult";
 import * as React from "react";
 import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import closeIcon from "../../assets/cross.svg";
-import { TxResult } from "../ShowTxResult";
 import FormDsoBasicData, { FormDsoBasicDataValues } from "./components/FormDsoBasicData";
 import FormDsoMembers from "./components/FormDsoMembers";
 import FormDsoPayment, { FormDsoPaymentValues } from "./components/FormDsoPayment";
@@ -63,6 +63,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
       quorum: (parseFloat(quorum) / 100).toString(),
       threshold: (parseFloat(threshold) / 100).toString(),
       initial_members: members,
+      allow_end_early: true,
     };
 
     try {

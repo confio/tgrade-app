@@ -4,10 +4,10 @@ import * as React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { closeAddDsoModal, useDso } from "service";
+import ShowTxResult, { TxResult } from "../ShowTxResult";
 import modalBg from "./assets/modal-background.jpg";
 import AddExistingDso from "./components/AddExistingDso";
 import CreateDso from "./components/CreateDso";
-import ShowTxResult, { TxResult } from "./components/ShowTxResult";
 import { StyledModal } from "./style";
 
 enum AddDsoSteps {
