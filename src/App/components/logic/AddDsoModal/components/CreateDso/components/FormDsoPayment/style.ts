@@ -24,7 +24,11 @@ export const ModalHeader = styled.header`
   }
 `;
 
-export const Separator = styled.hr``;
+export const Separator = styled.hr`
+  margin: 0 -20px 0 -20px;
+  border: none;
+  border-top: 1px solid var(--color-input-border);
+`;
 
 export const FieldGroup = styled.div`
   display: flex;
@@ -38,11 +42,10 @@ export const FieldGroup = styled.div`
 
 export const ButtonGroup = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   flex-wrap: wrap;
 
-  .ant-btn {
-    margin-top: var(--s0);
-    margin-left: var(--s0);
+  button:first-child {
+    margin-right: var(--s0);
   }
 `;

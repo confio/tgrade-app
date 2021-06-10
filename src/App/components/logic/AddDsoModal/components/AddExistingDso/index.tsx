@@ -1,6 +1,7 @@
 import { Typography } from "antd";
 import Button from "App/components/form/Button";
 import { Field } from "App/components/form/Field";
+import { Stack } from "App/components/layout";
 import { TxResult } from "App/components/logic/ShowTxResult";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
@@ -11,7 +12,7 @@ import { getErrorFromStackTrace } from "utils/errors";
 import { getDecodedAddress, getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 import closeIcon from "../../assets/cross.svg";
-import { ModalHeader, Separator } from "./style";
+import { ButtonGroup, ModalHeader, Separator } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -71,9 +72,11 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
   });
 
   return (
-    <>
+    <Stack gap="s1">
       <ModalHeader>
-        <Title>Have an existing DSO address</Title>
+        <Typography>
+          <Title>Have an existing DSO address?</Title>
+        </Typography>
         {!isSubmitting ? (
           <img alt="Close button" src={closeIcon} onClick={() => closeAddDsoModal(dsoDispatch)} />
         ) : null}
@@ -90,16 +93,22 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
         {({ submitForm, isValid }) => (
           <>
             <Form>
-              <Field label={dsoAddressLabel} placeholder="Enter address" />
-              <Button disabled={!isValid} onClick={() => submitForm()}>
-                <div>Enter</div>
-              </Button>
+              <Stack gap="s1">
+                <Field label={dsoAddressLabel} placeholder="Enter address" />
+                <Separator />
+                <ButtonGroup>
+                  <Text>
+                    or <Text onClick={() => goToCreateDso()}>Create DSO</Text>
+                  </Text>
+                  <Button disabled={!isValid} onClick={() => submitForm()}>
+                    <div>Enter</div>
+                  </Button>
+                </ButtonGroup>
+              </Stack>
             </Form>
           </>
         )}
       </Formik>
-      <Separator />
-      <Text onClick={() => goToCreateDso()}>or Create dso</Text>
-    </>
+    </Stack>
   );
 }

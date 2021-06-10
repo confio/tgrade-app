@@ -1,4 +1,6 @@
 import { Typography } from "antd";
+import Steps from "App/components/form/Steps";
+import { Stack } from "App/components/layout";
 import { TxResult } from "App/components/logic/ShowTxResult";
 import * as React from "react";
 import { useState } from "react";
@@ -12,6 +14,7 @@ import FormDsoPayment, { FormDsoPaymentValues } from "./components/FormDsoPaymen
 import { ModalHeader, Separator } from "./style";
 
 const { Title } = Typography;
+const { Step } = Steps;
 
 enum CreateDsoSteps {
   BasicData = "BasicData",
@@ -38,13 +41,21 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
   const [votingDuration, setVotingDuration] = useState("");
   const [quorum, setQuorum] = useState("");
   const [threshold, setThreshold] = useState("");
+  const [allowEndEarly, setAllowEndEarly] = useState(true);
   const [members, setMembers] = useState<readonly string[]>([]);
 
-  function handleSubmitBasicData({ dsoName, votingDuration, quorum, threshold }: FormDsoBasicDataValues) {
+  function handleSubmitBasicData({
+    dsoName,
+    votingDuration,
+    quorum,
+    threshold,
+    allowEndEarly,
+  }: FormDsoBasicDataValues) {
     setDsoName(dsoName);
     setVotingDuration(votingDuration);
     setQuorum(quorum);
     setThreshold(threshold);
+    setAllowEndEarly(allowEndEarly);
     setAddDsoStep(CreateDsoSteps.Members);
   }
 
@@ -63,7 +74,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
       quorum: (parseFloat(quorum) / 100).toString(),
       threshold: (parseFloat(threshold) / 100).toString(),
       initial_members: members,
-      allow_end_early: true,
+      allow_end_early: allowEndEarly,
     };
 
     try {
@@ -92,9 +103,16 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
   }
 
   return (
-    <>
+    <Stack gap="s1">
       <ModalHeader>
-        <Title>Start DSO</Title>
+        <Typography>
+          <Title>Start DSO</Title>
+        </Typography>
+        <Steps size="small" current={Object.keys(CreateDsoSteps).indexOf(addDsoStep)}>
+          {Object.keys(CreateDsoSteps).map(() => (
+            <Step />
+          ))}
+        </Steps>
         {!isSubmitting ? (
           <img alt="Close button" src={closeIcon} onClick={() => closeAddDsoModal(dsoDispatch)} />
         ) : null}
@@ -108,6 +126,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
           votingDuration={votingDuration}
           quorum={quorum}
           threshold={threshold}
+          allowEndEarly={allowEndEarly}
         />
       ) : addDsoStep === CreateDsoSteps.Members ? (
         <FormDsoMembers
@@ -122,6 +141,6 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
           goBack={() => setAddDsoStep(CreateDsoSteps.Members)}
         />
       ) : null}
-    </>
+    </Stack>
   );
 }

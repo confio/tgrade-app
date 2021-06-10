@@ -38,7 +38,13 @@ export default function AddDsoModal(): JSX.Element {
       width="100%"
       bgTransparent={!!txResult}
       style={{
-        maxWidth: "59.5rem",
+        maxWidth: "63.25rem",
+        paddingRight: "60px",
+      }}
+      bodyStyle={{
+        position: "relative",
+        padding: "var(--s1)",
+        backgroundColor: txResult ? "transparent" : "var(--bg-body)",
       }}
       maskStyle={{
         background: `linear-gradient(0deg, rgba(4, 119, 120, 0.9), rgba(4, 119, 120, 0.9)), url(${modalBg})`,
