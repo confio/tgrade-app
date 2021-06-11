@@ -33,11 +33,12 @@ export default function DsoHome(): JSX.Element | null {
     const noStoredDsos = !dsoState.dsos.length;
     if (noStoredDsos) history.push(paths.dso.prefix);
 
-    const dsoAddressIsStored = dsoState.dsos.some(([address]) => address === dsoAddress);
+    const dsoAddressIsStored = dsoState.dsos.some(({ address }) => address === dsoAddress);
     if (dsoAddressIsStored) {
       setLoadedDsoAddress(dsoAddress);
     } else {
-      setLoadedDsoAddress(dsoState.dsos[0][0]);
+      const firstDsoAddress = dsoState.dsos[0].address;
+      setLoadedDsoAddress(firstDsoAddress);
     }
   }, [dsoAddress, dsoState.dsos, history]);
 
@@ -50,9 +51,9 @@ export default function DsoHome(): JSX.Element | null {
           tabPosition="top"
           onTabClick={(key) => history.push(`${paths.dso.prefix}/${key}`)}
         >
-          {dsoState.dsos.map(([dsoAddress, dsoName]) => (
-            <TabPane tab={dsoName} key={dsoAddress}>
-              <DsoDetail dsoAddress={dsoAddress} />
+          {dsoState.dsos.map(({ address, name }) => (
+            <TabPane tab={name} key={address}>
+              <DsoDetail dsoAddress={address} />
             </TabPane>
           ))}
         </Tabs>

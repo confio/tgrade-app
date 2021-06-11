@@ -1,5 +1,13 @@
 export { default as ContractsProvider, useContracts } from "./contracts";
-export { addDso, closeAddDsoModal, default as DsoProvider, openAddDsoModal, removeDso, useDso } from "./dsos";
+export {
+  addDso,
+  closeAddDsoModal,
+  default as DsoProvider,
+  getDsoName,
+  openAddDsoModal,
+  removeDso,
+  useDso,
+} from "./dsos";
 export { default as ErrorProvider, useError } from "./error";
 export {
   closeMenu,

@@ -89,7 +89,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
         },
       );
 
-      addDso(dsoDispatch, [contractAddress, dsoName]);
+      addDso(dsoDispatch, { address: contractAddress, name: dsoName });
       setTxResult({
         contractAddress,
         msg: `You are the voting participant in ${dsoName} (${contractAddress}).`,

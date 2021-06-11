@@ -1,15 +1,22 @@
 import { AddDsoModal } from "App/components/logic";
 import * as React from "react";
 import { createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
+import { useSdk } from "service";
 import { useLocalStorage } from "utils/storage";
 
-type DsoTuple = readonly [string, string];
+interface DsoId {
+  readonly address: string;
+  readonly name: string;
+}
+
+type DsosByUserMap = Map<string, readonly DsoId[]>;
+
 type ModalState = "open" | "closed";
 
 type DsoAction =
   | {
       readonly type: "addDso";
-      readonly payload: DsoTuple;
+      readonly payload: DsoId;
     }
   | {
       readonly type: "removeDso";
@@ -22,7 +29,7 @@ type DsoAction =
 
 type DsoDispatch = (action: DsoAction) => void;
 type DsoState = {
-  readonly dsos: readonly DsoTuple[];
+  readonly dsos: readonly DsoId[];
   readonly addDsoModalState: ModalState;
 };
 
@@ -33,7 +40,7 @@ type DsoContextType =
     }
   | undefined;
 
-function dsoComparator([, nameA]: DsoTuple, [, nameB]: DsoTuple) {
+function dsoComparator({ name: nameA }: DsoId, { name: nameB }: DsoId) {
   if (nameA < nameB) {
     return -1;
   }
@@ -50,17 +57,16 @@ function dsoReducer(dsoState: DsoState, action: DsoAction): DsoState {
 
   switch (action.type) {
     case "addDso": {
-      const [newDsoAddress, newDsoName] = action.payload;
-      const dsosRemovedOld = prevDsos.filter(([address]) => address !== newDsoAddress);
-      const newDsoTuple: DsoTuple = [newDsoAddress, newDsoName];
-      const newDsos = [...dsosRemovedOld, newDsoTuple];
+      const newDso = action.payload;
+      const dsosRemovedOld = prevDsos.filter(({ address }) => address !== newDso.address);
+      const newDsos = [...dsosRemovedOld, newDso];
       const sortedDsos = newDsos.sort(dsoComparator);
 
       return { ...dsoState, dsos: sortedDsos };
     }
     case "removeDso": {
       const addressToRemove = action.payload;
-      const dsosRemoved = prevDsos.filter(([address]) => address !== addressToRemove);
+      const dsosRemoved = prevDsos.filter(({ address }) => address !== addressToRemove);
       const sortedDsos = dsosRemoved.sort(dsoComparator);
 
       return { ...dsoState, dsos: sortedDsos };
@@ -74,7 +80,11 @@ function dsoReducer(dsoState: DsoState, action: DsoAction): DsoState {
   }
 }
 
-export function addDso(dispatch: DsoDispatch, dso: DsoTuple): void {
+export function getDsoName(dsos: readonly DsoId[], dsoAddress: string): string {
+  const dso = dsos.find(({ address }) => address === dsoAddress);
+  return dso?.name ?? "DSO";
+}
+export function addDso(dispatch: DsoDispatch, dso: DsoId): void {
   dispatch({ type: "addDso", payload: dso });
 }
 export function removeDso(dispatch: DsoDispatch, dsoAddress: string): void {
@@ -98,17 +108,22 @@ export const useDso = (): NonNullable<DsoContextType> => {
 };
 
 export default function DsoProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
-  const [storedDsos, setStoredDsos] = useLocalStorage<readonly DsoTuple[]>(
-    "stored-dsos",
-    [],
-    JSON.stringify,
-    JSON.parse,
+  const {
+    sdkState: { address },
+  } = useSdk();
+
+  const [storedDsos, setStoredDsos] = useLocalStorage<DsosByUserMap>(
+    "trusted-circles",
+    new Map(),
+    (map) => JSON.stringify(Array.from(map.entries())),
+    (map) => new Map(JSON.parse(map)),
   );
-  const [dsoState, dsoDispatch] = useReducer(dsoReducer, { dsos: storedDsos, addDsoModalState: "closed" });
+  const dsos = storedDsos.get(address) ?? [];
+  const [dsoState, dsoDispatch] = useReducer(dsoReducer, { dsos, addDsoModalState: "closed" });
 
   useEffect(() => {
-    setStoredDsos(dsoState.dsos);
-  }, [dsoState.dsos, setStoredDsos]);
+    setStoredDsos((prevStoredDsos) => prevStoredDsos.set(address, dsoState.dsos));
+  }, [address, dsoState.dsos, setStoredDsos]);
 
   return (
     <DsoContext.Provider value={{ dsoState, dsoDispatch }}>

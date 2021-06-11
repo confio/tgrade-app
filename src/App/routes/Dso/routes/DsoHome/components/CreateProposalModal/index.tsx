@@ -5,12 +5,13 @@ import { TxResult } from "App/components/logic/ShowTxResult";
 import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useDso } from "service";
+import { getDsoName, useDso } from "service";
 import { DsoHomeParams } from "../..";
 import closeIcon from "./assets/cross.svg";
 import modalBg from "./assets/modal-background.jpg";
 import ProposalAddParticipants from "./components/ProposalAddParticipants";
 import ProposalAddVotingParticipants from "./components/ProposalAddVotingParticipants";
+import ProposalEditDso from "./components/ProposalEditDso";
 import ProposalRemoveParticipants from "./components/ProposalRemoveParticipants";
 import SelectProposal from "./components/SelectProposal";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
@@ -23,12 +24,14 @@ export enum ProposalType {
   AddParticipants = "add-participants",
   RemoveParticipants = "remove-participants",
   AddVotingParticipants = "add-voting-participants",
+  EditDso = "edit-dso",
 }
 
 export const proposalLabels = {
   [ProposalType.AddParticipants]: "Add non voting participants",
   [ProposalType.RemoveParticipants]: "Remove non voting participants",
   [ProposalType.AddVotingParticipants]: "Add voting participants",
+  [ProposalType.EditDso]: "Edit DSO",
 };
 
 export const proposalTitles = {
@@ -36,6 +39,7 @@ export const proposalTitles = {
   [ProposalType.AddParticipants]: "Add participant(s)",
   [ProposalType.RemoveParticipants]: "Remove participant(s)",
   [ProposalType.AddVotingParticipants]: "Add voting participant(s)",
+  [ProposalType.EditDso]: "Edit DSO",
   confirmation: "Confirmation",
 };
 
@@ -70,7 +74,7 @@ export default function CreateProposalModal({
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
 
-  const [, dsoName = "DSO"] = dsos.find(([address]) => address === dsoAddress) ?? [];
+  const dsoName = getDsoName(dsos, dsoAddress);
 
   function tryAgain() {
     setProposalStep(proposalStep ? { type: proposalStep.type } : undefined);
@@ -148,6 +152,14 @@ export default function CreateProposalModal({
             />
           ) : proposalStep.type === ProposalType.AddVotingParticipants ? (
             <ProposalAddVotingParticipants
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.EditDso ? (
+            <ProposalEditDso
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
               isSubmitting={isSubmitting}

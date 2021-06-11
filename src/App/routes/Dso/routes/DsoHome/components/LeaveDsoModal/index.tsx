@@ -6,7 +6,7 @@ import { paths } from "App/paths";
 import * as React from "react";
 import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { removeDso, useDso, useError, useSdk } from "service";
+import { getDsoName, removeDso, useDso, useError, useSdk } from "service";
 import { getErrorFromStackTrace } from "utils/errors";
 import { DsoHomeParams } from "../..";
 import closeIcon from "./assets/cross.svg";
@@ -34,7 +34,7 @@ export default function LeaveDsoModal({ isModalOpen, closeModal }: LeaveDsoModal
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
 
-  const [, dsoName = "DSO"] = dsos.find(([address]) => address === dsoAddress) ?? [];
+  const dsoName = getDsoName(dsos, dsoAddress);
 
   function resetModal() {
     closeModal();
