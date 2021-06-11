@@ -10,7 +10,7 @@ export default function Logout(): JSX.Element {
 
   useEffect(() => {
     resetSdk(sdkDispatch);
-    history.replace(paths.setup.prefix);
+    history.replace(`${paths.setup.prefix}${paths.setup.tutorial}`);
   }, [history, sdkDispatch]);
 
   return <></>;
