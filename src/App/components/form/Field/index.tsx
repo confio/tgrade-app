@@ -35,22 +35,39 @@ export function Field({
           <div className="unit-wrapper">
             <Text>{units}</Text>
           </div>
-          <Input
-            aria-labelledby={labelId}
-            name={formItemName}
-            placeholder={placeholder}
-            value={value}
-            disabled={disabled}
-            onChange={onInputChange}
-          />
+          {value !== undefined && onInputChange !== undefined ? (
+            <Input
+              aria-labelledby={labelId}
+              name={formItemName}
+              placeholder={placeholder}
+              value={value}
+              disabled={disabled}
+              onChange={onInputChange}
+            />
+          ) : (
+            <Input
+              aria-labelledby={labelId}
+              name={formItemName}
+              placeholder={placeholder}
+              disabled={disabled}
+            />
+          )}
         </div>
+      ) : value !== undefined && onInputChange !== undefined ? (
+        <UnitlessInput
+          aria-labelledby={labelId}
+          name={formItemName}
+          placeholder={placeholder}
+          value={value}
+          disabled={disabled}
+          onChange={onInputChange}
+        />
       ) : (
         <UnitlessInput
           aria-labelledby={labelId}
           name={formItemName}
           placeholder={placeholder}
           disabled={disabled}
-          onChange={onInputChange}
         />
       )}
     </StyledFormItem>
