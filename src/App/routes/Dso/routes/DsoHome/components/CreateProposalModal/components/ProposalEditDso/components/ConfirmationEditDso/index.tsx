@@ -7,12 +7,12 @@ interface ConfirmationEditDsoProps {
   readonly isSubmitting: boolean;
   readonly goBack: () => void;
   readonly submitForm: () => void;
-  readonly dsoName: string;
-  readonly quorum: string;
-  readonly threshold: string;
-  readonly votingDuration: string;
-  readonly escrowAmount: string;
-  readonly earlyPass: boolean;
+  readonly dsoName?: string;
+  readonly quorum?: string;
+  readonly threshold?: string;
+  readonly votingDuration?: string;
+  readonly escrowAmount?: string;
+  readonly earlyPass?: boolean;
   readonly comment: string;
 }
 
@@ -61,10 +61,12 @@ export default function ConfirmationEditDso({
             <TextValue>{escrowAmount}</TextValue>
           </ChangedField>
         ) : null}
-        <ChangedField>
-          <TextLabel>Early pass</TextLabel>
-          <TextValue>{earlyPass ? "Enabled" : "Disabled"}</TextValue>
-        </ChangedField>
+        {earlyPass ? (
+          <ChangedField>
+            <TextLabel>Early pass</TextLabel>
+            <TextValue>{earlyPass ? "Enabled" : "Disabled"}</TextValue>
+          </ChangedField>
+        ) : null}
       </FieldGroup>
       {comment ? <TextComment>{comment}</TextComment> : null}
       <Separator />
