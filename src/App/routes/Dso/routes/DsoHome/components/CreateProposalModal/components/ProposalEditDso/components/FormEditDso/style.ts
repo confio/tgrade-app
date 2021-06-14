@@ -1,9 +1,18 @@
+import { Typography } from "antd";
 import { Stack } from "App/components/layout";
 import styled from "styled-components";
+
+const { Text } = Typography;
 
 export const FormStack = styled(Stack)`
   &&& .ant-checkbox-wrapper {
     margin-top: 0;
+  }
+`;
+
+export const WarningText = styled(Text)`
+  && {
+    color: var(--color-error-form);
   }
 `;
 

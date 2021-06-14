@@ -7,7 +7,7 @@ import { Form } from "formik-antd";
 import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { ButtonGroup, FieldGroup, FormStack, Separator } from "./style";
+import { ButtonGroup, FieldGroup, FormStack, Separator, WarningText } from "./style";
 
 function getFormValuesWithType(values: { [x: string]: string | boolean }): FormEditDsoValues {
   return {
@@ -48,17 +48,23 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(quorumLabel)]: Yup.number()
     .typeError("Quorum must be a number")
     .positive("Quorum must be positive")
+    .integer("Quorum must be an integer")
     .max(100, "Quorum must be 100 maximum"),
   [getFormItemName(thresholdLabel)]: Yup.number()
     .typeError("Threshold must be a number")
     .positive("Threshold must be positive")
+    .integer("Threshold must be an integer")
+    .min(50, "Threshold must be 50 minimum")
     .max(100, "Threshold must be 100 maximum"),
   [getFormItemName(votingDurationLabel)]: Yup.number()
     .typeError("Voting duration must be a number")
-    .positive("Voting duration must be positive"),
+    .positive("Voting duration must be positive")
+    .integer("Voting duration must be an integer")
+    .min(1, "Voting duration must be 1 minimum"),
   [getFormItemName(escrowAmountLabel)]: Yup.number()
-    .typeError("Voting duration must be a number")
-    .positive("Voting duration must be positive"),
+    .typeError("Escrow amount must be a number")
+    .positive("Escrow amount must be positive")
+    .min(1, "Escrow amount must be 1 minimum"),
   [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
 });
 
@@ -105,37 +111,43 @@ export default function FormEditDso({
       validationSchema={validationSchema}
       onSubmit={(values) => handleSubmit(getFormValuesWithType(values))}
     >
-      {({ values, isValid, submitForm }) => (
-        <>
-          <Form>
-            <FormStack gap="s1">
-              <Field label={dsoNameLabel} placeholder="Enter DSO name" />
-              <FieldGroup>
-                <Field label={quorumLabel} placeholder="Enter quorum" units="%" />
-                <Field label={thresholdLabel} placeholder="Enter threshold" units="%" />
-              </FieldGroup>
-              <FieldGroup>
-                <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" />
-                <Field label={escrowAmountLabel} placeholder="Enter amount" units="TGD" />
-              </FieldGroup>
-              <Checkbox name={getFormItemName(earlyPassLabel)}>{earlyPassLabel}</Checkbox>
-              <Field label={commentLabel} placeholder="Enter comment" />
-              <Separator />
-              <ButtonGroup>
-                <BackButtonOrLink onClick={() => goBack()} text="Back" />
-                <Button
-                  disabled={
-                    !isValid || !checkEditParamsAreNew(getFormValuesWithType(values), currentDsoValues)
-                  }
-                  onClick={() => submitForm()}
-                >
-                  <div>Next</div>
-                </Button>
-              </ButtonGroup>
-            </FormStack>
-          </Form>
-        </>
-      )}
+      {({ values, isValid, submitForm }) => {
+        const votingDurationInt = parseInt(values[getFormItemName(votingDurationLabel)].toString(), 10);
+        const showDurationWarning = votingDurationInt >= 60;
+
+        return (
+          <>
+            <Form>
+              <FormStack gap="s1">
+                <Field label={dsoNameLabel} placeholder="Enter DSO name" />
+                <FieldGroup>
+                  <Field label={quorumLabel} placeholder="Enter quorum" units="%" />
+                  <Field label={thresholdLabel} placeholder="Enter threshold" units="%" />
+                </FieldGroup>
+                <FieldGroup>
+                  <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" />
+                  <Field label={escrowAmountLabel} placeholder="Enter amount" units="TGD" />
+                </FieldGroup>
+                <Checkbox name={getFormItemName(earlyPassLabel)}>{earlyPassLabel}</Checkbox>
+                <Field label={commentLabel} placeholder="Enter comment" />
+                {showDurationWarning ? <WarningText>Warning: voting duration very long</WarningText> : null}
+                <Separator />
+                <ButtonGroup>
+                  <BackButtonOrLink onClick={() => goBack()} text="Back" />
+                  <Button
+                    disabled={
+                      !isValid || !checkEditParamsAreNew(getFormValuesWithType(values), currentDsoValues)
+                    }
+                    onClick={() => submitForm()}
+                  >
+                    <div>Next</div>
+                  </Button>
+                </ButtonGroup>
+              </FormStack>
+            </Form>
+          </>
+        );
+      }}
     </Formik>
   );
 }
