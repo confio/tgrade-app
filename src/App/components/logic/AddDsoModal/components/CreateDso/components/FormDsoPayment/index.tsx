@@ -14,7 +14,8 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(escrowLabel)]: Yup.number()
     .typeError("Escrow must be a number")
     .required("Escrow is required")
-    .positive("Escrow must be positive"),
+    .positive("Escrow amount must be positive")
+    .min(1, "Escrow amount must be 1 minimum"),
 });
 
 export interface FormDsoPaymentValues {
@@ -29,19 +30,19 @@ interface FormDsoPaymentProps {
 export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentProps): JSX.Element {
   return (
     <Formik
-      initialValues={{ [getFormItemName(escrowLabel)]: "" }}
+      initialValues={{ [getFormItemName(escrowLabel)]: "1" }}
       enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) => handleSubmit({ escrowAmount: values[getFormItemName(escrowLabel)] })}
     >
-      {({ dirty, isValid, isSubmitting, submitForm }) => (
+      {({ isValid, isSubmitting, submitForm }) => (
         <Form>
           <FormStack>
             <Field disabled={isSubmitting} label={escrowLabel} placeholder="Enter escrow amount" />
             <Separator />
             <ButtonGroup>
               <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />
-              <Button loading={isSubmitting} disabled={!dirty || !isValid} onClick={() => submitForm()}>
+              <Button loading={isSubmitting} disabled={!isValid} onClick={() => submitForm()}>
                 <div>Sign transaction and pay escrow</div>
               </Button>
             </ButtonGroup>

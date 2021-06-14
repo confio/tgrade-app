@@ -7,7 +7,7 @@ import { Form } from "formik-antd";
 import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { ButtonGroup, FieldGroup, FormStack, Separator } from "./style";
+import { ButtonGroup, FieldGroup, FormStack, Separator, WarningText } from "./style";
 
 const dsoNameLabel = "DSO name";
 const votingDurationLabel = "Voting duration";
@@ -22,16 +22,21 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(votingDurationLabel)]: Yup.number()
     .typeError("Voting duration must be a number")
     .required("Voting duration is required")
-    .positive("Voting duration must be positive"),
+    .positive("Voting duration must be positive")
+    .integer("Voting duration must be an integer")
+    .min(1, "Voting duration must be 1 minimum"),
   [getFormItemName(quorumLabel)]: Yup.number()
     .typeError("Quorum must be a number")
     .required("Quorum is required")
     .positive("Quorum must be positive")
+    .integer("Quorum must be an integer")
     .max(100, "Quorum must be 100 maximum"),
   [getFormItemName(thresholdLabel)]: Yup.number()
     .typeError("Threshold must be a number")
     .required("Threshold is required")
     .positive("Threshold must be positive")
+    .integer("Threshold must be an integer")
+    .min(50, "Threshold must be 50 minimum")
     .max(100, "Threshold must be 100 maximum"),
 });
 
@@ -78,28 +83,34 @@ export default function FormDsoBasicData({
         })
       }
     >
-      {({ dirty, isValid, submitForm }) => (
-        <>
-          <Form>
-            <FormStack gap="s1">
-              <Field label={dsoNameLabel} placeholder="Enter DSO name" />
-              <FieldGroup>
-                <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" />
-                <Field label={quorumLabel} placeholder="Enter quorum" units="%" />
-                <Field label={thresholdLabel} placeholder="Enter threshold" units="%" />
-              </FieldGroup>
-              <Checkbox name={getFormItemName(allowEndEarlyLabel)}>{allowEndEarlyLabel}</Checkbox>
-              <Separator />
-              <ButtonGroup>
-                <BackButtonOrLink onClick={() => goToAddExistingDso()} text="Back" />
-                <Button disabled={!isValid} onClick={() => submitForm()}>
-                  <div>Next</div>
-                </Button>
-              </ButtonGroup>
-            </FormStack>
-          </Form>
-        </>
-      )}
+      {({ values, isValid, submitForm }) => {
+        const votingDurationInt = parseInt(values[getFormItemName(votingDurationLabel)].toString(), 10);
+        const showDurationWarning = votingDurationInt >= 60;
+
+        return (
+          <>
+            <Form>
+              <FormStack gap="s1">
+                <Field label={dsoNameLabel} placeholder="Enter DSO name" />
+                <FieldGroup>
+                  <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" />
+                  <Field label={quorumLabel} placeholder="Enter quorum" units="%" />
+                  <Field label={thresholdLabel} placeholder="Enter threshold" units="%" />
+                </FieldGroup>
+                <Checkbox name={getFormItemName(allowEndEarlyLabel)}>{allowEndEarlyLabel}</Checkbox>
+                {showDurationWarning ? <WarningText>Warning: voting duration very long</WarningText> : null}
+                <Separator />
+                <ButtonGroup>
+                  <BackButtonOrLink onClick={() => goToAddExistingDso()} text="Back" />
+                  <Button disabled={!isValid} onClick={() => submitForm()}>
+                    <div>Next</div>
+                  </Button>
+                </ButtonGroup>
+              </FormStack>
+            </Form>
+          </>
+        );
+      }}
     </Formik>
   );
 }

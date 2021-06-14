@@ -28,7 +28,7 @@ export const FieldGroup = styled.div`
   flex-wrap: wrap;
 
   & .ant-form-item {
-    flex-basis: 18rem;
+    flex-basis: 24rem;
   }
 `;
 

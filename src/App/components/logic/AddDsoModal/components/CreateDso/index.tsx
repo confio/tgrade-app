@@ -38,9 +38,9 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
   const [isSubmitting, setSubmitting] = useState(false);
 
   const [dsoName, setDsoName] = useState("");
-  const [votingDuration, setVotingDuration] = useState("");
-  const [quorum, setQuorum] = useState("");
-  const [threshold, setThreshold] = useState("");
+  const [votingDuration, setVotingDuration] = useState("14");
+  const [quorum, setQuorum] = useState("1");
+  const [threshold, setThreshold] = useState("50");
   const [allowEndEarly, setAllowEndEarly] = useState(true);
   const [members, setMembers] = useState<readonly string[]>([]);
 
@@ -89,7 +89,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
         },
       );
 
-      addDso(dsoDispatch, [contractAddress, dsoName]);
+      addDso(dsoDispatch, { address: contractAddress, name: dsoName });
       setTxResult({
         contractAddress,
         msg: `You are the voting participant in ${dsoName} (${contractAddress}).`,
@@ -109,8 +109,8 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
           <Title>Start DSO</Title>
         </Typography>
         <Steps size="small" current={Object.keys(CreateDsoSteps).indexOf(addDsoStep)}>
-          {Object.keys(CreateDsoSteps).map(() => (
-            <Step />
+          {Object.keys(CreateDsoSteps).map((value) => (
+            <Step key={value} />
           ))}
         </Steps>
         {!isSubmitting ? (

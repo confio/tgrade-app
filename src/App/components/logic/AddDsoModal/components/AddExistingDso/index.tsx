@@ -42,7 +42,7 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
     try {
       const response: any = await signingClient.queryContractSmart(dsoAddress, { dso: {} });
       const dsoName: string = response.name;
-      addDso(dsoDispatch, [dsoAddress, dsoName]);
+      addDso(dsoDispatch, { address: dsoAddress, name: dsoName });
 
       setTxResult({ contractAddress: dsoAddress, msg: `Added DSO: ${dsoName} (${dsoAddress}).` });
     } catch (error) {

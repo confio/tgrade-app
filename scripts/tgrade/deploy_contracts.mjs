@@ -45,7 +45,7 @@ async function main() {
     prefix: config.bech32prefix,
   });
   const gasLimits = {
-    upload: 2000000,
+    upload: 2500000,
     init: 600000,
     exec: 400000,
     migrate: 600000,

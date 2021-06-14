@@ -21,7 +21,7 @@ export default function EmptyDsos(): JSX.Element {
     const noStoredDsos = !dsoState.dsos.length;
     if (noStoredDsos) return;
 
-    const firstStoredDsoAddress = dsoState.dsos[0][0];
+    const firstStoredDsoAddress = dsoState.dsos[0].address;
     history.push(`${paths.dso.prefix}/${firstStoredDsoAddress}`);
   }, [dsoState.dsos, history]);
 

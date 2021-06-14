@@ -3,7 +3,7 @@ import { DsoHomeParams } from "App/routes/Dso/routes/DsoHome";
 import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useDso, useError, useSdk } from "service";
+import { getDsoName, useDso, useError, useSdk } from "service";
 import { getErrorFromStackTrace } from "utils/errors";
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationRemoveParticipants from "./components/ConfirmationRemoveParticipants";
@@ -59,8 +59,7 @@ export default function ProposalRemoveParticipants({
         },
       });
 
-      const [, dsoName = "DSO"] = dsos.find(([address]) => address === dsoAddress) ?? [];
-
+      const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({
         msg: `Created proposal for removing participants from ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
       });

@@ -3,7 +3,7 @@ import { DsoHomeParams } from "App/routes/Dso/routes/DsoHome";
 import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useDso, useError, useSdk } from "service";
+import { getDsoName, useDso, useError, useSdk } from "service";
 import { getErrorFromStackTrace } from "utils/errors";
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationAddParticipants from "./components/ConfirmationAddParticipants";
@@ -59,8 +59,7 @@ export default function ProposalAddParticipants({
         },
       });
 
-      const [, dsoName = "DSO"] = dsos.find(([address]) => address === dsoAddress) ?? [];
-
+      const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({
         msg: `Created proposal for adding participants to ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
       });
