@@ -61,7 +61,7 @@ export default function ConfirmationEditDso({
             <TextValue>{escrowAmount}</TextValue>
           </ChangedField>
         ) : null}
-        {earlyPass ? (
+        {earlyPass !== undefined ? (
           <ChangedField>
             <TextLabel>Early pass</TextLabel>
             <TextValue>{earlyPass ? "Enabled" : "Disabled"}</TextValue>
