@@ -1,7 +1,11 @@
 import { TxResult } from "App/components/logic/ShowTxResult";
 import * as React from "react";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { getDsoName, useDso, useError, useSdk } from "service";
+import { getErrorFromStackTrace } from "utils/errors";
 import { ProposalStep, ProposalType } from "../..";
+import { DsoHomeParams } from "../../../..";
 import ConfirmationAddVotingParticipants from "./components/ConfirmationAddVotingParticipants";
 import FormAddVotingParticipants, {
   FormAddVotingParticipantsValues,
@@ -22,6 +26,15 @@ export default function ProposalAddVotingParticipants({
   setSubmitting,
   setTxResult,
 }: ProposalAddVotingParticipantsProps): JSX.Element {
+  const { dsoAddress }: DsoHomeParams = useParams();
+  const { handleError } = useError();
+  const {
+    sdkState: { address, signingClient },
+  } = useSdk();
+  const {
+    dsoState: { dsos },
+  } = useDso();
+
   const [members, setMembers] = useState<readonly string[]>([]);
   const [comment, setComment] = useState("");
 
@@ -32,7 +45,31 @@ export default function ProposalAddVotingParticipants({
   }
 
   async function submitCreateProposal() {
-    setTxResult({ error: "Proposal not yet implemented" });
+    setSubmitting(true);
+
+    try {
+      const { transactionHash } = await signingClient.execute(address, dsoAddress, {
+        propose: {
+          title: "Add voting participants",
+          description: comment,
+          proposal: {
+            add_voting_members: {
+              voters: members,
+            },
+          },
+        },
+      });
+
+      const dsoName = getDsoName(dsos, dsoAddress);
+      setTxResult({
+        msg: `Created proposal for adding voting participants to ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
+      });
+    } catch (error) {
+      setTxResult({ error: getErrorFromStackTrace(error) });
+      handleError(error);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
