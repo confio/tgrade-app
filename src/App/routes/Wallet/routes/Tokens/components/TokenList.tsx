@@ -1,4 +1,4 @@
-import { Coin } from "@cosmjs/launchpad";
+import { Coin } from "@cosmjs/stargate";
 import { Stack } from "App/components/layout";
 import * as React from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
