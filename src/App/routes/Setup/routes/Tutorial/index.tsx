@@ -5,6 +5,7 @@ import { RedirectLocation, VideoPlayer } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { isChrome, isDesktop } from "react-device-detect";
 import { useHistory } from "react-router-dom";
 import {
   hitFaucetIfNeeded,
@@ -15,10 +16,19 @@ import {
   useLayout,
   useSdkInit,
 } from "service";
-import { loadKeplrWallet, loadOrCreateWallet, WalletLoader } from "utils/sdk";
+import { loadKeplrWallet, loadLedgerWallet, loadOrCreateWallet, WalletLoader } from "utils/sdk";
 import { TextStack, TutorialStack } from "./style";
 
 const { Title, Paragraph } = Typography;
+
+function disableLedgerLogin() {
+  const anyNavigator: any = navigator;
+  return !anyNavigator?.usb || !isChrome || !isDesktop;
+}
+
+function disableKeplrLogin() {
+  return !(window.getOfflineSigner && window.keplr?.experimentalSuggestChain);
+}
 
 export default function Tutorial(): JSX.Element {
   const history = useHistory();
@@ -80,8 +90,11 @@ export default function Tutorial(): JSX.Element {
         <Button loading={loading} onClick={() => init(loadOrCreateWallet)}>
           <div>Generate recovery phrase</div>
         </Button>
-        <Button loading={loading} onClick={() => init(loadKeplrWallet)}>
+        <Button loading={loading} disabled={disableKeplrLogin()} onClick={() => init(loadKeplrWallet)}>
           <div>Keplr</div>
+        </Button>
+        <Button loading={loading} disabled={disableLedgerLogin()} onClick={() => init(loadLedgerWallet)}>
+          <div>Ledger</div>
         </Button>
       </TutorialStack>
     </PageLayout>

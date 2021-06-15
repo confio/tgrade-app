@@ -1,4 +1,5 @@
-import { makeCosmoshubPath, Secp256k1HdWallet } from "@cosmjs/launchpad";
+import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { Tooltip, Typography } from "antd";
 import { OldPageLayout, Stack } from "App/components/layout";
 import { Loading } from "App/components/logic";
@@ -43,7 +44,7 @@ export default function Account(): JSX.Element {
 
     runAfterLoad(async () => {
       try {
-        const { mnemonic: decryptedMnemonic } = await Secp256k1HdWallet.deserialize(
+        const { mnemonic: decryptedMnemonic } = await DirectSecp256k1HdWallet.deserialize(
           mnemonic,
           password.normalize(),
         );
@@ -63,7 +64,10 @@ export default function Account(): JSX.Element {
     runAfterLoad(async () => {
       try {
         const encryptedMnemonic = await (
-          await Secp256k1HdWallet.fromMnemonic(mnemonic, { hdPaths: [makeCosmoshubPath(0)], prefix: "wasm" })
+          await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+            hdPaths: [makeCosmoshubPath(0)],
+            prefix: "wasm",
+          })
         ).serialize(password.normalize());
 
         setMnemonic(encryptedMnemonic);

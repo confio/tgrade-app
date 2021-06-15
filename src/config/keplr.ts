@@ -19,8 +19,8 @@ export interface KeplrConfig {
     readonly bech32PrefixConsAddr: string;
     readonly bech32PrefixConsPub: string;
   };
-  readonly currencies: readonly KeplrCoin[];
-  readonly feeCurrencies: readonly KeplrCoin[];
+  readonly currencies: KeplrCoin[];
+  readonly feeCurrencies: KeplrCoin[];
   readonly stakeCurrency: KeplrCoin;
   readonly gasPriceStep: {
     readonly low: number;

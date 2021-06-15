@@ -1,11 +1,12 @@
-import { CosmWasmFeeTable } from "@cosmjs/cosmwasm-launchpad";
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { defaultGasLimits, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
-import { GasLimits, GasPrice, makeCosmoshubPath, OfflineSigner, Secp256k1HdWallet } from "@cosmjs/launchpad";
 import { LedgerSigner } from "@cosmjs/ledger-amino";
+import { DirectSecp256k1HdWallet, isOfflineDirectSigner, OfflineDirectSigner } from "@cosmjs/proto-signing";
 import {
   BankExtension,
   DistributionExtension,
+  GasPrice,
+  makeCosmoshubPath,
   QueryClient,
   setupBankExtension,
   setupDistributionExtension,
@@ -40,13 +41,13 @@ export type WalletLoader = (
   config: NetworkConfig,
   password?: string,
   mnemonic?: string,
-) => Promise<OfflineSigner>;
+) => Promise<OfflineDirectSigner | LedgerSigner>;
 
 export const loadOrCreateWallet: WalletLoader = async ({ addressPrefix }) => {
   const mnemonic = loadOrCreateMnemonic();
   if (isWalletEncrypted(mnemonic)) throw new Error("Cannot load encrypted wallet");
 
-  const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: addressPrefix,
   });
@@ -59,14 +60,14 @@ export const unlockWallet: WalletLoader = async (_, password) => {
   const encryptedWallet = getWallet();
   if (!encryptedWallet || !isWalletEncrypted(encryptedWallet)) throw new Error("No encrypted wallet found");
 
-  const wallet = await Secp256k1HdWallet.deserialize(encryptedWallet, password.normalize());
+  const wallet = await DirectSecp256k1HdWallet.deserialize(encryptedWallet, password.normalize());
   return wallet;
 };
 
 export const importWallet: WalletLoader = async ({ addressPrefix }, password, mnemonic) => {
   if (!mnemonic || !password) throw new Error("Mnemonic and password needed for importing wallet");
 
-  const wallet = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: addressPrefix,
   });
@@ -80,42 +81,38 @@ export const loadLedgerWallet: WalletLoader = async ({ addressPrefix }) => {
   const interactiveTimeout = 120_000;
   const ledgerTransport = await TransportWebUSB.create(interactiveTimeout, interactiveTimeout);
 
-  return new LedgerSigner(ledgerTransport, { hdPaths: [makeCosmoshubPath(0)], prefix: addressPrefix });
+  return new LedgerSigner(ledgerTransport, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: addressPrefix,
+  });
 };
 
 export const loadKeplrWallet: WalletLoader = async (config) => {
-  const anyWindow: any = window;
-  if (!anyWindow.getOfflineSigner) {
+  if (!window.keplr || !window.getOfflineSigner) {
     throw new Error("Keplr extension is not available");
   }
 
-  await anyWindow.keplr.experimentalSuggestChain(configKeplr(config));
-  await anyWindow.keplr.enable(config.chainId);
+  await window.keplr.experimentalSuggestChain(configKeplr(config));
+  await window.keplr.enable(config.chainId);
 
-  const signer = anyWindow.getOfflineSigner(config.chainId);
-  signer.signAmino = signer.signAmino ?? signer.sign;
+  // Type declaration because isOfflineDirectSigner is not narrowing type
+  const signer: OfflineDirectSigner = window.getOfflineSigner(config.chainId);
+  if (!isOfflineDirectSigner(signer)) {
+    throw new Error("Got amino signer instead of direct");
+  }
 
-  return Promise.resolve(signer as OfflineSigner);
+  return Promise.resolve(signer);
 };
 
 // Client creation utils
 export async function createSigningClient(
   config: NetworkConfig,
-  signer: OfflineSigner,
+  signer: OfflineDirectSigner | LedgerSigner,
 ): Promise<SigningCosmWasmClient> {
-  const gasLimits: GasLimits<CosmWasmFeeTable> = {
-    upload: 1500000,
-    init: 600000,
-    exec: 400000,
-    migrate: 600000,
-    send: 80000,
-    changeAdmin: 80000,
-  };
-
   return SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
     prefix: config.addressPrefix,
     gasPrice: GasPrice.fromString(`${config.gasPrice}${config.feeToken}`),
-    gasLimits: gasLimits,
+    gasLimits: defaultGasLimits,
   });
 }
 

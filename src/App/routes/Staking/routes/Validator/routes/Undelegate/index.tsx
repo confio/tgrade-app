@@ -1,4 +1,4 @@
-import { Coin } from "@cosmjs/launchpad";
+import { Coin } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import { OldPageLayout, Stack } from "App/components/layout";
 import { paths } from "App/paths";

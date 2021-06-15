@@ -1,4 +1,4 @@
-import { Coin } from "@cosmjs/launchpad";
+import { Coin } from "@cosmjs/stargate";
 import { Decimal } from "@cosmjs/math";
 import { isBroadcastTxFailure } from "@cosmjs/stargate";
 import { Typography } from "antd";

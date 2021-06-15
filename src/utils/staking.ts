@@ -1,4 +1,4 @@
-import { coins, StdFee } from "@cosmjs/launchpad";
+import { coins, StdFee } from "@cosmjs/stargate";
 import { Decimal } from "@cosmjs/math";
 // TODO: better import
 import { Validator } from "@cosmjs/stargate/build/codec/cosmos/staking/v1beta1/staking";
