@@ -1,7 +1,8 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { FaucetClient } from "@cosmjs/faucet-client";
-import { Coin, OfflineSigner } from "@cosmjs/launchpad";
-import { BankExtension, DistributionExtension, QueryClient, StakingExtension } from "@cosmjs/stargate";
+import { LedgerSigner } from "@cosmjs/ledger-amino";
+import { OfflineDirectSigner } from "@cosmjs/proto-signing";
+import { BankExtension, Coin, DistributionExtension, QueryClient, StakingExtension } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import * as React from "react";
 import { createContext, useContext, useEffect, useReducer } from "react";
@@ -25,7 +26,7 @@ type SdkAction =
     }
   | {
       readonly type: "setSigner";
-      readonly payload: OfflineSigner;
+      readonly payload: OfflineDirectSigner | LedgerSigner;
     }
   | {
       readonly type: "setAddress";
@@ -49,7 +50,7 @@ type SdkDispatch = (action: SdkAction) => void;
 type SdkState = {
   readonly config: NetworkConfig;
   readonly queryClient?: ExtendedQueryClient;
-  readonly signer?: OfflineSigner;
+  readonly signer?: OfflineDirectSigner | LedgerSigner;
   readonly address?: string;
   readonly signingClient?: SigningCosmWasmClient;
   readonly getBalance?: (address?: string) => Promise<readonly Coin[]>;
@@ -100,7 +101,7 @@ export function isSdkInitialized(state: SdkState): state is Required<SdkState> {
   return !Object.values(state).some((field) => field === undefined);
 }
 
-export function setSigner(dispatch: SdkDispatch, signer: OfflineSigner): void {
+export function setSigner(dispatch: SdkDispatch, signer: OfflineDirectSigner | LedgerSigner): void {
   dispatch({ type: "setSigner", payload: signer });
 }
 export const initSdk = setSigner;

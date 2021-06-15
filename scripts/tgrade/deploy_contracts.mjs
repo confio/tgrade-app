@@ -2,7 +2,7 @@
 /*jshint esversion: 8 */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { defaultGasLimits, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { GasPrice, makeCosmoshubPath } from "@cosmjs/launchpad";
@@ -44,14 +44,7 @@ async function main() {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: config.bech32prefix,
   });
-  const gasLimits = {
-    upload: 2500000,
-    init: 600000,
-    exec: 400000,
-    migrate: 600000,
-    send: 80000,
-    changeAdmin: 80000,
-  };
+  const gasLimits = { ...defaultGasLimits, upload: 2_500_000 };
   const options = { prefix: config.bech32prefix, gasPrice: config.gasPrice, gasLimits };
   const client = await SigningCosmWasmClient.connectWithSigner(config.endpoint, wallet, options);
 
