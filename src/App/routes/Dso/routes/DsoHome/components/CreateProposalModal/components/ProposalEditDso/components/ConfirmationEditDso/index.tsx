@@ -1,7 +1,21 @@
+import { Typography } from "antd";
 import Button from "App/components/form/Button";
 import { BackButtonOrLink } from "App/components/logic";
 import * as React from "react";
-import { ButtonGroup, ChangedField, FieldGroup, Separator, TextComment, TextLabel, TextValue } from "./style";
+import { useError, useSdk } from "service";
+import { getDisplayAmountFromFee } from "utils/currency";
+import {
+  ButtonGroup,
+  ChangedField,
+  FeeGroup,
+  FieldGroup,
+  Separator,
+  TextComment,
+  TextLabel,
+  TextValue,
+} from "./style";
+
+const { Paragraph } = Typography;
 
 interface ConfirmationEditDsoProps {
   readonly isSubmitting: boolean;
@@ -28,6 +42,23 @@ export default function ConfirmationEditDso({
   earlyPass,
   comment,
 }: ConfirmationEditDsoProps): JSX.Element {
+  const { handleError } = useError();
+  const {
+    sdkState: { config, signingClient },
+  } = useSdk();
+
+  const [txFee, setTxFee] = React.useState("0");
+  const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
+
+  React.useEffect(() => {
+    try {
+      const txFee = getDisplayAmountFromFee(signingClient.fees.exec, config);
+      setTxFee(txFee);
+    } catch (error) {
+      handleError(error);
+    }
+  }, [config, handleError, signingClient.fees.exec]);
+
   return (
     <>
       <FieldGroup>
@@ -72,9 +103,15 @@ export default function ConfirmationEditDso({
       <Separator />
       <ButtonGroup>
         <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />
-        <Button loading={isSubmitting} onClick={() => submitForm()}>
-          <div>Confirm proposal</div>
-        </Button>
+        <FeeGroup>
+          <Typography>
+            <Paragraph>Tx fee</Paragraph>
+            <Paragraph>{`~${txFee} ${feeTokenDenom}`}</Paragraph>
+          </Typography>
+          <Button loading={isSubmitting} onClick={() => submitForm()}>
+            <div>Confirm proposal</div>
+          </Button>
+        </FeeGroup>
       </ButtonGroup>
     </>
   );
