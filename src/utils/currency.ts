@@ -1,5 +1,6 @@
-import { Coin } from "@cosmjs/stargate";
 import { Decimal } from "@cosmjs/math";
+import { Coin, StdFee } from "@cosmjs/stargate";
+import { NetworkConfig } from "config/network";
 import { useEffect, useState } from "react";
 import { useSdk } from "service";
 
@@ -57,6 +58,16 @@ export function displayAmountToNative(
   }
 
   return amountToDisplay;
+}
+
+export function getDisplayAmountFromFee(fee: StdFee, config: NetworkConfig): string {
+  const feeCoin = fee.amount.find(({ denom }) => denom === config.feeToken);
+  if (!feeCoin) {
+    throw new Error(`Fee coin is not configured for ${config.feeToken}`);
+  }
+
+  const txFeeToDisplay = nativeCoinToDisplay(feeCoin, config.coinMap);
+  return txFeeToDisplay.amount;
 }
 
 export function useBalance(address?: string): readonly Coin[] {

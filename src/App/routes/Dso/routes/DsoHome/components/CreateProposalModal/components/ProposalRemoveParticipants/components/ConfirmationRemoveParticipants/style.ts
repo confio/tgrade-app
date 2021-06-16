@@ -26,10 +26,21 @@ export const Separator = styled.hr`
 
 export const ButtonGroup = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
 
-  button:first-child {
+  & > *:first-child {
+    margin-right: var(--s0);
+  }
+`;
+
+export const FeeGroup = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  & > *:first-child {
     margin-right: var(--s0);
   }
 `;
