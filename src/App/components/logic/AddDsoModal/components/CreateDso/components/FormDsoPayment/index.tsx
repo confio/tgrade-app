@@ -1,12 +1,19 @@
+import { Decimal } from "@cosmjs/math";
+import { Typography } from "antd";
 import Button from "App/components/form/Button";
 import { Field } from "App/components/form/Field";
 import { BackButtonOrLink } from "App/components/logic";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
+import { useEffect, useState } from "react";
+import { useError, useSdk } from "service";
+import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { ButtonGroup, FormStack, Separator } from "./style";
+import { ButtonGroup, FeeField, FeeGroup, FormStack, Separator } from "./style";
+
+const { Text } = Typography;
 
 const escrowLabel = "Escrow amount";
 
@@ -28,9 +35,59 @@ interface FormDsoPaymentProps {
 }
 
 export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentProps): JSX.Element {
+  const { handleError } = useError();
+  const {
+    sdkState: { config, signingClient },
+  } = useSdk();
+
+  const [escrowAmount, setEscrowAmount] = useState("1");
+  const [txFee, setTxFee] = useState("0");
+  const [totalCharged, setTotalCharged] = useState("0");
+  const mappedFeeToken = config.coinMap[config.feeToken];
+
+  useEffect(() => {
+    if (isNaN(parseFloat(escrowAmount))) {
+      setTxFee("0");
+      setTotalCharged("0");
+      return;
+    }
+
+    const initFeeCoin = signingClient.fees.init.amount.find(({ denom }) => denom === config.feeToken);
+
+    try {
+      if (!initFeeCoin) {
+        throw new Error(`Fee coin is not configured for ${config.feeToken}`);
+      }
+
+      const nativeEscrowAmount = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
+
+      const decimalEscrow = Decimal.fromUserInput(nativeEscrowAmount, mappedFeeToken.fractionalDigits);
+      const decimalTxFee = Decimal.fromUserInput(initFeeCoin.amount, mappedFeeToken.fractionalDigits);
+      const decimalTotalCharged = decimalEscrow.plus(decimalTxFee);
+
+      const txFeeToDisplay = nativeCoinToDisplay(initFeeCoin, config.coinMap);
+      const totalChargedToDisplay = nativeCoinToDisplay(
+        { denom: config.feeToken, amount: decimalTotalCharged.toString() },
+        config.coinMap,
+      );
+
+      setTxFee(txFeeToDisplay.amount);
+      setTotalCharged(totalChargedToDisplay.amount);
+    } catch (error) {
+      handleError(error);
+    }
+  }, [
+    config.coinMap,
+    config.feeToken,
+    escrowAmount,
+    handleError,
+    mappedFeeToken.fractionalDigits,
+    signingClient.fees.init.amount,
+  ]);
+
   return (
     <Formik
-      initialValues={{ [getFormItemName(escrowLabel)]: "1" }}
+      initialValues={{ [getFormItemName(escrowLabel)]: escrowAmount }}
       enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) => handleSubmit({ escrowAmount: values[getFormItemName(escrowLabel)] })}
@@ -38,7 +95,28 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
       {({ isValid, isSubmitting, submitForm }) => (
         <Form>
           <FormStack>
-            <Field disabled={isSubmitting} label={escrowLabel} placeholder="Enter escrow amount" />
+            <Field
+              value={escrowAmount}
+              onInputChange={({ target: { value } }) => setEscrowAmount(value)}
+              disabled={isSubmitting}
+              label={escrowLabel}
+              placeholder="Enter escrow amount"
+              units={config.coinMap[config.feeToken]?.denom || "—"}
+            />
+            <FeeGroup>
+              <FeeField>
+                <Text>Escrow amount</Text>
+                <Text>{`${escrowAmount || 0} ${mappedFeeToken.denom}`}</Text>
+              </FeeField>
+              <FeeField>
+                <Text>Tx fee</Text>
+                <Text>{`~${txFee} ${mappedFeeToken.denom}`}</Text>
+              </FeeField>
+              <FeeField>
+                <Text>Total charged</Text>
+                <Text>{`~${totalCharged} ${mappedFeeToken.denom}`}</Text>
+              </FeeField>
+            </FeeGroup>
             <Separator />
             <ButtonGroup>
               <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />

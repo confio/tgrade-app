@@ -1,3 +1,4 @@
+import { Typography } from "antd";
 import { Stack } from "App/components/layout";
 import styled from "styled-components";
 
@@ -37,6 +38,29 @@ export const FieldGroup = styled.div`
 
   & .ant-form-item {
     flex-basis: 18rem;
+  }
+`;
+
+export const FeeGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+
+  & > * + * {
+    margin-left: var(--s0);
+  }
+`;
+
+export const FeeField = styled(Typography)`
+  margin-top: var(--s-1);
+
+  && > span.ant-typography {
+    display: block;
+    color: var(--color-text-1ary);
+
+    & + span.ant-typography {
+      font-weight: 500;
+    }
   }
 `;
 
