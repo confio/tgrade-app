@@ -162,7 +162,7 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
       if (state) {
         history.push(state.redirectPathname, state.redirectState);
       } else {
-        history.push(paths.wallet.prefix);
+        history.push(paths.account.prefix);
       }
 
       setLoading(layoutDispatch, false);

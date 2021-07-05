@@ -71,7 +71,7 @@ export default function Tutorial(): JSX.Element {
       if (state) {
         history.push(state.redirectPathname, state.redirectState);
       } else {
-        history.push(paths.wallet.prefix);
+        history.push(paths.account.prefix);
       }
     })();
   }, [history, sdkState, state]);
