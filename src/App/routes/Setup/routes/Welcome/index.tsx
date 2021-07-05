@@ -1,5 +1,6 @@
 import { Typography } from "antd";
-import { PageLayout, Stack } from "App/components/layout";
+import { PageLayout } from "App/components/layout";
+import { Stack } from "App/components/layoutPrimitives";
 import { RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -51,7 +52,7 @@ export default function Welcome(): JSX.Element {
       if (state) {
         history.push(state.redirectPathname, state.redirectState);
       } else {
-        history.push(paths.wallet.prefix);
+        history.push(paths.account.prefix);
       }
     })();
   }, [history, sdkState, state]);

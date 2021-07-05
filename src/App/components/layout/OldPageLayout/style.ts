@@ -1,7 +1,7 @@
+import { Center } from "App/components/layoutPrimitives";
 import styled from "styled-components";
-import { Center } from "..";
 
-export const StyledCenter = styled(Center)`
+export default styled(Center)`
   --max-width: min(100vw, 22rem);
   max-width: var(--max-width);
   overflow: hidden;

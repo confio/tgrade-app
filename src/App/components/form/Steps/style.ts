@@ -1,7 +1,7 @@
 import { Steps } from "antd";
 import styled from "styled-components";
 
-export const StyledSteps = styled(Steps)`
+export default styled(Steps)`
   max-width: 10rem;
 
   & .ant-steps-item-icon {

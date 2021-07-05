@@ -1,4 +1,4 @@
-import { Center, Stack } from "App/components/layout";
+import { Center, Stack } from "App/components/layoutPrimitives";
 import * as React from "react";
 import { HTMLAttributes, useEffect } from "react";
 import { useError } from "service";

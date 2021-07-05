@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { Stack } from "App/components/layout";
+import { Stack } from "App/components/layoutPrimitives";
 import { Formik } from "formik";
 import { Form, FormItem, Input } from "formik-antd";
 import * as React from "react";

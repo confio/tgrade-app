@@ -1,14 +1,14 @@
-import Button from "App/components/form/Button";
+import { Button } from "App/components/form";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { closeAddDsoModal, useDso } from "service";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import modalBg from "./assets/modal-background.jpg";
 import AddExistingDso from "./components/AddExistingDso";
 import CreateDso from "./components/CreateDso";
-import { StyledModal } from "./style";
+import StyledAddDsoModal from "./style";
 
 enum AddDsoSteps {
   Existing = "Existing",
@@ -16,6 +16,9 @@ enum AddDsoSteps {
 }
 
 export default function AddDsoModal(): JSX.Element {
+  const params = useParams();
+  console.log("paramsAdd", params);
+
   const history = useHistory();
   const { dsoState, dsoDispatch } = useDso();
 
@@ -30,7 +33,7 @@ export default function AddDsoModal(): JSX.Element {
   }
 
   return (
-    <StyledModal
+    <StyledAddDsoModal
       centered
       footer={null}
       closable={false}
@@ -59,7 +62,7 @@ export default function AddDsoModal(): JSX.Element {
             </Button>
           ) : null}
           <Button onClick={() => goToNewDso(txResult.contractAddress)}>
-            <span>Go to DSO details</span>
+            <span>Go to Trusted Circle details</span>
           </Button>
         </ShowTxResult>
       ) : (
@@ -77,6 +80,6 @@ export default function AddDsoModal(): JSX.Element {
           ) : null}
         </>
       )}
-    </StyledModal>
+    </StyledAddDsoModal>
   );
 }

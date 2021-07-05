@@ -1,7 +1,8 @@
 import { Modal } from "antd";
+import { Stack } from "App/components/layoutPrimitives";
 import styled from "styled-components";
 
-export default styled(Modal)`
+export const StyledModal = styled(Modal)`
   ${({ bgTransparent }: { bgTransparent?: boolean }) =>
     bgTransparent &&
     `
@@ -12,21 +13,9 @@ export default styled(Modal)`
   `};
 `;
 
-export const ButtonGroup = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-
-  & > span.ant-typography {
-    margin-right: var(--s0);
-  }
-
-  & span.ant-typography > span.ant-typography {
-    cursor: pointer;
-    color: var(--color-primary);
-    font-weight: 500;
-    text-decoration: underline;
+export const FormStack = styled(Stack)`
+  & .ant-btn {
+    align-self: flex-end;
   }
 `;
 
@@ -42,6 +31,10 @@ export const ModalHeader = styled.header`
     line-height: 2.35rem;
   }
 
+  & span.ant-typography {
+    color: var(--color-text-1ary);
+  }
+
   & img {
     position: absolute;
     top: 0;
@@ -55,4 +48,24 @@ export const Separator = styled.hr`
   margin: 0 -20px 0 -20px;
   border: none;
   border-top: 1px solid var(--color-input-border);
+`;
+
+export const FieldGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  & .ant-form-item {
+    flex-basis: 18rem;
+  }
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+
+  & .ant-btn:first-child {
+    margin-right: var(--s0);
+  }
 `;

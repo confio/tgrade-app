@@ -2,9 +2,9 @@ import { Typography } from "antd";
 import * as React from "react";
 import { ComponentProps } from "react";
 import { Link } from "react-router-dom";
-import { BackButton } from "..";
+import BackButton from "../BackButton";
 import backArrow from "./assets/backArrow.svg";
-import { ArrowTextContainer, StyledButton } from "./style";
+import StyledBackContent, { StyledButton } from "./style";
 
 const { Text } = Typography;
 
@@ -15,10 +15,10 @@ type BackButtonOrLinkProps = ComponentProps<typeof BackButton> & {
 
 function BackContent({ text }: BackButtonOrLinkProps): JSX.Element {
   return (
-    <ArrowTextContainer>
+    <StyledBackContent>
       <img src={backArrow} alt="Back arrow" />
       <Text>{text}</Text>
-    </ArrowTextContainer>
+    </StyledBackContent>
   );
 }
 

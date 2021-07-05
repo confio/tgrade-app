@@ -1,10 +1,10 @@
-import { Stack } from "App/components/layout";
+import { Stack } from "App/components/layoutPrimitives";
 import { ErrorAlert, Loading, NavHeader } from "App/components/logic";
 import * as React from "react";
 import { HTMLAttributes } from "react";
 import { openMenu, useLayout } from "service";
 import { useWindowSize } from "utils/ui";
-import { StyledCenter } from "./style";
+import StyledOldPageLayout from "./style";
 
 export default function OldPageLayout({
   children,
@@ -19,7 +19,7 @@ export default function OldPageLayout({
   const showBurgerButton = menuState !== "hidden" && width < 1040;
 
   return (
-    <StyledCenter tag="main" {...restProps}>
+    <StyledOldPageLayout tag="main" {...restProps}>
       <Stack gap="s8">
         <Loading loading={loadingMsg}>
           <NavHeader
@@ -31,6 +31,6 @@ export default function OldPageLayout({
           {children}
         </Loading>
       </Stack>
-    </StyledCenter>
+    </StyledOldPageLayout>
   );
 }

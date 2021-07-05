@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { Stack } from "App/components/layout";
+import { Stack } from "App/components/layoutPrimitives";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

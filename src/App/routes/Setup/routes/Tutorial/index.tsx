@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import Button from "App/components/form/Button";
+import { Button } from "App/components/form";
 import { PageLayout } from "App/components/layout";
 import { RedirectLocation, VideoPlayer } from "App/components/logic";
 import { paths } from "App/paths";

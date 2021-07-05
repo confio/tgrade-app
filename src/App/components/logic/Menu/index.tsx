@@ -39,15 +39,6 @@ export default function Menu({ isBigViewport, isOpen, closeMenu, ...restProps }:
         <Link to={paths.account.prefix} onClick={closeMenu}>
           <Title level={3}>{t("menu.account")}</Title>
         </Link>
-        <Link to={paths.wallet.prefix} onClick={closeMenu}>
-          <Title level={3}>{t("menu.wallet")}</Title>
-        </Link>
-        <Link to={paths.cw20Wallet.prefix} onClick={closeMenu}>
-          <Title level={3}>{t("menu.cw20Wallet")}</Title>
-        </Link>
-        <Link to={paths.staking.prefix} onClick={closeMenu}>
-          <Title level={3}>{t("menu.staking")}</Title>
-        </Link>
         <Link to={paths.dso.prefix} onClick={closeMenu}>
           <Title level={3}>DSO</Title>
         </Link>

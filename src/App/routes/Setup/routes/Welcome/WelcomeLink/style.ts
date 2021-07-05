@@ -1,10 +1,10 @@
-import { Stack } from "App/components/layout";
+import { Stack } from "App/components/layoutPrimitives";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const StyledLink = styled(Link)`
   padding: clamp(var(--s-2), calc(2vw + var(--s-2)), var(--s2));
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   background-color: white;
   box-shadow: 0px 0px 1px 1px hsla(0, 0%, 0%, 0.11);
 

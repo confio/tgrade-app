@@ -2,7 +2,7 @@ import { Typography } from "antd";
 import { Input } from "formik-antd";
 import * as React from "react";
 import { getFormItemName } from "utils/forms";
-import { StyledFormItem, UnitlessInput } from "./style";
+import StyledField, { UnitlessInput } from "./style";
 
 const { Text } = Typography;
 
@@ -15,7 +15,7 @@ interface FieldProps {
   readonly onInputChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-export function Field({
+export default function Field({
   label,
   placeholder,
   value,
@@ -28,7 +28,7 @@ export function Field({
   const labelId = `label-id-${labelKebabCase}`;
 
   return (
-    <StyledFormItem name={formItemName}>
+    <StyledField name={formItemName}>
       <Text id={labelId}>{label}</Text>
       {units ? (
         <div className="unit-input-container">
@@ -70,6 +70,6 @@ export function Field({
           disabled={disabled}
         />
       )}
-    </StyledFormItem>
+    </StyledField>
   );
 }
