@@ -18,13 +18,9 @@ import {
 import { ProtectedSwitch } from "./components/logic";
 import { paths } from "./paths";
 import Account from "./routes/Account";
-import Cw20Wallet from "./routes/Cw20Wallet";
 import Dso from "./routes/Dso";
 import Logout from "./routes/Logout";
-import OperationResult from "./routes/OperationResult";
 import Setup from "./routes/Setup";
-import Staking from "./routes/Staking";
-import Wallet from "./routes/Wallet";
 
 export default function App(): JSX.Element {
   return (
@@ -47,22 +43,10 @@ export default function App(): JSX.Element {
                         <Route path={paths.logout}>
                           <Logout />
                         </Route>
-                        <Route path={paths.operationResult}>
-                          <OperationResult />
-                        </Route>
                         <Route path={paths.account.prefix}>
                           <Account />
                         </Route>
-                        <Route path={paths.wallet.prefix}>
-                          <Wallet />
-                        </Route>
-                        <Route path={paths.cw20Wallet.prefix}>
-                          <Cw20Wallet />
-                        </Route>
-                        <Route path={paths.staking.prefix}>
-                          <Staking />
-                        </Route>
-                        <Route path={paths.dso.prefix}>
+                        <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
                           <DsoProvider>
                             <Dso />
                           </DsoProvider>
