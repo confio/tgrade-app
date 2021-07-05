@@ -1,9 +1,9 @@
 import { Select } from "antd";
 import styled from "styled-components";
 
-export const StyledSelect = styled(Select)`
+export default styled(Select)`
   &.ant-select .ant-select-selector {
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     border-color: var(--color-input-border);
 
     &:hover {
