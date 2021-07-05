@@ -1,22 +1,28 @@
 import { HeaderBack } from "App/components/logic";
 import * as React from "react";
-import { HTMLAttributes } from "react";
+import { ComponentProps } from "react";
 import { useLayout } from "service";
-import { StyledCenter, StyledMain } from "./style";
+import StyledPageLayout, { StyledMain, StyledMainProps } from "./style";
+
+export type PageLayoutProps = ComponentProps<typeof StyledPageLayout> & StyledMainProps;
 
 export default function PageLayout({
+  maxwidth,
+  centered,
   children,
   ...restProps
-}: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
+}: PageLayoutProps): JSX.Element {
   const {
     layoutState: { backButtonProps, viewTitles = {} },
   } = useLayout();
   const { viewTitle, viewSubtitle } = viewTitles;
 
   return (
-    <StyledCenter {...restProps}>
+    <StyledPageLayout {...restProps}>
       <HeaderBack backButtonProps={backButtonProps} viewTitle={viewTitle} viewSubtitle={viewSubtitle} />
-      <StyledMain tag="main">{children}</StyledMain>
-    </StyledCenter>
+      <StyledMain maxwidth={maxwidth} centered={centered} tag="main">
+        {children}
+      </StyledMain>
+    </StyledPageLayout>
   );
 }
