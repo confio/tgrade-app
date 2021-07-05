@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import Button from "App/components/form/Button";
+import { Button } from "App/components/form";
 import { PageLayout } from "App/components/layout";
 import { RedirectLocation, VideoPlayer } from "App/components/logic";
 import { paths } from "App/paths";
@@ -71,7 +71,7 @@ export default function Tutorial(): JSX.Element {
       if (state) {
         history.push(state.redirectPathname, state.redirectState);
       } else {
-        history.push(paths.wallet.prefix);
+        history.push(paths.account.prefix);
       }
     })();
   }, [history, sdkState, state]);

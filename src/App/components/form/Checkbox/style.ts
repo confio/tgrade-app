@@ -1,7 +1,7 @@
 import { Checkbox } from "formik-antd";
 import styled from "styled-components";
 
-export const StyledCheckbox = styled(Checkbox)`
+export default styled(Checkbox)`
   & .ant-checkbox-inner {
     border-color: var(--color-primary);
   }

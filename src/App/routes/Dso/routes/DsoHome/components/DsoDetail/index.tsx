@@ -1,52 +1,168 @@
+import { Typography } from "antd";
+import { Stack } from "App/components/layoutPrimitives";
+import { Table } from "App/components/logic";
+import ButtonAddNew from "App/components/logic/ButtonAddNew";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useSdk } from "service";
+import { useError, useSdk } from "service";
+import { DsoContract } from "utils/dso";
+import pendingIcon from "./assets/clock.svg";
+import rejectedIcon from "./assets/cross.svg";
+import passedIcon from "./assets/tick.svg";
+import CreateProposalModal from "./components/CreateProposalModal";
+import DsoIdActions from "./components/DsoIdActions";
+import Escrow from "./components/Escrow";
+import Members from "./components/Members";
+import ProposalDetailModal from "./components/ProposalDetailModal";
+import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
+
+const { Title, Paragraph } = Typography;
+
+function getImgSrcFromStatus(status: string) {
+  switch (status) {
+    case "executed":
+    case "passed":
+      return { src: passedIcon };
+    case "rejected":
+      return { src: rejectedIcon };
+    default:
+      return { src: pendingIcon };
+  }
+}
+
+const columns = [
+  {
+    title: "Nº",
+    dataIndex: "id",
+    key: "id",
+    sorter: (a: any, b: any) => a.id - b.id,
+  },
+  {
+    title: "Type",
+    dataIndex: "title",
+    key: "title",
+  },
+  {
+    title: "Due date",
+    key: "expires",
+    render: (record: any) => {
+      const formatedDate = new Date(record.expires.at_time / 1000000).toLocaleDateString();
+      const formatedTime = new Date(record.expires.at_time / 1000000).toLocaleTimeString();
+      return (
+        <>
+          <div>{formatedDate}</div>
+          <div>{formatedTime}</div>
+        </>
+      );
+    },
+    sorter: (a: any, b: any) => {
+      const aDate = new Date(a.expires.at_time / 1000000);
+      const bDate = new Date(b.expires.at_time / 1000000);
+      return bDate.getTime() - aDate.getTime();
+    },
+  },
+  {
+    title: "Status",
+    key: "status",
+    render: (record: any) => (
+      <StatusBlock>
+        <StatusParagraph status={record.status}>
+          <img alt="" {...getImgSrcFromStatus(record.status)} />
+          {(record.status as string).charAt(0).toUpperCase() + (record.status as string).slice(1)}
+        </StatusParagraph>
+        <Paragraph>Yes: {record.votes.yes}</Paragraph>
+        <Paragraph>No: {record.votes.no}</Paragraph>
+        <Paragraph>Abstained: {record.votes.abstain}</Paragraph>
+      </StatusBlock>
+    ),
+    sorter: (a: any, b: any) => {
+      function getSortNumFromStatus(status: string): number {
+        switch (status) {
+          case "executed":
+            return 1;
+          case "passed":
+            return 2;
+          case "rejected":
+            return 3;
+          default:
+            return 4;
+        }
+      }
+
+      return getSortNumFromStatus(b.status) - getSortNumFromStatus(a.status);
+    },
+  },
+  {
+    title: "Description",
+    key: "description",
+    render: (record: any) => <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>,
+  },
+];
 
 interface DsoDetailParams {
   readonly dsoAddress: string;
 }
 
 export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element {
+  const { handleError } = useError();
   const {
     sdkState: { signingClient },
   } = useSdk();
-  const [dsoQuery, setDsoQuery] = useState<any>();
-  const [votingParticipantsQuery, setVotingParticipantsQuery] = useState<any>();
-  const [participantsQuery, setParticipantsQuery] = useState<any>();
-  const [proposalsQuery, setProposalsQuery] = useState<any>();
+
+  const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
+
+  const [proposals, setProposals] = useState<any>([]);
+  const [clickedProposal, setClickedProposal] = useState<number>();
+
+  const refreshProposals = React.useCallback(async () => {
+    try {
+      const proposals = await DsoContract(signingClient).use(dsoAddress).listProposals();
+      setProposals(proposals);
+    } catch (error) {
+      handleError(error);
+    }
+  }, [dsoAddress, handleError, signingClient]);
 
   useEffect(() => {
-    (async function queryDso() {
-      const res = await signingClient.queryContractSmart(dsoAddress, { dso: {} });
-      setDsoQuery(JSON.stringify(res, null, 2));
-    })();
-
-    (async function queryVotingParticipants() {
-      const res = await signingClient.queryContractSmart(dsoAddress, { list_voting_members: {} });
-      setVotingParticipantsQuery(JSON.stringify(res, null, 2));
-    })();
-
-    (async function queryParticipants() {
-      const res = await signingClient.queryContractSmart(dsoAddress, { list_non_voting_members: {} });
-      setParticipantsQuery(JSON.stringify(res, null, 2));
-    })();
-
-    (async function queryProposals() {
-      const res = await signingClient.queryContractSmart(dsoAddress, { list_proposals: {} });
-      setProposalsQuery(JSON.stringify(res, null, 2));
-    })();
-  }, [dsoAddress, signingClient]);
+    refreshProposals();
+  }, [refreshProposals]);
 
   return (
     <>
-      <p>DSO details:</p>
-      <pre>{dsoQuery}</pre>
-      <p>Voting participants:</p>
-      <pre>{votingParticipantsQuery}</pre>
-      <p>Non voting participants:</p>
-      <pre>{participantsQuery}</pre>
-      <p>Proposals:</p>
-      <pre>{proposalsQuery}</pre>
+      <Stack>
+        <DsoIdActions />
+        <EscrowMembersContainer>
+          <Escrow />
+          <Members />
+        </EscrowMembersContainer>
+        <ProposalsContainer>
+          <header>
+            <Title level={2}>Proposals</Title>
+            <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
+          </header>
+          {proposals.length ? (
+            <Table
+              columns={columns}
+              pagination={false}
+              dataSource={proposals}
+              onRow={(record: any) => ({
+                onClick: () => setClickedProposal(record.id),
+              })}
+            />
+          ) : null}
+        </ProposalsContainer>
+      </Stack>
+      <CreateProposalModal
+        isModalOpen={isCreateProposalModalOpen}
+        closeModal={() => setCreateProposalModalOpen(false)}
+        refreshProposals={refreshProposals}
+      />
+      <ProposalDetailModal
+        isModalOpen={!!clickedProposal}
+        closeModal={() => setClickedProposal(undefined)}
+        proposalId={clickedProposal ?? 0}
+        refreshProposals={refreshProposals}
+      />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import Stack from "App/components/layout/Stack";
+import { Stack } from "App/components/layoutPrimitives";
 import styled from "styled-components";
 
 export const StyledHeader = styled.header`

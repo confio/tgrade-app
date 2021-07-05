@@ -1,15 +1,13 @@
-import Button from "App/components/form/Button";
-import Checkbox from "App/components/form/Checkbox";
-import { Field } from "App/components/form/Field";
-import { BackButtonOrLink } from "App/components/logic";
+import { Button, Checkbox, Field } from "App/components/form";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
+import BackButtonOrLink from "../../../../../BackButtonOrLink";
 import { ButtonGroup, FieldGroup, FormStack, Separator, WarningText } from "./style";
 
-const dsoNameLabel = "DSO name";
+const dsoNameLabel = "Trusted Circle name";
 const votingDurationLabel = "Voting duration";
 const quorumLabel = "Quorum";
 const thresholdLabel = "Threshold";
@@ -17,8 +15,8 @@ const allowEndEarlyLabel = "Allow end early?";
 
 const validationSchema = Yup.object().shape({
   [getFormItemName(dsoNameLabel)]: Yup.string()
-    .typeError("DSO name must be alphanumeric")
-    .required("DSO name is required"),
+    .typeError("Trusted Circle name must be alphanumeric")
+    .required("Trusted Circle name is required"),
   [getFormItemName(votingDurationLabel)]: Yup.number()
     .typeError("Voting duration must be a number")
     .required("Voting duration is required")
@@ -91,7 +89,7 @@ export default function FormDsoBasicData({
           <>
             <Form>
               <FormStack gap="s1">
-                <Field label={dsoNameLabel} placeholder="Enter DSO name" />
+                <Field label={dsoNameLabel} placeholder="Enter Trusted Circle name" />
                 <FieldGroup>
                   <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" />
                   <Field label={quorumLabel} placeholder="Enter quorum" units="%" />

@@ -1,4 +1,4 @@
-import CorporateBannerLayout from "App/components/layout/CorporateBannerLayout";
+import { CorporateBannerLayout } from "App/components/layout";
 import { BackButton, Menu, RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -162,7 +162,7 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
       if (state) {
         history.push(state.redirectPathname, state.redirectState);
       } else {
-        history.push(paths.wallet.prefix);
+        history.push(paths.account.prefix);
       }
 
       setLoading(layoutDispatch, false);

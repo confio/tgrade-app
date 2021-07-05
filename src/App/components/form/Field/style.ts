@@ -1,7 +1,7 @@
 import { FormItem, Input } from "formik-antd";
 import styled from "styled-components";
 
-export const StyledFormItem = styled(FormItem)`
+export default styled(FormItem)`
   & [id^="label-"] {
     color: var(--color-text-1ary);
 

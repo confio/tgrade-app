@@ -1,8 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
-import Button from "App/components/form/Button";
-import { Field } from "App/components/form/Field";
-import { BackButtonOrLink } from "App/components/logic";
+import { Button, Field } from "App/components/form";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
@@ -11,6 +9,7 @@ import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
+import BackButtonOrLink from "../../../../../BackButtonOrLink";
 import { ButtonGroup, FeeField, FeeGroup, FormStack, Separator } from "./style";
 
 const { Text } = Typography;

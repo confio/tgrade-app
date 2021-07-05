@@ -1,7 +1,7 @@
-import { Stack } from "App/components/layout";
+import { Stack } from "App/components/layoutPrimitives";
 import styled from "styled-components";
 
-export const BannerContainer = styled.div`
+export default styled.div`
   min-height: 100vh;
 
   display: flex;

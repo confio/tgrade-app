@@ -1,7 +1,7 @@
-import { Center } from "App/components/layout";
+import { Center } from "App/components/layoutPrimitives";
 import styled from "styled-components";
 
-export const StyledCenter = styled(Center)`
+export default styled(Center)`
   flex-grow: 1;
   padding: clamp(var(--s0), calc(2vw + var(--s0)), var(--s4));
   overflow: hidden;
@@ -11,10 +11,15 @@ export const StyledCenter = styled(Center)`
   }
 `;
 
-export const StyledMain = styled(Center)`
-  --max-width: 29rem;
-  max-width: var(--max-width);
+export interface StyledMainProps {
+  readonly maxwidth?: string;
+  readonly centered?: "false";
+}
+
+export const StyledMain = styled(Center)<StyledMainProps>`
+  --max-width: ${(props) => props.maxwidth ?? "29rem"};
+  width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: ${(props) => (props.centered === "false" ? "flex-start" : "center")};
 `;

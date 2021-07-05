@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { Stack } from "App/components/layoutPrimitives";
 import * as React from "react";
 import { HTMLAttributes } from "react";
 import blockchainArt from "./assets/blockchainArt.jpg";
@@ -7,8 +7,7 @@ import cornerBottomRight from "./assets/cornerBottomRight.svg";
 import cornerTopLeft from "./assets/cornerTopLeft.svg";
 import dotMatrix from "./assets/dotMatrix.svg";
 import tgradeLogoTitle from "./assets/tgradeLogoTitle.svg";
-import {
-  BannerContainer,
+import StyledCorporateBannerLayout, {
   CornerBottomRight,
   CornerBottomWrapper,
   CornerStack,
@@ -22,7 +21,7 @@ const { Title, Paragraph } = Typography;
 
 export default function CorporateBannerLayout({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   return (
-    <BannerContainer>
+    <StyledCorporateBannerLayout>
       <CorporateBannerStack tag="aside" gap="s2" background-image-url={blockchainArt}>
         <TgradeLogo className="tgrade-logo" src={tgradeLogoTitle} alt="Tgrade logo with title" />
         <CornerStack gap="s1">
@@ -41,6 +40,6 @@ export default function CorporateBannerLayout({ children }: HTMLAttributes<HTMLO
         <DotMatrix src={dotMatrix} alt="" />
       </CorporateBannerStack>
       {children}
-    </BannerContainer>
+    </StyledCorporateBannerLayout>
   );
 }

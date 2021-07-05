@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import styled from "styled-components";
 
-export const StyledButton = styled(Button)`
+export default styled(Button)`
   /* display = flex for loading spinner */
   display: flex;
 
@@ -9,7 +9,7 @@ export const StyledButton = styled(Button)`
 
   height: auto;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   box-shadow: none;
 
   color: white;
@@ -24,6 +24,6 @@ export const StyledButton = styled(Button)`
   &:hover,
   &:focus {
     color: white;
-    background-color: var(--bg-button-1ary);
+    background-color: ${(props) => (props.danger ? `var(--bg-button-danger)` : "var(--bg-button-1ary)")};
   }
 `;

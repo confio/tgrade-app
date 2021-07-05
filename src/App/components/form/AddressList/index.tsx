@@ -1,28 +1,42 @@
-import { Tag } from "antd";
+import { AddressTag } from "App/components/logic";
 import * as React from "react";
 import { isValidAddress } from "utils/forms";
-import { ellipsifyAddress } from "utils/ui";
-import { AddressesContainer } from "./style";
+import StyledAddressList from "./style";
 
-interface AddressListProps {
-  readonly addresses: readonly string[];
-  readonly addressPrefix: string;
-  readonly handleClose?: (address: string) => void;
+function getTagColor(address: string, addressPrefix?: string): string {
+  if (!addressPrefix) return "default";
+  if (isValidAddress(address, addressPrefix)) return "default";
+  return "var(--color-error-form)";
 }
 
-export function AddressList({ addresses, addressPrefix, handleClose }: AddressListProps): JSX.Element | null {
-  return addresses.length ? (
-    <AddressesContainer>
+interface AddressListProps {
+  readonly addresses?: readonly string[];
+  readonly addressPrefix?: string;
+  readonly handleClose?: (address: string) => void;
+  readonly short?: boolean;
+  readonly copyable?: boolean;
+}
+
+export default function AddressList({
+  addresses,
+  addressPrefix,
+  handleClose,
+  short,
+  copyable,
+}: AddressListProps): JSX.Element | null {
+  return addresses?.length ? (
+    <StyledAddressList>
       {addresses.map((address, index) => (
-        <Tag
+        <AddressTag
+          address={address}
+          short={short}
+          copyable={copyable}
           key={`${index}-${address}`}
-          color={isValidAddress(address, addressPrefix) ? "default" : "var(--color-error-form)"}
+          color={getTagColor(address, addressPrefix)}
           closable={!!handleClose}
           onClose={() => handleClose?.(address)}
-        >
-          {ellipsifyAddress(address)}
-        </Tag>
+        />
       ))}
-    </AddressesContainer>
+    </StyledAddressList>
   ) : null;
 }

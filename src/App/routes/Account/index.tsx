@@ -1,7 +1,8 @@
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { Tooltip, Typography } from "antd";
-import { OldPageLayout, Stack } from "App/components/layout";
+import { OldPageLayout } from "App/components/layout";
+import { Stack } from "App/components/layoutPrimitives";
 import { Loading } from "App/components/logic";
 import copyToClipboard from "clipboard-copy";
 import * as React from "react";

@@ -1,1 +1,1 @@
-export { StyledSteps as default } from "./style";
+export { default } from "./style";

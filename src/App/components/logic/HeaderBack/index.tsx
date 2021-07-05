@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import { BackButtonOrLink } from "App/components/logic";
+import BackButtonOrLink from "../BackButtonOrLink";
 import * as React from "react";
 import { ComponentProps, HTMLAttributes } from "react";
 import { StyledHeader, TitleStack } from "./style";

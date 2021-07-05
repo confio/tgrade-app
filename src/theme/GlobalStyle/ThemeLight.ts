@@ -6,6 +6,8 @@ export const ThemeLight = styled.createGlobalStyle`
     --color-text-1ary: var(--color-blue-14-16);
     --color-text-2ary: var(--color-blue-15-59);
 
+    --color-border: var(--color-blue-12-90);
+
     --color-result-success: var(--color-green-63-42);
     --color-result-failure: var(--color-red-100-70);
 
@@ -18,7 +20,7 @@ export const ThemeLight = styled.createGlobalStyle`
     --color-button-disabled: var(--color-gray-0-51);
     --color-button-disabled-bg: var(--color-gray-0-20);
 
-    --color-input-border: var(--color-blue-12-90);
+    --color-input-border: var(--color-border);
     --color-input-label-bg: var(--color-gray-0-98);
 
     --color-form: var(--color-blue-30-38);
@@ -30,6 +32,8 @@ export const ThemeLight = styled.createGlobalStyle`
     --grad-primary: var(--grad-2);
     --bg-button-1ary: var(--color-green-88-37);
     --bg-button-1ary-focus: var(--color-green-88-37);
+    --bg-button-2ary: var(--color-blue-15-59);
+    --bg-button-2ary-focus: var(--color-blue-15-59);
     --bg-button-danger: var(--color-red-100-70);
     --bg-button-default: var(--grad-4);
     --bg-button-default-focus: var(--grad-5);

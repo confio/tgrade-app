@@ -1,5 +1,5 @@
 import { Button, Typography } from "antd";
-import { Stack } from "App/components/layout";
+import { Stack } from "App/components/layoutPrimitives";
 import copyToClipboard from "clipboard-copy";
 import * as React from "react";
 import { ComponentProps } from "react";

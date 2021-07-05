@@ -4,6 +4,7 @@
   "private": true,
   "license": "SEE LICENSE IN LICENSE.txt",
   "dependencies": {
+    "@ant-design/charts": "^1.1.18",
     "@ant-design/icons": "^4.6.2",
     "@capacitor/android": "^2.4.7",
     "@capacitor/cli": "^2.4.7",
