@@ -7,7 +7,7 @@ export const GlobalSpacing = styled.createGlobalStyle`
   :root {
     --ratio: 1.25;
     --border-width: 1px;
-    --border-radius: 1.25rem;
+    --border-radius: 6px;
 
     /* Generate CSS custom properties with the "spacings" array, like so:
       --s-2: calc(var(--s-1) / var(--ratio));
