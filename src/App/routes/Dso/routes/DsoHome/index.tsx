@@ -1,16 +1,14 @@
-import { Tabs } from "antd";
-import Button from "App/components/form/Button";
-import { PageLayout, Stack } from "App/components/layout";
+import { PageLayout } from "App/components/layout";
+import ButtonAddNew from "App/components/logic/ButtonAddNew";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { openAddDsoModal, setInitialLayoutState, useDso, useLayout } from "service";
-import CreateProposalModal from "./components/CreateProposalModal";
 import DsoDetail from "./components/DsoDetail";
-import LeaveDsoModal from "./components/LeaveDsoModal";
+import { StyledTabs } from "./style";
 
-const { TabPane } = Tabs;
+const { TabPane } = StyledTabs;
 
 export interface DsoHomeParams {
   readonly dsoAddress: string;
@@ -26,12 +24,13 @@ export default function DsoHome(): JSX.Element | null {
 
   const { dsoState, dsoDispatch } = useDso();
   const [loadedDsoAddress, setLoadedDsoAddress] = useState<string>();
-  const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
-  const [isLeaveDsoModalOpen, setLeaveDsoModalOpen] = useState(false);
 
   useEffect(() => {
     const noStoredDsos = !dsoState.dsos.length;
-    if (noStoredDsos) history.push(paths.dso.prefix);
+    if (noStoredDsos) {
+      history.push(paths.dso.prefix);
+      return;
+    }
 
     const dsoAddressIsStored = dsoState.dsos.some(({ address }) => address === dsoAddress);
     if (dsoAddressIsStored) {
@@ -43,35 +42,21 @@ export default function DsoHome(): JSX.Element | null {
   }, [dsoAddress, dsoState.dsos, history]);
 
   return loadedDsoAddress ? (
-    <PageLayout>
-      <Stack gap="s4">
-        <Tabs
-          destroyInactiveTabPane
-          activeKey={loadedDsoAddress}
-          tabPosition="top"
-          onTabClick={(key) => history.push(`${paths.dso.prefix}/${key}`)}
-        >
-          {dsoState.dsos.map(({ address, name }) => (
-            <TabPane tab={name} key={address}>
-              <DsoDetail dsoAddress={address} />
-            </TabPane>
-          ))}
-        </Tabs>
-        <Button onClick={() => openAddDsoModal(dsoDispatch)}>
-          <div>Add DSO</div>
-        </Button>
-        <Button onClick={() => setLeaveDsoModalOpen(true)}>
-          <div>Leave DSO</div>
-        </Button>
-        <Button onClick={() => setCreateProposalModalOpen(true)}>
-          <div>Create proposal</div>
-        </Button>
-      </Stack>
-      <CreateProposalModal
-        isModalOpen={isCreateProposalModalOpen}
-        closeModal={() => setCreateProposalModalOpen(false)}
-      />
-      <LeaveDsoModal isModalOpen={isLeaveDsoModalOpen} closeModal={() => setLeaveDsoModalOpen(false)} />
+    <PageLayout maxwidth="75rem" centered="false">
+      <StyledTabs
+        activeKey={loadedDsoAddress}
+        tabPosition="top"
+        onTabClick={(key) => history.push(`${paths.dso.prefix}/${key}`)}
+        tabBarExtraContent={{
+          right: <ButtonAddNew text="Add Trusted Circle" onClick={() => openAddDsoModal(dsoDispatch)} />,
+        }}
+      >
+        {dsoState.dsos.map(({ address, name }) => (
+          <TabPane tab={name} key={address}>
+            <DsoDetail dsoAddress={address} />
+          </TabPane>
+        ))}
+      </StyledTabs>
     </PageLayout>
   ) : null;
 }
