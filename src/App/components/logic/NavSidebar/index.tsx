@@ -5,14 +5,13 @@ import { ReactComponent as WikiIcon } from "./assets/wikilogo.svg";
 import { ReactComponent as FeedbackIcon } from "./assets/feedbacklogo.svg";
 import { ReactComponent as TgradeLogo } from "./assets/tgradelogo.svg";
 import { ReactComponent as ConnectWalletIcon } from "./assets/connectwalletIcon.svg";
-
 import { NavLink } from "react-router-dom";
 import { StyledNavbar, StyledCell } from "./styled";
 
 export const NavSidebar: React.FC = () => {
   return (
     <StyledNavbar>
-      <TgradeLogo style={{ margin: "10px", marginBottom: "25px" }} />
+      <TgradeLogo style={{ margin: "20px", marginBottom: "25px" }} />
       <NavLink exact to="/hannu">
         <StyledCell>
           <TcIcon style={{ marginRight: "10px" }} />

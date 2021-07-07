@@ -1,10 +1,11 @@
 import Styled from "styled-components";
-
+import MenuBG from "./assets/menubg.svg";
 export const StyledNavbar = Styled.div`
 display:flex;
 flex-direction:column;
 width:244px;
 color:white;
+background-image: url(${MenuBG});
 background-color:#047778;
 `;
 
