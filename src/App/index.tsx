@@ -16,6 +16,7 @@ import {
   ThemeProvider,
 } from "service";
 import { ProtectedSwitch } from "./components/logic";
+import { NavSidebar } from "./components/logic/NavSidebar";
 import { paths } from "./paths";
 import Account from "./routes/Account";
 import Dso from "./routes/Dso";
@@ -32,6 +33,7 @@ export default function App(): JSX.Element {
               <ThemeProvider>
                 <Router basename={process.env.PUBLIC_URL}>
                   <LayoutProvider>
+                    <NavSidebar />
                     <Switch>
                       <Route exact path="/">
                         <Redirect to={paths.setup.prefix} />
