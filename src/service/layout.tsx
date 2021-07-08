@@ -175,16 +175,10 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
 
   return (
     <LayoutContext.Provider value={{ layoutState, layoutDispatch }}>
-      <>
-        {showMenu ? (
-          <Menu
-            isBigViewport={width >= 1040}
-            isOpen={layoutState.menuState === "open"}
-            closeMenu={() => closeMenu(layoutDispatch)}
-          />
-        ) : null}
-        {layoutState.showCorporateBanner ? <NavSidebar>{children}</NavSidebar> : children}
-      </>
+      <div style={{ display: "flex" }}>
+        <NavSidebar />
+        {children}
+      </div>
     </LayoutContext.Provider>
   );
 }
