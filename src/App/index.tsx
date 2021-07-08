@@ -33,7 +33,6 @@ export default function App(): JSX.Element {
               <ThemeProvider>
                 <Router basename={process.env.PUBLIC_URL}>
                   <LayoutProvider>
-                    <NavSidebar />
                     <Switch>
                       <Route exact path="/">
                         <Redirect to={paths.setup.prefix} />

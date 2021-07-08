@@ -1,4 +1,5 @@
 import { CorporateBannerLayout } from "App/components/layout";
+import { NavSidebar } from "App/components/logic/NavSidebar";
 import { BackButton, Menu, RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
@@ -148,8 +149,8 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
   const state = history.location.state as RedirectLocation;
   const { sdkState } = useSdkInit();
   const [layoutState, layoutDispatch] = useReducer(layoutReducer, {
-    menuState: "hidden",
-    showCorporateBanner: true,
+    menuState: "open",
+    showCorporateBanner: false,
     isLoading: false,
   });
 
@@ -182,11 +183,7 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
             closeMenu={() => closeMenu(layoutDispatch)}
           />
         ) : null}
-        {layoutState.showCorporateBanner ? (
-          <CorporateBannerLayout>{children}</CorporateBannerLayout>
-        ) : (
-          children
-        )}
+        {layoutState.showCorporateBanner ? <NavSidebar>{children}</NavSidebar> : children}
       </>
     </LayoutContext.Provider>
   );
