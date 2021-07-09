@@ -7,7 +7,7 @@ export const NavSidebar: React.FC = () => {
   return (
     <Navbar>
       <LinkWrapper>
-        <Icon.TgradeLogo style={{ margin: "1.5rem" }} />
+        <Icon.TgradeLogo />
         <Link to="/">
           <Cell>
             <Icon.TrustedCircle />

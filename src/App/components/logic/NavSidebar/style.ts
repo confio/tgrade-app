@@ -9,6 +9,9 @@ flex-direction:column;
 min-height: 100vh;
 width:15.25rem;
 background-image: url(${MenuBG});
+svg{
+    margin:1.5rem;
+}
 `;
 
 export const LinkWrapper = Styled.div`
