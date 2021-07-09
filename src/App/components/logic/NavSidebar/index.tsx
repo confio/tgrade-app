@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import { Navbar, Cell, LinkWrapper, StyledText } from "./style";
-import * as Icon from "./assets/icons";
+import * as Icon from "./icons";
 
 export const NavSidebar: React.FC = () => {
   return (
