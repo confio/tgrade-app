@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import React from "react";
 import { Navbar, Cell, LinkWrapper, StyledText } from "./style";
 import * as Icon from "./icons";
 
@@ -26,7 +25,7 @@ export const NavSidebar: React.FC = () => {
           <Cell>
             <Icon.Wiki />
             <StyledText>Wiki</StyledText>
-            <Icon.Wiki />
+            <Icon.Visit />
           </Cell>
         </Link>
         <Link to="/">
