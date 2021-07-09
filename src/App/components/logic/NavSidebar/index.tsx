@@ -2,16 +2,16 @@ import { Link } from "react-router-dom";
 import { paths } from "App/paths";
 import { HTMLAttributes } from "react";
 import { Navbar, Cell, LinkWrapper, StyledText } from "./style";
-import { ReactComponent as TcIcon } from "./assets/tcIcon.svg";
-import { ReactComponent as TokenIcon } from "./assets/tokenIcon.svg";
-import { ReactComponent as WikiIcon } from "./assets/wikiIcon.svg";
-import { ReactComponent as FeedbackIcon } from "./assets/feedbackIcon.svg";
-import { ReactComponent as TgradeLogo } from "./assets/tgradelogo.svg";
-import { ReactComponent as ConnectWalletIcon } from "./assets/connectwalletIcon.svg";
-import { ReactComponent as TradeIcon } from "./assets/trade.svg";
-import { ReactComponent as JoinIcon } from "./assets/join.svg";
-import { ReactComponent as LearnIcon } from "./assets/learn.svg";
-import { ReactComponent as VisitIcon } from "./assets/visit.svg";
+import { ReactComponent as TcIcon } from "./assets/tc-icon.svg";
+import { ReactComponent as TokenIcon } from "./assets/token-icon.svg";
+import { ReactComponent as WikiIcon } from "./assets/wiki-icon.svg";
+import { ReactComponent as FeedbackIcon } from "./assets/feedback-icon.svg";
+import { ReactComponent as TgradeLogo } from "./assets/tgrade-logo.svg";
+import { ReactComponent as ConnectWalletIcon } from "./assets/connect-wallet-icon.svg";
+import { ReactComponent as TradeIcon } from "./assets/trade-icon.svg";
+import { ReactComponent as JoinIcon } from "./assets/join-icon.svg";
+import { ReactComponent as LearnIcon } from "./assets/learn-icon.svg";
+import { ReactComponent as VisitIcon } from "./assets/visit-icon.svg";
 
 export function NavSidebar({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   return (

@@ -17,11 +17,6 @@ export interface DsoHomeParams {
 export default function DsoHome(): JSX.Element | null {
   const history = useHistory();
   const { dsoAddress }: DsoHomeParams = useParams();
-  const { layoutDispatch } = useLayout();
-  useEffect(() => setInitialLayoutState(layoutDispatch, { showCorporateBanner: true, menuState: "hidden" }), [
-    layoutDispatch,
-  ]);
-
   const { dsoState, dsoDispatch } = useDso();
   const [loadedDsoAddress, setLoadedDsoAddress] = useState<string>();
 
