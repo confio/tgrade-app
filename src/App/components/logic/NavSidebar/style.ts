@@ -18,20 +18,17 @@ flex-direction:column;
 export const Cell = Styled.div`
 display:flex;
 align-items:center;
-padding:1.25rem;
+padding:0.75rem;
 width:15.25rem;
 height:4.875rem;
 color:#fff;
-p{
-    color:red;
-}
-
+border-left: 4px solid transparent;
 svg{
     margin:1rem;
 }
 &:hover{
     background-color:rgba(220,220,220,0.25);
-    border-left: 2px solid white;
+    border-left: 4px solid white;
 }
 `;
 

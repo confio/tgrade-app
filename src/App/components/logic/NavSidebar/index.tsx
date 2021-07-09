@@ -8,6 +8,10 @@ import { ReactComponent as WikiIcon } from "./assets/wikiIcon.svg";
 import { ReactComponent as FeedbackIcon } from "./assets/feedbackIcon.svg";
 import { ReactComponent as TgradeLogo } from "./assets/tgradelogo.svg";
 import { ReactComponent as ConnectWalletIcon } from "./assets/connectwalletIcon.svg";
+import { ReactComponent as TradeIcon } from "./assets/trade.svg";
+import { ReactComponent as JoinIcon } from "./assets/join.svg";
+import { ReactComponent as LearnIcon } from "./assets/learn.svg";
+import { ReactComponent as VisitIcon } from "./assets/visit.svg";
 
 export function NavSidebar({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   return (
@@ -18,24 +22,28 @@ export function NavSidebar({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.
           <Cell>
             <TcIcon />
             <StyledText>Trusted Circle</StyledText>
+            <JoinIcon />
           </Cell>
         </Link>
         <Link to="/">
           <Cell>
             <TokenIcon />
-            <StyledText>Tokens</StyledText>
+            <StyledText>T-Market</StyledText>
+            <TradeIcon />
           </Cell>
         </Link>
         <Link to="/">
           <Cell>
             <WikiIcon />
             <StyledText>Wiki</StyledText>
+            <LearnIcon />
           </Cell>
         </Link>
         <Link to="/">
           <Cell>
             <FeedbackIcon />
             <StyledText>Feedback</StyledText>
+            <VisitIcon />
           </Cell>
         </Link>
       </LinkWrapper>
