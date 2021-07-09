@@ -1,5 +1,4 @@
 import BackButton from "../BackButton";
-import BurgerButton from "../BurgerButton";
 import * as React from "react";
 import { ComponentProps, HTMLAttributes } from "react";
 import { StyledNav } from "./style";
