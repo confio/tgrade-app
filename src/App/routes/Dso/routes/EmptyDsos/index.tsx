@@ -12,10 +12,7 @@ const { Text } = Typography;
 
 export default function EmptyDsos(): JSX.Element {
   const history = useHistory();
-  const { layoutDispatch } = useLayout();
-  useEffect(() => setInitialLayoutState(layoutDispatch, { showCorporateBanner: true, menuState: "hidden" }), [
-    layoutDispatch,
-  ]);
+
   const { dsoState, dsoDispatch } = useDso();
 
   useEffect(() => {

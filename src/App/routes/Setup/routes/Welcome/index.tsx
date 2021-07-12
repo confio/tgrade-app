@@ -28,10 +28,6 @@ export default function Welcome(): JSX.Element {
   const state = history.location.state as RedirectLocation;
   const { handleError } = useError();
   const { sdkState, sdkDispatch } = useSdkInit();
-  const { layoutDispatch } = useLayout();
-  useEffect(() => setInitialLayoutState(layoutDispatch, { menuState: "hidden", showCorporateBanner: true }), [
-    layoutDispatch,
-  ]);
 
   useEffect(() => {
     (async function init() {

@@ -40,8 +40,6 @@ export default function Tutorial(): JSX.Element {
       setInitialLayoutState(layoutDispatch, {
         backButtonProps: { path: paths.setup.prefix, text: "Go back" },
         viewTitles: { viewTitle: "Watch Tutorial", viewSubtitle: "Step 00/03" },
-        menuState: "hidden",
-        showCorporateBanner: true,
       }),
     [layoutDispatch],
   );

@@ -10,14 +10,10 @@ export {
 } from "./dsos";
 export { default as ErrorProvider, useError } from "./error";
 export {
-  closeMenu,
   default as LayoutProvider,
-  hideMenu,
-  openMenu,
   setBackButtonProps,
   setInitialLayoutState,
   setLoading,
-  showMenu,
   useLayout,
 } from "./layout";
 export {

@@ -16,6 +16,7 @@ import {
   ThemeProvider,
 } from "service";
 import { ProtectedSwitch } from "./components/logic";
+import { NavSidebar } from "./components/logic/NavSidebar";
 import { paths } from "./paths";
 import Account from "./routes/Account";
 import Dso from "./routes/Dso";
