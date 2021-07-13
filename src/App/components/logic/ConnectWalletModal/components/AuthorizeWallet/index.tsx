@@ -1,12 +1,9 @@
-import { Typography } from "antd";
+import { Spin, Typography } from "antd";
 import { Button } from "App/components/form";
 import { Stack } from "App/components/layoutPrimitives";
-import { Spin } from "antd";
 import * as React from "react";
-import errorIcon from "./assets/error.svg";
-import loadingIcon from "./assets/loading.svg";
 import { useCallback, useEffect, useState } from "react";
-import { hitFaucetIfNeeded, isSdkInitialized, setSigner, useError, useSdk } from "service";
+import { setSigner, useError, useSdk } from "service";
 import {
   isKeplrAvailable,
   isLedgerAvailable,
@@ -16,7 +13,9 @@ import {
   WalletLoader,
 } from "utils/sdk";
 import closeIcon from "../../assets/cross.svg";
-import { ModalHeader, ErrorMsg, ButtonGroup, Indicator } from "./style";
+import errorIcon from "./assets/error.svg";
+import loadingIcon from "./assets/loading.svg";
+import { ButtonGroup, ErrorMsg, Indicator, ModalHeader } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -35,10 +34,13 @@ export default function AuthorizeWallet({
   const { sdkState, sdkDispatch } = useSdk();
   const [error, setError] = useState<string>();
 
-  function dismiss() {
-    closeModal();
-    goBack();
-  }
+  const dismiss = useCallback(
+    function (): void {
+      closeModal();
+      goBack();
+    },
+    [closeModal, goBack],
+  );
 
   const connectWallet = useCallback(
     async function (loadWallet: WalletLoader) {
@@ -50,14 +52,14 @@ export default function AuthorizeWallet({
         }
 
         setSigner(sdkDispatch, signer);
-        goBack();
+        dismiss();
       } catch (error) {
         handleError(error);
         const toConnect = walletType === "keplr" ? "the Keplr extension" : "your Ledger";
         setError(`Please make sure ${toConnect} is connected`);
       }
     },
-    [goBack, handleError, sdkDispatch, sdkState.config, walletType],
+    [dismiss, handleError, sdkDispatch, sdkState.config, walletType],
   );
 
   useEffect(() => {
@@ -78,14 +80,6 @@ export default function AuthorizeWallet({
       }
     }
   }, [connectWallet, walletType]);
-
-  useEffect(() => {
-    (async function hitFaucetIfInit() {
-      if (isSdkInitialized(sdkState)) {
-        await hitFaucetIfNeeded(sdkState);
-      }
-    })();
-  }, [sdkState]);
 
   return (
     <Stack gap="s1">
