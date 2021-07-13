@@ -1,4 +1,3 @@
-export { default as ContractsProvider, useContracts } from "./contracts";
 export {
   addDso,
   closeAddDsoModal,
