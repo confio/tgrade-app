@@ -1,4 +1,4 @@
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Coin } from "@cosmjs/stargate";
 
 export type VoteOption = "yes" | "no" | "abstain";
@@ -153,28 +153,62 @@ function getProposalTitle(proposal: ProposalContent): string {
   }
 }
 
-export interface DsoInstance {
-  readonly dsoAddress: string;
+export class DsoContractQuerier {
+  readonly address: string;
+  protected readonly client: CosmWasmClient;
 
-  // queries
-  dso: () => Promise<DsoResponse>;
-  listAllMembers: () => Promise<readonly Member[]>;
-  listVotingMembers: () => Promise<readonly Member[]>;
-  escrow: (memberAddress: string) => Promise<EscrowResponse>;
-  listProposals: () => Promise<readonly ProposalResponse[]>;
-  proposal: (proposalId: number) => Promise<ProposalResponse>;
+  constructor(address: string, client: CosmWasmClient) {
+    this.address = address;
+    this.client = client;
+  }
 
-  // actions
-  depositEscrow: (senderAddress: string, funds: readonly Coin[]) => Promise<string>;
-  leaveDso: (memberAddress: string) => Promise<string>;
-  propose: (senderAddress: string, description: string, proposal: ProposalContent) => Promise<string>;
-  voteProposal: (senderAddress: string, proposalId: number, vote: VoteOption) => Promise<string>;
-  executeProposal: (senderAddress: string, proposalId: number) => Promise<string>;
+  async getDso(): Promise<DsoResponse> {
+    const query = { dso: {} };
+    const response: DsoResponse = await this.client.queryContractSmart(this.address, query);
+    return response;
+  }
+
+  async getAllMembers(): Promise<readonly Member[]> {
+    const query = { list_members: {} };
+    const { members }: MemberListResponse = await this.client.queryContractSmart(this.address, query);
+    return members;
+  }
+
+  async getVotingMembers(): Promise<readonly Member[]> {
+    const query = { list_voting_members: {} };
+    const { members }: MemberListResponse = await this.client.queryContractSmart(this.address, query);
+    return members;
+  }
+
+  async getEscrow(memberAddress: string): Promise<EscrowResponse> {
+    const query = { escrow: { addr: memberAddress } };
+    const response: EscrowResponse = await this.client.queryContractSmart(this.address, query);
+    return response;
+  }
+
+  async getProposals(): Promise<readonly ProposalResponse[]> {
+    const query = { list_proposals: {} };
+    const { proposals }: ProposalListResponse = await this.client.queryContractSmart(this.address, query);
+    return proposals;
+  }
+
+  async getProposal(proposalId: number): Promise<ProposalResponse> {
+    const query = { proposal: { proposal_id: proposalId } };
+    const proposalResponse = await this.client.queryContractSmart(this.address, query);
+    return proposalResponse;
+  }
 }
 
-export interface DsoContractUse {
-  use: (dsoAddress: string) => DsoInstance;
-  createDso: (
+export class DsoContract extends DsoContractQuerier {
+  readonly #signingClient: SigningCosmWasmClient;
+
+  constructor(address: string, signingClient: SigningCosmWasmClient) {
+    super(address, signingClient);
+    this.#signingClient = signingClient;
+  }
+
+  static async createDso(
+    signingClient: SigningCosmWasmClient,
     codeId: number,
     creatorAddress: string,
     dsoName: string,
@@ -185,111 +219,7 @@ export interface DsoContractUse {
     members: readonly string[],
     allowEndEarly: boolean,
     funds: readonly Coin[],
-  ) => Promise<string>;
-}
-
-export const DsoContract = (client: SigningCosmWasmClient): DsoContractUse => {
-  const use = (dsoAddress: string): DsoInstance => {
-    const dso = async (): Promise<DsoResponse> => {
-      const query = { dso: {} };
-      const response: DsoResponse = await client.queryContractSmart(dsoAddress, query);
-      return response;
-    };
-    const listAllMembers = async (): Promise<readonly Member[]> => {
-      const query = { list_members: {} };
-      const { members }: MemberListResponse = await client.queryContractSmart(dsoAddress, query);
-      return members;
-    };
-    const listVotingMembers = async (): Promise<readonly Member[]> => {
-      const query = { list_voting_members: {} };
-      const { members }: MemberListResponse = await client.queryContractSmart(dsoAddress, query);
-      return members;
-    };
-    const escrow = async (memberAddress: string): Promise<EscrowResponse> => {
-      const query = { escrow: { addr: memberAddress } };
-      const response: EscrowResponse = await client.queryContractSmart(dsoAddress, query);
-      return response;
-    };
-    const listProposals = async (): Promise<readonly ProposalResponse[]> => {
-      const query = { list_proposals: {} };
-      const { proposals }: ProposalListResponse = await client.queryContractSmart(dsoAddress, query);
-      return proposals;
-    };
-    const proposal = async (proposalId: number): Promise<ProposalResponse> => {
-      const query = { proposal: { proposal_id: proposalId } };
-      const proposalResponse = await client.queryContractSmart(dsoAddress, query);
-      return proposalResponse;
-    };
-
-    const depositEscrow = async (senderAddress: string, funds: readonly Coin[]): Promise<string> => {
-      const query = { deposit_escrow: {} };
-      const { transactionHash } = await client.execute(senderAddress, dsoAddress, query, undefined, funds);
-      return transactionHash;
-    };
-    const leaveDso = async (memberAddress: string): Promise<string> => {
-      const query = { leave_dso: {} };
-      const { transactionHash } = await client.execute(memberAddress, dsoAddress, query);
-      return transactionHash;
-    };
-    const propose = async (
-      senderAddress: string,
-      description: string,
-      proposal: ProposalContent,
-    ): Promise<string> => {
-      const query = {
-        propose: {
-          title: getProposalTitle(proposal),
-          description,
-          proposal,
-        },
-      };
-
-      const { transactionHash } = await client.execute(senderAddress, dsoAddress, query);
-      return transactionHash;
-    };
-    const voteProposal = async (
-      senderAddress: string,
-      proposalId: number,
-      vote: VoteOption,
-    ): Promise<string> => {
-      const query = { vote: { proposal_id: proposalId, vote } };
-      const { transactionHash } = await client.execute(senderAddress, dsoAddress, query);
-      return transactionHash;
-    };
-    const executeProposal = async (senderAddress: string, proposalId: number): Promise<string> => {
-      const query = { execute: { proposal_id: proposalId } };
-      const { transactionHash } = await client.execute(senderAddress, dsoAddress, query);
-      return transactionHash;
-    };
-
-    return {
-      dsoAddress,
-      dso,
-      listAllMembers,
-      listVotingMembers,
-      escrow,
-      listProposals,
-      proposal,
-      depositEscrow,
-      leaveDso,
-      propose,
-      voteProposal,
-      executeProposal,
-    };
-  };
-
-  const createDso = async (
-    codeId: number,
-    creatorAddress: string,
-    dsoName: string,
-    escrowAmount: string,
-    votingDuration: string,
-    quorum: string,
-    threshold: string,
-    members: readonly string[],
-    allowEndEarly: boolean,
-    funds: readonly Coin[],
-  ): Promise<string> => {
+  ): Promise<string> {
     const initMsg: Record<string, unknown> = {
       admin: creatorAddress,
       name: dsoName,
@@ -301,11 +231,53 @@ export const DsoContract = (client: SigningCosmWasmClient): DsoContractUse => {
       allow_end_early: allowEndEarly,
     };
 
-    const { contractAddress } = await client.instantiate(creatorAddress, codeId, initMsg, dsoName, {
+    const { contractAddress } = await signingClient.instantiate(creatorAddress, codeId, initMsg, dsoName, {
       admin: creatorAddress,
       transferAmount: funds,
     });
     return contractAddress;
-  };
-  return { use, createDso };
-};
+  }
+
+  async depositEscrow(senderAddress: string, funds: readonly Coin[]): Promise<string> {
+    const query = { deposit_escrow: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.address,
+      query,
+      undefined,
+      funds,
+    );
+    return transactionHash;
+  }
+
+  async leaveDso(memberAddress: string): Promise<string> {
+    const query = { leave_dso: {} };
+    const { transactionHash } = await this.#signingClient.execute(memberAddress, this.address, query);
+    return transactionHash;
+  }
+
+  async propose(senderAddress: string, description: string, proposal: ProposalContent): Promise<string> {
+    const query = {
+      propose: {
+        title: getProposalTitle(proposal),
+        description,
+        proposal,
+      },
+    };
+
+    const { transactionHash } = await this.#signingClient.execute(senderAddress, this.address, query);
+    return transactionHash;
+  }
+
+  async voteProposal(senderAddress: string, proposalId: number, vote: VoteOption): Promise<string> {
+    const query = { vote: { proposal_id: proposalId, vote } };
+    const { transactionHash } = await this.#signingClient.execute(senderAddress, this.address, query);
+    return transactionHash;
+  }
+
+  async executeProposal(senderAddress: string, proposalId: number): Promise<string> {
+    const query = { execute: { proposal_id: proposalId } };
+    const { transactionHash } = await this.#signingClient.execute(senderAddress, this.address, query);
+    return transactionHash;
+  }
+}
