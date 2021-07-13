@@ -2,7 +2,7 @@ import { Modal } from "antd";
 import { Stack } from "App/components/layoutPrimitives";
 import styled from "styled-components";
 
-export const StyledModal = styled(Modal)`
+export default styled(Modal)`
   ${({ bgTransparent }: { bgTransparent?: boolean }) =>
     bgTransparent &&
     `

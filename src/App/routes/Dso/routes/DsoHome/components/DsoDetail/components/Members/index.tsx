@@ -3,7 +3,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { DsoContract, EscrowResponse, EscrowStatus } from "utils/dso";
+import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
 import { DsoHomeParams } from "../../../..";
 import { MembersStack } from "./style";
 
@@ -13,19 +13,20 @@ export default function Members(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { signingClient },
+    sdkState: { client },
   } = useSdk();
   const [numVoters, setNumVoters] = useState(0);
   const [numNonVoters, setNumNonVoters] = useState(0);
 
   useEffect(() => {
     (async function updateNumMembers() {
-      try {
-        const members = await DsoContract(signingClient).use(dsoAddress).listAllMembers();
+      if (!client) return;
 
-        const memberEscrowPromises = members.map(({ addr }) =>
-          DsoContract(signingClient).use(dsoAddress).escrow(addr),
-        );
+      try {
+        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const members = await dsoContract.getAllMembers();
+
+        const memberEscrowPromises = members.map(({ addr }) => dsoContract.getEscrow(addr));
         const memberEscrowResults = await Promise.allSettled(memberEscrowPromises);
         const memberEscrowStatuses = memberEscrowResults
           .filter((res): res is PromiseFulfilledResult<EscrowResponse> => res.status === "fulfilled")
@@ -46,7 +47,7 @@ export default function Members(): JSX.Element {
         handleError(error);
       }
     })();
-  }, [dsoAddress, handleError, signingClient]);
+  }, [client, dsoAddress, handleError]);
 
   return (
     <MembersStack>

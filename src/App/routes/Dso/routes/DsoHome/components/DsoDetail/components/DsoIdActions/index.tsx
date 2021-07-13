@@ -1,12 +1,12 @@
 import { Dropdown, Menu, Typography } from "antd";
+import { AddressTag } from "App/components/logic";
 import { Separator } from "App/components/logic/AddDsoModal/style";
-import AddressTag from "App/components/logic/AddressTag";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDsoName, openLeaveDsoModal, useDso } from "service/dsos";
-import { DsoContract } from "utils/dso";
+import { DsoContractQuerier } from "utils/dso";
 import { DsoHomeParams } from "../../../..";
 import gearIcon from "./assets/gear.svg";
 import { ActionsButton, StyledDsoIdActions, VotingRules, VSeparator } from "./style";
@@ -17,7 +17,7 @@ export default function DsoIdActions(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { signingClient },
+    sdkState: { client, address },
   } = useSdk();
   const {
     dsoState: { dsos },
@@ -31,8 +31,11 @@ export default function DsoIdActions(): JSX.Element {
 
   useEffect(() => {
     (async function queryVotingRules() {
+      if (!client) return;
+
       try {
-        const dsoResponse = await DsoContract(signingClient).use(dsoAddress).dso();
+        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoResponse = await dsoContract.getDso();
         const quorum = (parseFloat(dsoResponse.rules.quorum) * 100).toFixed(0).toString();
         const threshold = (parseFloat(dsoResponse.rules.threshold) * 100).toFixed(0).toString();
 
@@ -43,7 +46,7 @@ export default function DsoIdActions(): JSX.Element {
         handleError(error);
       }
     })();
-  }, [dsoAddress, handleError, signingClient]);
+  }, [client, dsoAddress, handleError]);
 
   return (
     <StyledDsoIdActions>
@@ -54,9 +57,11 @@ export default function DsoIdActions(): JSX.Element {
           <Dropdown
             overlay={
               <Menu>
-                <Menu.Item key="1" onClick={() => openLeaveDsoModal(dsoDispatch)}>
-                  Leave Trusted Circle
-                </Menu.Item>
+                {address ? (
+                  <Menu.Item key="1" onClick={() => openLeaveDsoModal(dsoDispatch)}>
+                    Leave Trusted Circle
+                  </Menu.Item>
+                ) : null}
               </Menu>
             }
             trigger={["click"]}

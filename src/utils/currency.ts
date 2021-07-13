@@ -77,6 +77,7 @@ export function useBalance(address?: string): readonly Coin[] {
   const [currentBalance, setCurrentBalance] = useState<readonly Coin[]>([]);
 
   useEffect(() => {
+    if (!getBalance) return;
     let mounted = true;
 
     (async function updateBalance() {

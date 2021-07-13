@@ -1,4 +1,4 @@
-import { TxResult } from "App/components/logic/ShowTxResult";
+import { TxResult } from "App/components/logic";
 import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -46,16 +46,16 @@ export default function ProposalAddVotingParticipants({
   }
 
   async function submitCreateProposal() {
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const transactionHash = await DsoContract(signingClient)
-        .use(dsoAddress)
-        .propose(address, comment, {
-          add_voting_members: {
-            voters: members,
-          },
-        });
+      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const transactionHash = await dsoContract.propose(address, comment, {
+        add_voting_members: {
+          voters: members,
+        },
+      });
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({

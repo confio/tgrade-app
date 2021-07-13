@@ -45,7 +45,7 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
   const mappedFeeToken = config.coinMap[config.feeToken];
 
   useEffect(() => {
-    if (isNaN(parseFloat(escrowAmount))) {
+    if (!signingClient || isNaN(parseFloat(escrowAmount))) {
       setTxFee("0");
       setTotalCharged("0");
       return;
@@ -81,7 +81,7 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
     escrowAmount,
     handleError,
     mappedFeeToken.fractionalDigits,
-    signingClient.fees.init.amount,
+    signingClient,
   ]);
 
   return (

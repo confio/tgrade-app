@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
-import { DsoContract, EscrowResponse, EscrowStatus } from "utils/dso";
+import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
 import { DsoHomeParams } from "../../../..";
 import DepositEscrowModal from "./components/DepositEscrowModal";
 import { StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
@@ -18,44 +18,48 @@ export default function Escrow(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { signingClient, config, address },
+    sdkState: { config, client, address },
   } = useSdk();
   const feeDenom = config.coinMap[config.feeToken].denom;
 
   const [modalOpen, setModalOpen] = useState(false);
 
-  const [userEscrow, setUserEscrow] = useState("");
-  const [requiredEscrow, setRequiredEscrow] = useState("");
+  const [userEscrow, setUserEscrow] = useState("0");
+  const [requiredEscrow, setRequiredEscrow] = useState("0");
   const [totalRequiredEscrow, setTotalRequiredEscrow] = useState(0);
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
 
   const refreshEscrows = useCallback(
     async function () {
-      try {
-        // get user deposited escrow
-        const escrowResponse = await DsoContract(signingClient).use(dsoAddress).escrow(address);
+      if (!client) return;
 
-        if (escrowResponse) {
-          const userEscrow = nativeCoinToDisplay(
-            { denom: config.feeToken, amount: escrowResponse.paid },
-            config.coinMap,
-          ).amount;
-          setUserEscrow(userEscrow);
+      try {
+        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+
+        // get user deposited escrow
+        if (address) {
+          const escrowResponse = await dsoContract.getEscrow(address);
+
+          if (escrowResponse) {
+            const userEscrow = nativeCoinToDisplay(
+              { denom: config.feeToken, amount: escrowResponse.paid },
+              config.coinMap,
+            ).amount;
+            setUserEscrow(userEscrow);
+          }
         }
 
         // get minimum escrow required for this DSO
-        const { escrow_amount } = await DsoContract(signingClient).use(dsoAddress).dso();
+        const { escrow_amount } = await dsoContract.getDso();
         const feeDecimals = config.coinMap[config.feeToken].fractionalDigits;
 
         const requiredEscrowDecimal = Decimal.fromAtomics(escrow_amount, feeDecimals);
         setRequiredEscrow(requiredEscrowDecimal.toString());
 
         // get member escrows to calculate total required and total paid
-        const members = await DsoContract(signingClient).use(dsoAddress).listAllMembers();
+        const members = await dsoContract.getAllMembers();
 
-        const memberEscrowPromises = members.map(({ addr }) =>
-          DsoContract(signingClient).use(dsoAddress).escrow(addr),
-        );
+        const memberEscrowPromises = members.map(({ addr }) => dsoContract.getEscrow(addr));
         const memberEscrowResults = await Promise.allSettled(memberEscrowPromises);
         const memberEscrowStatuses = memberEscrowResults
           .filter((res): res is PromiseFulfilledResult<EscrowResponse> => res.status === "fulfilled")
@@ -85,7 +89,7 @@ export default function Escrow(): JSX.Element {
         handleError(error);
       }
     },
-    [address, config.coinMap, config.feeToken, dsoAddress, handleError, signingClient],
+    [address, client, config.coinMap, config.feeToken, dsoAddress, handleError],
   );
 
   useEffect(() => {
@@ -159,7 +163,7 @@ export default function Escrow(): JSX.Element {
         <Text>{`${userEscrow} ${feeDenom}`}</Text>
         <Text>needed to get voting rights:</Text>
         <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
-        <Button onClick={() => setModalOpen(true)}>Deposit escrow</Button>
+        {address ? <Button onClick={() => setModalOpen(true)}>Deposit escrow</Button> : null}
       </YourEscrowStack>
       {modalOpen ? (
         <DepositEscrowModal

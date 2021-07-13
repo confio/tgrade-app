@@ -1,13 +1,13 @@
 import { Typography } from "antd";
 import { AddressList, Button } from "App/components/form";
 import { Stack } from "App/components/layoutPrimitives";
-import ShowTxResult, { TxResult } from "App/components/logic/ShowTxResult";
+import { ShowTxResult, TxResult } from "App/components/logic";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
-import { DsoContract, VoteOption } from "utils/dso";
+import { DsoContract, DsoContractQuerier, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { DsoHomeParams } from "../../../..";
 import closeIcon from "./assets/cross.svg";
@@ -45,7 +45,7 @@ export default function ProposalDetailModal({
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { config, signingClient, address },
+    sdkState: { config, client, address, signingClient },
   } = useSdk();
 
   const [submitting, setSubmitting] = useState<VoteOption | "executing">();
@@ -64,31 +64,37 @@ export default function ProposalDetailModal({
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
   useEffect(() => {
+    if (!signingClient) return;
+
     try {
       const txFee = getDisplayAmountFromFee(signingClient.fees.exec, config);
       setTxFee(txFee);
     } catch (error) {
       handleError(error);
     }
-  }, [config, handleError, signingClient.fees.exec]);
+  }, [config, handleError, signingClient]);
 
   useEffect(() => {
     (async function queryProposal() {
-      if (!proposalId) return;
+      if (!client || !proposalId) return;
 
       try {
-        const proposal = await DsoContract(signingClient).use(dsoAddress).proposal(proposalId);
+        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const proposal = await dsoContract.getProposal(proposalId);
         setProposal(proposal);
       } catch (error) {
         handleError(error);
       }
     })();
-  }, [dsoAddress, handleError, proposalId, signingClient]);
+  }, [client, dsoAddress, handleError, proposalId]);
 
   useEffect(() => {
     (async function queryMembership() {
+      if (!client || !address) return;
+
       try {
-        const escrowResponse = await DsoContract(signingClient).use(dsoAddress).escrow(address);
+        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const escrowResponse = await dsoContract.getEscrow(address);
 
         if (escrowResponse) {
           const membership = escrowResponse.status.voting ? "voting" : "pending";
@@ -100,7 +106,7 @@ export default function ProposalDetailModal({
         handleError(error);
       }
     })();
-  }, [address, dsoAddress, handleError, signingClient]);
+  }, [address, client, dsoAddress, handleError]);
 
   function resetModal() {
     closeModal();
@@ -109,13 +115,12 @@ export default function ProposalDetailModal({
   }
 
   async function submitVoteProposal(chosenVote: VoteOption) {
-    if (!proposalId) return;
+    if (!signingClient || !address || !proposalId) return;
     setSubmitting(chosenVote);
 
     try {
-      const transactionHash = await DsoContract(signingClient)
-        .use(dsoAddress)
-        .voteProposal(address, proposalId, chosenVote);
+      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const transactionHash = await dsoContract.voteProposal(address, proposalId, chosenVote);
 
       setTxResult({
         msg: `Voted proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
@@ -129,13 +134,12 @@ export default function ProposalDetailModal({
   }
 
   async function submitExecuteProposal() {
-    if (!proposalId) return;
+    if (!signingClient || !address || !proposalId) return;
     setSubmitting("executing");
 
     try {
-      const transactionHash = await DsoContract(signingClient)
-        .use(dsoAddress)
-        .executeProposal(address, proposalId);
+      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const transactionHash = await dsoContract.executeProposal(address, proposalId);
 
       setTxResult({
         msg: `Executed proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
@@ -149,6 +153,7 @@ export default function ProposalDetailModal({
   }
 
   const canUserVote =
+    address &&
     isProposalNotExpired &&
     membership === "voting" &&
     (proposal.status === "open" || proposal.status === "passed");

@@ -1,15 +1,23 @@
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { LedgerSigner } from "@cosmjs/ledger-amino";
 import { OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { BankExtension, Coin, DistributionExtension, QueryClient, StakingExtension } from "@cosmjs/stargate";
+import { Coin } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import * as React from "react";
 import { createContext, useContext, useEffect, useReducer } from "react";
-import { createQueryClient, createSigningClient } from "utils/sdk";
+import { createClient, createSigningClient } from "utils/sdk";
 import { useError } from "./error";
 
-type ExtendedQueryClient = QueryClient & BankExtension & StakingExtension & DistributionExtension;
+type SdkState = {
+  readonly config: NetworkConfig;
+  readonly client?: CosmWasmClient;
+  readonly signer?: OfflineDirectSigner | LedgerSigner;
+  readonly address?: string;
+  readonly signingClient?: SigningCosmWasmClient;
+  readonly getBalance?: (address?: string) => Promise<readonly Coin[]>;
+  readonly hitFaucet?: () => Promise<void>;
+};
 
 type SdkAction =
   | {
@@ -21,8 +29,8 @@ type SdkAction =
       readonly payload: NetworkConfig;
     }
   | {
-      readonly type: "setQueryClient";
-      readonly payload: ExtendedQueryClient;
+      readonly type: "setClient";
+      readonly payload: CosmWasmClient;
     }
   | {
       readonly type: "setSigner";
@@ -47,22 +55,12 @@ type SdkAction =
 
 type SdkDispatch = (action: SdkAction) => void;
 
-type SdkState = {
-  readonly config: NetworkConfig;
-  readonly queryClient?: ExtendedQueryClient;
-  readonly signer?: OfflineDirectSigner | LedgerSigner;
-  readonly address?: string;
-  readonly signingClient?: SigningCosmWasmClient;
-  readonly getBalance?: (address?: string) => Promise<readonly Coin[]>;
-  readonly hitFaucet?: () => Promise<void>;
-};
-
 function sdkReducer(state: SdkState, action: SdkAction): SdkState {
   switch (action.type) {
     case "resetSdk": {
       return {
         config: action.payload ?? state.config,
-        queryClient: action.payload ? undefined : state.queryClient,
+        client: action.payload ? undefined : state.client,
         signer: undefined,
         address: undefined,
         signingClient: undefined,
@@ -73,8 +71,8 @@ function sdkReducer(state: SdkState, action: SdkAction): SdkState {
     case "setConfig": {
       return { ...state, config: action.payload };
     }
-    case "setQueryClient": {
-      return { ...state, queryClient: action.payload };
+    case "setClient": {
+      return { ...state, client: action.payload };
     }
     case "setSigner": {
       return { ...state, signer: action.payload };
@@ -100,63 +98,36 @@ function sdkReducer(state: SdkState, action: SdkAction): SdkState {
 export function isSdkInitialized(state: SdkState): state is Required<SdkState> {
   return !Object.values(state).some((field) => field === undefined);
 }
-
+export const resetSdk = (dispatch: SdkDispatch): void => dispatch({ type: "resetSdk" });
 export function setSigner(dispatch: SdkDispatch, signer: OfflineDirectSigner | LedgerSigner): void {
   dispatch({ type: "setSigner", payload: signer });
 }
-export const initSdk = setSigner;
-export const resetSdk = (dispatch: SdkDispatch): void => dispatch({ type: "resetSdk" });
+export function setAddress(dispatch: SdkDispatch, address: string): void {
+  dispatch({ type: "setAddress", payload: address });
+}
 
 export async function hitFaucetIfNeeded(state: SdkState): Promise<void> {
-  if (!isSdkInitialized(state)) return;
-
-  const balance = await state.getBalance();
-  if (!balance.find((coin) => coin.denom === state.config.feeToken && coin.amount !== "0")) {
-    await state.hitFaucet();
+  const balance = (await state.getBalance?.()) ?? [];
+  if (balance.find((coin) => coin.amount === "0")) {
+    await state.hitFaucet?.();
   }
 }
 
-type SdkContextType =
-  | {
-      readonly sdkState: SdkState;
-      readonly sdkDispatch: SdkDispatch;
-    }
-  | undefined;
-
-type SdkContextInitType = Pick<NonNullable<SdkContextType>, "sdkDispatch"> & {
-  readonly sdkState: Pick<SdkState, "config">;
-};
-
-const SdkContext = createContext<SdkContextType>(undefined);
-
-export const useSdkInit = (): SdkContextInitType => {
-  const context = useContext(SdkContext);
-
-  if (context === undefined) {
-    throw new Error("useSdkInit must be used within a SdkProvider");
-  }
-
-  return context;
-};
-
-type RequiredSdkContextType = {
-  readonly sdkState: Required<SdkState>;
+type SdkContextType = {
+  readonly sdkState: SdkState;
   readonly sdkDispatch: SdkDispatch;
 };
 
-export const useSdk = (): RequiredSdkContextType => {
+const SdkContext = createContext<SdkContextType | undefined>(undefined);
+
+export const useSdk = (): SdkContextType => {
   const sdkContext = useContext(SdkContext);
 
   if (sdkContext === undefined) {
     throw new Error("useSdk must be used within a SdkProvider");
   }
 
-  const { sdkState, sdkDispatch } = sdkContext;
-  if (!isSdkInitialized(sdkState)) {
-    throw new Error("Sdk is not initialized, call useSdkInit instead");
-  }
-
-  return { sdkState, sdkDispatch };
+  return sdkContext;
 };
 
 interface SdkProviderProps extends React.HTMLAttributes<HTMLOrSVGElement> {
@@ -167,7 +138,7 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
   const { handleError } = useError();
   const [sdkState, sdkDispatch] = useReducer(sdkReducer, {
     config,
-    queryClient: undefined,
+    client: undefined,
     signer: undefined,
     address: undefined,
     signingClient: undefined,
@@ -178,10 +149,10 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
   useEffect(() => {
     let mounted = true;
 
-    (async function setQueryClient(): Promise<void> {
+    (async function setClient(): Promise<void> {
       try {
-        const queryClient = await createQueryClient(sdkState.config.rpcUrl);
-        if (mounted) sdkDispatch({ type: "setQueryClient", payload: queryClient });
+        const client = await createClient(sdkState.config.rpcUrl);
+        if (mounted) sdkDispatch({ type: "setClient", payload: client });
       } catch (error) {
         handleError(error);
       }
@@ -218,8 +189,8 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
       if (!sdkState.signer) return;
 
       try {
-        const client = await createSigningClient(sdkState.config, sdkState.signer);
-        if (mounted) sdkDispatch({ type: "setSigningClient", payload: client });
+        const signingClient = await createSigningClient(sdkState.config, sdkState.signer);
+        if (mounted) sdkDispatch({ type: "setSigningClient", payload: signingClient });
       } catch (error) {
         handleError(error);
       }
@@ -231,19 +202,15 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
   }, [handleError, sdkState.config, sdkState.signer]);
 
   useEffect(() => {
-    if (!sdkState.queryClient || !sdkState.address) {
-      sdkDispatch({ type: "setGetBalance" });
-      return;
-    }
-
     async function getBalance(address?: string): Promise<readonly Coin[]> {
-      if (!sdkState.queryClient || !sdkState.address) return [];
+      if (!sdkState.client || !sdkState.address) return [];
 
-      const queryAddress = address ?? sdkState.address;
+      const queryAddress = address || sdkState.address;
       const balance: Coin[] = [];
+
       try {
         for (const denom in sdkState.config.coinMap) {
-          const coin = await sdkState.queryClient.bank.balance(queryAddress, denom);
+          const coin = await sdkState.client.getBalance(queryAddress, denom);
           balance.push(coin);
         }
         return balance;
@@ -254,14 +221,9 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
     }
 
     sdkDispatch({ type: "setGetBalance", payload: getBalance });
-  }, [handleError, sdkState.address, sdkState.config.coinMap, sdkState.queryClient]);
+  }, [handleError, sdkState.address, sdkState.client, sdkState.config.coinMap]);
 
   useEffect(() => {
-    if (!sdkState.address) {
-      sdkDispatch({ type: "setHitFaucet" });
-      return;
-    }
-
     async function hitFaucet(): Promise<void> {
       if (!sdkState.address) return;
 

@@ -6,7 +6,7 @@ import { Form } from "formik-antd";
 import * as React from "react";
 import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
-import { DsoContract } from "utils/dso";
+import { DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getDecodedAddress, getFormItemName } from "utils/forms";
 import * as Yup from "yup";
@@ -30,17 +30,19 @@ interface AddExistingDsoProps {
 export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExistingDsoProps): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, signingClient },
+    sdkState: { config, client, address },
   } = useSdk();
   const { dsoDispatch } = useDso();
 
   const [isSubmitting, setSubmitting] = useState(false);
 
   async function checkDsoAndStore({ dsoAddress }: AddExistingDsoFormValues) {
+    if (!client) return;
     setSubmitting(true);
 
     try {
-      const { name: dsoName } = await DsoContract(signingClient).use(dsoAddress).dso();
+      const dsoContract = new DsoContractQuerier(dsoAddress, client);
+      const { name: dsoName } = await dsoContract.getDso();
       addDso(dsoDispatch, dsoAddress);
 
       setTxResult({ contractAddress: dsoAddress, msg: `Added Trusted Circle: ${dsoName} (${dsoAddress}).` });
@@ -100,9 +102,11 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
                 <Field label={dsoAddressLabel} placeholder="Enter address" />
                 <Separator />
                 <ButtonGroup>
-                  <Text>
-                    or <Text onClick={() => goToCreateDso()}>Create Trusted Circle</Text>
-                  </Text>
+                  {address ? (
+                    <Text>
+                      or <Text onClick={() => goToCreateDso()}>Create Trusted Circle</Text>
+                    </Text>
+                  ) : null}
                   <Button disabled={!isValid} onClick={() => submitForm()}>
                     <div>Enter</div>
                   </Button>

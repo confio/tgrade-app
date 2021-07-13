@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 import { Button, Field } from "App/components/form";
 import { Stack } from "App/components/layoutPrimitives";
-import ShowTxResult, { TxResult } from "App/components/logic/ShowTxResult";
+import { ShowTxResult, TxResult } from "App/components/logic";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
@@ -69,14 +69,16 @@ export default function DepositEscrowModal({
   }
 
   async function submitDepositEscrow({ escrowAmount }: FormDepositEscrowValues) {
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     const nativeEscrow = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
 
     try {
-      const transactionHash = await DsoContract(signingClient)
-        .use(dsoAddress)
-        .depositEscrow(address, [{ denom: config.feeToken, amount: nativeEscrow }]);
+      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const transactionHash = await dsoContract.depositEscrow(address, [
+        { denom: config.feeToken, amount: nativeEscrow },
+      ]);
 
       setTxResult({
         msg: `Deposited escrow ${escrowAmount}${config.feeToken} in ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,

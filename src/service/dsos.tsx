@@ -1,8 +1,10 @@
-import { AddDsoModal } from "App/components/logic";
-import LeaveDsoModal from "App/components/logic/LeaveDsoModal";
+import { AddDsoModal, LeaveDsoModal } from "App/components/logic";
+import { paths } from "App/paths";
 import * as React from "react";
-import { createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
+import { createContext, HTMLAttributes, useContext, useEffect, useReducer, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useSdk } from "service";
+import { DsoContractQuerier } from "utils/dso";
 import { useLocalStorage } from "utils/storage";
 
 interface DsoId {
@@ -127,10 +129,14 @@ export const useDso = (): NonNullable<DsoContextType> => {
   return context;
 };
 
+const guestKey = "guest";
+
 export default function DsoProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
+  const history = useHistory();
   const {
-    sdkState: { address, signingClient },
+    sdkState: { client, address },
   } = useSdk();
+  const [currentAddress, setCurrentAddress] = useState(address);
 
   const [storedAddresses, setStoredAddresses] = useLocalStorage<DsoAddressesByUserMap>(
     "trusted-circles-addresses",
@@ -140,20 +146,40 @@ export default function DsoProvider({ children }: HTMLAttributes<HTMLOrSVGElemen
   );
 
   const [dsoState, dsoDispatch] = useReducer(dsoReducer, {
-    dsoAddresses: storedAddresses.get(address) ?? [],
+    dsoAddresses: storedAddresses.get(currentAddress || guestKey) ?? [],
     dsos: [],
     addDsoModalState: "closed",
     leaveDsoModalState: "closed",
   });
 
+  /*
+  if the address has changed, load its stored dsos
+  if dsoAddresses has changed but not the address, store those dsoAddresses
+  */
   useEffect(() => {
-    setStoredAddresses((prevAddresses) => prevAddresses.set(address, dsoState.dsoAddresses));
-  }, [address, dsoState.dsoAddresses, setStoredAddresses]);
+    if (address !== currentAddress) {
+      const dsoAddresses = storedAddresses.get(address || guestKey) ?? [];
+      dsoDispatch({ type: "setDsoAddresses", payload: dsoAddresses });
+      setCurrentAddress(address);
 
+      history.push(`${paths.dso.prefix}/${dsoAddresses[0]}`);
+    } else {
+      setStoredAddresses((prevAddresses) => prevAddresses.set(address || guestKey, dsoState.dsoAddresses));
+    }
+  }, [address, currentAddress, dsoState.dsoAddresses, history, setStoredAddresses, storedAddresses]);
+
+  /*
+  query dsoState.dsoAddresses to get the dso name
+  with address & name, update dsos: DsoId[]
+  remove address from storedAddresses if its query failed
+  */
   useEffect(() => {
-    const dsoPromises = dsoState.dsoAddresses.map((address) =>
-      signingClient.queryContractSmart(address, { dso: {} }).then(({ name }) => ({ address, name })),
-    );
+    if (!client) return;
+
+    const dsoPromises: Promise<DsoId>[] = dsoState.dsoAddresses.map((dsoAddress) => {
+      const dsoContract = new DsoContractQuerier(dsoAddress, client);
+      return dsoContract.getDso().then(({ name }) => ({ address: dsoAddress, name }));
+    });
 
     Promise.allSettled(dsoPromises).then((results) => {
       const rejectedResults = results.filter((result) => result.status === "rejected");
@@ -169,7 +195,7 @@ export default function DsoProvider({ children }: HTMLAttributes<HTMLOrSVGElemen
         dsoDispatch({ type: "setDsoIds", payload: dsos.sort(dsoComparator) });
       }
     });
-  }, [dsoState.dsoAddresses, signingClient]);
+  }, [client, dsoState.dsoAddresses]);
 
   return (
     <DsoContext.Provider value={{ dsoState, dsoDispatch }}>

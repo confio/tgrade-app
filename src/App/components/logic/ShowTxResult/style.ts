@@ -1,6 +1,6 @@
 import { Typography } from "antd";
+import { Stack } from "App/components/layoutPrimitives";
 import styled from "styled-components";
-import Stack from "../../layoutPrimitives/Stack";
 
 const { Text } = Typography;
 

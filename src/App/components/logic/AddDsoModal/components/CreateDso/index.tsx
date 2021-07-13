@@ -61,14 +61,15 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
   }
 
   async function handleSubmitPayment({ escrowAmount }: FormDsoPaymentValues) {
-    if (!config.codeIds?.tgradeDso?.length) return;
+    if (!signingClient || !address || !config.codeIds?.tgradeDso?.length) return;
 
     setSubmitting(true);
 
     try {
       const nativeEscrowAmount = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
 
-      const contractAddress = await DsoContract(signingClient).createDso(
+      const contractAddress = await DsoContract.createDso(
+        signingClient,
         config.codeIds?.tgradeDso[0],
         address,
         dsoName,

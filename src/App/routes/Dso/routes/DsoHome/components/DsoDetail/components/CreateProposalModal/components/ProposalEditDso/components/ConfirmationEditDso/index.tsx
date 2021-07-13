@@ -2,6 +2,7 @@ import { Typography } from "antd";
 import { Button } from "App/components/form";
 import { BackButtonOrLink } from "App/components/logic";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
 import {
@@ -47,17 +48,19 @@ export default function ConfirmationEditDso({
     sdkState: { config, signingClient },
   } = useSdk();
 
-  const [txFee, setTxFee] = React.useState("0");
+  const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (!signingClient) return;
+
     try {
       const txFee = getDisplayAmountFromFee(signingClient.fees.exec, config);
       setTxFee(txFee);
     } catch (error) {
       handleError(error);
     }
-  }, [config, handleError, signingClient.fees.exec]);
+  }, [config, handleError, signingClient]);
 
   return (
     <>

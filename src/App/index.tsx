@@ -7,21 +7,9 @@ import {
   QueryClientProvider as ReactQueryClientProvider,
 } from "react-query";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
-import {
-  ContractsProvider,
-  DsoProvider,
-  ErrorProvider,
-  LayoutProvider,
-  SdkProvider,
-  ThemeProvider,
-} from "service";
-import { ProtectedSwitch } from "./components/logic";
-import { NavSidebar } from "./components/logic/NavSidebar";
+import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
 import { paths } from "./paths";
-import Account from "./routes/Account";
 import Dso from "./routes/Dso";
-import Logout from "./routes/Logout";
-import Setup from "./routes/Setup";
 
 export default function App(): JSX.Element {
   return (
@@ -29,35 +17,22 @@ export default function App(): JSX.Element {
       <ErrorProvider>
         <ReactQueryClientProvider client={new ReactQueryClient()}>
           <SdkProvider config={config}>
-            <ContractsProvider>
-              <ThemeProvider>
-                <Router basename={process.env.PUBLIC_URL}>
-                  <LayoutProvider>
-                    <Switch>
-                      <Route exact path="/">
-                        <Redirect to={paths.setup.prefix} />
-                      </Route>
-                      <Route path={paths.setup.prefix}>
-                        <Setup />
-                      </Route>
-                      <ProtectedSwitch authPath={paths.setup.prefix}>
-                        <Route path={paths.logout}>
-                          <Logout />
-                        </Route>
-                        <Route path={paths.account.prefix}>
-                          <Account />
-                        </Route>
-                        <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
-                          <DsoProvider>
-                            <Dso />
-                          </DsoProvider>
-                        </Route>
-                      </ProtectedSwitch>
-                    </Switch>
-                  </LayoutProvider>
-                </Router>
-              </ThemeProvider>
-            </ContractsProvider>
+            <ThemeProvider>
+              <Router basename={process.env.PUBLIC_URL}>
+                <LayoutProvider>
+                  <Switch>
+                    <Route exact path="/">
+                      <Redirect to={paths.dso.prefix} />
+                    </Route>
+                    <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
+                      <DsoProvider>
+                        <Dso />
+                      </DsoProvider>
+                    </Route>
+                  </Switch>
+                </LayoutProvider>
+              </Router>
+            </ThemeProvider>
           </SdkProvider>
         </ReactQueryClientProvider>
       </ErrorProvider>

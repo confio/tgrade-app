@@ -1,22 +1,12 @@
-import { defaultGasLimits, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { CosmWasmClient, defaultGasLimits, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { LedgerSigner } from "@cosmjs/ledger-amino";
 import { DirectSecp256k1HdWallet, isOfflineDirectSigner, OfflineDirectSigner } from "@cosmjs/proto-signing";
-import {
-  BankExtension,
-  DistributionExtension,
-  GasPrice,
-  makeCosmoshubPath,
-  QueryClient,
-  setupBankExtension,
-  setupDistributionExtension,
-  setupStakingExtension,
-  StakingExtension,
-} from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { GasPrice, makeCosmoshubPath } from "@cosmjs/stargate";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import { configKeplr } from "config/keplr";
 import { NetworkConfig } from "config/network";
+import { isChrome, isDesktop } from "react-device-detect";
 
 // Wallet storage utils
 export const storedWalletKey = "burner-wallet";
@@ -104,7 +94,31 @@ export const loadKeplrWallet: WalletLoader = async (config) => {
   return Promise.resolve(signer);
 };
 
+export function isKeplrSigner(signer?: OfflineDirectSigner | LedgerSigner): signer is OfflineDirectSigner {
+  return !!(signer as any)?.keplr;
+}
+
+export function isLedgerSigner(signer?: OfflineDirectSigner | LedgerSigner): signer is LedgerSigner {
+  return !!(signer as any)?.ledger;
+}
+
+export function isKeplrAvailable(): boolean {
+  const canGetSigner = !!window.getOfflineSigner;
+  const canSuggestChain = !!window.keplr?.experimentalSuggestChain;
+  return canGetSigner && canSuggestChain;
+}
+
+export function isLedgerAvailable(): boolean {
+  const anyNavigator: any = navigator;
+  return anyNavigator?.usb && isChrome && isDesktop;
+}
+
 // Client creation utils
+export async function createClient(apiUrl: string): Promise<CosmWasmClient> {
+  const cwClient = await CosmWasmClient.connect(apiUrl);
+  return cwClient;
+}
+
 export async function createSigningClient(
   config: NetworkConfig,
   signer: OfflineDirectSigner | LedgerSigner,
@@ -114,16 +128,4 @@ export async function createSigningClient(
     gasPrice: GasPrice.fromString(`${config.gasPrice}${config.feeToken}`),
     gasLimits: defaultGasLimits,
   });
-}
-
-export async function createQueryClient(
-  apiUrl: string,
-): Promise<QueryClient & StakingExtension & DistributionExtension & BankExtension> {
-  const tmClient = await Tendermint34Client.connect(apiUrl);
-  return QueryClient.withExtensions(
-    tmClient,
-    setupBankExtension,
-    setupStakingExtension,
-    setupDistributionExtension,
-  );
 }

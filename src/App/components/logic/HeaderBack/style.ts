@@ -1,7 +1,7 @@
 import { Stack } from "App/components/layoutPrimitives";
 import styled from "styled-components";
 
-export const StyledHeader = styled.header`
+export default styled.header`
   width: clamp(min(30rem, 100%), 80%, 100%);
   display: flex;
   align-items: center;

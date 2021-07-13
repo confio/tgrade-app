@@ -1,8 +1,8 @@
 import { Typography } from "antd";
-import BackButtonOrLink from "../BackButtonOrLink";
 import * as React from "react";
 import { ComponentProps, HTMLAttributes } from "react";
-import { StyledHeader, TitleStack } from "./style";
+import BackButtonOrLink from "../BackButtonOrLink";
+import StyledHeaderBack, { TitleStack } from "./style";
 
 const { Title } = Typography;
 
@@ -17,21 +17,17 @@ export default function HeaderBack({
   backButtonProps,
   viewSubtitle,
   viewTitle,
-}: HeaderBackProps): JSX.Element {
+}: HeaderBackProps): JSX.Element | null {
   const showBackButton = !!backButtonProps;
   const showHeader = showBackButton || viewSubtitle || viewTitle;
 
-  return (
-    <>
-      {showHeader ? (
-        <StyledHeader>
-          {showBackButton ? <BackButtonOrLink {...backButtonProps} /> : null}
-          <TitleStack>
-            <Title level={3}>{viewSubtitle ?? ""}</Title>
-            <Title level={2}>{viewTitle ?? ""}</Title>
-          </TitleStack>
-        </StyledHeader>
-      ) : null}
-    </>
-  );
+  return showHeader ? (
+    <StyledHeaderBack>
+      {showBackButton ? <BackButtonOrLink {...backButtonProps} /> : null}
+      <TitleStack>
+        <Title level={3}>{viewSubtitle ?? ""}</Title>
+        <Title level={2}>{viewTitle ?? ""}</Title>
+      </TitleStack>
+    </StyledHeaderBack>
+  ) : null;
 }
