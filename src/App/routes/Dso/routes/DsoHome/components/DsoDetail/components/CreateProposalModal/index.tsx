@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 import { Steps } from "App/components/form";
 import { Stack } from "App/components/layoutPrimitives";
-import { TxResult } from "App/components/logic/ShowTxResult";
+import { TxResult } from "App/components/logic";
 import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";

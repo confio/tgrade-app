@@ -33,13 +33,15 @@ export default function ConfirmationAddParticipants({
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
   useEffect(() => {
+    if (!signingClient) return;
+
     try {
       const txFee = getDisplayAmountFromFee(signingClient.fees.exec, config);
       setTxFee(txFee);
     } catch (error) {
       handleError(error);
     }
-  }, [config, handleError, signingClient.fees.exec]);
+  }, [config, handleError, signingClient]);
 
   return (
     <>

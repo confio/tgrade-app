@@ -1,11 +1,11 @@
-import { TxResult } from "App/components/logic/ShowTxResult";
+import { TxResult } from "App/components/logic";
 import { DsoHomeParams } from "App/routes/Dso/routes/DsoHome";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
-import { DsoContract } from "utils/dso";
+import { DsoContract, DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationEditDso from "./components/ConfirmationEditDso";
@@ -29,7 +29,7 @@ export default function ProposalEditDso({
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { address, signingClient, config },
+    sdkState: { config, client, address, signingClient },
   } = useSdk();
 
   const [currentDsoValues, setCurrentDsoValues] = useState<Omit<FormEditDsoValues, "comment">>({
@@ -50,8 +50,11 @@ export default function ProposalEditDso({
 
   useEffect(() => {
     (async function queryDso() {
+      if (!client) return;
+
       try {
-        const dsoResponse = await DsoContract(signingClient).use(dsoAddress).dso();
+        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoResponse = await dsoContract.getDso();
         const quorum = (parseFloat(dsoResponse.rules.quorum) * 100).toFixed(0).toString();
         const threshold = (parseFloat(dsoResponse.rules.threshold) * 100).toFixed(0).toString();
         const escrowAmount = nativeCoinToDisplay(
@@ -78,7 +81,7 @@ export default function ProposalEditDso({
         handleError(error);
       }
     })();
-  }, [config.coinMap, config.feeToken, dsoAddress, handleError, signingClient]);
+  }, [client, config.coinMap, config.feeToken, dsoAddress, handleError]);
 
   function submitEditDso({
     dsoName,
@@ -100,6 +103,7 @@ export default function ProposalEditDso({
   }
 
   async function submitCreateProposal() {
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     try {
@@ -107,19 +111,18 @@ export default function ProposalEditDso({
       const nativeQuorum = quorum ? (parseFloat(quorum) / 100).toFixed(2).toString() : undefined;
       const nativethreshold = threshold ? (parseFloat(threshold) / 100).toFixed(2).toString() : undefined;
 
-      const transactionHash = await DsoContract(signingClient)
-        .use(dsoAddress)
-        .propose(address, comment, {
-          edit_dso: {
-            name: dsoName === currentDsoValues.dsoName ? undefined : dsoName,
-            //escrow_amount: nativeEscrowAmount,
-            voting_period:
-              votingDuration === currentDsoValues.votingDuration ? undefined : parseInt(votingDuration, 10),
-            quorum: quorum === currentDsoValues.quorum ? undefined : nativeQuorum,
-            threshold: threshold === currentDsoValues.threshold ? undefined : nativethreshold,
-            allow_end_early: earlyPass === currentDsoValues.earlyPass ? undefined : earlyPass,
-          },
-        });
+      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const transactionHash = await dsoContract.propose(address, comment, {
+        edit_dso: {
+          name: dsoName === currentDsoValues.dsoName ? undefined : dsoName,
+          //escrow_amount: nativeEscrowAmount,
+          voting_period:
+            votingDuration === currentDsoValues.votingDuration ? undefined : parseInt(votingDuration, 10),
+          quorum: quorum === currentDsoValues.quorum ? undefined : nativeQuorum,
+          threshold: threshold === currentDsoValues.threshold ? undefined : nativethreshold,
+          allow_end_early: earlyPass === currentDsoValues.earlyPass ? undefined : earlyPass,
+        },
+      });
 
       setTxResult({
         msg: `Created proposal for editing ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,

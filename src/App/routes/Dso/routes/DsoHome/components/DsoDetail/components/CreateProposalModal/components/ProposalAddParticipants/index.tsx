@@ -1,4 +1,4 @@
-import { TxResult } from "App/components/logic/ShowTxResult";
+import { TxResult } from "App/components/logic";
 import { DsoHomeParams } from "App/routes/Dso/routes/DsoHome";
 import * as React from "react";
 import { useState } from "react";
@@ -44,17 +44,17 @@ export default function ProposalAddParticipants({
   }
 
   async function submitCreateProposal() {
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const transactionHash = await DsoContract(signingClient)
-        .use(dsoAddress)
-        .propose(address, comment, {
-          add_remove_non_voting_members: {
-            remove: [],
-            add: members,
-          },
-        });
+      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const transactionHash = await dsoContract.propose(address, comment, {
+        add_remove_non_voting_members: {
+          remove: [],
+          add: members,
+        },
+      });
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({

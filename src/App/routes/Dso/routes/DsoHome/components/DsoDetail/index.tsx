@@ -1,11 +1,10 @@
 import { Typography } from "antd";
 import { Stack } from "App/components/layoutPrimitives";
-import { Table } from "App/components/logic";
-import ButtonAddNew from "App/components/logic/ButtonAddNew";
+import { ButtonAddNew, Table } from "App/components/logic";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { DsoContract } from "utils/dso";
+import { DsoContractQuerier } from "utils/dso";
 import pendingIcon from "./assets/clock.svg";
 import rejectedIcon from "./assets/cross.svg";
 import passedIcon from "./assets/tick.svg";
@@ -106,7 +105,7 @@ interface DsoDetailParams {
 export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { signingClient },
+    sdkState: { client, address },
   } = useSdk();
 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
@@ -115,13 +114,16 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
   const [clickedProposal, setClickedProposal] = useState<number>();
 
   const refreshProposals = React.useCallback(async () => {
+    if (!client) return;
+
     try {
-      const proposals = await DsoContract(signingClient).use(dsoAddress).listProposals();
+      const dsoContract = new DsoContractQuerier(dsoAddress, client);
+      const proposals = await dsoContract.getProposals();
       setProposals(proposals);
     } catch (error) {
       handleError(error);
     }
-  }, [dsoAddress, handleError, signingClient]);
+  }, [client, dsoAddress, handleError]);
 
   useEffect(() => {
     refreshProposals();
@@ -138,7 +140,9 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
         <ProposalsContainer>
           <header>
             <Title level={2}>Proposals</Title>
-            <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
+            {address ? (
+              <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
+            ) : null}
           </header>
           {proposals.length ? (
             <Table

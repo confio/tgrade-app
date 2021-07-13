@@ -1,10 +1,10 @@
 import { PageLayout } from "App/components/layout";
-import ButtonAddNew from "App/components/logic/ButtonAddNew";
+import { ButtonAddNew } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { openAddDsoModal, setInitialLayoutState, useDso, useLayout } from "service";
+import { openAddDsoModal, useDso } from "service";
 import DsoDetail from "./components/DsoDetail";
 import { StyledTabs } from "./style";
 
