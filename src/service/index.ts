@@ -18,11 +18,9 @@ export {
 export {
   default as SdkProvider,
   hitFaucetIfNeeded,
-  initSdk,
   isSdkInitialized,
   resetSdk,
   setSigner,
   useSdk,
-  useSdkInit,
 } from "./sdk";
 export { default as ThemeProvider, useTheme } from "./theme";
