@@ -8,12 +8,22 @@ export default styled(Button)`
   padding: var(--s0) var(--s1);
 
   height: auto;
-  border: none;
+  border: ${(props) =>
+    props.danger
+      ? `1px solid var(--bg-button-danger)`
+      : props.type === "ghost"
+      ? "1px solid var(--border-button-2ary)"
+      : "1px solid var(--bg-button-1ary)"};
   border-radius: var(--border-radius);
   box-shadow: none;
 
-  color: white;
-  background-color: ${(props) => (props.danger ? `var(--bg-button-danger)` : "var(--bg-button-1ary)")};
+  color: ${(props) => (props.type === "ghost" ? "var(--color-button-2ary)" : "white")};
+  background-color: ${(props) =>
+    props.danger
+      ? `var(--bg-button-danger)`
+      : props.type === "ghost"
+      ? "var(--bg-button-2ary)"
+      : "var(--bg-button-1ary)"};
 
   font-family: var(--ff-quicksand);
   font-size: var(--s0);
@@ -23,7 +33,18 @@ export default styled(Button)`
 
   &:hover,
   &:focus {
-    color: white;
-    background-color: ${(props) => (props.danger ? `var(--bg-button-danger)` : "var(--bg-button-1ary)")};
+    color: ${(props) => (props.type === "ghost" ? "var(--color-button-2ary-selected)" : "white")};
+    border: ${(props) =>
+      props.danger
+        ? `1px solid var(--bg-button-danger)`
+        : props.type === "ghost"
+        ? "1px solid var(--border-button-2ary-selected)"
+        : "1px solid var(--bg-button-1ary)"};
+    background-color: ${(props) =>
+      props.danger
+        ? `var(--bg-button-danger)`
+        : props.type === "ghost"
+        ? "var(--bg-button-2ary)"
+        : "var(--bg-button-1ary)"};
   }
 `;
