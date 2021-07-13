@@ -1,21 +1,8 @@
 import { Typography } from "antd";
 import { PageLayout } from "App/components/layout";
 import { Stack } from "App/components/layoutPrimitives";
-import { RedirectLocation } from "App/components/logic";
 import { paths } from "App/paths";
 import * as React from "react";
-import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import {
-  hitFaucetIfNeeded,
-  initSdk,
-  isSdkInitialized,
-  setInitialLayoutState,
-  useError,
-  useLayout,
-  useSdkInit,
-} from "service";
-import { getWallet, loadOrCreateWallet } from "utils/sdk";
 import newUserIcon from "./assets/newUser.svg";
 import tgradeLogoIcon from "./assets/tgradeLogo.svg";
 import { TextStack } from "./style";
@@ -24,7 +11,7 @@ import WelcomeLink from "./WelcomeLink";
 const { Title, Paragraph } = Typography;
 
 export default function Welcome(): JSX.Element {
-  const history = useHistory();
+  /* const history = useHistory();
   const state = history.location.state as RedirectLocation;
   const { handleError } = useError();
   const { sdkState, sdkDispatch } = useSdkInit();
@@ -51,7 +38,7 @@ export default function Welcome(): JSX.Element {
         history.push(paths.account.prefix);
       }
     })();
-  }, [history, sdkState, state]);
+  }, [history, sdkState, state]); */
 
   return (
     <PageLayout>

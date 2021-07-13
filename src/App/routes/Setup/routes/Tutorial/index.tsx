@@ -1,37 +1,23 @@
 import { Typography } from "antd";
 import { Button } from "App/components/form";
 import { PageLayout } from "App/components/layout";
-import { RedirectLocation, VideoPlayer } from "App/components/logic";
-import { paths } from "App/paths";
+import { VideoPlayer } from "App/components/logic";
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { isChrome, isDesktop } from "react-device-detect";
-import { useHistory } from "react-router-dom";
-import {
-  hitFaucetIfNeeded,
-  initSdk,
-  isSdkInitialized,
-  setInitialLayoutState,
-  useError,
-  useLayout,
-  useSdkInit,
-} from "service";
-import { loadKeplrWallet, loadLedgerWallet, loadOrCreateWallet, WalletLoader } from "utils/sdk";
 import { TextStack, TutorialStack } from "./style";
 
 const { Title, Paragraph } = Typography;
 
-function disableLedgerLogin() {
+/* function disableLedgerLogin() {
   const anyNavigator: any = navigator;
   return !anyNavigator?.usb || !isChrome || !isDesktop;
 }
 
 function disableKeplrLogin() {
   return !(window.getOfflineSigner && window.keplr?.experimentalSuggestChain);
-}
+} */
 
 export default function Tutorial(): JSX.Element {
-  const history = useHistory();
+  /* const history = useHistory();
   const state = history.location.state as RedirectLocation;
 
   const { layoutDispatch } = useLayout();
@@ -72,7 +58,7 @@ export default function Tutorial(): JSX.Element {
         history.push(paths.account.prefix);
       }
     })();
-  }, [history, sdkState, state]);
+  }, [history, sdkState, state]); */
 
   return (
     <PageLayout>
@@ -85,13 +71,14 @@ export default function Tutorial(): JSX.Element {
           </Paragraph>
         </TextStack>
         <VideoPlayer url="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" />
-        <Button loading={loading} onClick={() => init(loadOrCreateWallet)}>
+        <Button /* loading={loading} onClick={() => init(loadOrCreateWallet)} */>
           <div>Generate recovery phrase</div>
         </Button>
-        <Button loading={loading} disabled={disableKeplrLogin()} onClick={() => init(loadKeplrWallet)}>
+        <Button /* loading={loading} disabled={disableKeplrLogin()} onClick={() => init(loadKeplrWallet)} */>
           <div>Keplr</div>
         </Button>
-        <Button loading={loading} disabled={disableLedgerLogin()} onClick={() => init(loadLedgerWallet)}>
+        <Button /* loading={loading} disabled={disableLedgerLogin()} onClick={() => init(loadLedgerWallet)} */
+        >
           <div>Ledger</div>
         </Button>
       </TutorialStack>
