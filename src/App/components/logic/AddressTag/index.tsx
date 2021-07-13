@@ -14,9 +14,16 @@ type AddressTagProps = ComponentProps<typeof StyledAddressTag> & {
   readonly address: string;
   readonly short?: boolean;
   readonly copyable?: boolean;
+  readonly noYou?: boolean;
 };
 
-export default function AddressTag({ address, short, copyable, ...restProps }: AddressTagProps): JSX.Element {
+export default function AddressTag({
+  address,
+  short,
+  copyable,
+  noYou,
+  ...restProps
+}: AddressTagProps): JSX.Element {
   const {
     sdkState: { address: myAddress },
   } = useSdk();
@@ -28,7 +35,7 @@ export default function AddressTag({ address, short, copyable, ...restProps }: A
       {...restProps}
     >
       {short ? ellipsifyAddress(address) : address}
-      {myAddress === address ? <span className="your-address">(you)</span> : null}
+      {myAddress === address && !noYou ? <span className="your-address">(you)</span> : null}
     </StyledAddressTag>
   );
 }

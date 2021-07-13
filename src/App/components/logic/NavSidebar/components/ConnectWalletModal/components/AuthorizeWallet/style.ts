@@ -13,6 +13,20 @@ export default styled(Modal)`
   `};
 `;
 
+export const ErrorMsg = styled.div`
+  display: flex;
+  align-items: center;
+
+  & img {
+    height: 1.875rem;
+  }
+
+  & .ant-typography {
+    margin-left: var(--s0);
+    color: var(--color-text-1ary);
+  }
+`;
+
 export const FormStack = styled(Stack)`
   & .ant-btn {
     align-self: flex-end;
@@ -58,6 +72,19 @@ export const FieldGroup = styled.div`
   & .ant-form-item {
     flex-basis: 18rem;
   }
+`;
+
+export const Indicator = styled.img`
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(359deg);
+    }
+  }
+
+  animation: spin 2s linear infinite;
 `;
 
 export const ButtonGroup = styled.div`

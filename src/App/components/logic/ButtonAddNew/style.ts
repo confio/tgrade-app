@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ContainerAddNew = styled.div`
+export default styled.div`
   cursor: pointer;
   display: flex;
 

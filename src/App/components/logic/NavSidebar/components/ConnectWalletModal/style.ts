@@ -1,4 +1,5 @@
 import { Modal } from "antd";
+import { Button } from "App/components/form";
 import { Stack } from "App/components/layoutPrimitives";
 import styled from "styled-components";
 
@@ -62,10 +63,21 @@ export const FieldGroup = styled.div`
 
 export const ButtonGroup = styled.div`
   display: flex;
-  justify-content: flex-end;
   flex-wrap: wrap;
 
-  & .ant-btn:first-child {
-    margin-right: var(--s0);
+  & button {
+    flex-basis: calc(50% - calc(var(--s1) / 2));
   }
+
+  & button + button {
+    margin-left: var(--s1);
+  }
+
+  & .ant-btn {
+    align-self: flex-start;
+  }
+`;
+
+export const LogoutButton = styled(Button)`
+  align-self: flex-start;
 `;

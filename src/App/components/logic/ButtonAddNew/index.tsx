@@ -2,7 +2,7 @@ import { Typography } from "antd";
 import * as React from "react";
 import { HTMLAttributes } from "react";
 import addIcon from "./assets/add.svg";
-import { ContainerAddNew } from "./style";
+import StyledButtonAddNew from "./style";
 
 const { Text } = Typography;
 
@@ -12,9 +12,9 @@ interface ButtonAddNewProps extends HTMLAttributes<HTMLOrSVGElement> {
 
 export default function ButtonAddNew({ text, ...props }: ButtonAddNewProps): JSX.Element {
   return (
-    <ContainerAddNew {...props}>
+    <StyledButtonAddNew {...props}>
       <img src={addIcon} alt="Add new" />
       <Text>{text}</Text>
-    </ContainerAddNew>
+    </StyledButtonAddNew>
   );
 }

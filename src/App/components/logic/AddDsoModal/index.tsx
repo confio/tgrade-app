@@ -2,7 +2,7 @@ import { Button } from "App/components/form";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { closeAddDsoModal, useDso } from "service";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import modalBg from "./assets/modal-background.jpg";
@@ -16,9 +16,6 @@ enum AddDsoSteps {
 }
 
 export default function AddDsoModal(): JSX.Element {
-  const params = useParams();
-  console.log("paramsAdd", params);
-
   const history = useHistory();
   const { dsoState, dsoDispatch } = useDso();
 

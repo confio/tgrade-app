@@ -1,13 +1,24 @@
+import { paths } from "App/paths";
+import * as React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Navbar, Cell, LinkWrapper, StyledText } from "./style";
+import { useSdk } from "service";
+import AddressTag from "../AddressTag";
+import ConnectWalletModal from "./components/ConnectWalletModal";
 import * as Icon from "./icons";
+import { Cell, LinkWrapper, Navbar, StyledText } from "./style";
 
 export const NavSidebar: React.FC = () => {
+  const {
+    sdkState: { address },
+  } = useSdk();
+  const [isModalOpen, setModalOpen] = useState(false);
+
   return (
     <Navbar>
       <LinkWrapper>
         <Icon.TgradeLogo />
-        <Link to="/">
+        <Link to={paths.dso.prefix}>
           <Cell>
             <Icon.TrustedCircle />
             <StyledText>Trusted Circle</StyledText>
@@ -36,12 +47,19 @@ export const NavSidebar: React.FC = () => {
           </Cell>
         </Link>
       </LinkWrapper>
-      <Link to="/">
+      <Link to="/" onClick={() => setModalOpen(true)}>
         <Cell>
-          <Icon.ConnectWallet />
-          <StyledText>Connect Wallet</StyledText>
+          {address ? (
+            <AddressTag address={address} short noYou />
+          ) : (
+            <>
+              <Icon.ConnectWallet />
+              <StyledText>Connect Wallet</StyledText>
+            </>
+          )}
         </Cell>
       </Link>
+      <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
     </Navbar>
   );
 };

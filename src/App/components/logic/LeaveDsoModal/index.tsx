@@ -13,13 +13,11 @@ import { DsoHomeParams } from "../../../routes/Dso/routes/DsoHome";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import closeIcon from "./assets/cross.svg";
 import modalBg from "./assets/modal-background.jpg";
-import { ButtonGroup, ModalHeader, Separator, StyledModal } from "./style";
+import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./style";
 
 const { Title, Text } = Typography;
 
 export default function LeaveDsoModal(): JSX.Element {
-  const params = useParams();
-  console.log("paramsLeave", params);
   const history = useHistory();
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
@@ -42,10 +40,12 @@ export default function LeaveDsoModal(): JSX.Element {
   }
 
   async function submitLeaveDso() {
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const transactionHash = await DsoContract(signingClient).use(dsoAddress).leaveDso(address);
+      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const transactionHash = await dsoContract.leaveDso(address);
 
       setTxResult({
         msg: `Left ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
@@ -60,7 +60,7 @@ export default function LeaveDsoModal(): JSX.Element {
   }
 
   return (
-    <StyledModal
+    <StyledLeaveDsoModal
       centered
       footer={null}
       closable={false}
@@ -114,6 +114,6 @@ export default function LeaveDsoModal(): JSX.Element {
           </ButtonGroup>
         </Stack>
       )}
-    </StyledModal>
+    </StyledLeaveDsoModal>
   );
 }

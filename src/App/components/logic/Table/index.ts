@@ -1,1 +1,1 @@
-export { StyledTable as default } from "./style";
+export { default } from "./style";
