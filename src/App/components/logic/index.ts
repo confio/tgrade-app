@@ -3,6 +3,7 @@ export { default as AddressTag } from "./AddressTag";
 export { default as BackButtonOrLink } from "./BackButtonOrLink";
 export type { BackProps } from "./BackButtonOrLink";
 export { default as ButtonAddNew } from "./ButtonAddNew";
+export { default as ConnectWalletModal } from "./ConnectWalletModal";
 export { default as HeaderBack } from "./HeaderBack";
 export { default as LeaveDsoModal } from "./LeaveDsoModal";
 export { default as ShowTxResult } from "./ShowTxResult";

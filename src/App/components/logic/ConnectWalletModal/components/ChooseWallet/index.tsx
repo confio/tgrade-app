@@ -27,6 +27,11 @@ export default function ChooseWallet({
     sdkDispatch,
   } = useSdk();
 
+  function logout(): void {
+    resetSdk(sdkDispatch);
+    closeModal();
+  }
+
   return (
     <Stack gap="s1">
       <ModalHeader>
@@ -85,7 +90,7 @@ export default function ChooseWallet({
         </Stack>
       )}
       {address ? (
-        <LogoutButton type="ghost" onClick={() => resetSdk(sdkDispatch)}>
+        <LogoutButton type="ghost" onClick={() => logout()}>
           <div>Logout</div>
         </LogoutButton>
       ) : null}

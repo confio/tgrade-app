@@ -1,3 +1,4 @@
+import { Coin } from "@cosmjs/stargate";
 import { Dropdown, Menu, Typography } from "antd";
 import { AddressTag } from "App/components/logic";
 import { Separator } from "App/components/logic/AddDsoModal/style";
@@ -6,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDsoName, openLeaveDsoModal, useDso } from "service/dsos";
+import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier } from "utils/dso";
 import { DsoHomeParams } from "../../../..";
 import gearIcon from "./assets/gear.svg";
@@ -17,7 +19,7 @@ export default function DsoIdActions(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { client, address },
+    sdkState: { config, client, address },
   } = useSdk();
   const {
     dsoState: { dsos },
@@ -25,9 +27,11 @@ export default function DsoIdActions(): JSX.Element {
   } = useDso();
   const dsoName = getDsoName(dsos, dsoAddress);
 
+  const [minimumEscrow, setMinimumEscrow] = useState<Coin>();
   const [quorum, setQuorum] = useState<string>();
   const [threshold, setThreshold] = useState<string>();
   const [votingDuration, setVotingDuration] = useState<string>();
+  const [allowEndEarly, setAllowEndEarly] = useState<string>();
 
   useEffect(() => {
     (async function queryVotingRules() {
@@ -36,17 +40,25 @@ export default function DsoIdActions(): JSX.Element {
       try {
         const dsoContract = new DsoContractQuerier(dsoAddress, client);
         const dsoResponse = await dsoContract.getDso();
+        const minimumEscrow = nativeCoinToDisplay(
+          { denom: config.feeToken, amount: dsoResponse.escrow_amount },
+          config.coinMap,
+        );
         const quorum = (parseFloat(dsoResponse.rules.quorum) * 100).toFixed(0).toString();
         const threshold = (parseFloat(dsoResponse.rules.threshold) * 100).toFixed(0).toString();
+        const allowEndEarly = dsoResponse.rules.allow_end_early ? "Yes" : "No";
 
+        setMinimumEscrow(minimumEscrow);
+        setQuorum(quorum);
         setQuorum(quorum);
         setThreshold(threshold);
         setVotingDuration(dsoResponse.rules.voting_period.toString());
+        setAllowEndEarly(allowEndEarly);
       } catch (error) {
         handleError(error);
       }
     })();
-  }, [client, dsoAddress, handleError]);
+  }, [client, config.coinMap, config.feeToken, dsoAddress, handleError]);
 
   return (
     <StyledDsoIdActions>
@@ -74,11 +86,17 @@ export default function DsoIdActions(): JSX.Element {
       <VotingRules>
         <Text>Voting rules:</Text>
         <VSeparator />
+        <Text>
+          Minimum escrow: {minimumEscrow?.amount} {minimumEscrow?.denom}
+        </Text>
+        <VSeparator />
         <Text>Quorum: {quorum}%</Text>
         <VSeparator />
-        <Text>% of votes to be passed: {threshold}%</Text>
+        <Text>Threshold: {threshold}%</Text>
         <VSeparator />
         <Text>Voting duration: {votingDuration} days</Text>
+        <VSeparator />
+        <Text>Allow end early: {allowEndEarly}</Text>
       </VotingRules>
     </StyledDsoIdActions>
   );
