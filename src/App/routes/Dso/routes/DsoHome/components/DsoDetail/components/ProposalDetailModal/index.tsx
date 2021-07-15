@@ -1,4 +1,3 @@
-import { Typography } from "antd";
 import { AddressList, Button } from "App/components/form";
 import { Stack } from "App/components/layoutPrimitives";
 import { ShowTxResult, TxResult } from "App/components/logic";
@@ -10,24 +9,30 @@ import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract, DsoContractQuerier, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { DsoHomeParams } from "../../../..";
+import { ReactComponent as AbstainIcon } from "./assets/abstain-icon.svg";
 import closeIcon from "./assets/cross.svg";
 import modalBg from "./assets/modal-background.jpg";
+import { ReactComponent as RejectIcon } from "./assets/no-icon.svg";
+import { ReactComponent as StatusOpenIcon } from "./assets/status-open-icon.svg";
+import { ReactComponent as AcceptIcon } from "./assets/yes-icon.svg";
 import {
-  AbstainButton,
+  AbstainedButton,
+  AcceptButton,
   ButtonGroup,
   ChangedField,
-  FeeGroup,
+  FeeWrapper,
   FieldGroup,
   ModalHeader,
-  NoButton,
+  Paragraph,
+  RejectButton,
+  SectionWrapper,
   Separator,
   StyledModal,
+  Text,
   TextLabel,
   TextValue,
-  YesButton,
+  Title,
 } from "./style";
-
-const { Title, Paragraph } = Typography;
 
 interface ProposalDetailModalProps {
   readonly isModalOpen: boolean;
@@ -251,43 +256,77 @@ export default function ProposalDetailModal({
                 <AddressList addresses={proposalAddVotingMembers} short copyable />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
+              <Separator />
+              <SectionWrapper>
+                <Text>Progress And results</Text>
+                <SectionWrapper>
+                  <Paragraph>
+                    Total voted: <b>0/0</b>
+                  </Paragraph>
+                  <Paragraph>
+                    Yes: <b>0</b>
+                  </Paragraph>
+                  <Paragraph>
+                    No: <b>0</b>
+                  </Paragraph>
+                  <Paragraph>
+                    Abstain: <b>0</b>
+                  </Paragraph>
+                  <Paragraph>
+                    Absentees: <b>0</b>
+                  </Paragraph>
+                </SectionWrapper>
+              </SectionWrapper>
+              <Separator />
+              <SectionWrapper>
+                <Text>Voting Rules</Text>
+                <SectionWrapper>
+                  <Paragraph>
+                    Quorum: <b>100%</b>
+                  </Paragraph>
+                  <Paragraph>
+                    {`Threshold: > `}
+                    <b>50%</b>
+                  </Paragraph>
+                  <Paragraph>
+                    Voting duration: <b>14 Days</b>
+                  </Paragraph>
+                </SectionWrapper>
+              </SectionWrapper>
               {canUserVote ? (
-                <ButtonGroup>
-                  <FeeGroup>
-                    <Typography>
-                      <Paragraph>Tx fee</Paragraph>
-                      <Paragraph>{`~${txFee} ${feeTokenDenom}`}</Paragraph>
-                    </Typography>
-                    <YesButton
-                      loading={submitting === "yes"}
-                      disabled={submitting && submitting !== "yes"}
-                      onClick={() => submitVoteProposal("yes")}
-                    >
-                      Yes
-                    </YesButton>
-                    <NoButton
-                      loading={submitting === "no"}
-                      disabled={submitting && submitting !== "no"}
-                      onClick={() => submitVoteProposal("no")}
-                    >
-                      No
-                    </NoButton>
-                    <AbstainButton
+                <SectionWrapper>
+                  <StatusOpenIcon />
+                  <ButtonGroup>
+                    <FeeWrapper>
+                      <p>Transaction fee</p>
+                      <p>{`~${txFee} ${feeTokenDenom}`}</p>
+                    </FeeWrapper>
+                    <AbstainedButton
+                      icon={<AbstainIcon />}
                       loading={submitting === "abstain"}
                       disabled={submitting && submitting !== "abstain"}
                       onClick={() => submitVoteProposal("abstain")}
                     >
                       Abstain
-                    </AbstainButton>
-                    <Button
-                      loading={submitting === "executing"}
-                      disabled={submitting && submitting !== "executing"}
-                      onClick={() => submitExecuteProposal()}
+                    </AbstainedButton>
+                    <RejectButton
+                      icon={<RejectIcon />}
+                      loading={submitting === "no"}
+                      disabled={submitting && submitting !== "no"}
+                      onClick={() => submitVoteProposal("no")}
                     >
-                      Execute
-                    </Button>
-                  </FeeGroup>
-                </ButtonGroup>
+                      No
+                    </RejectButton>
+                    <AcceptButton
+                      loading={submitting === "yes"}
+                      disabled={submitting && submitting !== "yes"}
+                      onClick={() => submitVoteProposal("yes")}
+                    >
+                      {<AcceptIcon />}
+                      Yes
+                    </AcceptButton>
+                  </ButtonGroup>
+                </SectionWrapper>
               ) : null}
             </>
           ) : null}
