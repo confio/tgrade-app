@@ -129,11 +129,9 @@ export const Separator = styled(Divider)`
 
 export const FieldGroup = styled.div`
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
-
-  & .ant-form-item {
-    flex-basis: 18rem;
+  & > * {
+    flex-basis: 33%;
   }
 `;
 
