@@ -78,6 +78,9 @@ export const Title = styled(Typography.Title)`
 
 export const Paragraph = styled.p`
   margin-left: 50px;
+  & b {
+    margin-left: 5px;
+  }
 `;
 
 export const Text = styled(Typography.Text)`
@@ -182,6 +185,27 @@ export const AbstainedButton = styled(Button)`
   min-width: 125px;
   background-color: #8692a6;
   color: #fff;
+  &:hover {
+    background-color: #8692a6;
+    color: #000;
+  }
+`;
+
+export const ExecuteButton = styled(Button)`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 6px;
+  font-size: 16px;
+  min-width: 125px;
+  margin-left: 10px;
+  height: 42px;
+  background-color: #fff;
+  color: #000;
+  &:hover {
+    background-color: #8692a6;
+    color: #fff;
+  }
 `;
 
 export const AcceptButton = styled(Button)`
@@ -193,6 +217,10 @@ export const AcceptButton = styled(Button)`
   width: 94px;
   background-color: #0bb0b1;
   color: #fff;
+  &:hover {
+    background-color: #0bb0b1;
+    color: #000;
+  }
 `;
 
 export const RejectButton = styled(Button)`
@@ -204,4 +232,8 @@ export const RejectButton = styled(Button)`
   width: 94px;
   background-color: #ff6465;
   color: #fff;
+  &:hover {
+    background-color: #ff6465;
+    color: #000;
+  }
 `;

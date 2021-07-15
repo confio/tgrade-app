@@ -18,6 +18,7 @@ import { ReactComponent as AcceptIcon } from "./assets/yes-icon.svg";
 import {
   AbstainedButton,
   AcceptButton,
+  ExecuteButton,
   ButtonGroup,
   ChangedField,
   FeeWrapper,
@@ -136,6 +137,10 @@ export default function ProposalDetailModal({
     } finally {
       setSubmitting(undefined);
     }
+  }
+
+  function calculateTotalVotes(): number {
+    return proposal.votes.yes + proposal.votes.no + proposal.votes.abstain;
   }
 
   async function submitExecuteProposal() {
@@ -261,19 +266,19 @@ export default function ProposalDetailModal({
                 <Text>Progress And results</Text>
                 <SectionWrapper>
                   <Paragraph>
-                    Total voted: <b>0/0</b>
+                    Total voted:
+                    <b>
+                      {calculateTotalVotes()} of {proposal.total_weight}
+                    </b>
                   </Paragraph>
                   <Paragraph>
-                    Yes: <b>0</b>
+                    Yes: <b>{proposal.votes.yes}</b>
                   </Paragraph>
                   <Paragraph>
-                    No: <b>0</b>
+                    No: <b>{proposal.votes.no}</b>
                   </Paragraph>
                   <Paragraph>
-                    Abstain: <b>0</b>
-                  </Paragraph>
-                  <Paragraph>
-                    Absentees: <b>0</b>
+                    Abstain: <b>{proposal.votes.abstain}</b>
                   </Paragraph>
                 </SectionWrapper>
               </SectionWrapper>
@@ -281,30 +286,43 @@ export default function ProposalDetailModal({
               <SectionWrapper>
                 <Text>Voting Rules</Text>
                 <SectionWrapper>
-                  <Paragraph>
-                    Quorum: <b>100%</b>
-                  </Paragraph>
-                  <Paragraph>
-                    {`Threshold: > `}
-                    <b>50%</b>
-                  </Paragraph>
-                  <Paragraph>
-                    Voting duration: <b>14 Days</b>
-                  </Paragraph>
+                  {proposalEditDso?.quorum ? (
+                    <ChangedField>
+                      <Paragraph>
+                        Quorum: <b>{parseFloat(proposalEditDso.quorum) * 100}%</b>
+                      </Paragraph>
+                    </ChangedField>
+                  ) : null}
+                  {proposalEditDso?.threshold ? (
+                    <Paragraph>
+                      {`Threshold: > `}
+                      <b>{parseFloat(proposalEditDso.threshold) * 100}%</b>
+                    </Paragraph>
+                  ) : null}
+                  {proposalEditDso?.["voting_duration"] ? (
+                    <Paragraph>
+                      Voting period: <b>{proposalEditDso.voting_period} days</b>
+                    </Paragraph>
+                  ) : null}
                 </SectionWrapper>
               </SectionWrapper>
               {canUserVote ? (
                 <SectionWrapper>
-                  <StatusOpenIcon />
+                  <SectionWrapper>
+                    <StatusOpenIcon />
+                    {proposal?.status === "passed" ? (
+                      <ExecuteButton onClick={submitExecuteProposal}>Execute Proposal</ExecuteButton>
+                    ) : null}
+                  </SectionWrapper>
                   <ButtonGroup>
                     <FeeWrapper>
                       <p>Transaction fee</p>
                       <p>{`~${txFee} ${feeTokenDenom}`}</p>
                     </FeeWrapper>
                     <AbstainedButton
+                      disabled={canUserVote || (submitting && submitting !== "abstain")}
                       icon={<AbstainIcon />}
                       loading={submitting === "abstain"}
-                      disabled={submitting && submitting !== "abstain"}
                       onClick={() => submitVoteProposal("abstain")}
                     >
                       Abstain
@@ -312,14 +330,14 @@ export default function ProposalDetailModal({
                     <RejectButton
                       icon={<RejectIcon />}
                       loading={submitting === "no"}
-                      disabled={submitting && submitting !== "no"}
+                      disabled={canUserVote || (submitting && submitting !== "no")}
                       onClick={() => submitVoteProposal("no")}
                     >
                       No
                     </RejectButton>
                     <AcceptButton
                       loading={submitting === "yes"}
-                      disabled={submitting && submitting !== "yes"}
+                      disabled={canUserVote || (submitting && submitting !== "yes")}
                       onClick={() => submitVoteProposal("yes")}
                     >
                       {<AcceptIcon />}
