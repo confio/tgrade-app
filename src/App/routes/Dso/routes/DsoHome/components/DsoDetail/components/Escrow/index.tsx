@@ -109,7 +109,7 @@ export default function Escrow(): JSX.Element {
 
   const pieConfig = {
     data: data,
-    autoFit: true,
+    style: { maxWidth: "12.5rem", maxHeight: "14rem" },
     renderer: "svg" as const,
     angleField: "value",
     colorField: "type",
@@ -145,8 +145,10 @@ export default function Escrow(): JSX.Element {
       content: {
         style: {
           color: "hsl(180, 88%, 37%)",
+          fontFamily: "var(--ff-text)",
+          fontWeight: 500,
         },
-        content: totalPaidEscrow + " TGD",
+        content: `<div><p>${totalPaidEscrow}</p><p>${feeDenom}</p></div>`,
       },
     },
   };
