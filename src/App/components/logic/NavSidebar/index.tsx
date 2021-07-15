@@ -7,14 +7,12 @@ import AddressTag from "../AddressTag";
 import ConnectWalletModal from "../ConnectWalletModal";
 import * as Icon from "./icons";
 import { Cell, LinkWrapper, Navbar, StyledText } from "./style";
-import { DetailedProposalModal } from "../DetailedProposalModal";
 
 export const NavSidebar: React.FC = () => {
   const {
     sdkState: { address },
   } = useSdk();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isModalOpen2, setModalOpen2] = useState(false);
 
   return (
     <Navbar>
@@ -27,8 +25,7 @@ export const NavSidebar: React.FC = () => {
             <Icon.Join />
           </Cell>
         </Link>
-        <Link to="/" onClick={() => setModalOpen2(true)}>
-          <DetailedProposalModal isModalOpen={isModalOpen2} closeModal={() => setModalOpen2(false)} />
+        <Link to="/">
           <Cell>
             <Icon.Token />
             <StyledText>T-Market</StyledText>
