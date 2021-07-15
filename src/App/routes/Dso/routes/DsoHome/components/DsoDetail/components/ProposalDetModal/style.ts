@@ -1,8 +1,8 @@
-import { Divider, Modal, Typography, Button } from "antd";
+import { Modal, Divider, Typography, Button } from "antd";
 import { Stack } from "App/components/layoutPrimitives";
 import styled from "styled-components";
 
-export const StyledModal = styled(Modal)`
+export default styled(Modal)`
   ${({ bgTransparent }: { bgTransparent?: boolean }) =>
     bgTransparent &&
     `
@@ -11,61 +11,6 @@ export const StyledModal = styled(Modal)`
     box-shadow: none;
   }
   `};
-`;
-
-export const TextLabel = styled(Typography.Text)`
-  && {
-    color: var(--color-text-1ary);
-    font-weight: 500;
-  }
-`;
-
-export const TextValue = styled(Typography.Text)`
-  && {
-    color: var(--color-text-1ary);
-  }
-`;
-
-export const ChangedField = styled(Typography)`
-  margin-top: var(--s-1);
-
-  & > * {
-    display: block;
-  }
-`;
-
-export const FeeGroup = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-
-  & > *:first-child {
-    margin-right: var(--s0);
-  }
-`;
-
-export const YesButton = styled(Button)`
-  &,
-  &:hover,
-  &:focus {
-    background-color: var(--bg-button-1ary);
-  }
-`;
-
-export const NoButton = styled(Button)`
-  &,
-  &:hover,
-  &:focus {
-    background-color: var(--bg-button-danger);
-  }
-`;
-
-export const AbstainButton = styled(Button)`
-  &,
-  &:hover,
-  &:focus {
-    background-color: var(--bg-button-2ary);
-  }
 `;
 
 export const Title = styled(Typography.Title)`
@@ -78,9 +23,6 @@ export const Title = styled(Typography.Title)`
 
 export const Paragraph = styled.p`
   margin-left: 50px;
-  & b {
-    margin-left: 5px;
-  }
 `;
 
 export const Text = styled(Typography.Text)`
@@ -129,9 +71,11 @@ export const Separator = styled(Divider)`
 
 export const FieldGroup = styled.div`
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
-  & > * {
-    flex-basis: 33%;
+
+  & .ant-form-item {
+    flex-basis: 18rem;
   }
 `;
 
@@ -183,27 +127,6 @@ export const AbstainedButton = styled(Button)`
   min-width: 125px;
   background-color: #8692a6;
   color: #fff;
-  &:hover {
-    background-color: #8692a6;
-    color: #000;
-  }
-`;
-
-export const ExecuteButton = styled(Button)`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border-radius: 6px;
-  font-size: 16px;
-  min-width: 125px;
-  margin-left: 10px;
-  height: 42px;
-  background-color: #fff;
-  color: #000;
-  &:hover {
-    background-color: #8692a6;
-    color: #fff;
-  }
 `;
 
 export const AcceptButton = styled(Button)`
@@ -215,10 +138,6 @@ export const AcceptButton = styled(Button)`
   width: 94px;
   background-color: #0bb0b1;
   color: #fff;
-  &:hover {
-    background-color: #0bb0b1;
-    color: #000;
-  }
 `;
 
 export const RejectButton = styled(Button)`
@@ -230,8 +149,4 @@ export const RejectButton = styled(Button)`
   width: 94px;
   background-color: #ff6465;
   color: #fff;
-  &:hover {
-    background-color: #ff6465;
-    color: #000;
-  }
 `;

@@ -1,4 +1,3 @@
-import { Typography } from "antd";
 import { AddressList, Button } from "App/components/form";
 import { Stack } from "App/components/layoutPrimitives";
 import { ShowTxResult, TxResult } from "App/components/logic";
@@ -10,24 +9,33 @@ import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract, DsoContractQuerier, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { DsoHomeParams } from "../../../..";
+import { ReactComponent as AbstainIcon } from "./assets/abstain-icon.svg";
 import closeIcon from "./assets/cross.svg";
 import modalBg from "./assets/modal-background.jpg";
+import { ReactComponent as RejectIcon } from "./assets/no-icon.svg";
+import { ReactComponent as StatusOpenIcon } from "./assets/status-open-icon.svg";
+import { ReactComponent as StatusPassedtIcon } from "./assets/status-passed-icon.svg";
+import { ReactComponent as StatusExecutedIcon } from "./assets/status-executed-icon.svg";
+import { ReactComponent as AcceptIcon } from "./assets/yes-icon.svg";
 import {
-  AbstainButton,
+  AbstainedButton,
+  AcceptButton,
+  ExecuteButton,
   ButtonGroup,
   ChangedField,
-  FeeGroup,
+  FeeWrapper,
   FieldGroup,
   ModalHeader,
-  NoButton,
+  Paragraph,
+  RejectButton,
+  SectionWrapper,
   Separator,
   StyledModal,
+  Text,
   TextLabel,
   TextValue,
-  YesButton,
+  Title,
 } from "./style";
-
-const { Title, Paragraph } = Typography;
 
 interface ProposalDetailModalProps {
   readonly isModalOpen: boolean;
@@ -131,6 +139,10 @@ export default function ProposalDetailModal({
     } finally {
       setSubmitting(undefined);
     }
+  }
+
+  function calculateTotalVotes(): number {
+    return proposal.votes.yes + proposal.votes.no + proposal.votes.abstain;
   }
 
   async function submitExecuteProposal() {
@@ -251,43 +263,93 @@ export default function ProposalDetailModal({
                 <AddressList addresses={proposalAddVotingMembers} short copyable />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
+              <Separator />
+              <SectionWrapper>
+                <Text>Progress And results</Text>
+                <SectionWrapper>
+                  <Paragraph>
+                    Total voted:
+                    <b>
+                      {calculateTotalVotes()} of {proposal.total_weight}
+                    </b>
+                  </Paragraph>
+                  <Paragraph>
+                    Yes: <b>{proposal.votes.yes}</b>
+                  </Paragraph>
+                  <Paragraph>
+                    No: <b>{proposal.votes.no}</b>
+                  </Paragraph>
+                  <Paragraph>
+                    Abstain: <b>{proposal.votes.abstain}</b>
+                  </Paragraph>
+                </SectionWrapper>
+              </SectionWrapper>
+              <Separator />
+              <SectionWrapper>
+                <Text>Voting Rules</Text>
+                <SectionWrapper>
+                  {proposalEditDso?.quorum ? (
+                    <ChangedField>
+                      <Paragraph>
+                        Quorum: <b>{parseFloat(proposalEditDso.quorum) * 100}%</b>
+                      </Paragraph>
+                    </ChangedField>
+                  ) : null}
+                  {proposalEditDso?.threshold ? (
+                    <Paragraph>
+                      {`Threshold: > `}
+                      <b>{parseFloat(proposalEditDso.threshold) * 100}%</b>
+                    </Paragraph>
+                  ) : null}
+                  {proposalEditDso?.["voting_duration"] ? (
+                    <Paragraph>
+                      Voting period: <b>{proposalEditDso.voting_period} days</b>
+                    </Paragraph>
+                  ) : null}
+                </SectionWrapper>
+              </SectionWrapper>
               {canUserVote ? (
-                <ButtonGroup>
-                  <FeeGroup>
-                    <Typography>
-                      <Paragraph>Tx fee</Paragraph>
-                      <Paragraph>{`~${txFee} ${feeTokenDenom}`}</Paragraph>
-                    </Typography>
-                    <YesButton
-                      loading={submitting === "yes"}
-                      disabled={submitting && submitting !== "yes"}
-                      onClick={() => submitVoteProposal("yes")}
-                    >
-                      Yes
-                    </YesButton>
-                    <NoButton
-                      loading={submitting === "no"}
-                      disabled={submitting && submitting !== "no"}
-                      onClick={() => submitVoteProposal("no")}
-                    >
-                      No
-                    </NoButton>
-                    <AbstainButton
+                <SectionWrapper>
+                  <SectionWrapper>
+                    {proposal?.status === "passed" ? <StatusPassedtIcon /> : null}
+                    {proposal?.status === "open" ? <StatusOpenIcon /> : null}
+                    {proposal?.status === "executed" ? <StatusExecutedIcon /> : null}
+
+                    {proposal?.status === "passed" ? (
+                      <ExecuteButton onClick={submitExecuteProposal}>Execute Proposal</ExecuteButton>
+                    ) : null}
+                  </SectionWrapper>
+                  <ButtonGroup>
+                    <FeeWrapper>
+                      <p>Transaction fee</p>
+                      <p>{`~${txFee} ${feeTokenDenom}`}</p>
+                    </FeeWrapper>
+                    <AbstainedButton
+                      disabled={canUserVote || (submitting && submitting !== "abstain")}
+                      icon={<AbstainIcon />}
                       loading={submitting === "abstain"}
-                      disabled={submitting && submitting !== "abstain"}
                       onClick={() => submitVoteProposal("abstain")}
                     >
                       Abstain
-                    </AbstainButton>
-                    <Button
-                      loading={submitting === "executing"}
-                      disabled={submitting && submitting !== "executing"}
-                      onClick={() => submitExecuteProposal()}
+                    </AbstainedButton>
+                    <RejectButton
+                      icon={<RejectIcon />}
+                      loading={submitting === "no"}
+                      disabled={canUserVote || (submitting && submitting !== "no")}
+                      onClick={() => submitVoteProposal("no")}
                     >
-                      Execute
-                    </Button>
-                  </FeeGroup>
-                </ButtonGroup>
+                      No
+                    </RejectButton>
+                    <AcceptButton
+                      loading={submitting === "yes"}
+                      disabled={canUserVote || (submitting && submitting !== "yes")}
+                      onClick={() => submitVoteProposal("yes")}
+                    >
+                      {<AcceptIcon />}
+                      Yes
+                    </AcceptButton>
+                  </ButtonGroup>
+                </SectionWrapper>
               ) : null}
             </>
           ) : null}

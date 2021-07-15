@@ -63,19 +63,6 @@ export const FieldGroup = styled.div`
 
 export const ButtonGroup = styled.div`
   display: flex;
-  flex-wrap: wrap;
-
-  & button {
-    flex-basis: calc(50% - calc(var(--s1) / 2));
-  }
-
-  & button + button {
-    margin-left: var(--s1);
-  }
-
-  & .ant-btn {
-    align-self: flex-start;
-  }
 `;
 
 export const LogoutButton = styled(Button)`
