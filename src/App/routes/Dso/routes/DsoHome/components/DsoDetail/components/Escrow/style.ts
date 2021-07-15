@@ -16,13 +16,32 @@ export const StyledEscrow = styled.div`
 
 export const TotalEscrowStack = styled(Stack)`
   padding: var(--s1);
-  flex-basis: calc(2 * (100% / 3));
+  flex-basis: calc(3 * (100% / 5));
   text-align: left;
+
+  & [data-chart-source-type="G2Plot"] {
+    align-self: center;
+  }
 `;
 
 export const YourEscrowStack = styled(Stack)`
   border-left: 1px solid var(--color-border);
   padding: var(--s1);
-  flex-basis: calc(100% / 3);
+  flex-basis: calc(2 * (100% / 5));
   text-align: left;
+
+  & span.ant-typography:nth-child(even) {
+    color: var(--color-text-1ary);
+    font-size: var(--s-1);
+  }
+
+  & span.ant-typography:nth-child(odd) {
+    color: var(--color-text-2ary);
+    font-weight: 500;
+  }
+
+  & button {
+    display: flex;
+    justify-content: center;
+  }
 `;
