@@ -14,7 +14,7 @@ import closeIcon from "./assets/cross.svg";
 import modalBg from "./assets/modal-background.svg";
 import { ReactComponent as RejectIcon } from "./assets/no-icon.svg";
 import { ReactComponent as StatusOpenIcon } from "./assets/status-open-icon.svg";
-import { ReactComponent as StatusPassedtIcon } from "./assets/status-passed-icon.svg";
+import { ReactComponent as StatusPassedIcon } from "./assets/status-passed-icon.svg";
 import { ReactComponent as StatusExecutedIcon } from "./assets/status-executed-icon.svg";
 import { ReactComponent as AcceptIcon } from "./assets/yes-icon.svg";
 import {
@@ -311,7 +311,7 @@ export default function ProposalDetailModal({
               {canUserVote ? (
                 <SectionWrapper>
                   <SectionWrapper>
-                    {proposal?.status === "passed" ? <StatusPassedtIcon /> : null}
+                    {proposal?.status === "passed" ? <StatusPassedIcon /> : null}
                     {proposal?.status === "open" ? <StatusOpenIcon /> : null}
                     {proposal?.status === "executed" ? <StatusExecutedIcon /> : null}
 
