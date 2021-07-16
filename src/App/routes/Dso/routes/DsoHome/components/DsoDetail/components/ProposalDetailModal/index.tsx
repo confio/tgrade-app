@@ -142,7 +142,7 @@ export default function ProposalDetailModal({
   }
 
   function calculateTotalVotes(): number {
-    return proposal.votes.yes + proposal.votes.no + proposal.votes.abstain;
+    return proposal?.votes.yes + proposal?.votes.no + proposal?.votes.abstain;
   }
 
   async function submitExecuteProposal() {
@@ -168,7 +168,7 @@ export default function ProposalDetailModal({
     address &&
     isProposalNotExpired &&
     membership === "voting" &&
-    (proposal.status === "open" || proposal.status === "passed");
+    (proposal?.status === "open" || proposal?.status === "passed");
 
   return (
     <StyledModal
