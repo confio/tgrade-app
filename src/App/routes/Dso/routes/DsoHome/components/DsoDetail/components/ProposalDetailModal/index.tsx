@@ -170,8 +170,6 @@ export default function ProposalDetailModal({
     membership === "voting" &&
     (proposal.status === "open" || proposal.status === "passed");
 
-  console.log("proposal status: ", proposal.status);
-
   return (
     <StyledModal
       centered
