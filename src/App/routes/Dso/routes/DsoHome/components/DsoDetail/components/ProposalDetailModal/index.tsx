@@ -11,7 +11,7 @@ import { getErrorFromStackTrace } from "utils/errors";
 import { DsoHomeParams } from "../../../..";
 import { ReactComponent as AbstainIcon } from "./assets/abstain-icon.svg";
 import closeIcon from "./assets/cross.svg";
-import modalBg from "./assets/modal-background.jpg";
+import modalBg from "./assets/modal-background.svg";
 import { ReactComponent as RejectIcon } from "./assets/no-icon.svg";
 import { ReactComponent as StatusOpenIcon } from "./assets/status-open-icon.svg";
 import { ReactComponent as StatusPassedtIcon } from "./assets/status-passed-icon.svg";
