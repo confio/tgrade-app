@@ -14,7 +14,7 @@ import closeIcon from "./assets/cross.svg";
 import modalBg from "./assets/modal-background.jpg";
 import { ReactComponent as RejectIcon } from "./assets/no-icon.svg";
 import { ReactComponent as StatusOpenIcon } from "./assets/status-open-icon.svg";
-import { ReactComponent as StatusPassedtIcon } from "./assets/status-passed-icon.svg";
+import { ReactComponent as StatusPassedIcon } from "./assets/status-passed-icon.svg";
 import { ReactComponent as StatusExecutedIcon } from "./assets/status-executed-icon.svg";
 import { ReactComponent as AcceptIcon } from "./assets/yes-icon.svg";
 import {
@@ -170,6 +170,8 @@ export default function ProposalDetailModal({
     membership === "voting" &&
     (proposal.status === "open" || proposal.status === "passed");
 
+  console.log("proposal status: ", proposal.status);
+
   return (
     <StyledModal
       centered
@@ -310,7 +312,7 @@ export default function ProposalDetailModal({
               </SectionWrapper>
               <SectionWrapper>
                 <SectionWrapper>
-                  {proposal?.status === "passed" ? <StatusPassedtIcon /> : null}
+                  {proposal?.status === "passed" ? <StatusPassedIcon /> : null}
                   {proposal?.status === "open" ? <StatusOpenIcon /> : null}
                   {proposal?.status === "executed" ? <StatusExecutedIcon /> : null}
 
@@ -324,7 +326,7 @@ export default function ProposalDetailModal({
                     <p>{`~${txFee} ${feeTokenDenom}`}</p>
                   </FeeWrapper>
                   <AbstainedButton
-                    disabled={canUserVote || (submitting && submitting !== "abstain")}
+                    disabled={!canUserVote || (submitting && submitting !== "abstain")}
                     icon={<AbstainIcon />}
                     loading={submitting === "abstain"}
                     onClick={() => submitVoteProposal("abstain")}
@@ -334,14 +336,14 @@ export default function ProposalDetailModal({
                   <RejectButton
                     icon={<RejectIcon />}
                     loading={submitting === "no"}
-                    disabled={canUserVote || (submitting && submitting !== "no")}
+                    disabled={!canUserVote || (submitting && submitting !== "no")}
                     onClick={() => submitVoteProposal("no")}
                   >
                     No
                   </RejectButton>
                   <AcceptButton
                     loading={submitting === "yes"}
-                    disabled={canUserVote || (submitting && submitting !== "yes")}
+                    disabled={!canUserVote || (submitting && submitting !== "yes")}
                     onClick={() => submitVoteProposal("yes")}
                   >
                     {<AcceptIcon />}
