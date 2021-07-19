@@ -4,7 +4,8 @@ import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { openAddDsoModal, useDso } from "service";
+import { openAddDsoModal, removeDso, useDso } from "service";
+import { ReactComponent as CloseIcon } from "./assets/cross-tab.svg";
 import DsoDetail from "./components/DsoDetail";
 import { StyledTabs } from "./style";
 
@@ -45,9 +46,21 @@ export default function DsoHome(): JSX.Element | null {
         tabBarExtraContent={{
           right: <ButtonAddNew text="Add Trusted Circle" onClick={() => openAddDsoModal(dsoDispatch)} />,
         }}
+        type="editable-card"
+        hideAdd
+        onEdit={(dsoAddress, action) => {
+          if (action === "remove" && typeof dsoAddress === "string") {
+            removeDso(dsoDispatch, dsoAddress);
+          }
+        }}
       >
         {dsoState.dsos.map(({ address, name }) => (
-          <TabPane tab={name} key={address}>
+          <TabPane
+            tab={name}
+            key={address}
+            closable={address === loadedDsoAddress}
+            closeIcon={<CloseIcon style={{ height: ".5rem" }} />}
+          >
             <DsoDetail dsoAddress={address} />
           </TabPane>
         ))}
