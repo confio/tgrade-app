@@ -12,7 +12,7 @@ import { getErrorFromStackTrace } from "utils/errors";
 import { DsoHomeParams } from "../../../routes/Dso/routes/DsoHome";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import closeIcon from "./assets/cross.svg";
-import modalBg from "./assets/modal-background.svg";
+import modalBg from "./assets/modal-background.jpg";
 import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./style";
 
 const { Title, Text } = Typography;

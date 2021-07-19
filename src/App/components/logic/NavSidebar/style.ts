@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import Styled from "styled-components";
-import MenuBG from "./assets/menu-bg.svg";
+import MenuBG from "./assets/menu-bg.jpg";
 
 export const Navbar = Styled.div`
 display:flex;

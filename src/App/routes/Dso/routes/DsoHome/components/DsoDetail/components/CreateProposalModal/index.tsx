@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { getDsoName, useDso } from "service";
 import { DsoHomeParams } from "../../../..";
 import closeIcon from "./assets/cross.svg";
-import modalBg from "./assets/modal-background.svg";
+import modalBg from "./assets/modal-background.jpg";
 import ProposalAddParticipants from "./components/ProposalAddParticipants";
 import ProposalAddVotingParticipants from "./components/ProposalAddVotingParticipants";
 import ProposalEditDso from "./components/ProposalEditDso";
