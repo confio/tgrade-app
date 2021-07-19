@@ -142,7 +142,7 @@ export default function ProposalDetailModal({
   }
 
   function calculateTotalVotes(): number {
-    return proposal.votes.yes + proposal.votes.no + proposal.votes.abstain;
+    return proposal?.votes.yes + proposal?.votes.no + proposal?.votes.abstain;
   }
 
   async function submitExecuteProposal() {
@@ -168,7 +168,7 @@ export default function ProposalDetailModal({
     address &&
     isProposalNotExpired &&
     membership === "voting" &&
-    (proposal.status === "open" || proposal.status === "passed");
+    (proposal?.status === "open" || proposal?.status === "passed");
 
   return (
     <StyledModal
@@ -308,49 +308,47 @@ export default function ProposalDetailModal({
                   ) : null}
                 </SectionWrapper>
               </SectionWrapper>
-              {canUserVote ? (
+              <SectionWrapper>
                 <SectionWrapper>
-                  <SectionWrapper>
-                    {proposal?.status === "passed" ? <StatusPassedIcon /> : null}
-                    {proposal?.status === "open" ? <StatusOpenIcon /> : null}
-                    {proposal?.status === "executed" ? <StatusExecutedIcon /> : null}
+                  {proposal?.status === "passed" ? <StatusPassedIcon /> : null}
+                  {proposal?.status === "open" ? <StatusOpenIcon /> : null}
+                  {proposal?.status === "executed" ? <StatusExecutedIcon /> : null}
 
-                    {proposal?.status === "passed" ? (
-                      <ExecuteButton onClick={submitExecuteProposal}>Execute Proposal</ExecuteButton>
-                    ) : null}
-                  </SectionWrapper>
-                  <ButtonGroup>
-                    <FeeWrapper>
-                      <p>Transaction fee</p>
-                      <p>{`~${txFee} ${feeTokenDenom}`}</p>
-                    </FeeWrapper>
-                    <AbstainedButton
-                      disabled={canUserVote || (submitting && submitting !== "abstain")}
-                      icon={<AbstainIcon />}
-                      loading={submitting === "abstain"}
-                      onClick={() => submitVoteProposal("abstain")}
-                    >
-                      Abstain
-                    </AbstainedButton>
-                    <RejectButton
-                      icon={<RejectIcon />}
-                      loading={submitting === "no"}
-                      disabled={canUserVote || (submitting && submitting !== "no")}
-                      onClick={() => submitVoteProposal("no")}
-                    >
-                      No
-                    </RejectButton>
-                    <AcceptButton
-                      loading={submitting === "yes"}
-                      disabled={canUserVote || (submitting && submitting !== "yes")}
-                      onClick={() => submitVoteProposal("yes")}
-                    >
-                      {<AcceptIcon />}
-                      Yes
-                    </AcceptButton>
-                  </ButtonGroup>
+                  {address && proposal?.status === "passed" ? (
+                    <ExecuteButton onClick={submitExecuteProposal}>Execute Proposal</ExecuteButton>
+                  ) : null}
                 </SectionWrapper>
-              ) : null}
+                <ButtonGroup>
+                  <FeeWrapper>
+                    <p>Transaction fee</p>
+                    <p>{`~${txFee} ${feeTokenDenom}`}</p>
+                  </FeeWrapper>
+                  <AbstainedButton
+                    disabled={!canUserVote || (submitting && submitting !== "abstain")}
+                    icon={<AbstainIcon />}
+                    loading={submitting === "abstain"}
+                    onClick={() => submitVoteProposal("abstain")}
+                  >
+                    Abstain
+                  </AbstainedButton>
+                  <RejectButton
+                    icon={<RejectIcon />}
+                    loading={submitting === "no"}
+                    disabled={!canUserVote || (submitting && submitting !== "no")}
+                    onClick={() => submitVoteProposal("no")}
+                  >
+                    No
+                  </RejectButton>
+                  <AcceptButton
+                    loading={submitting === "yes"}
+                    disabled={!canUserVote || (submitting && submitting !== "yes")}
+                    onClick={() => submitVoteProposal("yes")}
+                  >
+                    {<AcceptIcon />}
+                    Yes
+                  </AcceptButton>
+                </ButtonGroup>
+              </SectionWrapper>
             </>
           ) : null}
         </Stack>
