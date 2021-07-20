@@ -85,11 +85,6 @@ export default function DsoIdActions(): JSX.Element {
       <Separator />
       <VotingRules>
         <Text>Voting rules:</Text>
-        <VSeparator />
-        <Text>
-          Minimum escrow: {minimumEscrow?.amount} {minimumEscrow?.denom}
-        </Text>
-        <VSeparator />
         <Text>Quorum: {quorum}%</Text>
         <VSeparator />
         <Text>Threshold: {threshold}%</Text>
@@ -97,6 +92,10 @@ export default function DsoIdActions(): JSX.Element {
         <Text>Voting duration: {votingDuration} days</Text>
         <VSeparator />
         <Text>Allow end early: {allowEndEarly}</Text>
+        <VSeparator />
+        <Text>
+          Minimum escrow: {minimumEscrow?.amount} {minimumEscrow?.denom}
+        </Text>
       </VotingRules>
     </StyledDsoIdActions>
   );

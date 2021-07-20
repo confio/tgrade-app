@@ -30,18 +30,20 @@ export const YourEscrowStack = styled(Stack)`
   flex-basis: calc(2 * (100% / 5));
   text-align: left;
 
-  & span.ant-typography:nth-child(even) {
+  & button {
+    display: flex;
+    justify-content: center;
+  }
+`;
+
+export const AmountStack = styled(Stack)`
+  & span.ant-typography:nth-child(1) {
     color: var(--color-text-1ary);
     font-size: var(--s-1);
   }
 
-  & span.ant-typography:nth-child(odd) {
+  & span.ant-typography:nth-child(2) {
     color: var(--color-text-2ary);
     font-weight: 500;
-  }
-
-  & button {
-    display: flex;
-    justify-content: center;
   }
 `;
