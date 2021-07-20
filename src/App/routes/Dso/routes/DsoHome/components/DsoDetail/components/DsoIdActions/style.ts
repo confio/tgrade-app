@@ -36,13 +36,13 @@ export const StyledDsoIdActions = styled.div`
 export const VotingRules = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
 
   & span.ant-typography {
     padding: var(--s-1) var(--s1);
     color: var(--color-text-1ary);
 
     &:first-child {
+      padding-right: 0;
       font-weight: 600;
     }
   }
