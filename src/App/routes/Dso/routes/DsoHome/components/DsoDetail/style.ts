@@ -36,6 +36,11 @@ export const ProposalsContainer = styled.div`
     max-width: 20rem;
   }
 
+  & .ant-table-thead .ant-table-cell {
+    color: var(--color-text-2ary);
+    font-size: var(--s0);
+  }
+
   & div.ant-typography {
     color: var(--color-text-1ary);
     font-size: var(--s-1);
