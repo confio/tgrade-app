@@ -10,7 +10,7 @@ import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
 import { DsoHomeParams } from "../../../..";
 import DepositEscrowModal from "./components/DepositEscrowModal";
-import { StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
+import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -98,7 +98,7 @@ export default function Escrow(): JSX.Element {
 
   const data = [
     {
-      type: "current paid",
+      type: "current paid in",
       value: totalPaidEscrow,
     },
     {
@@ -159,12 +159,16 @@ export default function Escrow(): JSX.Element {
         <Title level={2}>Total escrow</Title>
         <Pie {...pieConfig} />
       </TotalEscrowStack>
-      <YourEscrowStack>
+      <YourEscrowStack gap="s1">
         <Title level={2}>Your escrow</Title>
-        <Text>current paid in:</Text>
-        <Text>{`${userEscrow} ${feeDenom}`}</Text>
-        <Text>needed to get voting rights:</Text>
-        <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
+        <AmountStack gap="s-4">
+          <Text>Current paid in:</Text>
+          <Text>{`${userEscrow} ${feeDenom}`}</Text>
+        </AmountStack>
+        <AmountStack gap="s-4">
+          <Text>Needed to get voting rights:</Text>
+          <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
+        </AmountStack>
         {address ? <Button onClick={() => setModalOpen(true)}>Deposit escrow</Button> : null}
       </YourEscrowStack>
       {modalOpen ? (
