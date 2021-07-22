@@ -6,23 +6,23 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
-import { DsoContract, DsoContractQuerier, VoteOption } from "utils/dso";
+import { DsoContract, DsoContractQuerier, ProposalResponse, VoteInfo, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { DsoHomeParams } from "../../../..";
 import { ReactComponent as AbstainIcon } from "./assets/abstain-icon.svg";
 import closeIcon from "./assets/cross.svg";
 import modalBg from "./assets/modal-background.jpg";
 import { ReactComponent as RejectIcon } from "./assets/no-icon.svg";
+import { ReactComponent as StatusExecutedIcon } from "./assets/status-executed-icon.svg";
 import { ReactComponent as StatusOpenIcon } from "./assets/status-open-icon.svg";
 import { ReactComponent as StatusPassedIcon } from "./assets/status-passed-icon.svg";
-import { ReactComponent as StatusExecutedIcon } from "./assets/status-executed-icon.svg";
 import { ReactComponent as AcceptIcon } from "./assets/yes-icon.svg";
 import {
   AbstainedButton,
   AcceptButton,
-  ExecuteButton,
   ButtonGroup,
   ChangedField,
+  ExecuteButton,
   FeeWrapper,
   FieldGroup,
   ModalHeader,
@@ -62,8 +62,11 @@ export default function ProposalDetailModal({
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
-  const [proposal, setProposal] = useState<any>();
-  const isProposalNotExpired = proposal ? new Date(proposal.expires.at_time / 1000000) > new Date() : false;
+  const [proposal, setProposal] = useState<ProposalResponse>();
+  const [currentVote, setCurrentVote] = useState<VoteInfo | null>();
+  const isProposalNotExpired = proposal
+    ? new Date(parseInt(proposal.expires.at_time, 10) / 1000000) > new Date()
+    : false;
   const proposalAddMembers = proposal?.proposal["add_remove_non_voting_members"]?.add;
   const proposalRemoveMembers = proposal?.proposal["add_remove_non_voting_members"]?.remove;
   const proposalAddVotingMembers = proposal?.proposal["add_voting_members"]?.voters;
@@ -95,6 +98,20 @@ export default function ProposalDetailModal({
       }
     })();
   }, [client, dsoAddress, handleError, proposalId]);
+
+  useEffect(() => {
+    (async function queryCurrentVote() {
+      if (!client || !proposalId || !address) return;
+
+      try {
+        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const { vote } = await dsoContract.getVote(proposalId, address);
+        setCurrentVote(vote);
+      } catch (error) {
+        handleError(error);
+      }
+    })();
+  }, [address, client, dsoAddress, handleError, proposalId]);
 
   useEffect(() => {
     (async function queryMembership() {
@@ -142,7 +159,8 @@ export default function ProposalDetailModal({
   }
 
   function calculateTotalVotes(): number {
-    return proposal?.votes.yes + proposal?.votes.no + proposal?.votes.abstain;
+    const { yes = 0, no = 0, abstain = 0 } = proposal?.votes ?? {};
+    return yes + no + abstain;
   }
 
   async function submitExecuteProposal() {
@@ -166,6 +184,7 @@ export default function ProposalDetailModal({
 
   const canUserVote =
     address &&
+    currentVote === null &&
     isProposalNotExpired &&
     membership === "voting" &&
     (proposal?.status === "open" || proposal?.status === "passed");
@@ -238,10 +257,10 @@ export default function ProposalDetailModal({
                       <TextValue>{parseFloat(proposalEditDso.threshold) * 100}%</TextValue>
                     </ChangedField>
                   ) : null}
-                  {proposalEditDso?.["voting_duration"] ? (
+                  {proposalEditDso?.["voting_period"] ? (
                     <ChangedField>
                       <TextLabel>Voting duration</TextLabel>
-                      <TextValue>{proposalEditDso["voting_duration"]}</TextValue>
+                      <TextValue>{proposalEditDso["voting_period"]}</TextValue>
                     </ChangedField>
                   ) : null}
                   {proposalEditDso?.["escrow_amount"] ? (
@@ -301,7 +320,7 @@ export default function ProposalDetailModal({
                       <b>{parseFloat(proposalEditDso.threshold) * 100}%</b>
                     </Paragraph>
                   ) : null}
-                  {proposalEditDso?.["voting_duration"] ? (
+                  {proposalEditDso?.["voting_period"] ? (
                     <Paragraph>
                       Voting period: <b>{proposalEditDso.voting_period} days</b>
                     </Paragraph>
@@ -313,9 +332,14 @@ export default function ProposalDetailModal({
                   {proposal?.status === "passed" ? <StatusPassedIcon /> : null}
                   {proposal?.status === "open" ? <StatusOpenIcon /> : null}
                   {proposal?.status === "executed" ? <StatusExecutedIcon /> : null}
-
                   {address && proposal?.status === "passed" ? (
-                    <ExecuteButton onClick={submitExecuteProposal}>Execute Proposal</ExecuteButton>
+                    <ExecuteButton
+                      onClick={submitExecuteProposal}
+                      loading={submitting === "executing"}
+                      disabled={submitting && submitting !== "executing"}
+                    >
+                      Execute Proposal
+                    </ExecuteButton>
                   ) : null}
                 </SectionWrapper>
                 <ButtonGroup>
