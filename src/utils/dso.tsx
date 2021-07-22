@@ -85,6 +85,17 @@ export interface ProposalListResponse {
   readonly proposals: readonly ProposalResponse[];
 }
 
+export interface VoteInfo {
+  readonly voter: string;
+  readonly vote: VoteOption;
+  readonly proposal_id: number;
+  readonly weight: number;
+}
+
+export interface VoteResponse {
+  readonly vote: VoteInfo | null;
+}
+
 export interface Member {
   readonly addr: string;
   readonly weight: number;
@@ -194,8 +205,14 @@ export class DsoContractQuerier {
 
   async getProposal(proposalId: number): Promise<ProposalResponse> {
     const query = { proposal: { proposal_id: proposalId } };
-    const proposalResponse = await this.client.queryContractSmart(this.address, query);
+    const proposalResponse: ProposalResponse = await this.client.queryContractSmart(this.address, query);
     return proposalResponse;
+  }
+
+  async getVote(proposalId: number, voter: string): Promise<VoteResponse> {
+    const query = { vote: { proposal_id: proposalId, voter } };
+    const voteResponse: VoteResponse = await this.client.queryContractSmart(this.address, query);
+    return voteResponse;
   }
 }
 
