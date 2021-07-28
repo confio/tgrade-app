@@ -1,12 +1,12 @@
 import { Typography } from "antd";
-import { Stack } from "App/components/layoutPrimitives";
-import { WalletButton } from "App/components/logic";
+import Stack from "../../../Stack/style";
+import WalletButton from "../../../WalletButton";
 import * as React from "react";
 import { resetSdk, useSdk } from "service";
 import { isKeplrSigner, isLedgerSigner } from "utils/sdk";
-import closeIcon from "../../assets/cross.svg";
-import keplrIcon from "./assets/keplr-logo.png";
-import ledgerIcon from "./assets/ledger-logo.png";
+import closeIcon from "../../../../assets/icons/cross.svg";
+import keplrIcon from "../../../../assets/images/keplr-logo.png";
+import ledgerIcon from "../../../../assets/images/ledger-logo.png";
 import { ChooseButtons, LogoutButton, ModalHeader, StyledAddressTag, SwitchButtons } from "./style";
 
 const { Title, Text } = Typography;

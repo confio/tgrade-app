@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { hitFaucetIfNeeded, isSdkInitialized, useSdk } from "service";
-import modalBg from "./assets/modal-background.jpg";
+import modalBg from "../../assets/images/modal-background.jpg";
 import AuthorizeWallet from "./components/AuthorizeWallet";
 import ChooseWallet from "./components/ChooseWallet";
 import StyledConnectWalletModal from "./style";

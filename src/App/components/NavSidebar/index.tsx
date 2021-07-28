@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSdk } from "service";
 import AddressTag from "../AddressTag";
-import ConnectWalletModal from "../logic/ConnectWalletModal";
+import ConnectWalletModal from "../ConnectWalletModal";
 import * as Icon from "./icons";
 import { Cell, LinkWrapper, Navbar, StyledText } from "./style";
 

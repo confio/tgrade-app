@@ -1,6 +1,6 @@
 import { Spin, Typography } from "antd";
-import { Button } from "App/components/form";
-import { Stack } from "App/components/layoutPrimitives";
+import Button from "../../../Button";
+import Stack from "../../../Stack/style";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { setSigner, useError, useSdk } from "service";
@@ -12,9 +12,9 @@ import {
   loadLedgerWallet,
   WalletLoader,
 } from "utils/sdk";
-import closeIcon from "../../assets/cross.svg";
-import errorIcon from "./assets/error.svg";
-import loadingIcon from "./assets/loading.svg";
+import closeIcon from "../../../../assets/icons/cross.svg";
+import errorIcon from "../../../../assets/icons/error.svg";
+import loadingIcon from "../../../../assets/icons/loading.svg";
 import { ButtonGroup, ErrorMsg, Indicator, ModalHeader } from "./style";
 
 const { Title, Text } = Typography;

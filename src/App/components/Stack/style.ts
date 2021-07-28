@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Stack from "./component";
+import { Stack } from "./index";
 
 export default styled(Stack)`
   display: flex;

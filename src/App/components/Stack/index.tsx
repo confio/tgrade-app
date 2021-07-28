@@ -7,6 +7,6 @@ interface StackProps extends HTMLAttributes<HTMLOrSVGElement> {
   readonly gap?: Spacing;
 }
 
-export default function Stack({ tag: Tag = "div", children, ...props }: StackProps): JSX.Element {
+export function Stack({ tag: Tag = "div", children, ...props }: StackProps): JSX.Element {
   return <Tag {...props}>{children}</Tag>;
 }

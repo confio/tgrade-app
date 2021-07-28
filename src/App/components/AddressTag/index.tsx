@@ -3,7 +3,7 @@ import * as React from "react";
 import { ComponentProps } from "react";
 import { useSdk } from "service";
 import { ellipsifyAddress } from "utils/ui";
-import copyIcon from "./assets/copy.svg";
+import copyIcon from "../../assets/icons/copy.svg";
 import StyledAddressTag from "./style";
 
 function CopyIconImg() {
