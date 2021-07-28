@@ -1,6 +1,6 @@
 import { Modal } from "antd";
-import { Button } from "App/components/form";
-import { Stack } from "App/components/layoutPrimitives";
+import Button from "App/components/Button";
+import Stack from "App/components/Stack/style";
 import styled from "styled-components";
 
 export default styled(Modal)`

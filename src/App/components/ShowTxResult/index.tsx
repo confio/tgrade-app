@@ -1,9 +1,10 @@
-import { Center, Stack } from "App/components/layoutPrimitives";
+import Stack from "App/components/Stack/style";
+import Center from "App/components/Center";
 import * as React from "react";
 import { HTMLAttributes, useEffect } from "react";
 import { useError } from "service";
-import successIcon from "./assets/tick.svg";
-import failIcon from "./assets/warning.svg";
+import successIcon from "App/assets/icons/tick.svg";
+import failIcon from "App/assets/icons/warning.svg";
 import { ButtonStack, ResultDescription, ResultIcon, ResultText } from "./style";
 
 export interface TxResult {

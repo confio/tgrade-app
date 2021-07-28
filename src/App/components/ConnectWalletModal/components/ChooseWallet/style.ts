@@ -1,5 +1,5 @@
-import { Button } from "App/components/form";
-import { AddressTag } from "App/components/logic";
+import Button from "App/components/Button";
+import AddressTag from "App/components/AddressTag";
 import styled from "styled-components";
 
 export const ModalHeader = styled.header`

@@ -1,6 +1,8 @@
-import { AddressList, Button } from "App/components/form";
-import { Stack } from "App/components/layoutPrimitives";
-import { ShowTxResult, TxResult } from "App/components/logic";
+import Button from "App/components/Button";
+import AddressList from "App/components/AddressList";
+import Stack from "App/components/Stack/style";
+
+import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -9,14 +11,14 @@ import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract, DsoContractQuerier, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { DsoHomeParams } from "../../../..";
-import { ReactComponent as AbstainIcon } from "./assets/abstain-icon.svg";
-import closeIcon from "./assets/cross.svg";
-import modalBg from "./assets/modal-background.jpg";
-import { ReactComponent as RejectIcon } from "./assets/no-icon.svg";
-import { ReactComponent as StatusOpenIcon } from "./assets/status-open-icon.svg";
-import { ReactComponent as StatusPassedIcon } from "./assets/status-passed-icon.svg";
-import { ReactComponent as StatusExecutedIcon } from "./assets/status-executed-icon.svg";
-import { ReactComponent as AcceptIcon } from "./assets/yes-icon.svg";
+import { ReactComponent as AbstainIcon } from "App/assets/icons/abstain-icon.svg";
+import closeIcon from "App/assets/icons/cross.svg";
+import modalBg from "App/assets/images/modal-background.jpg";
+import { ReactComponent as RejectIcon } from "App/assets/icons/no-icon.svg";
+import { ReactComponent as StatusOpenIcon } from "App/assets/icons/status-open-icon.svg";
+import { ReactComponent as StatusPassedIcon } from "App/assets/icons/status-passed-icon.svg";
+import { ReactComponent as StatusExecutedIcon } from "App/assets/icons/status-executed-icon.svg";
+import { ReactComponent as AcceptIcon } from "App/assets/icons/yes-icon.svg";
 import {
   AbstainedButton,
   AcceptButton,

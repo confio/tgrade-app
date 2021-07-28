@@ -1,6 +1,6 @@
 import { Coin } from "@cosmjs/stargate";
 import { Dropdown, Menu, Typography } from "antd";
-import { AddressTag } from "App/components/logic";
+import AddressTag from "App/components/AddressTag";
 import { Separator } from "App/components/AddDsoModal/style";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -10,7 +10,7 @@ import { getDsoName, openLeaveDsoModal, useDso } from "service/dsos";
 import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier } from "utils/dso";
 import { DsoHomeParams } from "../../../..";
-import gearIcon from "./assets/gear.svg";
+import gearIcon from "App/assets/icons/gear.svg";
 import { ActionsButton, StyledDsoIdActions, VotingRules, VSeparator } from "./style";
 
 const { Title, Text } = Typography;

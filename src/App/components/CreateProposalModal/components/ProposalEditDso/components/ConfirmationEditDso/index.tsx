@@ -1,6 +1,6 @@
 import { Typography } from "antd";
-import { Button } from "App/components/form";
-import { BackButtonOrLink } from "App/components/logic";
+import Button from "App/components/Button";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";

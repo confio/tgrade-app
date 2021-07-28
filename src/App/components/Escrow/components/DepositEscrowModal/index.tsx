@@ -1,7 +1,8 @@
 import { Typography } from "antd";
-import { Button, Field } from "App/components/form";
-import { Stack } from "App/components/layoutPrimitives";
-import { ShowTxResult, TxResult } from "App/components/logic";
+import Button from "App/components/Button";
+import Field from "App/components/Field";
+import Stack from "App/components/Stack/style";
+import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
@@ -13,9 +14,9 @@ import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { DsoHomeParams } from "../../../../../..";
-import closeIcon from "./assets/cross.svg";
-import modalBg from "./assets/modal-background.jpg";
+import { DsoHomeParams } from "../../../../";
+import closeIcon from "App/assets/icons/cross.svg";
+import modalBg from "App/assets/images/modal-background.jpg";
 import { ButtonGroup, ModalHeader, Separator, StyledModal } from "./style";
 
 const { Title, Text } = Typography;

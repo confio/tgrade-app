@@ -1,11 +1,11 @@
-import { PageLayout } from "App/components/layout";
-import { ButtonAddNew } from "App/components/logic";
+import PageLayout from "App/components/PageLayout";
+import ButtonAddNew from "App/components/ButtonAddNew";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { openAddDsoModal, removeDso, useDso } from "service";
-import { ReactComponent as CloseIcon } from "./assets/cross-tab.svg";
+import { ReactComponent as CloseIcon } from "App/assets/icons/cross-tab.svg";
 import DsoDetail from "../../components/DsoDetail";
 import { StyledTabs } from "./style";
 

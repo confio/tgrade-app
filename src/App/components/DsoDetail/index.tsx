@@ -1,18 +1,19 @@
 import { Typography } from "antd";
-import { Stack } from "App/components/layoutPrimitives";
-import { ButtonAddNew, Table } from "App/components/logic";
+import Stack from "../Stack/style";
+import Table from "App/components/Table";
+import ButtonAddNew from "App/components/ButtonAddNew";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { DsoContractQuerier } from "utils/dso";
-import pendingIcon from "./assets/clock.svg";
-import rejectedIcon from "./assets/cross.svg";
-import passedIcon from "./assets/tick.svg";
+import pendingIcon from "App/assets/icons/clock.svg";
+import rejectedIcon from "App/assets/icons/cross.svg";
+import passedIcon from "App/assets/icons/tick.svg";
 import CreateProposalModal from "../CreateProposalModal";
-import DsoIdActions from "./components/DsoIdActions";
-import Escrow from "./components/Escrow";
-import Members from "./components/Members";
-import ProposalDetailModal from "./components/ProposalDetailModal";
+import DsoIdActions from "App/components/DsoIdActions";
+import Escrow from "App/components/Escrow";
+import Members from "App/components/Members";
+import ProposalDetailModal from "App/components/ProposalDetailModal";
 import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
 const { Title, Paragraph } = Typography;

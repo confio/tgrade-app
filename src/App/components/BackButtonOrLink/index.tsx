@@ -2,7 +2,7 @@ import { Typography } from "antd";
 import * as React from "react";
 import { HTMLAttributes } from "react";
 import { Link } from "react-router-dom";
-import backArrow from "./assets/backArrow.svg";
+import backArrow from "App/assets/icons/backArrow.svg";
 import StyledBackContent, { StyledButton } from "./style";
 
 const { Text } = Typography;
