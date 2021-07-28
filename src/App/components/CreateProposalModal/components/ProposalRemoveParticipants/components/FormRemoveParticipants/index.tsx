@@ -1,6 +1,8 @@
-import { AddressList, Button, Field } from "App/components/form";
-import { Stack } from "App/components/layoutPrimitives";
-import { BackButtonOrLink } from "App/components/logic";
+import AddressList from "App/components/AddressList";
+import Button from "App/components/Button";
+import Field from "App/components/Field";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
+import Stack from "App/components/stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";

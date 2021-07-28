@@ -1,4 +1,4 @@
-import { AddressTag } from "App/components/logic";
+import AddressTag from "App/components/AddressTag";
 import * as React from "react";
 import { isValidAddress } from "utils/forms";
 import StyledAddressList from "./style";

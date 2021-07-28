@@ -1,4 +1,4 @@
-import { HeaderBack } from "App/components/logic";
+import HeaderBack from "App/components/HeaderBack";
 import * as React from "react";
 import { ComponentProps } from "react";
 import { useLayout } from "service";

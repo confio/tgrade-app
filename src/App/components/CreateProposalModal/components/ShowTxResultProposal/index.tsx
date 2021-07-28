@@ -1,5 +1,5 @@
-import { Button } from "App/components/form";
-import { ShowTxResult, TxResult } from "App/components/logic";
+import Button from "App/components/Button";
+import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import * as React from "react";
 
 interface ShowTxResultProposalProps {

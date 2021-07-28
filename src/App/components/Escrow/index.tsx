@@ -1,7 +1,7 @@
 import { Pie } from "@ant-design/charts";
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { Typography } from "antd";
-import { Button } from "App/components/form";
+import Button from "App/components/Button";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";

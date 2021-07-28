@@ -1,6 +1,6 @@
 import { Typography } from "antd";
-import { PageLayout } from "App/components/layout";
-import { ButtonAddNew } from "App/components/logic";
+import PageLayout from "App/components/PageLayout";
+import ButtonAddNew from "App/components/ButtonAddNew";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useEffect } from "react";

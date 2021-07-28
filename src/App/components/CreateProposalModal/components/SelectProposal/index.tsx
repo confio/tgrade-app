@@ -1,6 +1,8 @@
 import { Typography } from "antd";
 import { SelectValue } from "antd/lib/select";
-import { Button, Select } from "App/components/form";
+import Button from "App/components/Button";
+import Select from "App/components/Select";
+
 import * as React from "react";
 import { useState } from "react";
 import { proposalLabels, ProposalStep, ProposalType } from "../..";

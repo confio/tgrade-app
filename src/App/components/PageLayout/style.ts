@@ -1,4 +1,4 @@
-import { Center } from "App/components/layoutPrimitives";
+import Center from "App/components/Center";
 import styled from "styled-components";
 
 export default styled(Center)`

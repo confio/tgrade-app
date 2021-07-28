@@ -1,5 +1,7 @@
-import { Button, Checkbox, Field } from "App/components/form";
-import { BackButtonOrLink } from "App/components/logic";
+import Checkbox from "App/components/Checkbox";
+import Button from "App/components/Button";
+import Field from "App/components/Field";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
