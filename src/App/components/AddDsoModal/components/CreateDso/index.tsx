@@ -1,14 +1,14 @@
 import { Typography } from "antd";
-import { Steps } from "App/components/form";
-import { Stack } from "App/components/layoutPrimitives";
+import Steps from "App/components/Steps";
+import Stack from "App/components/Stack/style";
 import * as React from "react";
 import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { TxResult } from "../../../logic/ShowTxResult";
-import closeIcon from "../../assets/cross.svg";
+import { TxResult } from "App/components/ShowTxResult";
+import closeIcon from "App/assets/icons/cross.svg";
 import { ModalHeader, Separator } from "../../style";
 import FormDsoBasicData, { FormDsoBasicDataValues } from "./components/FormDsoBasicData";
 import FormDsoMembers from "./components/FormDsoMembers";

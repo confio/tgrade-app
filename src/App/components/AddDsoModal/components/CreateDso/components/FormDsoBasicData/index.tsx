@@ -1,10 +1,12 @@
-import { Button, Checkbox, Field } from "App/components/form";
+import Button from "App/components/Button";
+import Checkbox from "App/components/Checkbox";
+import Field from "App/components/Field";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import BackButtonOrLink from "../../../../../BackButtonOrLink";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import { ButtonGroup, FieldGroup, FormStack, Separator, WarningText } from "./style";
 
 const dsoNameLabel = "Trusted Circle name";

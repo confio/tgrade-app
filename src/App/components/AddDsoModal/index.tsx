@@ -1,11 +1,11 @@
-import { Button } from "App/components/form";
+import Button from "App/components/Button";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { closeAddDsoModal, useDso } from "service";
-import ShowTxResult, { TxResult } from "../logic/ShowTxResult";
-import modalBg from "./assets/modal-background.jpg";
+import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
+import modalBg from "App/assets/images/modal-background.jpg";
 import AddExistingDso from "./components/AddExistingDso";
 import CreateDso from "./components/CreateDso";
 import StyledAddDsoModal from "./style";

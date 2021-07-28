@@ -1,4 +1,5 @@
-import { AddDsoModal, LeaveDsoModal } from "App/components/logic";
+import AddDsoModal from "App/components/AddDsoModal";
+import LeaveDsoModal from "App/components/LeaveDsoModal";
 import { paths } from "App/paths";
 import * as React from "react";
 import { createContext, HTMLAttributes, useContext, useEffect, useReducer, useState } from "react";

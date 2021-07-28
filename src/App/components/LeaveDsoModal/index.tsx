@@ -1,6 +1,6 @@
 import { Typography } from "antd";
-import { Button } from "App/components/form";
-import { Stack } from "App/components/layoutPrimitives";
+import Button from "App/components/Button";
+import Stack from "App/components/Stack/style";
 import { paths } from "App/paths";
 import * as React from "react";
 import { useState } from "react";
@@ -11,8 +11,8 @@ import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { DsoHomeParams } from "../../../routes/Dso/routes/DsoHome";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
-import closeIcon from "./assets/cross.svg";
-import modalBg from "./assets/modal-background.jpg";
+import closeIcon from "App/assets/icons/cross.svg";
+import modalBg from "App/assets/images/modal-background.jpg";
 import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./style";
 
 const { Title, Text } = Typography;
