@@ -1,30 +1,29 @@
-import Button from "App/components/Button";
+import { calculateFee } from "@cosmjs/stargate";
+import { ReactComponent as AbstainIcon } from "App/assets/icons/abstain-icon.svg";
+import closeIcon from "App/assets/icons/cross.svg";
+import { ReactComponent as RejectIcon } from "App/assets/icons/no-icon.svg";
+import { ReactComponent as StatusExecutedIcon } from "App/assets/icons/status-executed-icon.svg";
+import { ReactComponent as StatusOpenIcon } from "App/assets/icons/status-open-icon.svg";
+import { ReactComponent as StatusPassedIcon } from "App/assets/icons/status-passed-icon.svg";
+import { ReactComponent as AcceptIcon } from "App/assets/icons/yes-icon.svg";
+import modalBg from "App/assets/images/modal-background.jpg";
 import AddressList from "App/components/AddressList";
-import Stack from "App/components/Stack/style";
-
+import Button from "App/components/Button";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
-import * as React from "react";
+import Stack from "App/components/Stack/style";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract, DsoContractQuerier, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { DsoHomeParams } from "App/pages/DsoHome";
-import { ReactComponent as AbstainIcon } from "App/assets/icons/abstain-icon.svg";
-import closeIcon from "App/assets/icons/cross.svg";
-import modalBg from "App/assets/images/modal-background.jpg";
-import { ReactComponent as RejectIcon } from "App/assets/icons/no-icon.svg";
-import { ReactComponent as StatusOpenIcon } from "App/assets/icons/status-open-icon.svg";
-import { ReactComponent as StatusPassedIcon } from "App/assets/icons/status-passed-icon.svg";
-import { ReactComponent as StatusExecutedIcon } from "App/assets/icons/status-executed-icon.svg";
-import { ReactComponent as AcceptIcon } from "App/assets/icons/yes-icon.svg";
 import {
   AbstainedButton,
   AcceptButton,
-  ExecuteButton,
   ButtonGroup,
   ChangedField,
+  ExecuteButton,
   FeeWrapper,
   FieldGroup,
   ModalHeader,
@@ -77,7 +76,8 @@ export default function ProposalDetailModal({
     if (!signingClient) return;
 
     try {
-      const txFee = getDisplayAmountFromFee(signingClient.fees.exec, config);
+      const fee = calculateFee(200_000, config.gasPrice);
+      const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
       handleError(error);

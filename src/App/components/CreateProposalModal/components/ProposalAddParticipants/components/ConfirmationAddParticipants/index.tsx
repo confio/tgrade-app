@@ -1,3 +1,4 @@
+import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import Button from "App/components/Button";
 import AddressList from "App/components/AddressList";
@@ -37,7 +38,8 @@ export default function ConfirmationAddParticipants({
     if (!signingClient) return;
 
     try {
-      const txFee = getDisplayAmountFromFee(signingClient.fees.exec, config);
+      const fee = calculateFee(200_000, config.gasPrice);
+      const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
       handleError(error);

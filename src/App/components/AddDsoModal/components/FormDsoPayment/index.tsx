@@ -1,4 +1,5 @@
 import { Decimal } from "@cosmjs/math";
+import { Coin } from "@cosmjs/proto-signing";
 import { Typography } from "antd";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
@@ -52,7 +53,11 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
       return;
     }
 
-    const initFeeCoin = signingClient.fees.init.amount.find(({ denom }) => denom === config.feeToken);
+    // TODO: what does this value mean? Should it be configured?
+    const initFeeCoin: Coin | undefined = {
+      amount: "123456",
+      denom: "ucosm",
+    };
 
     try {
       if (!initFeeCoin) {

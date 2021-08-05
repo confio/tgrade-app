@@ -1,5 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { Coin } from "@cosmjs/stargate";
+import { calculateFee, Coin } from "@cosmjs/stargate";
+import { config } from "config/network";
 
 export type VoteOption = "yes" | "no" | "abstain";
 
@@ -237,7 +238,7 @@ export class DsoContract extends DsoContractQuerier {
     allowEndEarly: boolean,
     funds: readonly Coin[],
   ): Promise<string> {
-    const initMsg: Record<string, unknown> = {
+    const msg: Record<string, unknown> = {
       admin: creatorAddress,
       name: dsoName,
       escrow_amount: escrowAmount,
@@ -248,19 +249,27 @@ export class DsoContract extends DsoContractQuerier {
       allow_end_early: allowEndEarly,
     };
 
-    const { contractAddress } = await signingClient.instantiate(creatorAddress, codeId, initMsg, dsoName, {
-      admin: creatorAddress,
-      transferAmount: funds,
-    });
+    const { contractAddress } = await signingClient.instantiate(
+      creatorAddress,
+      codeId,
+      msg,
+      dsoName,
+      calculateFee(500_000, config.gasPrice),
+      {
+        admin: creatorAddress,
+        funds: funds,
+      },
+    );
     return contractAddress;
   }
 
   async depositEscrow(senderAddress: string, funds: readonly Coin[]): Promise<string> {
-    const query = { deposit_escrow: {} };
+    const msg = { deposit_escrow: {} };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
       this.address,
-      query,
+      msg,
+      calculateFee(200_000, config.gasPrice),
       undefined,
       funds,
     );
@@ -268,13 +277,18 @@ export class DsoContract extends DsoContractQuerier {
   }
 
   async leaveDso(memberAddress: string): Promise<string> {
-    const query = { leave_dso: {} };
-    const { transactionHash } = await this.#signingClient.execute(memberAddress, this.address, query);
+    const msg = { leave_dso: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      memberAddress,
+      this.address,
+      msg,
+      calculateFee(200_000, config.gasPrice),
+    );
     return transactionHash;
   }
 
   async propose(senderAddress: string, description: string, proposal: ProposalContent): Promise<string> {
-    const query = {
+    const msg = {
       propose: {
         title: getProposalTitle(proposal),
         description,
@@ -282,19 +296,34 @@ export class DsoContract extends DsoContractQuerier {
       },
     };
 
-    const { transactionHash } = await this.#signingClient.execute(senderAddress, this.address, query);
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.address,
+      msg,
+      calculateFee(200_000, config.gasPrice),
+    );
     return transactionHash;
   }
 
   async voteProposal(senderAddress: string, proposalId: number, vote: VoteOption): Promise<string> {
-    const query = { vote: { proposal_id: proposalId, vote } };
-    const { transactionHash } = await this.#signingClient.execute(senderAddress, this.address, query);
+    const msg = { vote: { proposal_id: proposalId, vote } };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.address,
+      msg,
+      calculateFee(200_000, config.gasPrice),
+    );
     return transactionHash;
   }
 
   async executeProposal(senderAddress: string, proposalId: number): Promise<string> {
-    const query = { execute: { proposal_id: proposalId } };
-    const { transactionHash } = await this.#signingClient.execute(senderAddress, this.address, query);
+    const msg = { execute: { proposal_id: proposalId } };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.address,
+      msg,
+      calculateFee(200_000, config.gasPrice),
+    );
     return transactionHash;
   }
 }

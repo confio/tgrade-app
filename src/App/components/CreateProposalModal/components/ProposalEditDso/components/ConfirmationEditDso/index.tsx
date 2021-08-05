@@ -1,3 +1,4 @@
+import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import Button from "App/components/Button";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
@@ -55,7 +56,8 @@ export default function ConfirmationEditDso({
     if (!signingClient) return;
 
     try {
-      const txFee = getDisplayAmountFromFee(signingClient.fees.exec, config);
+      const fee = calculateFee(200_000, config.gasPrice);
+      const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
       handleError(error);
