@@ -2,7 +2,7 @@ import { CosmWasmClient, defaultGasLimits, SigningCosmWasmClient } from "@cosmjs
 import { Bip39, Random } from "@cosmjs/crypto";
 import { LedgerSigner } from "@cosmjs/ledger-amino";
 import { DirectSecp256k1HdWallet, isOfflineDirectSigner, OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { GasPrice, makeCosmoshubPath } from "@cosmjs/stargate";
+import { makeCosmoshubPath } from "@cosmjs/stargate";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import { configKeplr } from "config/keplr";
 import { NetworkConfig } from "config/network";
@@ -125,7 +125,7 @@ export async function createSigningClient(
 ): Promise<SigningCosmWasmClient> {
   return SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
     prefix: config.addressPrefix,
-    gasPrice: GasPrice.fromString(`${config.gasPrice}${config.feeToken}`),
+    gasPrice: config.gasPrice,
     gasLimits: defaultGasLimits,
   });
 }
