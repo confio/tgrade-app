@@ -1,3 +1,4 @@
+import { GasPrice } from "@cosmjs/stargate";
 import { CoinMap } from "utils/currency";
 
 export interface NetworkConfig {
@@ -11,7 +12,7 @@ export interface NetworkConfig {
   readonly faucetTokens?: readonly [string, ...string[]];
   readonly stakingToken: string;
   readonly coinMap: CoinMap;
-  readonly gasPrice: number;
+  readonly gasPrice: GasPrice;
   readonly codeIds?: {
     readonly cw20Tokens?: readonly [number, ...number[]];
     readonly tgradeDso?: readonly [number, ...number[]];
@@ -48,7 +49,7 @@ const local: NetworkConfig = {
   coinMap: {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
-  gasPrice: 0.025,
+  gasPrice: GasPrice.fromString("0.025utgd"),
   codeIds: {
     tgradeDso: [1],
   },
@@ -67,7 +68,7 @@ const local: NetworkConfig = {
     umayo: { denom: "MAYO", fractionalDigits: 6 },
     ufrites: { denom: "FRITES", fractionalDigits: 6 },
   },
-  gasPrice: 0.025,
+  gasPrice: GasPrice.fromString("0.025umayo"),
   codeId: 1,
 }; */
 
@@ -84,7 +85,7 @@ const tgradeinternal: NetworkConfig = {
   coinMap: {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
-  gasPrice: 0.0001,
+  gasPrice: GasPrice.fromString("0.0001utgd"),
   codeIds: {
     tgradeDso: [4],
   },
