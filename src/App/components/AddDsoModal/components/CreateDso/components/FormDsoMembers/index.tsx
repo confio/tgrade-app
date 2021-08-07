@@ -1,5 +1,7 @@
-import { AddressList, Button, Field } from "App/components/form";
-import { Stack } from "App/components/layoutPrimitives";
+import AddressList from "App/components/AddressList";
+import Button from "App/components/Button";
+import Field from "App/components/Field";
+import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";

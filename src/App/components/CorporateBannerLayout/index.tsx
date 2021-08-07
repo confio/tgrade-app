@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import { Stack } from "App/components/layoutPrimitives";
+import Stack from "App/components/Stack/style";
 import * as React from "react";
 import { HTMLAttributes } from "react";
 import blockchainArt from "./assets/blockchainArt.jpg";

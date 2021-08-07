@@ -1,4 +1,4 @@
-import { TxResult } from "App/components/logic";
+import { TxResult } from "App/components/ShowTxResult";
 import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -6,7 +6,7 @@ import { getDsoName, useDso, useError, useSdk } from "service";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { ProposalStep, ProposalType } from "../..";
-import { DsoHomeParams } from "../../../../pages/DsoHome";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import ConfirmationAddVotingParticipants from "./components/ConfirmationAddVotingParticipants";
 import FormAddVotingParticipants, {
   FormAddVotingParticipantsValues,

@@ -10,7 +10,7 @@ import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract, DsoContractQuerier, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { DsoHomeParams } from "../../../..";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import { ReactComponent as AbstainIcon } from "App/assets/icons/abstain-icon.svg";
 import closeIcon from "App/assets/icons/cross.svg";
 import modalBg from "App/assets/images/modal-background.jpg";

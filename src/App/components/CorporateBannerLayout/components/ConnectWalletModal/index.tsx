@@ -1,6 +1,6 @@
 import { Typography } from "antd";
-import { Stack } from "App/components/layoutPrimitives";
-import { WalletButton } from "App/components/logic";
+import Stack from "App/components/Stack/style";
+import WalletButton from "App/components/WalletButton";
 import * as React from "react";
 import { useEffect } from "react";
 import { hitFaucetIfNeeded, isSdkInitialized, resetSdk, setSigner, useError, useSdk } from "service";

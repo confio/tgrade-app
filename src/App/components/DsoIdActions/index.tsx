@@ -9,7 +9,7 @@ import { useError, useSdk } from "service";
 import { getDsoName, openLeaveDsoModal, useDso } from "service/dsos";
 import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier } from "utils/dso";
-import { DsoHomeParams } from "../../../..";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import gearIcon from "App/assets/icons/gear.svg";
 import { ActionsButton, StyledDsoIdActions, VotingRules, VSeparator } from "./style";
 

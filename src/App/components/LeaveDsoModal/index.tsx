@@ -9,7 +9,7 @@ import { getDsoName, removeDso, useDso, useError, useSdk } from "service";
 import { closeLeaveDsoModal } from "service/dsos";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { DsoHomeParams } from "../../../routes/Dso/routes/DsoHome";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import closeIcon from "App/assets/icons/cross.svg";
 import modalBg from "App/assets/images/modal-background.jpg";

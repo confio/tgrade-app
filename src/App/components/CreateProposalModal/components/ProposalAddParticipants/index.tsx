@@ -1,5 +1,5 @@
-import { TxResult } from "App/components/logic";
-import { DsoHomeParams } from "App/routes/Dso/routes/DsoHome";
+import { TxResult } from "App/components/ShowTxResult";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";

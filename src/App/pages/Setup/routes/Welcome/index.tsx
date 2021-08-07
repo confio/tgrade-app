@@ -1,6 +1,6 @@
 import { Typography } from "antd";
-import { PageLayout } from "App/components/layout";
-import { Stack } from "App/components/layoutPrimitives";
+import PageLayout from "App/components/PageLayout";
+import Stack from "App/components/Stack/style";
 import { paths } from "App/paths";
 import * as React from "react";
 import newUserIcon from "./assets/newUser.svg";

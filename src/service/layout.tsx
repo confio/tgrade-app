@@ -1,4 +1,4 @@
-import { BackProps } from "App/components/logic";
+import { BackProps } from "App/components/BackButtonOrLink";
 import { NavSidebar } from "App/components/NavSidebar";
 import * as React from "react";
 import { createContext, HTMLAttributes, useContext, useReducer } from "react";

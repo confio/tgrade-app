@@ -1,4 +1,4 @@
-import { Stack } from "App/components/layoutPrimitives";
+import Stack from "App/components/Stack/style";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 

@@ -1,6 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
-import { Button, Field } from "App/components/form";
+import Button from "App/components/Button";
+import Field from "App/components/Field";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import * as React from "react";

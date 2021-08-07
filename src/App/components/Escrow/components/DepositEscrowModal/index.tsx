@@ -14,7 +14,7 @@ import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { DsoHomeParams } from "../../../../";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import closeIcon from "App/assets/icons/cross.svg";
 import modalBg from "App/assets/images/modal-background.jpg";
 import { ButtonGroup, ModalHeader, Separator, StyledModal } from "./style";
