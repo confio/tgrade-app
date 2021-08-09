@@ -1,5 +1,5 @@
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { DsoModel } from "store/models";
+import { DsoModel } from "App/store/models";
 import { DsosActionTypes } from "..";
 
 export interface GetDsosRequestPayload {

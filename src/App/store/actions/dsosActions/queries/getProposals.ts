@@ -1,4 +1,4 @@
-import { ProposalModel } from "store/models";
+import { ProposalModel } from "App/store/models";
 import { DsoContractQuerier } from "utils/dso";
 import { DsosActionTypes } from "..";
 

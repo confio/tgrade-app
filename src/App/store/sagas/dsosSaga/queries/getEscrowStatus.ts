@@ -5,8 +5,8 @@ import {
   GetEscrowStatusFailureAction,
   GetEscrowStatusRequestAction,
   GetEscrowStatusSuccessAction,
-} from "store/actions";
-import { EscrowStatus } from "store/models";
+} from "App/store/actions";
+import { EscrowStatus } from "App/store/models";
 import { DsoContractQuerier } from "utils/dso";
 
 async function getEscrowStatus(

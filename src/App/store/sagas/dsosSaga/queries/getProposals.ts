@@ -5,8 +5,8 @@ import {
   GetProposalsFailureAction,
   GetProposalsRequestAction,
   GetProposalsSuccessAction,
-} from "store/actions";
-import { getProposalTypeFromContent, ProposalModel } from "store/models";
+} from "App/store/actions";
+import { getProposalTypeFromContent, ProposalModel } from "App/store/models";
 import { DsoContractQuerier } from "utils/dso";
 
 async function getProposals(dsoContract: DsoContractQuerier): Promise<readonly ProposalModel[]> {

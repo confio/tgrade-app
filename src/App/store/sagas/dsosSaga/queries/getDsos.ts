@@ -1,7 +1,7 @@
 import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { call, CallEffect, put, PutEffect } from "redux-saga/effects";
-import { actionGetDsosSuccess, GetDsosRequestAction, GetDsosSuccessAction } from "store/actions";
-import { dsoComparator, DsoModel } from "store/models";
+import { actionGetDsosSuccess, GetDsosRequestAction, GetDsosSuccessAction } from "App/store/actions";
+import { dsoComparator, DsoModel } from "App/store/models";
 import { DsoContractQuerier } from "utils/dso";
 
 type DsoAddressesByUserMap = Map<string, readonly string[]>;

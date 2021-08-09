@@ -1,4 +1,4 @@
-import { EscrowStatus } from "store/models";
+import { EscrowStatus } from "App/store/models";
 import { DsoContractQuerier } from "utils/dso";
 import { DsosActionTypes } from "..";
 

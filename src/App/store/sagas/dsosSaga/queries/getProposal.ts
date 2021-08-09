@@ -5,8 +5,8 @@ import {
   GetProposalFailureAction,
   GetProposalRequestAction,
   GetProposalSuccessAction,
-} from "store/actions";
-import { getProposalTypeFromContent, ProposalModel } from "store/models";
+} from "App/store/actions";
+import { getProposalTypeFromContent, ProposalModel } from "App/store/models";
 import { DsoContractQuerier } from "utils/dso";
 
 async function getProposal(
@@ -15,7 +15,7 @@ async function getProposal(
   voterAddress: string,
 ): Promise<ProposalModel> {
   const proposalResponse = await dsoContract.getProposal(proposalId);
-  const { vote } = await dsoContract.getVote(proposalId, voterAddress);
+  //const { vote } = await dsoContract.getVote(proposalId, voterAddress);
 
   const proposal: ProposalModel = {
     id: proposalResponse.id,
@@ -32,7 +32,7 @@ async function getProposal(
     },
     totalWeight: proposalResponse.total_weight,
     votes: proposalResponse.votes,
-    currentVote: vote ? { ...vote, proposalId: vote?.proposal_id } : undefined,
+    //currentVote: vote ? { ...vote, proposalId: vote?.proposal_id } : undefined,
   };
 
   return proposal;
