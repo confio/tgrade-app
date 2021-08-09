@@ -1,5 +1,4 @@
 import { paths } from "App/paths";
-import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { resetSdk, useSdk } from "service";

@@ -16,8 +16,7 @@ export default function EmptyDsos(): JSX.Element {
   const { dsoState, dsoDispatch } = useDso();
 
   useEffect(() => {
-    const noStoredDsos = !dsoState.dsos.length;
-    if (noStoredDsos) return;
+    if (!dsoState.dsos.length) return;
 
     const firstStoredDsoAddress = dsoState.dsos[0].address;
     history.push(`${paths.dso.prefix}/${firstStoredDsoAddress}`);

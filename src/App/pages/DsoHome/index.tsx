@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { openAddDsoModal, removeDso, useDso } from "service";
 import { ReactComponent as CloseIcon } from "App/assets/icons/cross-tab.svg";
-import DsoDetail from "../../components/DsoDetail";
+import DsoDetail from "App/components/DsoDetail";
 import { StyledTabs } from "./style";
 
 const { TabPane } = StyledTabs;
@@ -22,8 +22,7 @@ export default function DsoHome(): JSX.Element | null {
   const [loadedDsoAddress, setLoadedDsoAddress] = useState<string>();
 
   useEffect(() => {
-    const noStoredDsos = !dsoState.dsos.length;
-    if (noStoredDsos) {
+    if (!dsoState.dsos.length) {
       history.push(paths.dso.prefix);
       return;
     }

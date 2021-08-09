@@ -67,7 +67,7 @@ export default function Tutorial(): JSX.Element {
           <Title>How does Tgrade security work?</Title>
           <Paragraph>
             If you've lost your password, Tgrade can't recover your password through email. Instead, you have
-            to use your Recovery Phrase.
+            use your Recovery Phrase.
           </Paragraph>
         </TextStack>
         <VideoPlayer url="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" />
