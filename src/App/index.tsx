@@ -10,7 +10,7 @@ import {
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
 import { paths } from "./paths";
-import Dso from "./pages/Dso";
+import Dso from "./routes/Dso";
 
 export default function App(): JSX.Element {
   return (
