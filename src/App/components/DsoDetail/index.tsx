@@ -15,7 +15,6 @@ import Escrow from "App/components/Escrow";
 import Members from "App/components/Members";
 import ProposalDetailModal from "App/components/ProposalDetailModal";
 import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
-
 const { Title, Paragraph } = Typography;
 
 function getImgSrcFromStatus(status: string) {

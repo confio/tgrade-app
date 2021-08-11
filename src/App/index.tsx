@@ -6,8 +6,6 @@ import {
   QueryClient as ReactQueryClient,
   QueryClientProvider as ReactQueryClientProvider,
 } from "react-query";
-import { Provider } from "react-redux";
-import { store } from "App/store";
 
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
@@ -16,31 +14,29 @@ import Dso from "./pages/Dso";
 
 export default function App(): JSX.Element {
   return (
-    <Provider store={store}>
-      <I18nextProvider i18n={i18n}>
-        <ErrorProvider>
-          <ReactQueryClientProvider client={new ReactQueryClient()}>
-            <SdkProvider config={config}>
-              <ThemeProvider>
-                <Router basename={process.env.PUBLIC_URL}>
-                  <LayoutProvider>
-                    <Switch>
-                      <Route exact path="/">
-                        <Redirect to={paths.dso.prefix} />
-                      </Route>
-                      <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
-                        <DsoProvider>
-                          <Dso />
-                        </DsoProvider>
-                      </Route>
-                    </Switch>
-                  </LayoutProvider>
-                </Router>
-              </ThemeProvider>
-            </SdkProvider>
-          </ReactQueryClientProvider>
-        </ErrorProvider>
-      </I18nextProvider>
-    </Provider>
+    <I18nextProvider i18n={i18n}>
+      <ErrorProvider>
+        <ReactQueryClientProvider client={new ReactQueryClient()}>
+          <SdkProvider config={config}>
+            <ThemeProvider>
+              <Router basename={process.env.PUBLIC_URL}>
+                <LayoutProvider>
+                  <Switch>
+                    <Route exact path="/">
+                      <Redirect to={paths.dso.prefix} />
+                    </Route>
+                    <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
+                      <DsoProvider>
+                        <Dso />
+                      </DsoProvider>
+                    </Route>
+                  </Switch>
+                </LayoutProvider>
+              </Router>
+            </ThemeProvider>
+          </SdkProvider>
+        </ReactQueryClientProvider>
+      </ErrorProvider>
+    </I18nextProvider>
   );
 }

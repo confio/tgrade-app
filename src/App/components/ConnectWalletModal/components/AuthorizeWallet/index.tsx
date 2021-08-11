@@ -13,7 +13,7 @@ import {
   WalletLoader,
 } from "utils/sdk";
 import closeIcon from "../../../../assets/icons/cross.svg";
-import errorIcon from "../../../../assets/icons/error.svg";
+import errorIcon from "../../../../assets/icons/warning.svg";
 import loadingIcon from "../../../../assets/icons/loading.svg";
 import { ButtonGroup, ErrorMsg, Indicator, ModalHeader } from "./style";
 

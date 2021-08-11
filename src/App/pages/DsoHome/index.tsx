@@ -22,7 +22,8 @@ export default function DsoHome(): JSX.Element | null {
   const [loadedDsoAddress, setLoadedDsoAddress] = useState<string>();
 
   useEffect(() => {
-    if (!dsoState.dsos.length) {
+    const noStoredDsos = !dsoState.dsos.length;
+    if (noStoredDsos) {
       history.push(paths.dso.prefix);
       return;
     }
