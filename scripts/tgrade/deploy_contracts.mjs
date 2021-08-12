@@ -3,13 +3,12 @@
 
 /* eslint-disable @typescript-eslint/naming-convention */
 import { defaultGasLimits, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import pkg from "@cosmjs/crypto";
+import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
-import { GasPrice, makeCosmoshubPath } from "@cosmjs/launchpad";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { calculateFee, GasPrice, makeCosmoshubPath } from "@cosmjs/stargate";
 import * as fs from "fs";
 import * as path from "path";
-const { Bip39, Random } = pkg;
 
 const PRODUCTION = false;
 
@@ -67,7 +66,7 @@ async function main() {
   //tgrade_dso
   const contract = "tgrade_dso.wasm";
   let wasm = fs.readFileSync(path.join(process.cwd(), "contracts", contract));
-  const uploadReceipt = await client.upload(address, wasm, codeMeta, "Upload ");
+  const uploadReceipt = await client.upload(address, wasm, calculateFee(2500000, config.gasPrice), "Upload ");
   console.info(`Upload succeeded. Receipt: ${JSON.stringify(uploadReceipt)}`);
 
   //factory
