@@ -11,6 +11,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-d
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
 import { paths } from "./paths";
 import Dso from "./routes/Dso";
+import TMarketHome from "App/pages/TMarket";
 
 export default function App(): JSX.Element {
   return (
@@ -30,6 +31,7 @@ export default function App(): JSX.Element {
                         <Dso />
                       </DsoProvider>
                     </Route>
+                    <Route path={paths.tmarket.prefix} component={TMarketHome} />
                   </Switch>
                 </LayoutProvider>
               </Router>

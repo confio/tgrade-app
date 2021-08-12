@@ -9,6 +9,9 @@ export const paths = {
     prefix: "/account",
     lock: "/lock",
   },
+  tmarket: {
+    prefix: "/market",
+  },
   dso: {
     prefix: "/dso",
     params: {
