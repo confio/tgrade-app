@@ -10,7 +10,7 @@ import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import BackButtonOrLink from "../../../../../BackButtonOrLink";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import { ButtonGroup, FeeField, FeeGroup, FormStack, Separator } from "./style";
 
 const { Text } = Typography;

@@ -9,7 +9,7 @@ import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
 import { DsoHomeParams } from "App/pages/DsoHome";
-import DepositEscrowModal from "./components/DepositEscrowModal";
+import DepositEscrowModal from "App/components/DepositEscrowModal";
 import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
 
 const { Title, Text } = Typography;

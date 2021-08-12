@@ -10,9 +10,9 @@ import { getErrorFromStackTrace } from "utils/errors";
 import { TxResult } from "App/components/ShowTxResult";
 import closeIcon from "App/assets/icons/cross.svg";
 import { ModalHeader, Separator } from "../../style";
-import FormDsoBasicData, { FormDsoBasicDataValues } from "./components/FormDsoBasicData";
-import FormDsoMembers from "./components/FormDsoMembers";
-import FormDsoPayment, { FormDsoPaymentValues } from "./components/FormDsoPayment";
+import FormDsoBasicData, { FormDsoBasicDataValues } from "../FormDsoBasicData";
+import FormDsoMembers from "../FormDsoMembers";
+import FormDsoPayment, { FormDsoPaymentValues } from "../FormDsoPayment";
 
 const { Title } = Typography;
 const { Step } = Steps;

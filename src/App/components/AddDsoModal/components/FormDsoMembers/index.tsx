@@ -8,7 +8,7 @@ import * as React from "react";
 import { useSdk } from "service";
 import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
-import BackButtonOrLink from "../../../../../BackButtonOrLink";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import { ButtonGroup, Separator } from "./style";
 
 const membersLabel = "Participants";
