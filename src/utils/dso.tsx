@@ -220,6 +220,8 @@ export class DsoContractQuerier {
 export class DsoContract extends DsoContractQuerier {
   static readonly GAS_CREATE_DSO = 500_000;
   static readonly GAS_DEPOSIT_ESCROW = 200_000;
+  static readonly GAS_RETURN_ESCROW = 200_000;
+  static readonly GAS_CHECK_PENDING = 500_000;
   static readonly GAS_LEAVE_DSO = 200_000;
   static readonly GAS_PROPOSE = 200_000;
   static readonly GAS_VOTE = 200_000;
@@ -246,13 +248,12 @@ export class DsoContract extends DsoContractQuerier {
     funds: readonly Coin[],
   ): Promise<string> {
     const msg: Record<string, unknown> = {
-      admin: creatorAddress,
       name: dsoName,
       escrow_amount: escrowAmount,
       voting_period: parseInt(votingDuration, 10),
       quorum: (parseFloat(quorum) / 100).toString(),
       threshold: (parseFloat(threshold) / 100).toString(),
-      members: members,
+      initial_members: members,
       allow_end_early: allowEndEarly,
     };
 
@@ -267,6 +268,7 @@ export class DsoContract extends DsoContractQuerier {
         funds: funds,
       },
     );
+    console.log(contractAddress);
     return contractAddress;
   }
 
@@ -279,6 +281,28 @@ export class DsoContract extends DsoContractQuerier {
       calculateFee(DsoContract.GAS_DEPOSIT_ESCROW, config.gasPrice),
       undefined,
       funds,
+    );
+    return transactionHash;
+  }
+
+  async returnEscrow(memberAddress: string): Promise<string> {
+    const msg = { return_escrow: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      memberAddress,
+      this.address,
+      msg,
+      calculateFee(DsoContract.GAS_RETURN_ESCROW, config.gasPrice),
+    );
+    return transactionHash;
+  }
+
+  async checkPending(memberAddress: string): Promise<string> {
+    const msg = { check_pending: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      memberAddress,
+      this.address,
+      msg,
+      calculateFee(DsoContract.GAS_CHECK_PENDING, config.gasPrice),
     );
     return transactionHash;
   }
