@@ -40,8 +40,8 @@ export function getAppConfig(configs: NetworkConfigs): NetworkConfig {
 }
 
 const local: NetworkConfig = {
-  chainId: "chain-5gDkX0",
-  chainName: "Testing",
+  chainId: "chain-tUfpCC",
+  chainName: "Local Testing",
   addressPrefix: "tgrade",
   rpcUrl: "http://localhost:26657",
   httpUrl: "http://localhost:1317",

@@ -218,6 +218,13 @@ export class DsoContractQuerier {
 }
 
 export class DsoContract extends DsoContractQuerier {
+  static readonly GAS_CREATE_DSO = 500_000;
+  static readonly GAS_DEPOSIT_ESCROW = 200_000;
+  static readonly GAS_LEAVE_DSO = 200_000;
+  static readonly GAS_PROPOSE = 200_000;
+  static readonly GAS_VOTE = 200_000;
+  static readonly GAS_EXECUTE = 500_000;
+
   readonly #signingClient: SigningCosmWasmClient;
 
   constructor(address: string, signingClient: SigningCosmWasmClient) {
@@ -245,7 +252,7 @@ export class DsoContract extends DsoContractQuerier {
       voting_period: parseInt(votingDuration, 10),
       quorum: (parseFloat(quorum) / 100).toString(),
       threshold: (parseFloat(threshold) / 100).toString(),
-      initial_members: members,
+      members: members,
       allow_end_early: allowEndEarly,
     };
 
@@ -254,7 +261,7 @@ export class DsoContract extends DsoContractQuerier {
       codeId,
       msg,
       dsoName,
-      calculateFee(500_000, config.gasPrice),
+      calculateFee(DsoContract.GAS_CREATE_DSO, config.gasPrice),
       {
         admin: creatorAddress,
         funds: funds,
@@ -269,7 +276,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(200_000, config.gasPrice),
+      calculateFee(DsoContract.GAS_DEPOSIT_ESCROW, config.gasPrice),
       undefined,
       funds,
     );
@@ -282,7 +289,7 @@ export class DsoContract extends DsoContractQuerier {
       memberAddress,
       this.address,
       msg,
-      calculateFee(200_000, config.gasPrice),
+      calculateFee(DsoContract.GAS_LEAVE_DSO, config.gasPrice),
     );
     return transactionHash;
   }
@@ -300,7 +307,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(200_000, config.gasPrice),
+      calculateFee(DsoContract.GAS_PROPOSE, config.gasPrice),
     );
     return transactionHash;
   }
@@ -311,7 +318,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(200_000, config.gasPrice),
+      calculateFee(DsoContract.GAS_VOTE, config.gasPrice),
     );
     return transactionHash;
   }
@@ -322,7 +329,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(200_000, config.gasPrice),
+      calculateFee(DsoContract.GAS_EXECUTE, config.gasPrice),
     );
     return transactionHash;
   }
