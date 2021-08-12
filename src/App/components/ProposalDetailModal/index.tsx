@@ -76,7 +76,7 @@ export default function ProposalDetailModal({
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(200_000, config.gasPrice);
+      const fee = calculateFee(DsoContract.GAS_VOTE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {

@@ -6,6 +6,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
+import { DsoContract } from "utils/dso";
 import {
   ButtonGroup,
   ChangedField,
@@ -56,7 +57,7 @@ export default function ConfirmationEditDso({
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(200_000, config.gasPrice);
+      const fee = calculateFee(DsoContract.GAS_PROPOSE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
