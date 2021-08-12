@@ -10,7 +10,7 @@
     "@capacitor/cli": "^2.4.7",
     "@capacitor/core": "^2.4.7",
     "@capacitor/ios": "^2.4.7",
-    "@cosmjs/cosmwasm-stargate": "^0.26.0-alpha2",
+    "@cosmjs/cosmwasm-stargate": "https://gitpkg.now.sh/cosmos/cosmjs/packages/cosmwasm-stargate?wasmd-v0.18.0-rc2-prebuilt",
     "@cosmjs/crypto": "^0.26.0-alpha2",
     "@cosmjs/encoding": "^0.26.0-alpha2",
     "@cosmjs/faucet-client": "^0.26.0-alpha2",
