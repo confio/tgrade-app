@@ -94,6 +94,7 @@ const tgradeinternal: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.0001utgd"),
   codeIds: {
+    // note that tgrade has a number of internal contracts... you will probably have to bump this number a bit
     tgradeDso: [4],
     tgradecw20: [5],
     tgradePair: [14],
