@@ -1,4 +1,18 @@
 import Styled from "styled-components";
+import { Card } from "antd";
+
+export const CardCustom = Styled(Card)`
+  &.ant-card {
+    width: 554px;
+    min-height: 501px;
+    border-radius: calc(var(--border-radius) + 10px);
+    .ant-card-body {
+      border-radius: calc(var(--border-radius) + 10px);
+      padding: var(--s1);
+      background: var(--bg-body);
+    }
+  }
+`;
 
 export const PageWrapper = Styled.div`
 display:flex;
