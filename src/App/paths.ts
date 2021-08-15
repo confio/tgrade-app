@@ -9,14 +9,26 @@ export const paths = {
     prefix: "/account",
     lock: "/lock",
   },
-  tmarket: {
-    prefix: "/market",
-  },
   dso: {
     prefix: "/dso",
     params: {
       dsoAddress: "/:dsoAddress",
       dsoAddressOptional: "/:dsoAddress?",
+    },
+  },
+  tmarket: {
+    prefix: "/market",
+    exchange: {
+      prefix: "/exchange",
+      result: "/result",
+    },
+    provide: {
+      prefix: "/provide",
+      result: "/result",
+    },
+    withdraw: {
+      prefix: "/withdraw",
+      result: "/result",
     },
   },
 };
