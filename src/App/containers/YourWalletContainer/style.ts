@@ -1,6 +1,6 @@
 import Styled from "styled-components";
 
-export const LiquidityWrapper = Styled.div`
+export const ContainerWrapper = Styled.div`
 background-color:#ffffff;
 display:flex;
 width:70%;

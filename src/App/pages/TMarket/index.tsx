@@ -1,13 +1,25 @@
-import Chart from "App/components/Chart";
+import YourWalletContainer from "App/containers/YourWalletContainer";
+import LiquidyContainer from "App/containers/LiquidyContainer";
+import ExchangeContainer from "App/containers/ExchangeContainer";
+import IssueTokensContainer from "App/containers/IssueTokensContainer";
+import { PageWrapper, Title, LinkText, Text } from "./style";
 
 export default function TMarketHome(): JSX.Element | null {
   return (
-    <div style={{ width: "90%" }}>
-      <div style={{ width: "50%" }}>
-        <h2>Welcome to T-Market</h2>
-        <h3>What is T-market?</h3>
-        <Chart />
+    <PageWrapper>
+      <div style={{ width: "100%", margin: "5px" }}>
+        <Title>Welcome to T-Market</Title>
+        <Text>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</Text>
+        <LinkText>What is T-market?</LinkText>
       </div>
-    </div>
+      <div style={{ display: "flex", width: "100%" }}>
+        <YourWalletContainer />
+        <ExchangeContainer />
+      </div>
+      <div style={{ display: "flex", width: "100%" }}>
+        <LiquidyContainer />
+        <IssueTokensContainer />
+      </div>
+    </PageWrapper>
   );
 }

@@ -14,7 +14,7 @@ export default styled(Button)`
       : props.type === "ghost"
       ? "1px solid var(--border-button-2ary)"
       : "1px solid var(--bg-button-1ary)"};
-  border-radius: var(--border-radius);
+  border-radius: 36px;
   box-shadow: none;
 
   color: ${(props) => (props.type === "ghost" ? "var(--color-button-2ary)" : "white")};
