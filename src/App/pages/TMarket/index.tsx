@@ -9,7 +9,7 @@ export default function TMarketHome(): JSX.Element | null {
     <PageWrapper>
       <div style={{ width: "100%", margin: "5px" }}>
         <Title>Welcome to T-Market</Title>
-        <Text>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</Text>
+        <Text>Lorem ipsum sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</Text>
         <LinkText>What is T-market?</LinkText>
       </div>
       <div style={{ display: "flex", width: "100%" }}>
