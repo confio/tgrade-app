@@ -1,6 +1,5 @@
 import { GasPrice } from "@cosmjs/stargate";
 import { CoinMap } from "utils/currency";
-import { GasPrice } from "@cosmjs/stargate";
 
 export interface NetworkConfig {
   readonly chainId: string;
