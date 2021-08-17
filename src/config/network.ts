@@ -1,5 +1,6 @@
 import { GasPrice } from "@cosmjs/stargate";
 import { CoinMap } from "utils/currency";
+import { GasPrice } from "@cosmjs/stargate";
 
 export interface NetworkConfig {
   readonly chainId: string;
@@ -16,6 +17,9 @@ export interface NetworkConfig {
   readonly codeIds?: {
     readonly cw20Tokens?: readonly [number, ...number[]];
     readonly tgradeDso?: readonly [number, ...number[]];
+    readonly tgradeFactory: readonly [number, ...number[]];
+    readonly tgradePair: readonly [number, ...number[]];
+    readonly tgradecw20: readonly [number, ...number[]];
   };
 }
 
@@ -52,6 +56,10 @@ const local: NetworkConfig = {
   gasPrice: GasPrice.fromString("0.025utgd"),
   codeIds: {
     tgradeDso: [1],
+    tgradeFactory: [2],
+    tgradePair: [3],
+    tgradecw20: [4],
+    cw20Tokens: [4],
   },
 };
 
@@ -88,6 +96,10 @@ const tgradeinternal: NetworkConfig = {
   gasPrice: GasPrice.fromString("0.0001utgd"),
   codeIds: {
     tgradeDso: [4],
+    tgradecw20: [5],
+    tgradePair: [14],
+    tgradeFactory: [13],
+    cw20Tokens: [15],
   },
 };
 

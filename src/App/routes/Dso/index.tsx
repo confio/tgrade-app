@@ -1,8 +1,8 @@
 import { paths } from "App/paths";
 import * as React from "react";
 import { Route, Switch } from "react-router-dom";
-import DsoHome from "./routes/DsoHome";
-import EmptyDsos from "./routes/EmptyDsos";
+import DsoHome from "../../pages/DsoHome";
+import EmptyDsos from "../../pages/EmptyDsos";
 
 export default function Dso(): JSX.Element {
   return (

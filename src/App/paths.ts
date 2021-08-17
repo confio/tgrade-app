@@ -16,4 +16,19 @@ export const paths = {
       dsoAddressOptional: "/:dsoAddress?",
     },
   },
+  tmarket: {
+    prefix: "/market",
+    exchange: {
+      prefix: "/exchange",
+      result: "/result",
+    },
+    provide: {
+      prefix: "/provide",
+      result: "/result",
+    },
+    withdraw: {
+      prefix: "/withdraw",
+      result: "/result",
+    },
+  },
 };
