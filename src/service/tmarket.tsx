@@ -187,6 +187,7 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
         const allTokens = await Contract20WS.getAll(config, client, address);
         tMarketDispatch({ type: "setTokens", payload: allTokens });
         //Gets Factory address
+        // @ts-ignore: Object is possibly 'null'.
         const contracts = await client.getContracts(config.codeIds.tgradeFactory[0]);
         if (contracts.length > 0) {
           tMarketDispatch({ type: "setFactoryAddress", payload: contracts[contracts.length - 1] });
@@ -194,9 +195,12 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
           // Instance of Factory contract release v0.0.7
           const new_factory = await Factory.createFactory(
             signingClient,
+            // @ts-ignore: Object is possibly 'null'.
             config.codeIds.tgradeFactory[0],
             address,
+            // @ts-ignore: Object is possibly 'null'.
             config.codeIds.tgradePair[0],
+            // @ts-ignore: Object is possibly 'null'.
             config.codeIds.tgradecw20[0],
           );
           tMarketDispatch({ type: "setFactoryAddress", payload: new_factory });

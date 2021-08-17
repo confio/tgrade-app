@@ -15,6 +15,9 @@ export interface NetworkConfig {
   readonly codeIds?: {
     readonly cw20Tokens?: readonly [number, ...number[]];
     readonly tgradeDso?: readonly [number, ...number[]];
+    readonly tgradeFactory: readonly [number, ...number[]];
+    readonly tgradePair: readonly [number, ...number[]];
+    readonly tgradecw20: readonly [number, ...number[]];
   };
 }
 
@@ -51,6 +54,10 @@ const local: NetworkConfig = {
   gasPrice: 0.025,
   codeIds: {
     tgradeDso: [1],
+    tgradeFactory: [2],
+    tgradePair: [3],
+    tgradecw20: [4],
+    cw20Tokens: [4],
   },
 };
 
@@ -87,6 +94,10 @@ const tgradeinternal: NetworkConfig = {
   gasPrice: 0.0001,
   codeIds: {
     tgradeDso: [4],
+    tgradecw20: [5],
+    tgradePair: [14],
+    tgradeFactory: [13],
+    cw20Tokens: [15],
   },
 };
 
