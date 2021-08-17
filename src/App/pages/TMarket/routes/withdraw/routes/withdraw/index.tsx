@@ -7,7 +7,7 @@ import {
   MenuAMM,
   EstimatedMessage,
   ArrowIcon,
-} from "App/routes/TMarket/components";
+} from "App/pages/TMarket/components";
 import { Divider } from "antd";
 import { FormCustom, CardCustom } from "./style";
 import { DetailWithdraw, LPToken, WithdrawFormValues } from "utils/tokens";
@@ -18,7 +18,7 @@ import { updateLPToken, useTMarket } from "service/tmarket";
 import { useWithdraw, setLoading, setDetailWithdraw, setWithdrawButtonState } from "service/withdraw";
 import ExtraInfo from "../../components/ExtraInfo";
 import { useHistory } from "react-router-dom";
-import ConnectWalletModal from "App/components/logic/NavSidebar/components/ConnectWalletModal";
+import ConnectWalletModal from "App/components/ConnectWalletModal";
 
 const initialValues: WithdrawFormValues = {
   To: "0 - 0",

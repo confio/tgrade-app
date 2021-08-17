@@ -1,5 +1,5 @@
 import { Col, Divider, Row, Typography } from "antd";
-import { Button } from "App/components/form";
+import Button from "App/components/Button";
 import styled from "styled-components";
 
 export const Container = styled(Col)`

@@ -61,7 +61,4 @@ font-style: normal;
 font-weight: normal;
 font-size: 16px;
 line-height: 28px;
-
-
-
 color: #242730;`;

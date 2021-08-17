@@ -1,5 +1,5 @@
 import { Divider, Typography } from "antd";
-import Stack from "App/components/layoutPrimitives/Stack/component";
+import Stack from "App/components/Stack/style";
 import { TokenProps } from "utils/tokens";
 import modalBg from "./assets/modal-background.jpg";
 import Search from "./components/SearchToken";

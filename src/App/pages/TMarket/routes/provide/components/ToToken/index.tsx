@@ -1,4 +1,4 @@
-import TokenRow from "App/routes/TMarket/components/TokenRow";
+import TokenRow from "App/pages/TMarket/components/TokenRow";
 import { useFormikContext } from "formik";
 import { setEstimatingFromB, useTMarket } from "service/tmarket";
 import {
@@ -14,7 +14,7 @@ import {
 import { setSimulationProvide, useProvide, setPool, setIsPoolEmpty, setExtraInfo } from "service/provide";
 import { useSdk } from "service";
 import { useEffect } from "react";
-import { getTokensList } from "App/routes/TMarket/utils";
+import { getTokensList } from "App/pages/TMarket/utils";
 
 const ToToken = (): JSX.Element => {
   const { values, setValues, setFieldValue } = useFormikContext<ProvideFormValues>();

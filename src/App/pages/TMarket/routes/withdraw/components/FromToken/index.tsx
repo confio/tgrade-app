@@ -1,4 +1,4 @@
-import { TokenRow } from "App/routes/TMarket/components";
+import { TokenRow } from "App/pages/TMarket/components";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { useSdk } from "service";
@@ -6,7 +6,7 @@ import { useTMarket } from "service/tmarket";
 import { Pool, PoolProps, TokenProps, WithdrawFormValues } from "utils/tokens";
 import { useWithdraw, setSelectedLP, setErrors, FormErrors, setDetailWithdraw } from "service/withdraw";
 import { Decimal } from "@cosmjs/math";
-import { getLPTokensList } from "App/routes/TMarket/utils";
+import { getLPTokensList } from "App/pages/TMarket/utils";
 const FromToken = (): JSX.Element => {
   const { values, setValues, setFieldValue } = useFormikContext<WithdrawFormValues>();
   const { tMarketState } = useTMarket();

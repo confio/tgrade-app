@@ -9,7 +9,7 @@ import {
   EstimatedMessage,
   MiddleRow,
   SwitchTokensButton,
-} from "App/routes/TMarket/components";
+} from "App/pages/TMarket/components";
 import { Divider } from "antd";
 import { FormCustom } from "./style";
 import { useSdk } from "service";
@@ -24,11 +24,11 @@ import {
   SwapButtonState,
 } from "service/exchange";
 import { handleSubmit, handleValidation } from "../../utils/form";
-import { CardCustom } from "App/routes/TMarket/style";
+import { CardCustom } from "App/pages/TMarket/style";
 import { useHistory } from "react-router-dom";
 import { useExchange } from "service/exchange";
 import { updateToken, useTMarket } from "service/tmarket";
-import ConnectWalletModal from "App/components/logic/NavSidebar/components/ConnectWalletModal";
+import ConnectWalletModal from "App/components/ConnectWalletModal";
 
 const initialValues: SwapFormValues = { To: 0.0, From: 0.0, selectFrom: undefined, selectTo: undefined };
 

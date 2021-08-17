@@ -1,4 +1,4 @@
-import { TokenRowWithdraw } from "App/routes/TMarket/components";
+import { TokenRowWithdraw } from "App/pages/TMarket/components";
 import { useFormikContext } from "formik";
 import { useWithdraw } from "service/withdraw";
 import { SwapFormValues, TokenProps } from "utils/tokens";

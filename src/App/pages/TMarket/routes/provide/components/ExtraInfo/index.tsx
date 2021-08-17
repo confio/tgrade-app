@@ -1,5 +1,5 @@
 import { Col } from "antd";
-import InfoRow from "App/components/utils/InfoRow";
+import InfoRow from "App/components/InfoRow";
 import { useFormikContext } from "formik";
 import { useSdk } from "service";
 import { ProvideFormValues } from "utils/tokens";

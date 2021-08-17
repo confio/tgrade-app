@@ -1,4 +1,4 @@
-import { Button } from "App/components/form/index";
+import Button from "App/components/Button";
 import styled from "styled-components";
 
 export default styled(Button)`

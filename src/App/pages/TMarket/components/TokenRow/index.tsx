@@ -1,7 +1,8 @@
 import React from "react";
 import { Row, Col } from "antd";
 import { TokenRowProps } from "utils/tokens";
-import { MaxButton, InputNumber } from "App/components/form/index";
+import MaxButton from "App/components/MaxButton";
+import InputNumber from "App/components/InputNumber";
 import { BalanceParagraph, TitleParagraph, TokenContainer, MaxContainer, ErrorContainer } from "./style";
 import SelectTokenTrigger from "../SelectTokenTrigger";
 import SelectTokenModal from "../SelecTokenModal";

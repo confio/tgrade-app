@@ -21,16 +21,16 @@ import {
   EstimatedMessage,
   SubmitButton,
   MiddleRow,
-} from "App/routes/TMarket/components";
+} from "App/pages/TMarket/components";
 import { ToToken, FromToken, ApproveTokensRow, ExtraInfo, Tip, EmptyPoolTip } from "../../components";
 import { handleSubmit, handleValidation } from "../../utils/form";
 import { Divider } from "antd";
 import { FormCustom } from "./style";
 import { useSdk } from "service";
-import { CardCustom } from "App/routes/TMarket/style";
+import { CardCustom } from "App/pages/TMarket/style";
 import { updatePairs, updateToken, useTMarket } from "service/tmarket";
 import { useHistory } from "react-router-dom";
-import ConnectWalletModal from "App/components/logic/NavSidebar/components/ConnectWalletModal";
+import ConnectWalletModal from "App/components/ConnectWalletModal";
 
 const initialValues: ProvideFormValues = {
   assetA: 0.0,

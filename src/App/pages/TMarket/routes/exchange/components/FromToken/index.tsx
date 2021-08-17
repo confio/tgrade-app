@@ -1,5 +1,5 @@
-import TokenRow from "App/routes/TMarket/components/TokenRow";
-import { getTokensList } from "App/routes/TMarket/utils";
+import TokenRow from "App/pages/TMarket/components/TokenRow";
+import { getTokensList } from "App/pages/TMarket/utils";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { useSdk } from "service";

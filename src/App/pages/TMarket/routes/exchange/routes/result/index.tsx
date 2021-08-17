@@ -1,6 +1,6 @@
 import { paths } from "App/paths";
-import TransactionDetail, { DetailRow } from "App/routes/TMarket/components/TransactionDetail";
-import { HorizontalDivider, OkButton } from "App/routes/TMarket/components/TransactionDetail/style";
+import TransactionDetail, { DetailRow } from "App/pages/TMarket/components/TransactionDetail";
+import { HorizontalDivider, OkButton } from "App/pages/TMarket/components/TransactionDetail/style";
 import { Redirect } from "react-router-dom";
 import copyToClipboard from "clipboard-copy";
 import Tag from "./style";
