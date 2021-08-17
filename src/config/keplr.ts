@@ -70,9 +70,9 @@ export function configKeplr(config: NetworkConfig): KeplrConfig {
       coinDecimals: config.coinMap[config.stakingToken].fractionalDigits,
     },
     gasPriceStep: {
-      low: config.gasPrice / 2,
-      average: config.gasPrice,
-      high: config.gasPrice * 2,
+      low: config.gasPrice.amount.toFloatApproximation() / 2,
+      average: config.gasPrice.amount.toFloatApproximation(),
+      high: config.gasPrice.amount.toFloatApproximation() * 2,
     },
     bip44: { coinType: 118 },
     coinType: 118,
