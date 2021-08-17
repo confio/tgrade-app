@@ -1,247 +1,131 @@
-import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { FaucetClient } from "@cosmjs/faucet-client";
+import { CosmWasmClient, defaultGasLimits, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { Bip39, Random } from "@cosmjs/crypto";
 import { LedgerSigner } from "@cosmjs/ledger-amino";
-import { OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { Coin } from "@cosmjs/stargate";
+import { DirectSecp256k1HdWallet, isOfflineDirectSigner, OfflineDirectSigner } from "@cosmjs/proto-signing";
+import { makeCosmoshubPath } from "@cosmjs/stargate";
+import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
+import { configKeplr } from "config/keplr";
 import { NetworkConfig } from "config/network";
-import * as React from "react";
-import { createContext, useContext, useEffect, useReducer } from "react";
-import { createClient, createSigningClient } from "utils/sdk";
-import { useError } from "./error";
+import { isChrome, isDesktop } from "react-device-detect";
 
-type SdkState = {
-  readonly config: NetworkConfig;
-  readonly client?: CosmWasmClient;
-  readonly signer?: OfflineDirectSigner | LedgerSigner;
-  readonly address?: string;
-  readonly signingClient?: SigningCosmWasmClient;
-  readonly getBalance?: (address?: string) => Promise<readonly Coin[]>;
-  readonly hitFaucet?: () => Promise<void>;
-};
+// Wallet storage utils
+export const storedWalletKey = "burner-wallet";
+export const getWallet = (): string | null => localStorage.getItem(storedWalletKey);
+export const setWallet = (wallet: string): void => localStorage.setItem(storedWalletKey, wallet);
+export const isWalletEncrypted = (wallet: string): boolean => wallet.split(" ").length < 12;
+export const generateMnemonic = (): string => Bip39.encode(Random.getBytes(16)).toString();
 
-type SdkAction =
-  | {
-      readonly type: "resetSdk";
-      readonly payload?: NetworkConfig;
-    }
-  | {
-      readonly type: "setConfig";
-      readonly payload: NetworkConfig;
-    }
-  | {
-      readonly type: "setClient";
-      readonly payload: CosmWasmClient;
-    }
-  | {
-      readonly type: "setSigner";
-      readonly payload: OfflineDirectSigner | LedgerSigner;
-    }
-  | {
-      readonly type: "setAddress";
-      readonly payload: string;
-    }
-  | {
-      readonly type: "setSigningClient";
-      readonly payload: SigningCosmWasmClient;
-    }
-  | {
-      readonly type: "setGetBalance";
-      readonly payload?: (address?: string) => Promise<readonly Coin[]>;
-    }
-  | {
-      readonly type: "setHitFaucet";
-      readonly payload?: () => Promise<void>;
-    };
-
-type SdkDispatch = (action: SdkAction) => void;
-
-function sdkReducer(state: SdkState, action: SdkAction): SdkState {
-  switch (action.type) {
-    case "resetSdk": {
-      return {
-        config: action.payload ?? state.config,
-        client: action.payload ? undefined : state.client,
-        signer: undefined,
-        address: undefined,
-        signingClient: undefined,
-        getBalance: undefined,
-        hitFaucet: undefined,
-      };
-    }
-    case "setConfig": {
-      return { ...state, config: action.payload };
-    }
-    case "setClient": {
-      return { ...state, client: action.payload };
-    }
-    case "setSigner": {
-      return { ...state, signer: action.payload };
-    }
-    case "setAddress": {
-      return { ...state, address: action.payload };
-    }
-    case "setSigningClient": {
-      return { ...state, signingClient: action.payload };
-    }
-    case "setGetBalance": {
-      return { ...state, getBalance: action.payload };
-    }
-    case "setHitFaucet": {
-      return { ...state, hitFaucet: action.payload };
-    }
-    default: {
-      throw new Error("Unhandled action type");
-    }
-  }
-}
-
-export function isSdkInitialized(state: SdkState): state is Required<SdkState> {
-  return !Object.values(state).some((field) => field === undefined);
-}
-export const resetSdk = (dispatch: SdkDispatch): void => dispatch({ type: "resetSdk" });
-export function setSigner(dispatch: SdkDispatch, signer: OfflineDirectSigner | LedgerSigner): void {
-  dispatch({ type: "setSigner", payload: signer });
-}
-export function setAddress(dispatch: SdkDispatch, address: string): void {
-  dispatch({ type: "setAddress", payload: address });
-}
-
-export async function hitFaucetIfNeeded(state: SdkState): Promise<void> {
-  const balance = (await state.getBalance?.()) ?? [];
-  if (balance.find((coin) => coin.amount === "0")) {
-    await state.hitFaucet?.();
-  }
-}
-
-type SdkContextType = {
-  readonly sdkState: SdkState;
-  readonly sdkDispatch: SdkDispatch;
-};
-
-const SdkContext = createContext<SdkContextType | undefined>(undefined);
-
-export const useSdk = (): SdkContextType => {
-  const sdkContext = useContext(SdkContext);
-
-  if (sdkContext === undefined) {
-    throw new Error("useSdk must be used within a SdkProvider");
+export function loadOrCreateMnemonic(): string {
+  const loaded = localStorage.getItem(storedWalletKey);
+  if (loaded) {
+    return loaded;
   }
 
-  return sdkContext;
-};
-
-interface SdkProviderProps extends React.HTMLAttributes<HTMLOrSVGElement> {
-  readonly config: NetworkConfig;
+  const generated = generateMnemonic();
+  localStorage.setItem(storedWalletKey, generated);
+  return generated;
 }
 
-export default function SdkProvider({ config, children }: SdkProviderProps): JSX.Element {
-  const { handleError } = useError();
-  const [sdkState, sdkDispatch] = useReducer(sdkReducer, {
-    config,
-    client: undefined,
-    signer: undefined,
-    address: undefined,
-    signingClient: undefined,
-    getBalance: undefined,
-    hitFaucet: undefined,
+// Wallet creation utils
+export type WalletLoader = (
+  config: NetworkConfig,
+  password?: string,
+  mnemonic?: string,
+) => Promise<OfflineDirectSigner | LedgerSigner>;
+
+export const loadOrCreateWallet: WalletLoader = async ({ addressPrefix }) => {
+  const mnemonic = loadOrCreateMnemonic();
+  if (isWalletEncrypted(mnemonic)) throw new Error("Cannot load encrypted wallet");
+
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: addressPrefix,
   });
+  return wallet;
+};
 
-  useEffect(() => {
-    let mounted = true;
+export const unlockWallet: WalletLoader = async (_, password) => {
+  if (!password) throw new Error("Password needed for unlocking encrypted wallet");
 
-    (async function setClient(): Promise<void> {
-      try {
-        const client = await createClient(sdkState.config.rpcUrl);
-        if (mounted) sdkDispatch({ type: "setClient", payload: client });
-      } catch (error) {
-        handleError(error);
-      }
-    })();
+  const encryptedWallet = getWallet();
+  if (!encryptedWallet || !isWalletEncrypted(encryptedWallet)) throw new Error("No encrypted wallet found");
 
-    return () => {
-      mounted = false;
-    };
-  }, [handleError, sdkState.config.rpcUrl]);
+  const wallet = await DirectSecp256k1HdWallet.deserialize(encryptedWallet, password.normalize());
+  return wallet;
+};
 
-  useEffect(() => {
-    let mounted = true;
+export const importWallet: WalletLoader = async ({ addressPrefix }, password, mnemonic) => {
+  if (!mnemonic || !password) throw new Error("Mnemonic and password needed for importing wallet");
 
-    (async function setAddress(): Promise<void> {
-      if (!sdkState.signer) return;
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: addressPrefix,
+  });
+  const serializedWallet = await wallet.serialize(password.normalize());
+  setWallet(serializedWallet);
 
-      try {
-        const { address } = (await sdkState.signer.getAccounts())[0];
-        if (mounted) sdkDispatch({ type: "setAddress", payload: address });
-      } catch (error) {
-        handleError(error);
-      }
-    })();
+  return wallet;
+};
 
-    return () => {
-      mounted = false;
-    };
-  }, [handleError, sdkState.signer]);
+export const loadLedgerWallet: WalletLoader = async ({ addressPrefix }) => {
+  const interactiveTimeout = 120_000;
+  const ledgerTransport = await TransportWebUSB.create(interactiveTimeout, interactiveTimeout);
 
-  useEffect(() => {
-    let mounted = true;
+  return new LedgerSigner(ledgerTransport, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: addressPrefix,
+  });
+};
 
-    (async function setSigningClient(): Promise<void> {
-      if (!sdkState.signer) return;
+export const loadKeplrWallet: WalletLoader = async (config) => {
+  if (!window.keplr || !window.getOfflineSigner) {
+    throw new Error("Keplr extension is not available");
+  }
 
-      try {
-        const signingClient = await createSigningClient(sdkState.config, sdkState.signer);
-        if (mounted) sdkDispatch({ type: "setSigningClient", payload: signingClient });
-      } catch (error) {
-        handleError(error);
-      }
-    })();
+  await window.keplr.experimentalSuggestChain(configKeplr(config));
+  await window.keplr.enable(config.chainId);
 
-    return () => {
-      mounted = false;
-    };
-  }, [handleError, sdkState.config, sdkState.signer]);
+  // Type declaration because isOfflineDirectSigner is not narrowing type
+  const signer: OfflineDirectSigner = window.getOfflineSigner(config.chainId);
+  if (!isOfflineDirectSigner(signer)) {
+    throw new Error("Got amino signer instead of direct");
+  }
 
-  useEffect(() => {
-    async function getBalance(address?: string): Promise<readonly Coin[]> {
-      if (!sdkState.client || !sdkState.address) return [];
+  return Promise.resolve(signer);
+};
 
-      const queryAddress = address || sdkState.address;
-      const balance: Coin[] = [];
+export function isKeplrSigner(signer?: OfflineDirectSigner | LedgerSigner): signer is OfflineDirectSigner {
+  return !!(signer as any)?.keplr;
+}
 
-      try {
-        for (const denom in sdkState.config.coinMap) {
-          const coin = await sdkState.client.getBalance(queryAddress, denom);
-          balance.push(coin);
-        }
-        return balance;
-      } catch (error) {
-        handleError(error);
-        return balance;
-      }
-    }
+export function isLedgerSigner(signer?: OfflineDirectSigner | LedgerSigner): signer is LedgerSigner {
+  return !!(signer as any)?.ledger;
+}
 
-    sdkDispatch({ type: "setGetBalance", payload: getBalance });
-  }, [handleError, sdkState.address, sdkState.client, sdkState.config.coinMap]);
+export function isKeplrAvailable(): boolean {
+  const canGetSigner = !!window.getOfflineSigner;
+  const canSuggestChain = !!window.keplr?.experimentalSuggestChain;
+  return canGetSigner && canSuggestChain;
+}
 
-  useEffect(() => {
-    async function hitFaucet(): Promise<void> {
-      if (!sdkState.address) return;
+export function isLedgerAvailable(): boolean {
+  const anyNavigator: any = navigator;
+  return anyNavigator?.usb && isChrome && isDesktop;
+}
 
-      const config = sdkState.config;
-      const tokens = config.faucetTokens || [config.feeToken];
+// Client creation utils
+export async function createClient(apiUrl: string): Promise<CosmWasmClient> {
+  const cwClient = await CosmWasmClient.connect(apiUrl);
+  return cwClient;
+}
 
-      try {
-        for (const token of tokens) {
-          const faucet = new FaucetClient(config.faucetUrl);
-          await faucet.credit(sdkState.address, token);
-        }
-      } catch (error) {
-        handleError(error);
-      }
-    }
-
-    sdkDispatch({ type: "setHitFaucet", payload: hitFaucet });
-  }, [handleError, sdkState.address, sdkState.config]);
-
-  return <SdkContext.Provider value={{ sdkState, sdkDispatch }}>{children}</SdkContext.Provider>;
+export async function createSigningClient(
+  config: NetworkConfig,
+  signer: OfflineDirectSigner | LedgerSigner,
+): Promise<SigningCosmWasmClient> {
+  return SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
+    prefix: config.addressPrefix,
+    gasPrice: config.gasPrice,
+    gasLimits: defaultGasLimits,
+  });
 }
