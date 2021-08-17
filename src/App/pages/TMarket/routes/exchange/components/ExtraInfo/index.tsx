@@ -1,3 +1,4 @@
+import { GasPrice } from "@cosmjs/stargate";
 import { Col } from "antd";
 import InfoRow from "App/components/InfoRow";
 import { useFormikContext } from "formik";
@@ -19,7 +20,7 @@ const ExtraInfo = (): JSX.Element | null => {
   const LiquidityProviderFee = PrettyNumber(
     (Number(values.From) / Number(values.To)) * Number(simulatedSwap.commission_amount),
   );
-  const fee = PrettyNumber(sdkState.config.gasPrice / 2);
+  const fee = PrettyNumber(Number(sdkState.config.gasPrice.amount) / 2);
 
   //Tootips:
   const tooltips = {
