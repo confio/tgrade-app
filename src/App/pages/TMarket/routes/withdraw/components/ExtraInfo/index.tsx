@@ -13,7 +13,7 @@ const ExtraInfo = (): JSX.Element | null => {
   const { detail } = withdrawState;
 
   if (!detail || !values.From || !values.selectFrom) return null;
-  const fee = PrettyNumber(sdkState.config.gasPrice / 2);
+  const fee = PrettyNumber(Number(sdkState.config.gasPrice.amount) / 2);
 
   const tooltips = {
     poolAfter: "Contribution percentage to the pool",

@@ -94,7 +94,7 @@ export const handleSubmit = async (
         spread: `${simulation.spread_amount} ${values.selectTo.symbol}`,
         commission: `${simulation.commission_amount} ${values.selectTo.symbol}`,
         txHash: swap_result.transactionHash,
-        fee: (config.gasPrice / 2).toString(),
+        fee: (Number(config.gasPrice.amount) / 2).toString(),
       });
       setSimulation(undefined);
       //Update balance

@@ -26,10 +26,10 @@ const FromToken = (): JSX.Element => {
   const setMax = (): void => {
     if (!values.selectFrom) return;
     const humanBalance = Number(values.selectFrom.humanBalance);
-    if (humanBalance < config.gasPrice) return;
+    if (humanBalance < Number(config.gasPrice.amount)) return;
 
     if (values.selectFrom) {
-      setValues({ ...values, From: humanBalance - config.gasPrice });
+      setValues({ ...values, From: humanBalance - Number(config.gasPrice.amount) });
     }
     setEstimatingFromA(tMarketDispatch);
   };

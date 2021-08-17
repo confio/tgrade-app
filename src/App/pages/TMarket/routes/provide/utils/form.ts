@@ -141,7 +141,7 @@ export const handleSubmit = async (
             providedB: `${values.assetB} ${values.selectTo.symbol}`,
             received: `${simulation.spread_amount} ${values.selectTo.symbol}`,
             txHash: provide_result.transactionHash,
-            fee: (config.gasPrice / 2).toString(),
+            fee: (Number(config.gasPrice.amount) / 2).toString(),
           });
         } else {
           //Set initial liquidity
@@ -150,7 +150,7 @@ export const handleSubmit = async (
             providedB: `${values.assetB} ${values.selectTo.symbol}`,
             received: `~`,
             txHash: provide_result.transactionHash,
-            fee: (config.gasPrice / 2).toString(),
+            fee: (Number(config.gasPrice.amount) / 2).toString(),
           });
         }
         setSimulation(undefined);

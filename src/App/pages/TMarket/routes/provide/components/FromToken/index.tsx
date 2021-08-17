@@ -35,7 +35,10 @@ const FromToken = (): JSX.Element => {
   const setMax = (): void => {
     setEstimatingFromA(tMarketDispatch);
     if (values.selectFrom) {
-      setValues({ ...values, assetA: parseFloat(values.selectFrom.humanBalance) - sdkState.config.gasPrice });
+      setValues({
+        ...values,
+        assetA: parseFloat(values.selectFrom.humanBalance) - Number(sdkState.config.gasPrice.amount),
+      });
     }
   };
 

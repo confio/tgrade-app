@@ -1,4 +1,3 @@
-import { GasPrice } from "@cosmjs/stargate";
 import { Col } from "antd";
 import InfoRow from "App/components/InfoRow";
 import { useFormikContext } from "formik";
