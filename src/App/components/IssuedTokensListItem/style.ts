@@ -9,4 +9,7 @@ height:68px;
 width:250px;
 box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.25);
 border-radius: 16px;
+background: #FFFFFF;
+margin-bottom:8px;
+padding:8px;
 `;

@@ -7,7 +7,8 @@ align-items:center;
 justify-content:space-between;
 height:70px;
 width:250px;
-background: rgba(250, 250, 250, 0.6);
+background: #FFFFFF;
+padding:8px;
 
 &:hover{
     cursor:pointer;
