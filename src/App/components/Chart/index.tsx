@@ -18,6 +18,7 @@ const data = [
 ];
 const config = {
   data,
+  height: 260,
   autofit: "true",
   xField: "month",
   yField: "value",
