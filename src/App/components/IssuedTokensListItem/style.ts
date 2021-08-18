@@ -7,5 +7,4 @@ align-items:center;
 justify-content:space-between;
 height:30px;
 width:250px;
-background-color:;
 `;
