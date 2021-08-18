@@ -11,10 +11,13 @@ interface itemProps {
 export default function IssueTokensListItem({ icon, value, title, price }: itemProps): JSX.Element | null {
   return (
     <ItemWrapper>
-      <TgradeLogo style={{ width: "25px" }} />
-      <span>{value}</span>
-      <span>{title}</span>
-      <span>${price}</span>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <TgradeLogo style={{ width: "25px" }} />
+        <span style={{ marginLeft: "25px" }}>
+          {value} {title}
+        </span>
+      </div>
+      <span>&#8776; ${price}</span>
     </ItemWrapper>
   );
 }
