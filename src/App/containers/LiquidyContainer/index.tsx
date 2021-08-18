@@ -1,6 +1,7 @@
 import Table from "App/components/Table";
 import { columns, data } from "./__mocks__/MockData";
 import { LiquidityWrapper } from "./style";
+import { ReactComponent as TgradeLogo } from "App/assets/icons/tgradeLogo.svg";
 
 export default function LiquidyContainer(): JSX.Element | null {
   function onChange(pagination: any, filters: any, sorter: any, extra: any) {
