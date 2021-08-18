@@ -12,6 +12,10 @@ import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider 
 import { paths } from "./paths";
 import Dso from "./routes/Dso";
 import TMarketHome from "App/pages/TMarket";
+import Exchange from "./pages/TMarket/routes/exchange/";
+import Provide from "./pages/TMarket/routes/provide/";
+import Withdraw from "./pages/TMarket/routes/withdraw";
+import TMarketProvider from "service/tmarket";
 
 export default function App(): JSX.Element {
   return (
@@ -31,7 +35,21 @@ export default function App(): JSX.Element {
                         <Dso />
                       </DsoProvider>
                     </Route>
-                    <Route path={paths.tmarket.prefix} component={TMarketHome} />
+                    <TMarketProvider>
+                      <Route path={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`}>
+                        <Exchange />
+                      </Route>
+                      <Route path={`${paths.tmarket.prefix}${paths.tmarket.provide.prefix}`}>
+                        <Provide />
+                      </Route>
+                      <Route path={`${paths.tmarket.prefix}${paths.tmarket.withdraw.prefix}`}>
+                        <Withdraw />
+                      </Route>
+                      <Route exact path={paths.tmarket.prefix}>
+                        <Redirect to={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`} />
+                      </Route>
+                      <Route path={`${paths.tmarket.prefix}`} />
+                    </TMarketProvider>
                   </Switch>
                 </LayoutProvider>
               </Router>

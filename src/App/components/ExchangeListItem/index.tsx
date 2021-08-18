@@ -11,7 +11,11 @@ interface itemProps {
 
 export default function ExchangeListItem({ icon, value, title, price }: itemProps): JSX.Element | null {
   return (
-    <ItemWrapper>
+    <ItemWrapper
+      onClick={() => {
+        alert(`clicked ${title}`);
+      }}
+    >
       <div style={{ display: "flex", alignItems: "center" }}>
         <TgradeLogo style={{ width: "25px" }} />
         <span style={{ marginLeft: "25px" }}>

@@ -19,12 +19,28 @@ export default function LiquidyContainer(): JSX.Element | null {
         <TabPane tab="Trading" key="1">
           <span>Here we trade</span>
           <div style={{ width: "100%", borderRadius: "16px" }}>
-            <Table columns={columns} dataSource={data} onChange={onChange} />
+            <Table
+              onRow={(record, rowIndex) => {
+                return {
+                  onClick: (event) => {
+                    alert(`clicked row ${rowIndex} with record: ${record}`);
+                  }, // click row
+                  onDoubleClick: (event) => {}, // double click row
+                  onContextMenu: (event) => {}, // right button click row
+                  onMouseEnter: (event) => {}, // mouse enter row
+                  onMouseLeave: (event) => {}, // mouse leave row
+                };
+              }}
+              columns={columns}
+              dataSource={data}
+              onChange={onChange}
+              pagination={false}
+            />
           </div>
         </TabPane>
         <TabPane tab="Liquidity" key="2">
           <div style={{ width: "100%", borderRadius: "16px" }}>
-            <Table columns={columns} dataSource={data} onChange={onChange} />
+            <Table columns={columns} dataSource={data} onChange={onChange} pagination={false} />
           </div>
         </TabPane>
       </StyledTabs>
