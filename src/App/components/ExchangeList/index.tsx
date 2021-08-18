@@ -3,7 +3,7 @@ import { MockData } from "./__mocks__/mockData";
 
 export default function ExchangeList(): JSX.Element | null {
   return (
-    <ul style={{ width: "100%" }}>
+    <ul style={{ width: "100%", listStyle: "none", paddingLeft: "0" }}>
       {MockData.data.map((item) => (
         <ExchangeListItem
           key={item.title}
