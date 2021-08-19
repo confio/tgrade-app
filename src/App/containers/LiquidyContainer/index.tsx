@@ -1,6 +1,7 @@
 import Table from "App/components/Table";
 import { columns, data } from "./__mocks__/MockData";
 import { LiquidityWrapper, StyledTabs } from "./style";
+import Button from "App/components/Button";
 //import { ReactComponent as TgradeLogo } from "App/assets/icons/tgradeLogo.svg";
 
 export default function LiquidyContainer(): JSX.Element | null {
@@ -17,7 +18,7 @@ export default function LiquidyContainer(): JSX.Element | null {
     <LiquidityWrapper>
       <StyledTabs defaultActiveKey="1" onChange={callback}>
         <TabPane tab="Trading" key="1">
-          <span>Here we trade</span>
+          <Button style={{ float: "right", height: "30px", alignItems: "center" }}>Create a pair</Button>
           <div style={{ width: "100%", borderRadius: "16px" }}>
             <Table
               onRow={(record, rowIndex) => {

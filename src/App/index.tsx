@@ -12,10 +12,10 @@ import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider 
 import { paths } from "./paths";
 import Dso from "./routes/Dso";
 import TMarketHome from "App/pages/TMarket";
-import Exchange from "./pages/TMarket/routes/exchange/";
-import Provide from "./pages/TMarket/routes/provide/";
-import Withdraw from "./pages/TMarket/routes/withdraw";
-import TMarketProvider from "service/tmarket";
+// import Exchange from "./pages/TMarket/routes/exchange/";
+// import Provide from "./pages/TMarket/routes/provide/";
+// import Withdraw from "./pages/TMarket/routes/withdraw";
+// import TMarketProvider from "service/tmarket";
 
 export default function App(): JSX.Element {
   return (
