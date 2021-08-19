@@ -11,7 +11,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-d
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
 import { paths } from "./paths";
 import Dso from "./routes/Dso";
-import TMarketHome from "App/pages/TMarket";
+//import TMarketHome from "App/pages/TMarket";
 import Exchange from "./pages/TMarket/routes/exchange/";
 import Provide from "./pages/TMarket/routes/provide/";
 import Withdraw from "./pages/TMarket/routes/withdraw";

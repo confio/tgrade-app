@@ -47,7 +47,7 @@ export const NavSidebar: React.FC = () => {
           </Cell>
         </Link>
       </LinkWrapper>
-      <Link to="/" onClick={() => setModalOpen(true)} style={{ marginBottom: "60%" }}>
+      <Link to="/" onClick={() => setModalOpen(true)} style={{ position: "absolute", top: "600px" }}>
         <Cell>
           {address ? (
             <AddressTag address={address} short noYou />
