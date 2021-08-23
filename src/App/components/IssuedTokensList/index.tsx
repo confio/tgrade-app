@@ -10,6 +10,8 @@ export default function IssuedTokensList(): JSX.Element | null {
           icon={item.icon}
           title={item.title}
           price={item.price}
+          change={item.change}
+          dso={item.dso}
         ></IssueTokensListItem>
       ))}
     </ul>

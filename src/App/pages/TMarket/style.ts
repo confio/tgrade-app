@@ -19,6 +19,7 @@ display:flex;
 flex-direction:column;
 width:100%;
 background-color: #FAFAFA;
+margin:5px;
 `;
 
 export const Title = Styled.h1`
