@@ -4,20 +4,17 @@ import { ItemWrapper } from "./style";
 interface itemProps {
   icon: string;
   title: string;
-  value: number;
   price: number;
 }
 
-export default function IssueTokensListItem({ icon, value, title, price }: itemProps): JSX.Element | null {
+export default function IssueTokensListItem({ icon, title, price }: itemProps): JSX.Element | null {
   return (
     <ItemWrapper>
       <div style={{ display: "flex", alignItems: "center" }}>
         <TgradeLogo style={{ width: "25px" }} />
-        <span style={{ marginLeft: "25px" }}>
-          {value} {title}
-        </span>
+        <span style={{ marginLeft: "25px" }}>{title}</span>
       </div>
-      <span>&#8776; ${price}</span>
+      <span>{price}</span>
     </ItemWrapper>
   );
 }

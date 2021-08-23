@@ -22,7 +22,7 @@ export default function ExchangeListItem({ icon, value, title, price }: itemProp
           {value} {title}
         </span>
       </div>
-      <span>&#8776; ${price}</span>
+      <span>&#8776; €{price}</span>
     </ItemWrapper>
   );
 }

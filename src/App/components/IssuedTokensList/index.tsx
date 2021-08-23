@@ -9,7 +9,6 @@ export default function IssuedTokensList(): JSX.Element | null {
           key={item.title}
           icon={item.icon}
           title={item.title}
-          value={item.value}
           price={item.price}
         ></IssueTokensListItem>
       ))}
