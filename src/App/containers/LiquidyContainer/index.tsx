@@ -18,7 +18,18 @@ export default function LiquidyContainer(): JSX.Element | null {
     <LiquidityWrapper>
       <StyledTabs defaultActiveKey="1">
         <TabPane tab="Trading" key="1">
-          <Button style={{ float: "right", height: "30px", alignItems: "center" }}>Create a pair</Button>
+          <Button
+            style={{
+              float: "right",
+              height: "30px",
+              alignItems: "center",
+              margin: "5px",
+              color: "#0BB0B1",
+              backgroundColor: "#FFF",
+            }}
+          >
+            Create a pair
+          </Button>
           <div style={{ width: "100%", borderRadius: "16px" }}>
             <Table
               onRow={(record, rowIndex) => {
