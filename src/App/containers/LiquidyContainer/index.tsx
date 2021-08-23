@@ -11,25 +11,21 @@ export default function LiquidyContainer(): JSX.Element | null {
 
   const { TabPane } = StyledTabs;
 
-  function callback(key: string) {
-    console.log(key);
+  function handleClick(key: number | undefined, record: any) {
+    console.log(key, record);
   }
   return (
     <LiquidityWrapper>
-      <StyledTabs defaultActiveKey="1" onChange={callback}>
+      <StyledTabs defaultActiveKey="1">
         <TabPane tab="Trading" key="1">
           <Button style={{ float: "right", height: "30px", alignItems: "center" }}>Create a pair</Button>
           <div style={{ width: "100%", borderRadius: "16px" }}>
             <Table
               onRow={(record, rowIndex) => {
                 return {
-                  onClick: (event) => {
-                    alert(`clicked row ${rowIndex} with record: ${record}`);
-                  }, // click row
-                  onDoubleClick: (event) => {}, // double click row
-                  onContextMenu: (event) => {}, // right button click row
-                  onMouseEnter: (event) => {}, // mouse enter row
-                  onMouseLeave: (event) => {}, // mouse leave row
+                  onClick: () => {
+                    handleClick(rowIndex, record);
+                  },
                 };
               }}
               columns={columns}
