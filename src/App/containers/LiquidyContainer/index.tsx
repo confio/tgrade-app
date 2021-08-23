@@ -37,7 +37,19 @@ export default function LiquidyContainer(): JSX.Element | null {
         </TabPane>
         <TabPane tab="Liquidity" key="2">
           <div style={{ width: "100%", borderRadius: "16px" }}>
-            <Table columns={columns} dataSource={data} onChange={onChange} pagination={false} />
+            <Table
+              onRow={(record, rowIndex) => {
+                return {
+                  onClick: () => {
+                    handleClick(rowIndex, record);
+                  },
+                };
+              }}
+              columns={columns}
+              dataSource={data}
+              onChange={onChange}
+              pagination={false}
+            />
           </div>
         </TabPane>
       </StyledTabs>
