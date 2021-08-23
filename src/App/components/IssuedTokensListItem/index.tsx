@@ -21,11 +21,11 @@ export default function IssueTokensListItem({
       <div style={{ display: "flex", alignItems: "center" }}>
         <TgradeLogo style={{ width: "25px" }} />
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <span style={{ marginLeft: "25px" }}>{title}</span>
-          <span>{dso}</span>
+          <span style={{ marginLeft: "8px" }}>{title}</span>
+          <span style={{ fontSize: "10px", marginLeft: "8px" }}>{dso}</span>
         </div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
         <span>{price}</span>
         <span>{change} %</span>
       </div>

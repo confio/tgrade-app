@@ -4,17 +4,17 @@ import { StyledButton } from "./style";
 
 const data = [
   { month: "Jan", value: 3 },
-  { month: "Feb", value: 3 },
-  { month: "Mar", value: 3 },
-  { month: "Apr", value: 3.5 },
-  { month: "May", value: 4 },
-  { month: "Jun", value: 4.5 },
-  { month: "Jul", value: 4.9 },
+  { month: "Feb", value: 3.1 },
+  { month: "Mar", value: 3.2 },
+  { month: "Apr", value: 10 },
+  { month: "May", value: 13 },
+  { month: "Jun", value: 20 },
+  { month: "Jul", value: 30 },
   { month: "Aug", value: 55 },
-  { month: "Sep", value: 60 },
+  { month: "Sep", value: 47 },
   { month: "Oct", value: 70 },
   { month: "Nov", value: 80 },
-  { month: "Dec", value: 200 },
+  { month: "Dec", value: 100 },
 ];
 const config = {
   data,
@@ -23,6 +23,16 @@ const config = {
   xField: "month",
   yField: "value",
   color: ["#1979C9", "#D62A0D", "#FAA219"],
+  lineStyle: {
+    stroke: "#0BB0B1",
+    lineWidth: 2,
+    strokeOpacity: 0.7,
+    shadowColor: "black",
+    shadowBlur: 10,
+    shadowOffsetX: 5,
+    shadowOffsetY: 5,
+    cursor: "pointer",
+  },
 };
 
 /* TODO: The content below should be passed as children props to chart */
