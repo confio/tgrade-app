@@ -55,10 +55,10 @@ const local: NetworkConfig = {
   gasPrice: GasPrice.fromString("0.025utgd"),
   codeIds: {
     tgradeDso: [1],
-    tgradeFactory: [2],
-    tgradePair: [3],
-    tgradecw20: [4],
-    cw20Tokens: [4],
+    cw20Tokens: [2],
+    tgradecw20: [3],
+    tgradeFactory: [4],
+    tgradePair: [5],
   },
 };
 
