@@ -1,1 +1,1 @@
-export { default } from "./style";
+export { default, FormSelect } from "./style";
