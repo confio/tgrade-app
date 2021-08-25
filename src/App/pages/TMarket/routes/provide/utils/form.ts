@@ -3,6 +3,7 @@ import { Decimal } from "@cosmjs/math";
 import { paths } from "App/paths";
 import { NetworkConfig } from "config/network";
 import { toast } from "react-toastify";
+import { FormErrors, provideButtonState } from "service/provide";
 import { Contract20WS } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { Factory } from "utils/factory";
@@ -16,7 +17,6 @@ import {
   SwapFormValues,
   TokenProps,
 } from "utils/tokens";
-import { FormErrors, provideButtonState } from "service/provide";
 
 export const handleValidation = async (
   values: ProvideFormValues,
@@ -134,6 +134,7 @@ export const handleSubmit = async (
           selectedPair.contract_addr,
           address,
           values,
+          config.gasPrice,
         );
         if (simulation) {
           setDetailProvide({
@@ -177,7 +178,7 @@ export const handleSubmit = async (
           selectFrom: values.selectFrom,
           selectTo: values.selectTo,
         };
-        await Factory.createPair(signingClient, address, factoryAddress, swapValues);
+        await Factory.createPair(signingClient, address, factoryAddress, swapValues, config.gasPrice);
         setProvideButtonState({ title: "Provide", type: "provide" });
         const pairs = await Factory.getPairs(client, factoryAddress);
         refreshPairs(pairs);

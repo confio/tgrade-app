@@ -202,6 +202,7 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
             config.codeIds.tgradePair[0],
             // @ts-ignore: Object is possibly 'null'.
             config.codeIds.tgradecw20[0],
+            config.gasPrice,
           );
           tMarketDispatch({ type: "setFactoryAddress", payload: new_factory });
           console.log("new_factory_address:", new_factory);

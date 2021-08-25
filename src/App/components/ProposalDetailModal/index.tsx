@@ -129,7 +129,7 @@ export default function ProposalDetailModal({
     setSubmitting(chosenVote);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.voteProposal(address, proposalId, chosenVote);
 
       setTxResult({
@@ -152,7 +152,7 @@ export default function ProposalDetailModal({
     setSubmitting("executing");
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.executeProposal(address, proposalId);
 
       setTxResult({

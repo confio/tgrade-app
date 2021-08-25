@@ -22,7 +22,7 @@ export default function LeaveDsoModal(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { signingClient, address },
+    sdkState: { signingClient, address, config },
   } = useSdk();
   const {
     dsoState: { dsos, leaveDsoModalState },
@@ -44,7 +44,7 @@ export default function LeaveDsoModal(): JSX.Element {
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.leaveDso(address);
 
       setTxResult({

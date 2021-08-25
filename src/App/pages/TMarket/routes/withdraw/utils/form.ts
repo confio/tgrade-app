@@ -33,7 +33,13 @@ export const handleSubmit = async (
     return;
   try {
     setLoading(true);
-    const result = await Pool.WithdrawLiquidity(signingClient, address, lpSelected.pair, values);
+    const result = await Pool.WithdrawLiquidity(
+      signingClient,
+      address,
+      lpSelected.pair,
+      values,
+      config.gasPrice,
+    );
     const token_info = await Contract20WS.getTokenInfo(client, address, values.selectFrom.address, config);
     values.To = "0.0";
     updateLPtoken({ [lpSelected.token.address]: { token: token_info, pair: lpSelected.pair } });

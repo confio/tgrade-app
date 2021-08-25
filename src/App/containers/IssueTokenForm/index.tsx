@@ -108,6 +108,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
         decimals,
         [{ address, amount }],
         mint,
+        config.gasPrice,
       );
 
       setTxResult({

@@ -76,7 +76,7 @@ export default function DepositEscrowModal({
     const nativeEscrow = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.depositEscrow(address, [
         { denom: config.feeToken, amount: nativeEscrow },
       ]);

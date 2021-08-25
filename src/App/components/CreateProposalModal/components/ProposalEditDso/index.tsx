@@ -111,7 +111,7 @@ export default function ProposalEditDso({
       const nativeQuorum = quorum ? (parseFloat(quorum) / 100).toFixed(2).toString() : undefined;
       const nativethreshold = threshold ? (parseFloat(threshold) / 100).toFixed(2).toString() : undefined;
 
-      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.propose(address, comment, {
         edit_dso: {
           name: dsoName === currentDsoValues.dsoName ? undefined : dsoName,
