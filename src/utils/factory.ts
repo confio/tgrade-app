@@ -1,7 +1,11 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { calculateFee, GasPrice } from "@cosmjs/stargate";
 import { PairProps, SwapFormValues } from "./tokens";
 
 export class Factory {
+  static readonly GAS_CREATE_FACTORY = 500_000;
+  static readonly GAS_CREATE_PAIR = 500_000;
+
   readonly #signingClient: SigningCosmWasmClient;
 
   constructor(address: string, signingClient: SigningCosmWasmClient) {
@@ -14,6 +18,7 @@ export class Factory {
     creatorAddress: string,
     pairId: number,
     tokenId: number,
+    gasPrice: GasPrice,
   ): Promise<any> {
     const initMsg: Record<string, unknown> = {
       pair_code_id: pairId,
@@ -25,6 +30,7 @@ export class Factory {
       codeId,
       initMsg,
       "factory instance",
+      calculateFee(Factory.GAS_CREATE_FACTORY, gasPrice),
     );
     return contractAddress;
   }
@@ -34,6 +40,7 @@ export class Factory {
     creatorAddress: string,
     factoryAddress: string,
     form: SwapFormValues,
+    gasPrice: GasPrice,
   ): Promise<any> {
     if (!form.selectFrom || !form.selectTo) return;
 
@@ -48,6 +55,7 @@ export class Factory {
           asset_infos: [{ [keyFrom]: form.selectFrom?.address }, { [keyTo]: form.selectTo?.address }],
         },
       },
+      calculateFee(Factory.GAS_CREATE_PAIR, gasPrice),
       "Creating Pair",
     );
 

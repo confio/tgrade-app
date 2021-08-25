@@ -1,5 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
+import { calculateFee, GasPrice } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import { UINT128_MAX } from "./currency";
 import { PairProps, TokenProps } from "./tokens";
@@ -15,6 +16,9 @@ export interface MinterInterface {
 }
 
 export class Contract20WS {
+  static readonly GAS_CREATE_TOKEN = 500_000;
+  static readonly GAS_AUTHORIZE = 500_000;
+
   readonly #signingClient: SigningCosmWasmClient;
 
   constructor(address: string, signingClient: SigningCosmWasmClient) {
@@ -30,6 +34,7 @@ export class Contract20WS {
     decimals: number,
     initial_balances: Array<InitialValuesInterface>,
     minter: MinterInterface | undefined,
+    gasPrice: GasPrice,
   ): Promise<string> {
     //Initial Message
     const initMsg: any = {
@@ -45,6 +50,7 @@ export class Contract20WS {
       codeId,
       initMsg,
       "CW20 instance",
+      calculateFee(Contract20WS.GAS_CREATE_TOKEN, gasPrice),
     );
     return contractAddress;
   }
@@ -173,13 +179,19 @@ export class Contract20WS {
     contractAddress: string,
     address: string,
     pairAddress: string,
+    gasPrice: GasPrice,
   ): Promise<any> {
-    const result = await signingClient.execute(address, contractAddress, {
-      increase_allowance: {
-        spender: pairAddress,
-        amount: UINT128_MAX,
+    const result = await signingClient.execute(
+      address,
+      contractAddress,
+      {
+        increase_allowance: {
+          spender: pairAddress,
+          amount: UINT128_MAX,
+        },
       },
-    });
+      calculateFee(Contract20WS.GAS_AUTHORIZE, gasPrice),
+    );
 
     return result;
   }
