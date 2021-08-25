@@ -1,6 +1,5 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { calculateFee, Coin } from "@cosmjs/stargate";
-import { config } from "config/network";
+import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
 
 export type VoteOption = "yes" | "no" | "abstain";
 
@@ -228,10 +227,12 @@ export class DsoContract extends DsoContractQuerier {
   static readonly GAS_EXECUTE = 500_000;
 
   readonly #signingClient: SigningCosmWasmClient;
+  readonly #gasPrice: GasPrice;
 
-  constructor(address: string, signingClient: SigningCosmWasmClient) {
+  constructor(address: string, signingClient: SigningCosmWasmClient, gasPrice: GasPrice) {
     super(address, signingClient);
     this.#signingClient = signingClient;
+    this.#gasPrice = gasPrice;
   }
 
   static async createDso(
@@ -246,6 +247,7 @@ export class DsoContract extends DsoContractQuerier {
     members: readonly string[],
     allowEndEarly: boolean,
     funds: readonly Coin[],
+    gasPrice: GasPrice,
   ): Promise<string> {
     const msg: Record<string, unknown> = {
       name: dsoName,
@@ -262,7 +264,7 @@ export class DsoContract extends DsoContractQuerier {
       codeId,
       msg,
       dsoName,
-      calculateFee(DsoContract.GAS_CREATE_DSO, config.gasPrice),
+      calculateFee(DsoContract.GAS_CREATE_DSO, gasPrice),
       {
         admin: creatorAddress,
         funds: funds,
@@ -278,7 +280,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_DEPOSIT_ESCROW, config.gasPrice),
+      calculateFee(DsoContract.GAS_DEPOSIT_ESCROW, this.#gasPrice),
       undefined,
       funds,
     );
@@ -291,7 +293,7 @@ export class DsoContract extends DsoContractQuerier {
       memberAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_RETURN_ESCROW, config.gasPrice),
+      calculateFee(DsoContract.GAS_RETURN_ESCROW, this.#gasPrice),
     );
     return transactionHash;
   }
@@ -302,7 +304,7 @@ export class DsoContract extends DsoContractQuerier {
       memberAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_CHECK_PENDING, config.gasPrice),
+      calculateFee(DsoContract.GAS_CHECK_PENDING, this.#gasPrice),
     );
     return transactionHash;
   }
@@ -313,7 +315,7 @@ export class DsoContract extends DsoContractQuerier {
       memberAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_LEAVE_DSO, config.gasPrice),
+      calculateFee(DsoContract.GAS_LEAVE_DSO, this.#gasPrice),
     );
     return transactionHash;
   }
@@ -331,7 +333,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_PROPOSE, config.gasPrice),
+      calculateFee(DsoContract.GAS_PROPOSE, this.#gasPrice),
     );
     return transactionHash;
   }
@@ -342,7 +344,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_VOTE, config.gasPrice),
+      calculateFee(DsoContract.GAS_VOTE, this.#gasPrice),
     );
     return transactionHash;
   }
@@ -353,7 +355,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_EXECUTE, config.gasPrice),
+      calculateFee(DsoContract.GAS_EXECUTE, this.#gasPrice),
     );
     return transactionHash;
   }
