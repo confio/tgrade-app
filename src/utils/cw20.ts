@@ -11,7 +11,7 @@ export interface InitialValuesInterface {
 
 export interface MinterInterface {
   minter: string;
-  cap: number;
+  cap?: string;
 }
 
 export class Contract20WS {
@@ -29,8 +29,8 @@ export class Contract20WS {
     symbol: string,
     decimals: number,
     initial_balances: Array<InitialValuesInterface>,
-    minter: MinterInterface,
-  ): Promise<any> {
+    minter: MinterInterface | undefined,
+  ): Promise<string> {
     //Initial Message
     const initMsg: any = {
       name: name,
