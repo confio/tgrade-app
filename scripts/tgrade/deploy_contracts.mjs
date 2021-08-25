@@ -2,7 +2,7 @@
 /*jshint esversion: 8 */
 
 /* eslint-disable @typescript-eslint/naming-convention */
-import { defaultGasLimits, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
@@ -21,15 +21,6 @@ const musselnetConfig = {
   wasmUrl: "https://github.com/CosmWasm/cosmwasm-plus/releases/download/v0.6.0/cw20_base.wasm",
 };
 
-const tgradeinternal = {
-  endpoint: "https://rpc.internal-1.tgrade.io",
-  faucet: "https://faucet.internal-1.tgrade.io",
-  bech32prefix: "tgrade",
-  feeDenom: "utgd",
-  gasPrice: GasPrice.fromString("0.025utgd"),
-  wasmUrl: "https://github.com/CosmWasm/cosmwasm-plus/releases/download/v0.6.0/cw20_base.wasm",
-};
-
 const localConfig = {
   endpoint: "http://localhost:26657",
   faucet: "http://localhost:8000",
@@ -39,12 +30,7 @@ const localConfig = {
   wasmUrl: "https://github.com/CosmWasm/cosmwasm-plus/releases/download/v0.6.0/cw20_base.wasm",
 };
 
-const config = PRODUCTION ? tgradeinternal : localConfig;
-
-const codeMeta = {
-  source: "https://github.com/confio/tgrade-contracts/releases",
-  builder: "cosmwasm/workspace-optimizer:0.10.x",
-};
+const config = PRODUCTION ? musselnetConfig : localConfig;
 
 async function main() {
   // build signing client
@@ -53,8 +39,7 @@ async function main() {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: config.bech32prefix,
   });
-  const gasLimits = { ...defaultGasLimits, upload: 5_000_000 };
-  const options = { prefix: config.bech32prefix, gasPrice: config.gasPrice, gasLimits };
+  const options = { prefix: config.bech32prefix };
   const client = await SigningCosmWasmClient.connectWithSigner(config.endpoint, wallet, options);
 
   // get fee tokens
@@ -62,39 +47,75 @@ async function main() {
   const { address } = (await wallet.getAccounts())[0];
   const faucet = new FaucetClient(config.faucet);
   await faucet.credit(address, config.feeDenom);
+  console.info("...done");
 
   //tgrade_dso
+  console.info("Uploading DSO wasm...");
   const contract = "tgrade_dso.wasm";
-  let wasm = fs.readFileSync(path.join(process.cwd(), "contracts", contract));
-  const uploadReceipt = await client.upload(address, wasm, calculateFee(2500000, config.gasPrice), "Upload ");
-  console.info(`Upload succeeded. Receipt: ${JSON.stringify(uploadReceipt)}`);
+  let wasmDso = fs.readFileSync(path.join(process.cwd(), "contracts", contract));
+  const uploadReceipt = await client.upload(
+    address,
+    wasmDso,
+    calculateFee(2500000, config.gasPrice),
+    "upload dso wasm",
+  );
+  console.info(`Upload DSO Contract succeeded. Receipt: ${JSON.stringify(uploadReceipt)}`);
+
+  //CW20-base
+  console.info("Uploading CW20 Base wasm...");
+  const cw20 = "cw20_base.wasm";
+  let wasmCW20 = fs.readFileSync(path.join(process.cwd(), "contracts", cw20));
+  const uploadReceiptCW20 = await client.upload(
+    address,
+    wasmCW20,
+    calculateFee(2500000, config.gasPrice),
+    "upload cw20 wasm",
+  );
+  console.info(`Upload CW20-base Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptCW20)}`);
+
+  //Dso token
+  console.info("Uploading DSO token wasm...");
+  const dsoToken = "dso_token.wasm";
+  let wasmDsoToken = fs.readFileSync(path.join(process.cwd(), "contracts", dsoToken));
+  const uploadReceiptDsoToken = await client.upload(
+    address,
+    wasmDsoToken,
+    calculateFee(2500000, config.gasPrice),
+    "upload dso token wasm",
+  );
+  console.info(`Upload DSO token Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptDsoToken)}`);
 
   //factory
-  console.log("Uploading TFI Factory wasm");
+  console.info("Uploading TFI Factory wasm...");
   const factory = "tfi_factory.wasm";
   let wasmFactory = fs.readFileSync(path.join(process.cwd(), "contracts", factory));
-  const uploadReceiptFactory = await client.upload(address, wasmFactory, codeMeta, "Upload ");
+  const uploadReceiptFactory = await client.upload(
+    address,
+    wasmFactory,
+    calculateFee(2500000, config.gasPrice),
+    "upload factory wasm",
+  );
   console.info(`Upload Factory Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptFactory)}`);
 
   // Pair Contract
+  console.info("Uploading TFI Pair wasm...");
   const pair = "tfi_pair.wasm";
   let wasmPair = fs.readFileSync(path.join(process.cwd(), "contracts", pair));
-  const uploadReceiptPair = await client.upload(address, wasmPair, codeMeta, "Upload ");
+  const uploadReceiptPair = await client.upload(
+    address,
+    wasmPair,
+    calculateFee(2500000, config.gasPrice),
+    "upload pair wasm",
+  );
   console.info(`Upload Pair Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptPair)}`);
 
-  // //CW20-base
-  const cw20 = "cw20_base.wasm";
-  let wasmCW20 = fs.readFileSync(path.join(process.cwd(), "contracts", cw20));
-  const uploadReceiptCW20 = await client.upload(address, wasmCW20, codeMeta, "Upload ");
-  console.info(`Upload CW20-base succeeded. Receipt: ${JSON.stringify(uploadReceiptCW20)}`);
-
   const codes = await client.getCodes();
-  console.log("codes", codes);
+  console.info("codes", codes);
 }
 
 main().then(
   () => {
-    console.info("All done, let the DSO flow.");
+    console.info("All done, let the tgrade flow.");
     process.exit(0);
   },
   (error) => {
