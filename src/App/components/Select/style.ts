@@ -1,7 +1,8 @@
 import { Select } from "antd";
-import styled from "styled-components";
+import { Select as FormikSelect } from "formik-antd";
+import { css, default as styled } from "styled-components";
 
-export default styled(Select)`
+const selectStyles = css`
   &.ant-select .ant-select-selector {
     border-radius: var(--border-radius);
     border-color: var(--color-input-border);
@@ -19,4 +20,12 @@ export default styled(Select)`
   & .ant-select-selection-item {
     color: var(--color-text-1ary);
   }
+`;
+
+export default styled(Select)`
+  ${selectStyles}
+`;
+
+export const FormSelect = styled(FormikSelect)`
+  ${selectStyles}
 `;
