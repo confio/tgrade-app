@@ -14,11 +14,11 @@ export interface NetworkConfig {
   readonly coinMap: CoinMap;
   readonly gasPrice: GasPrice;
   readonly codeIds?: {
-    readonly cw20Tokens?: readonly [number, ...number[]];
     readonly tgradeDso?: readonly [number, ...number[]];
-    readonly tgradeFactory: readonly [number, ...number[]];
-    readonly tgradePair: readonly [number, ...number[]];
-    readonly tgradecw20: readonly [number, ...number[]];
+    readonly cw20Tokens?: readonly [number, ...number[]];
+    readonly tgradeCw20?: readonly [number, ...number[]];
+    readonly tgradeFactory?: readonly [number, ...number[]];
+    readonly tgradePair?: readonly [number, ...number[]];
   };
 }
 
@@ -54,30 +54,14 @@ const local: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
   codeIds: {
-    tgradeDso: [1],
-    cw20Tokens: [2],
-    tgradecw20: [3],
-    tgradeFactory: [4],
-    tgradePair: [5],
+    // The first 4 codeIds are reserved by tgrade automatically when launched
+    tgradeDso: [5],
+    cw20Tokens: [6],
+    tgradeCw20: [7],
+    tgradeFactory: [8],
+    tgradePair: [9],
   },
 };
-
-/* const musselnet: NetworkConfig = {
-  chainId: "musselnet-4",
-  chainName: "Musselnet",
-  addressPrefix: "wasm",
-  rpcUrl: "https://rpc.musselnet.cosmwasm.com",
-  httpUrl: "https://lcd.musselnet.cosmwasm.com",
-  faucetUrl: "https://faucet.musselnet.cosmwasm.com",
-  feeToken: "umayo",
-  stakingToken: "ufrites",
-  coinMap: {
-    umayo: { denom: "MAYO", fractionalDigits: 6 },
-    ufrites: { denom: "FRITES", fractionalDigits: 6 },
-  },
-  gasPrice: GasPrice.fromString("0.025umayo"),
-  codeId: 1,
-}; */
 
 const tgradeinternal: NetworkConfig = {
   chainId: "tgrade-internal-1",
@@ -96,10 +80,10 @@ const tgradeinternal: NetworkConfig = {
   codeIds: {
     // note that tgrade has a number of internal contracts... you will probably have to bump this number a bit
     tgradeDso: [4],
-    tgradecw20: [5],
-    tgradePair: [14],
-    tgradeFactory: [13],
     cw20Tokens: [15],
+    tgradeCw20: [5],
+    tgradeFactory: [13],
+    tgradePair: [14],
   },
 };
 
