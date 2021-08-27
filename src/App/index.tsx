@@ -35,22 +35,19 @@ export default function App(): JSX.Element {
                         <Dso />
                       </DsoProvider>
                     </Route>
-                    <TMarketProvider>
-                      <Route path={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`}>
-                        <Exchange />
-                      </Route>
-                      <Route path={`${paths.tmarket.prefix}${paths.tmarket.provide.prefix}`}>
-                        <Provide />
-                      </Route>
-                      <Route path={`${paths.tmarket.prefix}${paths.tmarket.withdraw.prefix}`}>
-                        <Withdraw />
-                      </Route>
-                      <Route exact path={paths.tmarket.prefix}>
-                        <Redirect to={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`} />
-                      </Route>
-                      <Route path={`${paths.tmarket.prefix}`} />
-                    </TMarketProvider>
+                    <Route exact path={paths.tmarket.prefix} component={TMarketHome} />
                   </Switch>
+                  <TMarketProvider>
+                    <Route path={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`}>
+                      <Exchange />
+                    </Route>
+                    <Route path={`${paths.tmarket.prefix}${paths.tmarket.provide.prefix}`}>
+                      <Provide />
+                    </Route>
+                    <Route path={`${paths.tmarket.prefix}${paths.tmarket.withdraw.prefix}`}>
+                      <Withdraw />
+                    </Route>
+                  </TMarketProvider>
                 </LayoutProvider>
               </Router>
             </ThemeProvider>

@@ -1,23 +1,34 @@
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-token-round.svg";
 import { ItemWrapper } from "./style";
 
-interface itemProps {
+interface itemProps extends React.HTMLAttributes<HTMLDivElement> {
   icon: string;
   title: string;
-  value: number;
   price: number;
+  change: number;
+  dso: string;
 }
 
-export default function IssueTokensListItem({ icon, value, title, price }: itemProps): JSX.Element | null {
+export default function IssueTokensListItem({
+  icon,
+  change,
+  dso,
+  title,
+  price,
+}: itemProps): JSX.Element | null {
   return (
     <ItemWrapper>
       <div style={{ display: "flex", alignItems: "center" }}>
         <TgradeLogo style={{ width: "25px" }} />
-        <span style={{ marginLeft: "25px" }}>
-          {value} {title}
-        </span>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span style={{ marginLeft: "8px" }}>{title}</span>
+          <span style={{ fontSize: "10px", marginLeft: "8px" }}>{dso}</span>
+        </div>
       </div>
-      <span>&#8776; ${price}</span>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+        <span>{price}</span>
+        <span>{change} %</span>
+      </div>
     </ItemWrapper>
   );
 }

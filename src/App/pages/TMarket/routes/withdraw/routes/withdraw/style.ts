@@ -3,6 +3,7 @@ import { Form } from "formik-antd";
 import styled from "styled-components";
 
 export const CardCustom = styled(Card)`
+  margin-left: 15%;
   &.ant-card {
     width: 554px;
     min-height: 501px;

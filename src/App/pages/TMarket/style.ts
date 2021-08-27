@@ -2,6 +2,7 @@ import Styled from "styled-components";
 import { Card } from "antd";
 
 export const CardCustom = Styled(Card)`
+margin-left: 15%;
   &.ant-card {
     width: 554px;
     min-height: 501px;
@@ -19,6 +20,7 @@ display:flex;
 flex-direction:column;
 width:100%;
 background-color: #FAFAFA;
+margin:5px;
 `;
 
 export const Title = Styled.h1`

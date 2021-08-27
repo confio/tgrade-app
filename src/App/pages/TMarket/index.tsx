@@ -9,8 +9,13 @@ export default function TMarketHome(): JSX.Element | null {
     <PageWrapper>
       <div style={{ width: "100%", margin: "5px" }}>
         <Title>Welcome to T-Market</Title>
-        <Text>Lorem ipsum sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</Text>
-        <LinkText>What is T-market?</LinkText>
+        <Text>
+          T-Market is an Automated Market Maker (AMM) which is constantly running and will always give a price
+          for the listed pairs.
+        </Text>
+        <LinkText href="https://confio.github.io/tgrade-docs/docs/onboarding/T-Market/">
+          What is T-market?
+        </LinkText>
       </div>
       <div style={{ display: "flex", width: "100%" }}>
         <YourWalletContainer />

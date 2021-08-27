@@ -18,11 +18,11 @@ export default function ExchangeListItem({ icon, value, title, price }: itemProp
     >
       <div style={{ display: "flex", alignItems: "center" }}>
         <TgradeLogo style={{ width: "25px" }} />
-        <span style={{ marginLeft: "25px" }}>
+        <span style={{ marginLeft: "10px" }}>
           {value} {title}
         </span>
       </div>
-      <span>&#8776; ${price}</span>
+      <span>&#8776; €{price}</span>
     </ItemWrapper>
   );
 }
