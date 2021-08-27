@@ -63,13 +63,13 @@ const local: NetworkConfig = {
   },
 };
 
-const tgradeinternal: NetworkConfig = {
-  chainId: "tgrade-internal-1",
-  chainName: "Tgrade-internal-1",
+const tgradeTestnet: NetworkConfig = {
+  chainId: "tgrade-testnet-2",
+  chainName: "Tgrade-testnet-2",
   addressPrefix: "tgrade",
-  rpcUrl: "https://rpc.internal-1.tgrade.io",
-  httpUrl: "https://lcd.internal-1.tgrade.io",
-  faucetUrl: "https://faucet.internal-1.tgrade.io",
+  rpcUrl: "https://rpc.testnet-2.tgrade.io",
+  httpUrl: "https://lcd.testnet-2.tgrade.io",
+  faucetUrl: "https://faucet.testnet-2.tgrade.io",
   feeToken: "utgd",
   stakingToken: "utgd",
   faucetTokens: ["utgd"],
@@ -78,14 +78,13 @@ const tgradeinternal: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.0001utgd"),
   codeIds: {
-    // note that tgrade has a number of internal contracts... you will probably have to bump this number a bit
-    tgradeDso: [4],
-    cw20Tokens: [15],
-    tgradeCw20: [5],
-    tgradeFactory: [13],
-    tgradePair: [14],
+    tgradeDso: [5],
+    cw20Tokens: [6],
+    tgradeCw20: [7],
+    tgradeFactory: [8],
+    tgradePair: [9],
   },
 };
 
-const configs: NetworkConfigs = { local, tgradeinternal };
+const configs: NetworkConfigs = { local, tgradeTestnet };
 export const config = getAppConfig(configs);
