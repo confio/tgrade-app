@@ -37,7 +37,11 @@ export function nativeCoinToDisplay(coin: Coin, coinMap: CoinMap): Coin {
   if (!coinMap) throw new Error("Coin map not found");
 
   const coinToDisplay = coinMap[coin.denom];
-  if (!coinToDisplay) throw new Error("Coin not found in map");
+  if (!coinToDisplay) {
+    console.error(coin);
+    console.error(coinMap);
+    throw new Error("Coin not found in map");
+  }
 
   const amountToDisplay = Decimal.fromAtomics(coin.amount, coinToDisplay.fractionalDigits).toString();
 

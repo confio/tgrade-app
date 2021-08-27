@@ -1,3 +1,4 @@
+import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import AddressList from "App/components/AddressList";
 import Button from "App/components/Button";
@@ -6,6 +7,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
+import { DsoContract } from "utils/dso";
 import { AddressStack, ButtonGroup, FeeGroup, Separator, TextComment } from "./style";
 
 const { Text, Paragraph } = Typography;
@@ -37,7 +39,8 @@ export default function ConfirmationAddVotingParticipants({
     if (!signingClient) return;
 
     try {
-      const txFee = getDisplayAmountFromFee(signingClient.fees.exec, config);
+      const fee = calculateFee(DsoContract.GAS_PROPOSE, config.gasPrice);
+      const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
       handleError(error);

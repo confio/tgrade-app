@@ -1,5 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
+import { calculateFee, GasPrice } from "@cosmjs/stargate";
 import { MouseEventHandler } from "react";
 
 type Position = "Top" | "Bottom";
@@ -65,6 +66,10 @@ export interface MinterInterface {
   cap: number;
 }
 export class Token {
+  static readonly GAS_SWAP = 300_000;
+  static readonly GAS_PROVIDE_LIQUIDITY = 300_000;
+  static readonly GAS_WITHDRAW_LIQUIDITY = 300_000;
+
   readonly #signingClient: SigningCosmWasmClient;
 
   constructor(address: string, signingClient: SigningCosmWasmClient) {
@@ -203,6 +208,7 @@ export class Token {
     address: string,
     pair: PairProps,
     form: SwapFormValues,
+    gasPrice: GasPrice,
   ): Promise<any> {
     if (!form.selectFrom) return;
 
@@ -228,19 +234,25 @@ export class Token {
             },
           },
         },
+        calculateFee(Token.GAS_SWAP, gasPrice),
         "",
         [{ denom: "utgd", amount: amount }],
       );
       return result;
     } else {
-      const result = await singingClient.execute(address, form.selectFrom?.address, {
-        send: {
-          contract: pair.contract_addr,
-          amount: amount,
-          //TODO make spread dynamic
-          msg: "eyJzd2FwIjp7Im1heF9zcHJlYWQiOiIwLjI1In19Cg",
+      const result = await singingClient.execute(
+        address,
+        form.selectFrom?.address,
+        {
+          send: {
+            contract: pair.contract_addr,
+            amount: amount,
+            //TODO make spread dynamic
+            msg: "eyJzd2FwIjp7Im1heF9zcHJlYWQiOiIwLjI1In19Cg",
+          },
         },
-      });
+        calculateFee(Token.GAS_SWAP, gasPrice),
+      );
       return result;
     }
   }
@@ -332,6 +344,7 @@ export class Pool {
     contractAddress: string,
     address: string,
     values: ProvideFormValues,
+    gasPrice: GasPrice,
   ): Promise<any> {
     if (!values.selectTo || !values.selectFrom) return;
     const keyTokenA = values.selectFrom?.address === "utgd" ? "native" : "token";
@@ -375,6 +388,7 @@ export class Pool {
       address,
       contractAddress,
       provideMessage,
+      calculateFee(Token.GAS_PROVIDE_LIQUIDITY, gasPrice),
       `Add liquidity to ${values.selectFrom.symbol}-${values.selectTo.symbol} pool`,
       funds,
     );
@@ -385,6 +399,7 @@ export class Pool {
     address: string,
     pair: PairProps,
     values: WithdrawFormValues,
+    gasPrice: GasPrice,
   ): Promise<any> {
     if (!values.selectFrom) return;
     const amount = Decimal.fromUserInput(
@@ -403,6 +418,7 @@ export class Pool {
       address,
       pair.liquidity_token,
       withdrawMsj,
+      calculateFee(Token.GAS_WITHDRAW_LIQUIDITY, gasPrice),
       `Withdraw liquidity from ${values.selectFrom.name}`,
     );
     return result;

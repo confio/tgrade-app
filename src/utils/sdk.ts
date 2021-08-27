@@ -1,4 +1,4 @@
-import { CosmWasmClient, defaultGasLimits, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { LedgerSigner } from "@cosmjs/ledger-amino";
 import { DirectSecp256k1HdWallet, isOfflineDirectSigner, OfflineDirectSigner } from "@cosmjs/proto-signing";
@@ -125,7 +125,5 @@ export async function createSigningClient(
 ): Promise<SigningCosmWasmClient> {
   return SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
     prefix: config.addressPrefix,
-    gasPrice: config.gasPrice,
-    gasLimits: defaultGasLimits,
   });
 }

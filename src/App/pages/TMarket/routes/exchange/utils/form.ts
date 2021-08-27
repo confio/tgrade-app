@@ -1,9 +1,11 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { paths } from "App/paths";
 import { NetworkConfig } from "config/network";
+import { toast } from "react-toastify";
 import { SwapButtonState } from "service/exchange";
 import { FormErrors } from "service/tmarket";
 import { Contract20WS } from "utils/cw20";
+import { getErrorFromStackTrace } from "utils/errors";
 import {
   DetailSwap,
   Pair,
@@ -15,8 +17,6 @@ import {
   Token,
   TokenProps,
 } from "utils/tokens";
-import { toast } from "react-toastify";
-import { getErrorFromStackTrace } from "utils/errors";
 
 export const handleValidation = async (
   values: SwapFormValues,
@@ -86,7 +86,7 @@ export const handleSubmit = async (
 
   if (values.From && signingClient && selectedPair && simulation) {
     try {
-      const swap_result = await Token.Swap(signingClient, address, selectedPair, values);
+      const swap_result = await Token.Swap(signingClient, address, selectedPair, values, config.gasPrice);
 
       setDetailSwap({
         from: `${values.From} ${values.selectFrom.symbol}`,

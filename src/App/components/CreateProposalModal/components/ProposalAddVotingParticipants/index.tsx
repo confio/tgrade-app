@@ -30,7 +30,7 @@ export default function ProposalAddVotingParticipants({
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { address, signingClient },
+    sdkState: { address, signingClient, config },
   } = useSdk();
   const {
     dsoState: { dsos },
@@ -50,7 +50,7 @@ export default function ProposalAddVotingParticipants({
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient);
+      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.propose(address, comment, {
         add_voting_members: {
           voters: members,

@@ -2,9 +2,9 @@ import { Row } from "antd";
 import ButtonApproved from "App/components/ButtonApproved";
 import { useFormikContext } from "formik";
 import { useSdk } from "service";
+import { setIsTokenApprovedA, setIsTokenApprovedB, useProvide } from "service/provide";
 import { Contract20WS } from "utils/cw20";
 import { ProvideFormValues } from "utils/tokens";
-import { setIsTokenApprovedA, setIsTokenApprovedB, useProvide } from "service/provide";
 
 const ApproveTokensRow = (): JSX.Element => {
   const { sdkState } = useSdk();
@@ -22,6 +22,7 @@ const ApproveTokensRow = (): JSX.Element => {
         values.selectFrom.address,
         address,
         selectedPair.contract_addr,
+        sdkState.config.gasPrice,
       );
       setIsTokenApprovedA(provideDispatch, true);
       console.log(result);
@@ -39,6 +40,7 @@ const ApproveTokensRow = (): JSX.Element => {
         values.selectTo.address,
         address,
         selectedPair.contract_addr,
+        sdkState.config.gasPrice,
       );
       setIsTokenApprovedB(provideDispatch, true);
       console.log(result);

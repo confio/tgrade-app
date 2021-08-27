@@ -1,14 +1,14 @@
 import { Typography } from "antd";
-import Steps from "App/components/Steps";
+import closeIcon from "App/assets/icons/cross.svg";
+import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
+import Steps from "App/components/Steps";
 import * as React from "react";
 import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { TxResult } from "App/components/ShowTxResult";
-import closeIcon from "App/assets/icons/cross.svg";
 import { ModalHeader, Separator } from "../../style";
 import FormDsoBasicData, { FormDsoBasicDataValues } from "../FormDsoBasicData";
 import FormDsoMembers from "../FormDsoMembers";
@@ -80,6 +80,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
         members,
         allowEndEarly,
         [{ denom: config.feeToken, amount: nativeEscrowAmount }],
+        config.gasPrice,
       );
 
       addDso(dsoDispatch, contractAddress);

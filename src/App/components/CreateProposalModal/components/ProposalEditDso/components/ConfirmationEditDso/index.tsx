@@ -1,3 +1,4 @@
+import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import Button from "App/components/Button";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
@@ -5,6 +6,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
+import { DsoContract } from "utils/dso";
 import {
   ButtonGroup,
   ChangedField,
@@ -55,7 +57,8 @@ export default function ConfirmationEditDso({
     if (!signingClient) return;
 
     try {
-      const txFee = getDisplayAmountFromFee(signingClient.fees.exec, config);
+      const fee = calculateFee(DsoContract.GAS_PROPOSE, config.gasPrice);
+      const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
       handleError(error);

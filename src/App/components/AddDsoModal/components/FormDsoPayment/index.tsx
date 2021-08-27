@@ -1,4 +1,5 @@
 import { Decimal } from "@cosmjs/math";
+import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
@@ -8,6 +9,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
+import { DsoContract } from "utils/dso";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
@@ -52,7 +54,8 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
       return;
     }
 
-    const initFeeCoin = signingClient.fees.init.amount.find(({ denom }) => denom === config.feeToken);
+    const initFee = calculateFee(DsoContract.GAS_CREATE_DSO, config.gasPrice);
+    const initFeeCoin = initFee.amount[0];
 
     try {
       if (!initFeeCoin) {
@@ -79,6 +82,7 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
   }, [
     config.coinMap,
     config.feeToken,
+    config.gasPrice,
     escrowAmount,
     handleError,
     mappedFeeToken.fractionalDigits,
