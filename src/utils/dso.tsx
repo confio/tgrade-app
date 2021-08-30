@@ -19,6 +19,7 @@ export interface DsoResponse {
   readonly name: string;
   /// The required escrow amount, in the default denom (utgd)
   readonly escrow_amount: string;
+  readonly escrow_pending?: string | null;
   readonly rules: VotingRules;
 }
 

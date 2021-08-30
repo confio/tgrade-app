@@ -4,7 +4,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { nativeCoinToDisplay } from "utils/currency";
+import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { DsoContract, DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { ProposalStep, ProposalType } from "../..";
@@ -107,7 +107,7 @@ export default function ProposalEditDso({
     setSubmitting(true);
 
     try {
-      //const nativeEscrowAmount = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
+      const nativeEscrowAmount = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
       const nativeQuorum = quorum ? (parseFloat(quorum) / 100).toFixed(2).toString() : undefined;
       const nativethreshold = threshold ? (parseFloat(threshold) / 100).toFixed(2).toString() : undefined;
 
@@ -115,7 +115,7 @@ export default function ProposalEditDso({
       const transactionHash = await dsoContract.propose(address, comment, {
         edit_dso: {
           name: dsoName === currentDsoValues.dsoName ? undefined : dsoName,
-          //escrow_amount: nativeEscrowAmount,
+          escrow_amount: nativeEscrowAmount,
           voting_period:
             votingDuration === currentDsoValues.votingDuration ? undefined : parseInt(votingDuration, 10),
           quorum: quorum === currentDsoValues.quorum ? undefined : nativeQuorum,
