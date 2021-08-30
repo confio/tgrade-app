@@ -15,8 +15,8 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { getDisplayAmountFromFee } from "utils/currency";
-import { DsoContract, DsoContractQuerier, VoteOption } from "utils/dso";
+import { getDisplayAmountFromFee, nativeCoinToDisplay } from "utils/currency";
+import { DsoContract, DsoContractQuerier, ProposalResponse, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import {
   AbstainedButton,
@@ -63,13 +63,16 @@ export default function ProposalDetailModal({
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
-  const [proposal, setProposal] = useState<any>();
-  const isProposalNotExpired = proposal ? new Date(proposal.expires.at_time / 1000000) > new Date() : false;
-  const proposalAddMembers = proposal?.proposal["add_remove_non_voting_members"]?.add;
-  const proposalRemoveMembers = proposal?.proposal["add_remove_non_voting_members"]?.remove;
-  const proposalAddVotingMembers = proposal?.proposal["add_voting_members"]?.voters;
-  const proposalEditDso = proposal?.proposal["edit_dso"];
+  const [proposal, setProposal] = useState<ProposalResponse>();
+  const isProposalNotExpired = proposal
+    ? new Date(parseInt(proposal.expires.at_time, 10) / 1000000) > new Date()
+    : false;
+  const proposalAddMembers = proposal?.proposal.add_remove_non_voting_members?.add;
+  const proposalRemoveMembers = proposal?.proposal.add_remove_non_voting_members?.remove;
+  const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
+  const proposalEditDso = proposal?.proposal.edit_dso;
 
+  const [displayEscrow, setDisplayEscrow] = useState("0");
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
   useEffect(() => {
@@ -97,6 +100,24 @@ export default function ProposalDetailModal({
       }
     })();
   }, [client, dsoAddress, handleError, proposalId]);
+
+  useEffect(() => {
+    (async function formatEscrow() {
+      const nativeEscrow = proposalEditDso?.escrow_amount;
+      if (!nativeEscrow) return;
+
+      try {
+        const { amount: displayEscrow } = nativeCoinToDisplay(
+          { denom: config.feeToken, amount: nativeEscrow },
+          config.coinMap,
+        );
+
+        setDisplayEscrow(displayEscrow);
+      } catch (error) {
+        handleError(error);
+      }
+    })();
+  }, [config.coinMap, config.feeToken, handleError, proposalEditDso?.escrow_amount]);
 
   useEffect(() => {
     (async function queryMembership() {
@@ -144,7 +165,7 @@ export default function ProposalDetailModal({
   }
 
   function calculateTotalVotes(): number {
-    return proposal?.votes.yes + proposal?.votes.no + proposal?.votes.abstain;
+    return (proposal?.votes?.yes ?? 0) + (proposal?.votes?.no ?? 0) + (proposal?.votes?.abstain ?? 0);
   }
 
   async function submitExecuteProposal() {
@@ -240,23 +261,22 @@ export default function ProposalDetailModal({
                       <TextValue>{parseFloat(proposalEditDso.threshold) * 100}%</TextValue>
                     </ChangedField>
                   ) : null}
-                  {proposalEditDso?.["voting_duration"] ? (
+                  {proposalEditDso?.voting_period ? (
                     <ChangedField>
                       <TextLabel>Voting duration</TextLabel>
-                      <TextValue>{proposalEditDso["voting_duration"]}</TextValue>
+                      <TextValue>{proposalEditDso.voting_period}</TextValue>
                     </ChangedField>
                   ) : null}
-                  {proposalEditDso?.["escrow_amount"] ? (
+                  {proposalEditDso?.escrow_amount ? (
                     <ChangedField>
                       <TextLabel>Escrow amount</TextLabel>
-                      <TextValue>{proposalEditDso["escrow_amount"]}</TextValue>
+                      <TextValue>{displayEscrow}</TextValue>
                     </ChangedField>
                   ) : null}
-                  {proposalEditDso?.["allow_end_early"] !== undefined &&
-                  proposalEditDso?.["allow_end_early"] !== null ? (
+                  {proposalEditDso?.allow_end_early ? (
                     <ChangedField>
                       <TextLabel>Early pass</TextLabel>
-                      <TextValue>{proposalEditDso["allow_end_early"] ? "Enabled" : "Disabled"}</TextValue>
+                      <TextValue>{proposalEditDso.allow_end_early ? "Enabled" : "Disabled"}</TextValue>
                     </ChangedField>
                   ) : null}
                 </FieldGroup>
@@ -303,7 +323,7 @@ export default function ProposalDetailModal({
                       <b>{parseFloat(proposalEditDso.threshold) * 100}%</b>
                     </Paragraph>
                   ) : null}
-                  {proposalEditDso?.["voting_duration"] ? (
+                  {proposalEditDso?.voting_period ? (
                     <Paragraph>
                       Voting period: <b>{proposalEditDso.voting_period} days</b>
                     </Paragraph>
