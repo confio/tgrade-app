@@ -76,7 +76,7 @@ const tgradeTestnet: NetworkConfig = {
   coinMap: {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
-  gasPrice: GasPrice.fromString("0.0001utgd"),
+  gasPrice: GasPrice.fromString("0.025utgd"),
   codeIds: {
     tgradeDso: [5],
     cw20Tokens: [6],
