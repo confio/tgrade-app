@@ -3,9 +3,6 @@ import IssueTokensListItem from "../IssuedTokensListItem";
 import { TokenProps } from "utils/tokens";
 
 export default function IssuedTokensList(props: { tokens: TokenProps[] }): JSX.Element | null {
-  const handleClick = (event: any) => {
-    console.log(event.target);
-  };
   return (
     <ul style={{ width: "100%", listStyle: "none", paddingLeft: "0" }}>
       {props.tokens.map((token) => (
