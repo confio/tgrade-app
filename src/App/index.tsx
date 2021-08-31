@@ -35,9 +35,9 @@ export default function App(): JSX.Element {
                         <Dso />
                       </DsoProvider>
                     </Route>
-                    <Route exact path={paths.tmarket.prefix} component={TMarketHome} />
                   </Switch>
                   <TMarketProvider>
+                    <Route exact path={paths.tmarket.prefix} component={TMarketHome} />
                     <Route path={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`}>
                       <Exchange />
                     </Route>
