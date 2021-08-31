@@ -1,5 +1,4 @@
 import IssueTokensListItem from "../IssuedTokensListItem";
-//import { MockData } from "./__mocks__/mockData";
 import { TokenProps } from "utils/tokens";
 
 export default function IssuedTokensList(props: { tokens: TokenProps[] }): JSX.Element | null {
