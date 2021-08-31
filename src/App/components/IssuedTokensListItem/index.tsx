@@ -2,7 +2,7 @@ import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-token-roun
 import { ItemWrapper } from "./style";
 
 interface itemProps extends React.HTMLAttributes<HTMLDivElement> {
-  icon: string;
+  icon: string | undefined;
   title: string;
   price: number;
   change: number;

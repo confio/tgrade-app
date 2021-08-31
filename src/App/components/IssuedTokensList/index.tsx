@@ -1,20 +1,17 @@
 import IssueTokensListItem from "../IssuedTokensListItem";
-import { MockData } from "./__mocks__/mockData";
+import { TokenProps } from "utils/tokens";
 
-export default function IssuedTokensList(): JSX.Element | null {
-  const handleClick = (event: any) => {
-    console.log(event.target);
-  };
+export default function IssuedTokensList(props: { tokens: TokenProps[] }): JSX.Element | null {
   return (
     <ul style={{ width: "100%", listStyle: "none", paddingLeft: "0" }}>
-      {MockData.data.map((item) => (
+      {props.tokens.map((token) => (
         <IssueTokensListItem
-          key={item.title}
-          icon={item.icon}
-          title={item.title}
-          price={item.price}
-          change={item.change}
-          dso={item.dso}
+          key={token.address}
+          icon={token.img}
+          title={token.name}
+          price={Number(token.humanBalance)}
+          change={Number(token.total_supply)}
+          dso={token.symbol}
         ></IssueTokensListItem>
       ))}
     </ul>
