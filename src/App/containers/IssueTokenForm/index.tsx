@@ -42,7 +42,7 @@ const validationSchema = Yup.object().shape({
     .required("Token symbol is required")
     .min(3, "Token symbol must have between 3 and 6 characters")
     .max(6, "Token symbol must have between 3 and 6 characters"),
-  [getFormItemName(tokenSymbolLabel)]: Yup.string()
+  [getFormItemName(tokenNameLabel)]: Yup.string()
     .typeError("Token name must be alphanumeric")
     .required("Token name is required")
     .min(3, "Token name must have between 3 and 30 characters")
@@ -125,7 +125,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
     <Formik
       initialValues={{
         [getFormItemName(tokenSymbolLabel)]: "",
-        [getFormItemName(tokenSymbolLabel)]: "",
+        [getFormItemName(tokenNameLabel)]: "",
         [getFormItemName(mintLabel)]: MintType.None,
         [getFormItemName(mintCapLabel)]: "",
         [getFormItemName(initialSupplyLabel)]: "",
@@ -136,7 +136,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
       onSubmit={(values) =>
         handleSubmit({
           tokenSymbol: values[getFormItemName(tokenSymbolLabel)].toString(),
-          tokenName: values[getFormItemName(tokenSymbolLabel)].toString(),
+          tokenName: values[getFormItemName(tokenNameLabel)].toString(),
           mint: values[getFormItemName(mintLabel)].toString(),
           mintCap: values[getFormItemName(mintCapLabel)].toString(),
           initialSupply: values[getFormItemName(initialSupplyLabel)].toString(),
