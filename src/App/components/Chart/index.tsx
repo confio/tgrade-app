@@ -26,6 +26,7 @@ const config = {
   lineStyle: {
     stroke: "#FFB946",
     lineWidth: 4,
+    smooth: "True",
     strokeOpacity: 1.0,
     shadowColor: "#FFFFFF",
     shadowBlur: 5,
