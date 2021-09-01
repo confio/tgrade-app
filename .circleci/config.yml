@@ -110,6 +110,11 @@ jobs:
           name: Deploy to Netlify
           command: |
             echo "all the commands needed to deply"
+            echo "hello world"
+            echo "$CIRCLE_TAG"
+            echo "$CIRCLE_PROJECT_USERNAME"
+            echo "$CIRCLE_PROJECT_REPONAME"
+            echo "$CIRCLE_SHA1"
 
 workflows:
   version: 2
