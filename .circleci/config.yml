@@ -91,6 +91,26 @@ jobs:
           command: |
             ./scripts/stop_all.sh
 
+  deploy_to_netlify:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}
+      - run: yarn install --frozen-lockfile
+      - save_cache:
+          paths:
+            - ~/.cache/yarn
+            - node_modules
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
+      - run: yarn compile
+      - run:
+          name: Deploy to Netlify
+          command: |
+            echo "all the commands needed to deply"
+
 workflows:
   version: 2
   build_and_test:
@@ -99,3 +119,12 @@ workflows:
       - test:
           requires:
             - build
+  deploy:
+    jobs:
+      - deploy_to_netlify:
+          filters:
+            tags:
+              # E.g. v0.3.4 or v0.3.4+build-meta86443
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+.*/
+            branches:
+              ignore: /.*/
