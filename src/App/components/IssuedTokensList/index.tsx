@@ -7,11 +7,14 @@ export default function IssuedTokensList(props: { tokens: TokenProps[] }): JSX.E
       {props.tokens.map((token) => (
         <IssueTokensListItem
           key={token.address}
-          icon={token.img}
-          title={token.name}
-          price={Number(token.humanBalance)}
-          change={Number(token.total_supply)}
-          dso={token.symbol}
+          img={token.img}
+          name={token.name}
+          balance={token.balance}
+          humanBalance={token.humanBalance}
+          totalSupply={token.total_supply}
+          symbol={token.symbol}
+          address={token.address}
+          decimals={token.decimals}
         ></IssueTokensListItem>
       ))}
     </ul>

@@ -1,6 +1,6 @@
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-token-round.svg";
 
-import { ItemWrapper } from "./style";
+import { AmountText, ItemWrapper, SymbolText, ValueText } from "./style";
 
 interface itemProps {
   icon: string;
@@ -18,11 +18,10 @@ export default function ExchangeListItem({ icon, value, title, price }: itemProp
     >
       <div style={{ display: "flex", alignItems: "center" }}>
         <TgradeLogo style={{ width: "25px" }} />
-        <span style={{ marginLeft: "10px" }}>
-          {value} {title}
-        </span>
+        <AmountText style={{ marginLeft: "10px" }}>{value}</AmountText>
+        <SymbolText>{title}</SymbolText>
       </div>
-      <span>&#8776; €{price}</span>
+      <ValueText>&#8776; €{price}</ValueText>
     </ItemWrapper>
   );
 }
