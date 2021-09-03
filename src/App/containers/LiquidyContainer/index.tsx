@@ -1,5 +1,5 @@
 import Table from "App/components/Table";
-import { columns, data } from "./__mocks__/MockData";
+//import { columns, data } from "./__mocks__/MockData";
 import { LiquidityWrapper, StyledTabs } from "./style";
 import Button from "App/components/Button";
 //import { ReactComponent as TgradeLogo } from "App/assets/icons/tgradeLogo.svg";
@@ -39,8 +39,8 @@ export default function LiquidyContainer(): JSX.Element | null {
                   },
                 };
               }}
-              columns={columns}
-              dataSource={data}
+              columns={undefined}
+              dataSource={undefined}
               onChange={onChange}
               pagination={false}
             />
@@ -56,8 +56,8 @@ export default function LiquidyContainer(): JSX.Element | null {
                   },
                 };
               }}
-              columns={columns}
-              dataSource={data}
+              columns={undefined}
+              dataSource={undefined}
               onChange={onChange}
               pagination={false}
             />
