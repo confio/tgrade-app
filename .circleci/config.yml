@@ -40,8 +40,11 @@ jobs:
     steps:
       - checkout
       - run: # start early for less wait time below
-          name: Start wasmd and faucet
-          command: ./scripts/start_all_ci.sh
+          name: Start tgrade and faucet
+          command: |
+            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+            ./scripts/start_all_ci.sh
+            docker logout
           background: true
       - run:
           # TODO: check if still needed with 20.04
@@ -83,12 +86,14 @@ jobs:
       - run:
           name: Deploy contracts
           command: |
-            ./scripts/wasmd/init.sh
+            cd ./scripts/tgrade/
+            ./init.sh
       - run:
           command: yarn test --watchAll=false
       - run:
           name: Stop chains
           command: |
+            docker logout
             ./scripts/stop_all.sh
 
 workflows:
