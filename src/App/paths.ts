@@ -16,11 +16,11 @@ export const paths = {
       dsoAddressOptional: "/:dsoAddress?",
     },
   },
-  tmarkethome: {
-    prefix: "/markethome",
-  },
   tmarket: {
     prefix: "/market",
+    home: {
+      prefix: "/home",
+    },
     exchange: {
       prefix: "/exchange",
       result: "/result",
