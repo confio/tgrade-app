@@ -41,7 +41,10 @@ jobs:
       - checkout
       - run: # start early for less wait time below
           name: Start wasmd and faucet
-          command: ./scripts/start_all_ci.sh
+          command: |
+            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+            ./scripts/start_all_ci.sh
+            docker logout
           background: true
       - run:
           # TODO: check if still needed with 20.04
@@ -89,6 +92,7 @@ jobs:
       - run:
           name: Stop chains
           command: |
+            docker logout
             ./scripts/stop_all.sh
 
 workflows:
