@@ -86,7 +86,7 @@ jobs:
       - run:
           name: Deploy contracts
           command: |
-            ./scripts/wasmd/init.sh
+            ./scripts/tgrade/init.sh
       - run:
           command: yarn test --watchAll=false
       - run:
