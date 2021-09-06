@@ -34,3 +34,18 @@ export function useLocalStorage<T>(
 
   return [storedValue, setValue];
 }
+
+export async function getFileImgType(file: File): Promise<"svg" | "png"> {
+  const text = await file.text();
+  const isSvg = text.trim().endsWith("</svg>");
+  return isSvg ? "svg" : "png";
+}
+
+export function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+}
