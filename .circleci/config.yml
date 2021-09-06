@@ -86,7 +86,8 @@ jobs:
       - run:
           name: Deploy contracts
           command: |
-            ./scripts/tgrade/init.sh
+            cd ./scripts/tgrade/
+            ./init.sh
       - run:
           command: yarn test --watchAll=false
       - run:
