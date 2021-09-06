@@ -18,6 +18,9 @@ export const paths = {
   },
   tmarket: {
     prefix: "/market",
+    tmarket: {
+      prefix: "/tmarket",
+    },
     exchange: {
       prefix: "/exchange",
       result: "/result",
