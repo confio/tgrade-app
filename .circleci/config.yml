@@ -40,7 +40,7 @@ jobs:
     steps:
       - checkout
       - run: # start early for less wait time below
-          name: Start wasmd and faucet
+          name: Start tgrade and faucet
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             ./scripts/start_all_ci.sh
