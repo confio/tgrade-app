@@ -155,6 +155,7 @@ function getProposalTitle(proposal: ProposalContent): string {
 
   switch (proposalProp) {
     case "add_remove_non_voting_members":
+      //NOTE: this way of detecting the type makes WhitelistPair proposal to have the title: "Add participants"
       return proposal.add_remove_non_voting_members?.add.length ? "Add participants" : "Remove participants";
     case "add_voting_members":
       return "Add voting participants";
