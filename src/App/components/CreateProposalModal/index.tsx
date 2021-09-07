@@ -1,18 +1,19 @@
 import { Typography } from "antd";
-import Steps from "App/components/Steps";
-import Stack from "App/components/Stack/style";
+import closeIcon from "App/assets/icons/cross.svg";
+import modalBg from "App/assets/images/modal-background.jpg";
 import { TxResult } from "App/components/ShowTxResult";
+import Stack from "App/components/Stack/style";
+import Steps from "App/components/Steps";
 import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso } from "service";
 import { DsoHomeParams } from "../../pages/DsoHome";
-import closeIcon from "App/assets/icons/cross.svg";
-import modalBg from "App/assets/images/modal-background.jpg";
 import ProposalAddParticipants from "./components/ProposalAddParticipants";
 import ProposalAddVotingParticipants from "./components/ProposalAddVotingParticipants";
 import ProposalEditDso from "./components/ProposalEditDso";
 import ProposalRemoveParticipants from "./components/ProposalRemoveParticipants";
+import ProposalWhitelistPair from "./components/ProposalWhitelistPair";
 import SelectProposal from "./components/SelectProposal";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
@@ -25,6 +26,7 @@ export enum ProposalType {
   RemoveParticipants = "remove-participants",
   AddVotingParticipants = "add-voting-participants",
   EditDso = "edit-dso",
+  WhitelistPair = "whitelist-pair",
 }
 
 export const proposalLabels = {
@@ -32,6 +34,7 @@ export const proposalLabels = {
   [ProposalType.RemoveParticipants]: "Remove non voting participants",
   [ProposalType.AddVotingParticipants]: "Add voting participants",
   [ProposalType.EditDso]: "Edit Trusted Circle",
+  [ProposalType.WhitelistPair]: "Whitelist Pair",
 };
 
 export const proposalTitles = {
@@ -40,6 +43,7 @@ export const proposalTitles = {
   [ProposalType.RemoveParticipants]: "Remove participant(s)",
   [ProposalType.AddVotingParticipants]: "Add voting participant(s)",
   [ProposalType.EditDso]: "Edit Trusted Circle",
+  [ProposalType.WhitelistPair]: "Whitelist Pair",
   confirmation: "Confirmation",
 };
 
@@ -163,6 +167,14 @@ export default function CreateProposalModal({
             />
           ) : proposalStep.type === ProposalType.EditDso ? (
             <ProposalEditDso
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.WhitelistPair ? (
+            <ProposalWhitelistPair
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
               isSubmitting={isSubmitting}
