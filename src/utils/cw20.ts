@@ -15,6 +15,25 @@ export interface MinterInterface {
   cap?: string;
 }
 
+export interface InstantiateMarketingInfo {
+  readonly project?: string | null;
+  readonly description?: string | null;
+  readonly marketing?: string | null;
+  readonly logo?: LogoType;
+}
+
+export type LogoType = {
+  readonly url?: string;
+} & {
+  readonly embedded?: EmbeddedLogoType;
+};
+
+export type EmbeddedLogoType = {
+  readonly svg?: string;
+} & {
+  readonly png?: string;
+};
+
 export class Contract20WS {
   static readonly GAS_CREATE_TOKEN = 500_000;
   static readonly GAS_AUTHORIZE = 500_000;
@@ -35,6 +54,8 @@ export class Contract20WS {
     initial_balances: Array<InitialValuesInterface>,
     minter: MinterInterface | undefined,
     gasPrice: GasPrice,
+    marketingInfo?: InstantiateMarketingInfo,
+    dsoAddress?: string,
   ): Promise<string> {
     //Initial Message
     const initMsg: any = {
@@ -43,6 +64,8 @@ export class Contract20WS {
       decimals: decimals,
       initial_balances: initial_balances,
       minter: minter,
+      marketing: marketingInfo,
+      whitelist_group: dsoAddress,
     };
 
     const { contractAddress } = await signingClient.instantiate(

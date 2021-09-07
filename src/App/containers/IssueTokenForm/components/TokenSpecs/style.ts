@@ -27,8 +27,3 @@ export const NameWrapper = styled.div`
     flex-grow: 1;
   }
 `;
-
-export const DsoWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
