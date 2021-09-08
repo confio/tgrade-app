@@ -17,10 +17,6 @@ type tMarketAction =
       readonly payload: { [key: string]: TokenProps };
     }
   | {
-      readonly type: "setFactoryAddress";
-      readonly payload: string;
-    }
-  | {
       readonly type: "setPairs";
       readonly payload: { [key: string]: PairProps };
     }
@@ -56,7 +52,6 @@ type tMarketAction =
 type tMarketDispatch = (action: tMarketAction) => void;
 type tMarketState = {
   readonly tokens: { [key: string]: TokenProps };
-  readonly factoryAddress: string;
   readonly pairs: { [key: string]: PairProps };
   readonly lpTokens: { [key: string]: { token: TokenProps; pair: PairProps } };
   readonly pool: PoolProps | undefined;
@@ -93,9 +88,6 @@ function tMarketReducer(tMarketState: tMarketState, action: tMarketAction): tMar
           ...action.payload,
         },
       };
-    }
-    case "setFactoryAddress": {
-      return { ...tMarketState, factoryAddress: action.payload };
     }
     case "setSearchText": {
       return { ...tMarketState, searchText: action.payload };
@@ -167,7 +159,7 @@ export const useTMarket = (): NonNullable<tMarketContextType> => {
 
 export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   const { sdkState } = useSdk();
-  const { client, config, address, signingClient } = sdkState;
+  const { client, config, address } = sdkState;
 
   const [tMarketState, tMarketDispatch] = useReducer(tMarketReducer, {
     tokens: {},
@@ -175,51 +167,27 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
     searchText: undefined,
     estimatingFromB: false,
     estimatingFromA: false,
-    factoryAddress: "",
     pairs: {},
     pool: undefined,
   });
 
   React.useEffect(() => {
     (async () => {
-      if (client && address && signingClient) {
-        //Gets all tokens
-        const allTokens = await Contract20WS.getAll(config, client, address);
-        tMarketDispatch({ type: "setTokens", payload: allTokens });
-        //Gets Factory address
-        // @ts-ignore: Object is possibly 'null'.
-        const contracts = await client.getContracts(config.codeIds.tgradeFactory[0]);
-        if (contracts.length > 0) {
-          tMarketDispatch({ type: "setFactoryAddress", payload: contracts[contracts.length - 1] });
-        } else {
-          // Instance of Factory contract release v0.0.7
-          const new_factory = await Factory.createFactory(
-            signingClient,
-            // @ts-ignore: Object is possibly 'null'.
-            config.codeIds.tgradeFactory[0],
-            address,
-            // @ts-ignore: Object is possibly 'null'.
-            config.codeIds.tgradePair[0],
-            // @ts-ignore: Object is possibly 'null'.
-            config.codeIds.tgradeCw20[0],
-            config.gasPrice,
-          );
-          tMarketDispatch({ type: "setFactoryAddress", payload: new_factory });
-          console.log("new_factory_address:", new_factory);
-        }
-      }
+      if (!client || !address) return;
+      const allTokens = await Contract20WS.getAll(config, client, address);
+      tMarketDispatch({ type: "setTokens", payload: allTokens });
     })();
-  }, [client, config, address, signingClient]);
+  }, [address, client, config]);
 
   React.useEffect(() => {
     (async () => {
       //Gets all pairs
-      if (client && tMarketState.factoryAddress) {
-        const pairs = await Factory.getPairs(client, tMarketState.factoryAddress);
+      if (client) {
+        const pairs = await Factory.getPairs(client, config.factoryAddress);
         tMarketDispatch({ type: "setPairs", payload: pairs });
       }
     })();
-  }, [tMarketState.factoryAddress, client]);
+  }, [client, config.factoryAddress]);
 
   React.useEffect(() => {
     (async () => {

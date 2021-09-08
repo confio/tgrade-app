@@ -1,5 +1,4 @@
 import { UserError } from "App/pages/TMarket/utils";
-import * as React from "react";
 import { createContext, HTMLAttributes, useContext, useReducer } from "react";
 import { DetailSwap, PairProps, PoolProps, SimulatedSwap, TokenProps } from "utils/tokens";
 
@@ -20,10 +19,6 @@ type ExchangeAction =
   | {
       readonly type: "setTokens";
       readonly payload: readonly TokenProps[];
-    }
-  | {
-      readonly type: "setFactoryAddress";
-      readonly payload: string;
     }
   | {
       readonly type: "setPairs";
