@@ -8,7 +8,7 @@ justify-content:space-between;
 flex-direction:column;
 min-height: 100vh;
 width:15.25rem;
-background-image: url(${MenuBG});
+background: linear-gradient(0deg, rgba(1, 100, 101, 0.97), rgba(1, 100, 101, 0.97)), url(${MenuBG});
 svg{
     margin:1.5rem;
 }
