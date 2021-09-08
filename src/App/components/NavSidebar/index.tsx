@@ -34,9 +34,16 @@ export const NavSidebar: React.FC = () => {
         </Link>
         <Link to="/">
           <Cell>
+            <Icon.Oversight />
+            <StyledText>Oversight Community</StyledText>
+            <Icon.Manage />
+          </Cell>
+        </Link>
+        <Link to="/">
+          <Cell>
             <Icon.Wiki />
             <StyledText>Wiki</StyledText>
-            <Icon.Visit />
+            <Icon.Learn />
           </Cell>
         </Link>
         <Link to="/">
@@ -47,7 +54,7 @@ export const NavSidebar: React.FC = () => {
           </Cell>
         </Link>
       </LinkWrapper>
-      <Link to="/" onClick={() => setModalOpen(true)} style={{ position: "absolute", top: "600px" }}>
+      <Link to="/" onClick={() => setModalOpen(true)} style={{ position: "absolute", top: "90%" }}>
         <Cell>
           {address ? (
             <AddressTag address={address} short noYou />
