@@ -30,7 +30,7 @@ svg{
     margin:1rem;
 }
 &:hover{
-    background-color:rgba(220,220,220,0.25);
+    background-color:rgba(220,220,220,0.10);
     border-left: 4px solid white;
 }
 `;
