@@ -8,3 +8,4 @@ SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 # CosmWasm init
 #
 "$SCRIPT_DIR/deploy_contracts.mjs"
+"$SCRIPT_DIR/instantiate_factory.mjs"
