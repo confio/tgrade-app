@@ -9,7 +9,7 @@ import { ReactComponent as Join } from "../../assets/icons/join.svg";
 import { ReactComponent as Learn } from "../../assets/icons/learn.svg";
 import { ReactComponent as Visit } from "../../assets/icons/visit.svg";
 import { ReactComponent as Manage } from "../../assets/icons/manage.svg";
-import { ReactComponent as Oversight } from "../../assets/icons/oversight-icon.svg";
+import { ReactComponent as Oversight } from "../../assets/icons/oversight-community.svg";
 
 export {
   Oversight,

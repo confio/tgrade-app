@@ -27,7 +27,7 @@ height:4.875rem;
 color:#fff;
 border-left: 4px solid transparent;
 svg{
-    margin:1rem;
+    margin:0.5rem;
 }
 &:hover{
     background-color:rgba(220,220,220,0.10);
@@ -38,5 +38,7 @@ svg{
 export const StyledText = Styled(Typography.Text)`
 &.ant-typography {
     color: #fff;
+    width:100%;
+    font-size:14px;
   }
 `;
