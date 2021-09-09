@@ -10,27 +10,13 @@ import { calculateFee, GasPrice, makeCosmoshubPath } from "@cosmjs/stargate";
 import * as fs from "fs";
 import * as path from "path";
 
-const PRODUCTION = false;
-
-const musselnetConfig = {
-  endpoint: "https://rpc.musselnet.cosmwasm.com",
-  faucet: "https://faucet.musselnet.cosmwasm.com",
-  bech32prefix: "wasm",
-  feeDenom: "umayo",
-  gasPrice: GasPrice.fromString("0.025umayo"),
-  wasmUrl: "https://github.com/CosmWasm/cosmwasm-plus/releases/download/v0.6.0/cw20_base.wasm",
-};
-
-const localConfig = {
+const config = {
   endpoint: "http://localhost:26657",
   faucet: "http://localhost:8000",
   bech32prefix: "tgrade",
   feeDenom: "utgd",
   gasPrice: GasPrice.fromString("0.025utgd"),
-  wasmUrl: "https://github.com/CosmWasm/cosmwasm-plus/releases/download/v0.6.0/cw20_base.wasm",
 };
-
-const config = PRODUCTION ? musselnetConfig : localConfig;
 
 async function main() {
   // build signing client
