@@ -13,6 +13,7 @@ export interface NetworkConfig {
   readonly stakingToken: string;
   readonly coinMap: CoinMap;
   readonly gasPrice: GasPrice;
+  readonly factoryAddress: string;
   readonly codeIds?: {
     readonly tgradeDso?: readonly [number, ...number[]];
     readonly cw20Tokens?: readonly [number, ...number[]];
@@ -53,6 +54,7 @@ const local: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
+  factoryAddress: "tgrade14ejqjyq8um4p3xfqj74yld5waqljf88fysvrq7",
   codeIds: {
     // The first 4 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [5],
@@ -77,6 +79,7 @@ const tgradeTestnet: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
+  factoryAddress: "tgrade12eu6c7f67l8gdl2lt0hz0dgdh24dhune2lvyj2",
   codeIds: {
     tgradeDso: [5],
     cw20Tokens: [6],

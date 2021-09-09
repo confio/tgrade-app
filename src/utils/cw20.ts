@@ -132,23 +132,27 @@ export class Contract20WS {
     client: CosmWasmClient,
     clientAddress: string,
   ): Promise<{ [key: string]: TokenProps }> {
-    if (config.codeIds?.cw20Tokens) {
-      const addresses = await client?.getContracts(config.codeIds.cw20Tokens[0]);
-      const tokensMap: { [key: string]: TokenProps } = {};
-      //Add utgd to lists
-      const utgd = await this.getTokenInfo(client, clientAddress, "utgd", config);
-      tokensMap["utgd"] = utgd;
-      addresses.map(
-        async (address): Promise<void> => {
-          const token_info: TokenProps = await this.getTokenInfo(client, clientAddress, address, config);
-          tokensMap[address] = token_info;
-        },
-      );
-      return tokensMap;
-    } else {
-      return {};
-    }
+    const cw20TokensAddresses = config.codeIds?.cw20Tokens?.length
+      ? await client.getContracts(config.codeIds.cw20Tokens[0])
+      : [];
+    const tgradeCw20Addresses = config.codeIds?.tgradeCw20?.length
+      ? await client.getContracts(config.codeIds.tgradeCw20[0])
+      : [];
+    const addresses = [...cw20TokensAddresses, ...tgradeCw20Addresses];
+
+    const tokensMap: { [key: string]: TokenProps } = {};
+    //Add utgd to lists
+    const utgd = await this.getTokenInfo(client, clientAddress, "utgd", config);
+    tokensMap["utgd"] = utgd;
+    addresses.map(
+      async (address): Promise<void> => {
+        const token_info: TokenProps = await this.getTokenInfo(client, clientAddress, address, config);
+        tokensMap[address] = token_info;
+      },
+    );
+    return tokensMap;
   }
+
   static async getLPTokens(
     client: CosmWasmClient,
     clientAddress: string,
