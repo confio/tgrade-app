@@ -57,7 +57,12 @@ export const NavSidebar: React.FC = () => {
       <Link to="/" onClick={() => setModalOpen(true)} style={{ position: "fixed", top: "90%" }}>
         <Cell>
           {address ? (
-            <AddressTag address={address} short noYou />
+            <AddressTag
+              address={address}
+              short
+              noYou
+              style={{ display: "flex", justifyContent: "center", width: "100%" }}
+            />
           ) : (
             <>
               <Icon.ConnectWallet />
