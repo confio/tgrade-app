@@ -6,7 +6,13 @@ import { Coin } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import * as React from "react";
 import { createContext, useContext, useEffect, useReducer } from "react";
-import { createClient, createSigningClient } from "utils/sdk";
+import {
+  createClient,
+  createSigningClient,
+  getLastConnectedWallet,
+  loadKeplrWallet,
+  loadLedgerWallet,
+} from "utils/sdk";
 import { useError } from "./error";
 
 type SdkState = {
@@ -181,6 +187,27 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
       mounted = false;
     };
   }, [handleError, sdkState.signer]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    (async function reconnectSigner(): Promise<void> {
+      const lastConnectedWallet = getLastConnectedWallet();
+      if (sdkState.signer || !lastConnectedWallet) return;
+
+      try {
+        const signer =
+          lastConnectedWallet === "keplr" ? await loadKeplrWallet(config) : await loadLedgerWallet(config);
+        if (mounted) sdkDispatch({ type: "setSigner", payload: signer });
+      } catch (error) {
+        handleError(error);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, [config, handleError, sdkState.signer]);
 
   useEffect(() => {
     let mounted = true;
