@@ -15,6 +15,12 @@ export const setWallet = (wallet: string): void => localStorage.setItem(storedWa
 export const isWalletEncrypted = (wallet: string): boolean => wallet.split(" ").length < 12;
 export const generateMnemonic = (): string => Bip39.encode(Random.getBytes(16)).toString();
 
+// Last connected wallet storage utils, for reconnecting on loading
+export const lastConnectedWalletKey = "last-wallet";
+export const getLastConnectedWallet = (): string | null => localStorage.getItem(lastConnectedWalletKey);
+export const setLastConnectedWallet = (walletType: string): void =>
+  localStorage.setItem(lastConnectedWalletKey, walletType);
+
 export function loadOrCreateMnemonic(): string {
   const loaded = localStorage.getItem(storedWalletKey);
   if (loaded) {
