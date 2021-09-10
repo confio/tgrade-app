@@ -40,15 +40,14 @@ const config = {
 function Chart(): JSX.Element {
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-        <h2>Your Wallet</h2>
-        <div>
+      <div style={{ display: "flex", width: "100%" }}>
+        <h2 style={{ margin: "5px" }}>Your Wallet</h2>
+        <div style={{ marginLeft: "150px" }}>
           <StyledButton>H</StyledButton>
           <StyledButton>D</StyledButton>
           <StyledButton>W</StyledButton>
           <StyledButton>M</StyledButton>
           <StyledButton>Y</StyledButton>
-          <StyledButton>ALL</StyledButton>
         </div>
       </div>
       <Line {...config} />
