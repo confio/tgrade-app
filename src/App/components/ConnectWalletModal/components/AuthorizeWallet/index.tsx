@@ -1,20 +1,21 @@
 import { Spin, Typography } from "antd";
-import Button from "../../../Button";
-import Stack from "../../../Stack/style";
-import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { setSigner, useError, useSdk } from "service";
 import {
   isKeplrAvailable,
+  isKeplrSigner,
   isLedgerAvailable,
   isLedgerSigner,
   loadKeplrWallet,
   loadLedgerWallet,
+  setLastConnectedWallet,
   WalletLoader,
 } from "utils/sdk";
 import closeIcon from "../../../../assets/icons/cross.svg";
-import errorIcon from "../../../../assets/icons/warning.svg";
 import loadingIcon from "../../../../assets/icons/loading.svg";
+import errorIcon from "../../../../assets/icons/warning.svg";
+import Button from "../../../Button";
+import Stack from "../../../Stack/style";
 import { ButtonGroup, ErrorMsg, Indicator, ModalHeader } from "./style";
 
 const { Title, Text } = Typography;
@@ -45,18 +46,30 @@ export default function AuthorizeWallet({
   const connectWallet = useCallback(
     async function (loadWallet: WalletLoader) {
       try {
+        // Get a keplr or ledger signer
         const signer = await loadWallet(sdkState.config);
 
         if (isLedgerSigner(signer)) {
+          // This makes ledger specifically throw if not ready
           await signer.getAccounts();
         }
 
+        // Set the signer if it did not throw
         setSigner(sdkDispatch, signer);
+
+        // Detect the type of signer and store it to know which one should reconnect
+        if (isKeplrSigner(signer)) {
+          setLastConnectedWallet("keplr");
+        } else {
+          setLastConnectedWallet("ledger");
+        }
+
         dismiss();
       } catch (error) {
         handleError(error);
         const toConnect = walletType === "keplr" ? "the Keplr extension" : "your Ledger";
         setError(`Please make sure ${toConnect} is connected`);
+        setLastConnectedWallet("");
       }
     },
     [dismiss, handleError, sdkDispatch, sdkState.config, walletType],
