@@ -1,12 +1,12 @@
 import { Typography } from "antd";
-import Stack from "../../../Stack/style";
-import WalletButton from "../../../WalletButton";
 import * as React from "react";
 import { resetSdk, useSdk } from "service";
-import { isKeplrSigner, isLedgerSigner } from "utils/sdk";
+import { isKeplrSigner, isLedgerSigner, setLastConnectedWallet } from "utils/sdk";
 import closeIcon from "../../../../assets/icons/cross.svg";
 import keplrIcon from "../../../../assets/images/keplr-logo.png";
 import ledgerIcon from "../../../../assets/images/ledger-logo.png";
+import Stack from "../../../Stack/style";
+import WalletButton from "../../../WalletButton";
 import { ChooseButtons, LogoutButton, ModalHeader, StyledAddressTag, SwitchButtons } from "./style";
 
 const { Title, Text } = Typography;
@@ -30,6 +30,7 @@ export default function ChooseWallet({
   function logout(): void {
     resetSdk(sdkDispatch);
     closeModal();
+    setLastConnectedWallet("");
   }
 
   return (
