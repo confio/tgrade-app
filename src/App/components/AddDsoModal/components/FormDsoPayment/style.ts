@@ -26,13 +26,14 @@ export const FeeGroup = styled.div`
 
 export const FeeField = styled(Typography)`
   margin-top: var(--s-1);
-
+  font-size: 13px;
   && > span.ant-typography {
     display: block;
     color: var(--color-text-1ary);
 
     & + span.ant-typography {
       font-weight: 500;
+      font-size: 13px;
     }
   }
 `;

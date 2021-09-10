@@ -6,8 +6,8 @@ export default styled(Steps)`
 
   & .ant-steps-item-icon {
     margin: 0;
-    background-color: var(--color-form-disabled);
-    border-color: var(--color-form-disabled);
+    background-color: lightgray:
+    border-color: transparent;
   }
 
   & .ant-steps-item {
@@ -24,13 +24,26 @@ export default styled(Steps)`
   & .ant-steps-item-wait {
     & .ant-steps-icon {
       color: black;
+      background-color: white;
     }
   }
 
-  & .ant-steps-item-active,
+
+
+  & .ant-steps-item-active{
+    
+    & .ant-steps-item-icon {
+      .ant-steps-icon{color:var(--color-primary);}
+      background-color:white;
+      border-color: var(--color-primary);
+    }
+  }
+
+
   & .ant-steps-item-finish {
     & .ant-steps-item-icon {
-      background-color: var(--color-primary);
+      color: white;
+      background-color:var(--color-primary);
       border-color: var(--color-primary);
     }
 

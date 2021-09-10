@@ -109,15 +109,15 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
             />
             <FeeGroup>
               <FeeField>
-                <Text>Escrow amount</Text>
+                <Text style={{ fontSize: "13px" }}>Escrow amount</Text>
                 <Text>{`${escrowAmount || 0} ${mappedFeeToken.denom}`}</Text>
               </FeeField>
               <FeeField>
-                <Text>Tx fee</Text>
+                <Text style={{ fontSize: "13px" }}>Tx fee</Text>
                 <Text>{`~${txFee} ${mappedFeeToken.denom}`}</Text>
               </FeeField>
               <FeeField>
-                <Text>Total charged</Text>
+                <Text style={{ fontSize: "13px" }}>Total charged</Text>
                 <Text>{`~${totalCharged} ${mappedFeeToken.denom}`}</Text>
               </FeeField>
             </FeeGroup>
