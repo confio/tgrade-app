@@ -34,3 +34,15 @@ export function runAfterLoad(callback: () => void): void {
 export function ellipsifyAddress(str: string): string {
   return str.length > 12 ? `${str.slice(0, 6)}…${str.slice(-6)}` : str;
 }
+
+export async function wait(ms = 1000): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function retry(cb: () => boolean, retries = 3): Promise<void> {
+  if (retries < 1) throw new Error("Retries exceeded for Keplr reconnect");
+  if (!cb()) {
+    await wait();
+    await retry(cb, retries - 1);
+  }
+}
