@@ -83,7 +83,13 @@ export const loadLedgerWallet: WalletLoader = async ({ addressPrefix }) => {
   });
 };
 
-export const loadKeplrWallet: WalletLoader = async (config) => {
+/*
+  NOTE: this async/await version does not work properly.
+        When reconnecting Keplr with a new browser instance,
+        Keplr asks for a password and this function stops
+        after `window.keplr.enable`, it never returns the signer
+*/
+/* export const loadKeplrWallet: WalletLoader = async (config) => {
   if (!window.keplr || !window.getOfflineSigner) {
     throw new Error("Keplr extension is not available");
   }
@@ -98,6 +104,34 @@ export const loadKeplrWallet: WalletLoader = async (config) => {
   }
 
   return Promise.resolve(signer);
+}; */
+
+export const loadKeplrWallet: WalletLoader = (config) => {
+  if (!window.keplr || !window.getOfflineSigner) {
+    throw new Error("Keplr extension is not available");
+  }
+
+  return window.keplr
+    .experimentalSuggestChain(configKeplr(config))
+    .then(() => {
+      if (!window.keplr) {
+        throw new Error("Keplr extension is not available");
+      }
+      window.keplr.enable(config.chainId);
+    })
+    .then(() => {
+      if (!window.getOfflineSigner) {
+        throw new Error("Keplr extension is not available");
+      }
+
+      // Type declaration because isOfflineDirectSigner is not narrowing type
+      const signer: OfflineDirectSigner = window.getOfflineSigner(config.chainId);
+      if (!isOfflineDirectSigner(signer)) {
+        throw new Error("Got amino signer instead of direct");
+      }
+
+      return signer;
+    });
 };
 
 export function isKeplrSigner(signer?: OfflineDirectSigner | LedgerSigner): signer is OfflineDirectSigner {
