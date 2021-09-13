@@ -40,7 +40,7 @@ export async function wait(ms = 1000): Promise<void> {
 }
 
 export async function retry(cb: () => boolean, retries = 3): Promise<void> {
-  if (retries < 1) throw new Error("Retries exceeded for Keplr reconnect");
+  if (retries < 1) throw new Error(`Retries exceeded for ${cb.name}`);
   if (!cb()) {
     await wait();
     await retry(cb, retries - 1);
