@@ -1,7 +1,7 @@
 import { Divider, Typography } from "antd";
 import Stack from "App/components/Stack/style";
 import { TokenProps } from "utils/tokens";
-import modalBg from "./assets/modal-background.jpg";
+import modalBg from "App/assets/images/modal-background.jpg";
 import Search from "./components/SearchToken";
 import closeIcon from "./assets/cross.svg";
 import StyledSelectTokenModal, { ModalHeader } from "./style";
