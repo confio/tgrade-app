@@ -74,7 +74,7 @@ export default function FormWhitelistPair({
           <Form>
             <Stack gap="s1">
               <Field label={pairAddressLabel} placeholder="Enter address" />
-              <Field label={commentLabel} placeholder="Enter comment" />
+              <Field label={commentLabel} placeholder="Enter comment" optional />
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />

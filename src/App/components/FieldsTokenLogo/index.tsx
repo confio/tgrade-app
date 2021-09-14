@@ -30,6 +30,7 @@ export default function FieldsTokenLogo({
       <Field
         label={logoUrlLabel}
         placeholder="Enter logo url"
+        optional
         value={previewLogoUrl}
         onInputChange={({ target }) => {
           setPreviewLogoUrl(target.value);

@@ -84,11 +84,11 @@ export default function TokenMarketing({
                   <AddressTag address={address || ""} />
                 </IssuerStack>
                 <FieldWrapper>
-                  <Field label={projectLabel} placeholder="Enter project" />
+                  <Field label={projectLabel} placeholder="Enter project" optional />
                 </FieldWrapper>
-                <Field label={descriptionLabel} placeholder="Enter description" />
+                <Field label={descriptionLabel} placeholder="Enter description" optional />
                 <FieldWrapper>
-                  <Field label={dsoAddressLabel} placeholder="Enter address" />
+                  <Field label={dsoAddressLabel} placeholder="Enter address" optional />
                 </FieldWrapper>
                 <Separator />
                 <ModalButtons

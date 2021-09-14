@@ -2,7 +2,6 @@ import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
 import Field from "App/components/Field";
 import { FormikErrors } from "formik";
-import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import { StyledFieldsTokenSupply, TokenLookStack } from "./style";
 
@@ -50,8 +49,12 @@ export default function FieldsTokenSupply({
 
   return (
     <StyledFieldsTokenSupply>
-      <Field label={initialSupplyLabel} placeholder="Enter initial supply" />
-      <Field label={decimalsLabel} placeholder="Enter decimals" />
+      <Field
+        label={initialSupplyLabel}
+        placeholder="Enter initial supply"
+        tooltip="Initial funds for the token creator"
+      />
+      <Field label={decimalsLabel} placeholder="Enter decimals" tooltip="Decimals for pretty print" />
       <TokenLookStack gap="s2">
         <Text>Your token will look like:</Text>
         <Text>{getTokenLook()}</Text>
