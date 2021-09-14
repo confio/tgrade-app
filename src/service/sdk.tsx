@@ -4,15 +4,18 @@ import { LedgerSigner } from "@cosmjs/ledger-amino";
 import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Coin } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
-import * as React from "react";
 import { createContext, useContext, useEffect, useReducer } from "react";
 import {
   createClient,
   createSigningClient,
   getLastConnectedWallet,
+  isKeplrAvailable,
+  isLedgerAvailable,
   loadKeplrWallet,
   loadLedgerWallet,
+  setLastConnectedWallet,
 } from "utils/sdk";
+import { retry } from "utils/ui";
 import { useError } from "./error";
 
 type SdkState = {
@@ -196,10 +199,17 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
       if (sdkState.signer || !lastConnectedWallet) return;
 
       try {
-        const signer =
-          lastConnectedWallet === "keplr" ? await loadKeplrWallet(config) : await loadLedgerWallet(config);
-        if (mounted) sdkDispatch({ type: "setSigner", payload: signer });
+        if (lastConnectedWallet === "keplr") {
+          await retry(isKeplrAvailable);
+          const signer = await loadKeplrWallet(config);
+          if (mounted) sdkDispatch({ type: "setSigner", payload: signer });
+        }
+        if (lastConnectedWallet === "ledger" && isLedgerAvailable()) {
+          const signer = await loadLedgerWallet(config);
+          if (mounted) sdkDispatch({ type: "setSigner", payload: signer });
+        }
       } catch (error) {
+        setLastConnectedWallet("");
         handleError(error);
       }
     })();
