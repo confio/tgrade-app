@@ -2,12 +2,12 @@ import { FormItem, Input } from "formik-antd";
 import styled from "styled-components";
 
 export default styled(FormItem)`
+  .ant-form-item-control-input-content > * + * {
+    margin-top: var(--s-3);
+  }
+
   & [id^="label-"] {
     color: var(--color-text-1ary);
-
-    & + * {
-      margin-top: var(--s-3);
-    }
   }
 
   & [aria-labelledby^="label-"] {
@@ -47,6 +47,16 @@ export default styled(FormItem)`
 
   & [role="alert"] {
     color: var(--color-error-form);
+  }
+`;
+
+export const LabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  & > span.ant-typography + span.ant-typography,
+  & > span.ant-typography + img[alt="Tooltip"] {
+    margin-left: var(--s-4);
   }
 `;
 
