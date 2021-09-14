@@ -4,6 +4,7 @@ import Field from "App/components/Field";
 import { FormSelect } from "App/components/Select";
 import { useState } from "react";
 import { getFormItemName } from "utils/forms";
+import TooltipWrapper from "../TooltipWrapper";
 import { MintStack, StyledFieldsTokenMint } from "./style";
 
 const { Text } = Typography;
@@ -26,7 +27,9 @@ export default function FieldsTokenMint({ mintLabel, mintCapLabel }: FieldsToken
   return (
     <StyledFieldsTokenMint>
       <MintStack gap="s0">
-        <Text>Mint</Text>
+        <TooltipWrapper title="Minting strategy for the token">
+          <Text>Mint</Text>
+        </TooltipWrapper>
         <FormSelect
           name={getFormItemName(mintLabel)}
           defaultActiveFirstOption

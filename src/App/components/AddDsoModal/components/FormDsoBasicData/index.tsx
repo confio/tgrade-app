@@ -1,13 +1,13 @@
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import Checkbox from "App/components/Checkbox";
 import Field from "App/components/Field";
+import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import BackButtonOrLink from "App/components/BackButtonOrLink";
-import { ButtonGroup, FieldGroup, FormStack, Separator, WarningText } from "./style";
+import { ButtonGroup, FieldGroup, Separator, StyledTooltipWrapper, WarningText } from "./style";
 
 const dsoNameLabel = "Trusted Circle name";
 const votingDurationLabel = "Voting duration";
@@ -90,14 +90,26 @@ export default function FormDsoBasicData({
         return (
           <>
             <Form>
-              <FormStack gap="s1">
+              <Stack gap="s1">
                 <Field label={dsoNameLabel} placeholder="Enter Trusted Circle name" />
                 <FieldGroup>
                   <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" />
-                  <Field label={quorumLabel} placeholder="Enter quorum" units="%" />
-                  <Field label={thresholdLabel} placeholder="Enter threshold" units="%" />
+                  <Field
+                    label={quorumLabel}
+                    placeholder="Enter quorum"
+                    tooltip="Percentage of voters needeed"
+                    units="%"
+                  />
+                  <Field
+                    label={thresholdLabel}
+                    placeholder="Enter threshold"
+                    tooltip="Percentage of favorable votes to pass"
+                    units="%"
+                  />
                 </FieldGroup>
-                <Checkbox name={getFormItemName(allowEndEarlyLabel)}>{allowEndEarlyLabel}</Checkbox>
+                <StyledTooltipWrapper title="Allows proposals to pass as soon as the threshold is met">
+                  <Checkbox name={getFormItemName(allowEndEarlyLabel)}>{allowEndEarlyLabel}</Checkbox>
+                </StyledTooltipWrapper>
                 {showDurationWarning ? <WarningText>Warning: voting duration very long</WarningText> : null}
                 <Separator />
                 <ButtonGroup>
@@ -106,7 +118,7 @@ export default function FormDsoBasicData({
                     <div>Next</div>
                   </Button>
                 </ButtonGroup>
-              </FormStack>
+              </Stack>
             </Form>
           </>
         );

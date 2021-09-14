@@ -1,13 +1,13 @@
-import Checkbox from "App/components/Checkbox";
-import Button from "App/components/Button";
-import Field from "App/components/Field";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
+import Button from "App/components/Button";
+import Checkbox from "App/components/Checkbox";
+import Field from "App/components/Field";
+import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import * as React from "react";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { ButtonGroup, FieldGroup, FormStack, Separator, WarningText } from "./style";
+import { ButtonGroup, FieldGroup, Separator, StyledTooltipWrapper, WarningText } from "./style";
 
 function getFormValuesWithType(values: { [x: string]: string | boolean }): FormEditDsoValues {
   return {
@@ -118,18 +118,32 @@ export default function FormEditDso({
         return (
           <>
             <Form>
-              <FormStack gap="s1">
-                <Field label={dsoNameLabel} placeholder="Enter Trusted Circle name" />
+              <Stack gap="s1">
+                <Field label={dsoNameLabel} placeholder="Enter Trusted Circle name" optional />
                 <FieldGroup>
-                  <Field label={quorumLabel} placeholder="Enter quorum" units="%" />
-                  <Field label={thresholdLabel} placeholder="Enter threshold" units="%" />
+                  <Field
+                    label={quorumLabel}
+                    placeholder="Enter quorum"
+                    units="%"
+                    optional
+                    tooltip="Percentage of voters needeed"
+                  />
+                  <Field
+                    label={thresholdLabel}
+                    placeholder="Enter threshold"
+                    units="%"
+                    optional
+                    tooltip="Percentage of favorable votes to pass"
+                  />
                 </FieldGroup>
                 <FieldGroup>
-                  <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" />
-                  <Field label={escrowAmountLabel} placeholder="Enter amount" units="TGD" />
+                  <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" optional />
+                  <Field label={escrowAmountLabel} placeholder="Enter amount" units="TGD" optional />
                 </FieldGroup>
-                <Checkbox name={getFormItemName(earlyPassLabel)}>{earlyPassLabel}</Checkbox>
-                <Field label={commentLabel} placeholder="Enter comment" />
+                <StyledTooltipWrapper title="Allows proposals to pass as soon as the threshold is met">
+                  <Checkbox name={getFormItemName(earlyPassLabel)}>{earlyPassLabel}</Checkbox>
+                </StyledTooltipWrapper>
+                <Field label={commentLabel} placeholder="Enter comment" optional />
                 {showDurationWarning ? <WarningText>Warning: voting duration very long</WarningText> : null}
                 <Separator />
                 <ButtonGroup>
@@ -143,7 +157,7 @@ export default function FormEditDso({
                     <div>Next</div>
                   </Button>
                 </ButtonGroup>
-              </FormStack>
+              </Stack>
             </Form>
           </>
         );
