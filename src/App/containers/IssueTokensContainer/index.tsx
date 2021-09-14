@@ -13,7 +13,7 @@ export default function IssueTokensContainer(): JSX.Element | null {
   const tokens: TokenProps[] = getTokensList(tMarketState.tokens, "");
   console.log(tokens);
   return (
-    <div>
+    <div style={{ marginLeft: "10px" }}>
       <Title>Issued Tokens</Title>
       <IssuedTokensList tokens={tokens} />
       <ItemWrapper>

@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import Styled from "styled-components";
-import MenuBG from "../../assets/images/menu-background.jpg";
+import MenuBG from "App/assets/images/menu-background.jpg";
 
 export const Navbar = Styled.div`
 display:flex;
@@ -10,7 +10,7 @@ min-height: 100vh;
 width:15.25rem;
 background: linear-gradient(0deg, rgba(1, 100, 101, 0.97), rgba(1, 100, 101, 0.97)), url(${MenuBG});
 svg{
-    margin:1.5rem;
+    margin:1rem;
 }
 `;
 
@@ -21,7 +21,6 @@ flex-direction:column;
 export const Cell = Styled.div`
 display:flex;
 align-items:center;
-padding:0.75rem;
 width:15.25rem;
 height:4.875rem;
 color:#fff;
@@ -38,7 +37,7 @@ svg{
 export const StyledText = Styled(Typography.Text)`
 &.ant-typography {
     color: #fff;
-    width:100%;
+    width:60%;
     font-size:14px;
   }
 `;

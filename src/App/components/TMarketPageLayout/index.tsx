@@ -1,9 +1,8 @@
 import { Col, Row } from "antd";
 import { HTMLAttributes } from "react";
-import pageCover from "./assets/pageCover.png";
-import dotMatrix from "./assets/dotMatrix.svg";
+import pageCover from "App/assets/images/modal-background.jpg";
 import tgradeLogoTitle from "./assets/tgradeLogoTitle.svg";
-import { StyledMarketLayout, DotMatrix, TgradeLogo, NotificationsContainer } from "./style";
+import { StyledMarketLayout, TgradeLogo, NotificationsContainer } from "./style";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -17,7 +16,6 @@ export default function TMarketPageLayout({ children }: HTMLAttributes<HTMLOrSVG
       <Row style={{ width: "100%" }} justify="center">
         <Col>{children}</Col>
       </Row>
-      <DotMatrix src={dotMatrix} alt="" />
     </StyledMarketLayout>
   );
 }
