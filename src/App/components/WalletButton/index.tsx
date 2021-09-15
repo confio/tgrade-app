@@ -1,4 +1,3 @@
-import { Typography } from "antd";
 import * as React from "react";
 import { HTMLAttributes } from "react";
 import arrowRightIcon from "../../assets/icons/arrowRight.svg";
