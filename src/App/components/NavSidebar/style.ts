@@ -44,6 +44,11 @@ export const StyledText = Styled(Typography.Text)`
 `;
 
 export const StyledAddressTag = Styled(AddressTag)`
+display: flex;
+justify-content: center;
+width: 204px;
+height: 26px;
+margin-left: 16px;
 font-family: Quicksand;
 font-size: 13px;
 font-style: normal;
