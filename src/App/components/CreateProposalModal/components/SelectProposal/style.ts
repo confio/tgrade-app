@@ -1,5 +1,6 @@
 import Stack from "App/components/Stack/style";
 import styled from "styled-components";
+import Select from "App/components/Select";
 
 export const ProposalStack = styled(Stack)`
   & span.ant-typography {
@@ -11,6 +12,12 @@ export const ProposalStack = styled(Stack)`
     align-self: flex-start;
     width: 100%;
     max-width: 22rem;
+  }
+`;
+
+export const StyledSelect = styled(Select)`
+  .ant-select-arrow {
+    color: black;
   }
 `;
 

@@ -1,6 +1,11 @@
 import Stack from "../../components/Stack/style";
 import styled from "styled-components";
 
+export const StyledText = styled.h2`
+  font-size: 18px;
+  font-weight: 400;
+  color: black;
+`;
 export default styled.button`
   cursor: pointer;
   padding: clamp(var(--s-2), calc(2vw + var(--s-2)), var(--s2));
@@ -11,7 +16,7 @@ export default styled.button`
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 
   &:hover,
   &:focus {
