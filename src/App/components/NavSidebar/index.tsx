@@ -59,9 +59,15 @@ export const NavSidebar: React.FC = () => {
           {address ? (
             <AddressTag
               address={address}
-              short
               noYou
-              style={{ display: "flex", justifyContent: "center", width: "100%" }}
+              short
+              style={{
+                marginLeft: "16px",
+                display: "flex",
+                justifyContent: "center",
+                width: "204px",
+                height: "26px",
+              }}
             />
           ) : (
             <>
