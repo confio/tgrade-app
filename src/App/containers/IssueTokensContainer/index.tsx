@@ -11,7 +11,6 @@ export default function IssueTokensContainer(): JSX.Element | null {
   const [isModalOpen, setModalOpen] = useState(false);
   const { tMarketState } = useTMarket();
   const tokens: TokenProps[] = getTokensList(tMarketState.tokens, "");
-  console.log(tokens);
   return (
     <div style={{ marginLeft: "10px" }}>
       <Title>Issued Tokens</Title>

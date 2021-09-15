@@ -10,6 +10,7 @@ width:325px;
 background: #FFFFFF;
 padding:8px;
 font-size:10px;
+margin:0px;
 &:hover{
     cursor:pointer;
     box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.25);

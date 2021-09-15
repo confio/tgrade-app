@@ -1,16 +1,20 @@
 import ExchangeListItem from "App/components/ExchangeListItem";
-import { MockData } from "./__mocks__/mockData";
+import { TokenProps } from "utils/tokens";
 
-export default function ExchangeList(): JSX.Element | null {
+export default function ExchangeList(props: { tokens: TokenProps[] }): JSX.Element | null {
   return (
     <ul style={{ width: "100%", listStyle: "none", paddingLeft: "0" }}>
-      {MockData.data.map((item) => (
+      {props.tokens.map((token) => (
         <ExchangeListItem
-          key={item.title}
-          icon={item.icon}
-          title={item.title}
-          value={item.value}
-          price={item.price}
+          key={token.address}
+          img={token.img}
+          name={token.name}
+          balance={token.balance}
+          humanBalance={token.humanBalance}
+          totalSupply={token.total_supply}
+          symbol={token.symbol}
+          address={token.address}
+          decimals={token.decimals}
         ></ExchangeListItem>
       ))}
     </ul>
