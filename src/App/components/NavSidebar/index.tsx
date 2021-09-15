@@ -13,6 +13,9 @@ export const NavSidebar: React.FC = () => {
   } = useSdk();
   const [isModalOpen, setModalOpen] = useState(false);
 
+  function ellipsifyAddress(str: string): string {
+    return str.length > 26 ? `${str.slice(0, 13)}…${str.slice(-13)}` : str;
+  }
   return (
     <Navbar>
       <LinkWrapper>
@@ -56,7 +59,7 @@ export const NavSidebar: React.FC = () => {
       <Link to="/" onClick={() => setModalOpen(true)} style={{ position: "fixed", top: "90%" }}>
         <Cell>
           {address ? (
-            <StyledAddressTag address={address} noYou short />
+            <StyledAddressTag>{ellipsifyAddress(address)}</StyledAddressTag>
           ) : (
             <>
               <Icon.ConnectWallet />

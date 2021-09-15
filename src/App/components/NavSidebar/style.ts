@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 import Styled from "styled-components";
 import MenuBG from "App/assets/images/menu-background.jpg";
-import AddressTag from "../AddressTag";
+import { Tag } from "antd";
 
 export const Navbar = Styled.div`
 display:flex;
@@ -43,9 +43,11 @@ export const StyledText = Styled(Typography.Text)`
   }
 `;
 
-export const StyledAddressTag = Styled(AddressTag)`
+export const StyledAddressTag = Styled(Tag)`
 display: flex;
 justify-content: center;
+align-items:center;
+border-radius: var(--border-radius);
 width: 204px;
 height: 26px;
 margin-left: 16px;

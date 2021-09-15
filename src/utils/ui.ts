@@ -32,7 +32,7 @@ export function runAfterLoad(callback: () => void): void {
 }
 
 export function ellipsifyAddress(str: string): string {
-  return str.length > 26 ? `${str.slice(0, 13)}…${str.slice(-13)}` : str;
+  return str.length > 12 ? `${str.slice(0, 6)}…${str.slice(-6)}` : str;
 }
 
 export async function wait(ms = 1000): Promise<void> {
