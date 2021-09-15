@@ -6,7 +6,7 @@ import Select from "App/components/Select";
 import * as React from "react";
 import { useState } from "react";
 import { proposalLabels, ProposalStep, ProposalType } from "../..";
-import { ProposalStack, Separator } from "./style";
+import { ProposalStack, Separator, StyledSelect } from "./style";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -22,7 +22,7 @@ export default function SelectProposal({ setProposalStep }: SelectProposalProps)
     <>
       <ProposalStack gap="s-3">
         <Text>Proposal</Text>
-        <Select
+        <StyledSelect
           defaultActiveFirstOption
           size="large"
           value={selectedProposal}
@@ -33,7 +33,7 @@ export default function SelectProposal({ setProposalStep }: SelectProposalProps)
               {proposalLabels[proposalType]}
             </Option>
           ))}
-        </Select>
+        </StyledSelect>
       </ProposalStack>
       <Separator />
       <Button onClick={() => setProposalStep({ type: selectedProposal })}>Next</Button>

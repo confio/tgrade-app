@@ -4,8 +4,6 @@ import { HTMLAttributes } from "react";
 import arrowRightIcon from "../../assets/icons/arrowRight.svg";
 import StyledWalletButton, { IconWrapper, StyledText } from "./style";
 
-const { Text } = Typography;
-
 interface WalletButtonProps extends HTMLAttributes<HTMLOrSVGElement> {
   readonly iconSrc: string;
   readonly iconAlt: string;
