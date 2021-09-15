@@ -38,7 +38,6 @@ svg{
 export const StyledText = Styled(Typography.Text)`
 &.ant-typography {
     color: #fff;
-    width:60%;
     font-size:14px;
   }
 `;
