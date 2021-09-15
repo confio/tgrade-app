@@ -1,14 +1,16 @@
 import { Typography } from "antd";
+import Tooltip from "App/components/Tooltip";
 import { Input } from "formik-antd";
-import * as React from "react";
 import { getFormItemName } from "utils/forms";
-import StyledField, { UnitlessInput } from "./style";
+import StyledField, { LabelWrapper, UnitlessInput } from "./style";
 
 const { Text } = Typography;
 
 interface FieldProps {
   readonly label: string;
   readonly placeholder: string;
+  readonly optional?: boolean;
+  readonly tooltip?: string;
   readonly value?: string;
   readonly units?: string;
   readonly disabled?: boolean;
@@ -18,6 +20,8 @@ interface FieldProps {
 export default function Field({
   label,
   placeholder,
+  optional,
+  tooltip,
   value,
   units,
   disabled,
@@ -29,7 +33,11 @@ export default function Field({
 
   return (
     <StyledField name={formItemName}>
-      <Text id={labelId}>{label}</Text>
+      <LabelWrapper>
+        <Text id={labelId}>{label}</Text>
+        {optional ? <Text>(optional)</Text> : null}
+        {tooltip ? <Tooltip title={tooltip} /> : null}
+      </LabelWrapper>
       {units ? (
         <div className="unit-input-container">
           <div className="unit-wrapper">

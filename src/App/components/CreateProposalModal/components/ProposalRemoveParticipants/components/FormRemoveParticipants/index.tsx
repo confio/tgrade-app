@@ -1,11 +1,10 @@
 import AddressList from "App/components/AddressList";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
-import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import * as React from "react";
 import { useSdk } from "service";
 import { addressStringToArray, getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
@@ -83,7 +82,7 @@ export default function FormRemoveParticipants({
                   setMembers(members.filter((member) => member !== memberAddress))
                 }
               />
-              <Field label={commentLabel} placeholder="Enter comment" />
+              <Field label={commentLabel} placeholder="Enter comment" optional />
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />

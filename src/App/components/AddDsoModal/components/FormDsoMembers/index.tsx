@@ -1,14 +1,13 @@
 import AddressList from "App/components/AddressList";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import * as React from "react";
 import { useSdk } from "service";
 import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
-import BackButtonOrLink from "App/components/BackButtonOrLink";
 import { ButtonGroup, Separator } from "./style";
 
 const membersLabel = "Participants";
@@ -59,6 +58,7 @@ export default function FormDsoMembers({
             <Stack>
               <Field
                 label={membersLabel}
+                optional
                 placeholder="Type or paste addresses here"
                 value={members.join(",")}
                 onInputChange={() => {

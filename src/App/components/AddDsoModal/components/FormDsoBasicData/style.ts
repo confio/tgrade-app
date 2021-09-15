@@ -1,13 +1,11 @@
 import { Typography } from "antd";
-import Stack from "App/components/Stack/style";
+import TooltipWrapper from "App/components/TooltipWrapper";
 import styled from "styled-components";
 
 const { Text } = Typography;
 
-export const FormStack = styled(Stack)`
-  &&& .ant-checkbox-wrapper {
-    margin-top: 0;
-  }
+export const StyledTooltipWrapper = styled(TooltipWrapper)`
+  margin-top: 0;
 `;
 
 export const WarningText = styled(Text)`
