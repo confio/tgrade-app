@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useSdk } from "service";
 import ConnectWalletModal from "../ConnectWalletModal";
 import * as Icon from "./icons";
-import { Cell, LinkWrapper, Navbar, StyledText, NavbarAddressTag } from "./style";
+import { Cell, LinkWrapper, Navbar, StyledText, StyledAddressTag } from "./style";
 
 export const NavSidebar: React.FC = () => {
   const {
@@ -56,7 +56,7 @@ export const NavSidebar: React.FC = () => {
       <Link to="/" onClick={() => setModalOpen(true)} style={{ position: "fixed", top: "90%" }}>
         <Cell>
           {address ? (
-            <NavbarAddressTag
+            <StyledAddressTag
               address={address}
               noYou
               short

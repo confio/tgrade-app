@@ -1,4 +1,3 @@
-import { StyledAddressTag } from "./../ConnectWalletModal/components/ChooseWallet/style";
 import { Typography } from "antd";
 import Styled from "styled-components";
 import MenuBG from "App/assets/images/menu-background.jpg";
@@ -44,7 +43,7 @@ export const StyledText = Styled(Typography.Text)`
   }
 `;
 
-export const NavbarAddressTag = Styled(AddressTag)`
+export const StyledAddressTag = Styled(AddressTag)`
 font-family: Quicksand;
 font-size: 13px;
 font-style: normal;
