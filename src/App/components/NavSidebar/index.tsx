@@ -3,10 +3,9 @@ import * as React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSdk } from "service";
-import AddressTag from "../AddressTag";
 import ConnectWalletModal from "../ConnectWalletModal";
 import * as Icon from "./icons";
-import { Cell, LinkWrapper, Navbar, StyledText } from "./style";
+import { Cell, LinkWrapper, Navbar, StyledText, StyledAddressTag } from "./style";
 
 export const NavSidebar: React.FC = () => {
   const {
@@ -14,6 +13,9 @@ export const NavSidebar: React.FC = () => {
   } = useSdk();
   const [isModalOpen, setModalOpen] = useState(false);
 
+  function ellipsifyAddress(str: string): string {
+    return str.length > 26 ? `${str.slice(0, 13)}…${str.slice(-13)}` : str;
+  }
   return (
     <Navbar>
       <LinkWrapper>
@@ -57,12 +59,7 @@ export const NavSidebar: React.FC = () => {
       <Link to="/" onClick={() => setModalOpen(true)} style={{ position: "fixed", top: "90%" }}>
         <Cell>
           {address ? (
-            <AddressTag
-              address={address}
-              short
-              noYou
-              style={{ display: "flex", justifyContent: "center", width: "100%" }}
-            />
+            <StyledAddressTag>{ellipsifyAddress(address)}</StyledAddressTag>
           ) : (
             <>
               <Icon.ConnectWallet />

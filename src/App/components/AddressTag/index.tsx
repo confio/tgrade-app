@@ -35,6 +35,7 @@ export default function AddressTag({
       {...restProps}
     >
       {short ? ellipsifyAddress(address) : address}
+
       {myAddress === address && !noYou ? <span className="your-address">(you)</span> : null}
     </StyledAddressTag>
   );

@@ -1,6 +1,7 @@
 import { Typography } from "antd";
 import Styled from "styled-components";
 import MenuBG from "App/assets/images/menu-background.jpg";
+import { Tag } from "antd";
 
 export const Navbar = Styled.div`
 display:flex;
@@ -40,4 +41,21 @@ export const StyledText = Styled(Typography.Text)`
     width:60%;
     font-size:14px;
   }
+`;
+
+export const StyledAddressTag = Styled(Tag)`
+display: flex;
+justify-content: center;
+align-items:center;
+border-radius: var(--border-radius);
+width: 204px;
+height: 26px;
+margin-left: 16px;
+font-family: Quicksand;
+font-size: 13px;
+font-style: normal;
+font-weight: 400;
+line-height: 16px;
+letter-spacing: 0em;
+text-align: left;
 `;
