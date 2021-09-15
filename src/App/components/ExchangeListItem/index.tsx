@@ -1,6 +1,6 @@
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-token-round.svg";
 
-import { AmountText, ItemWrapper, SymbolText, ValueText } from "./style";
+import { AmountText, ItemWrapper, SymbolText } from "./style";
 
 interface itemProps {
   address: string;

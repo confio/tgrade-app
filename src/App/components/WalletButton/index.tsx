@@ -2,7 +2,7 @@ import { Typography } from "antd";
 import * as React from "react";
 import { HTMLAttributes } from "react";
 import arrowRightIcon from "../../assets/icons/arrowRight.svg";
-import StyledWalletButton, { IconWrapper } from "./style";
+import StyledWalletButton, { IconWrapper, StyledText } from "./style";
 
 const { Text } = Typography;
 
@@ -23,7 +23,7 @@ export default function WalletButton({
       <IconWrapper>
         <img src={iconSrc} alt={iconAlt} />
       </IconWrapper>
-      <Text>{text}</Text>
+      <StyledText>{text}</StyledText>
       <img src={arrowRightIcon} alt="Right arrow icon" />
     </StyledWalletButton>
   );
