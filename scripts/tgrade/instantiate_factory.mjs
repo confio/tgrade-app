@@ -16,15 +16,15 @@ Usage:
 */
 
 const networkConfig = {
-  endpoint: "https://rpc.testnet-2.tgrade.io",
-  faucet: "https://faucet.testnet-2.tgrade.io",
-  bech32prefix: "tgrade",
-  feeDenom: "utgd",
-  gasPrice: GasPrice.fromString("0.025utgd"),
-  gasLimitCreateFactory: 500_000,
-  cw20LiquidityCodeId: 6,
-  factoryCodeId: 8,
-  pairCodeId: 9,
+  endpoint: "",
+  faucet: "",
+  bech32prefix: "",
+  feeDenom: "",
+  gasPrice: GasPrice.fromString(""),
+  gasLimitCreateFactory: 0,
+  cw20LiquidityCodeId: 0,
+  factoryCodeId: 0,
+  pairCodeId: 0,
 };
 
 const localConfig = {
