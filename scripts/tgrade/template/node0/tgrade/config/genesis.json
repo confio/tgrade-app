@@ -5,11 +5,11 @@
       "accounts": [
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "tgrade1d43aete280wv8a3aty4sjtm4hjh74wnkwpgxvn"
+          "address": "tgrade159g8e7mx9yysr57r3zgx5ws2mlz7506nnp50qj"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "tgrade1j3hf5xnkar5p9cqx0puqkljlurxf8zmzvjfk28"
+          "address": "tgrade1fmtrj2ammgu28qftju7hu3962rr6yr8z6y2qss"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
@@ -27,10 +27,14 @@
     "bank": {
       "balances": [
         {
-          "address": "tgrade1d43aete280wv8a3aty4sjtm4hjh74wnkwpgxvn",
+          "address": "tgrade1fmtrj2ammgu28qftju7hu3962rr6yr8z6y2qss",
           "coins": [
             {
-              "amount": "1000000",
+              "amount": "1000000000",
+              "denom": "node0token"
+            },
+            {
+              "amount": "500000000",
               "denom": "utgd"
             }
           ]
@@ -45,14 +49,10 @@
           ]
         },
         {
-          "address": "tgrade1j3hf5xnkar5p9cqx0puqkljlurxf8zmzvjfk28",
+          "address": "tgrade159g8e7mx9yysr57r3zgx5ws2mlz7506nnp50qj",
           "coins": [
             {
-              "amount": "1000000000",
-              "denom": "node0token"
-            },
-            {
-              "amount": "500000000",
+              "amount": "1000000",
               "denom": "utgd"
             }
           ]
@@ -75,50 +75,12 @@
         "denom": "utgd"
       }
     },
-    "distribution": {
-      "delegator_starting_infos": [],
-      "delegator_withdraw_infos": [],
-      "fee_pool": {
-        "community_pool": []
-      },
-      "outstanding_rewards": [],
-      "params": {
-        "base_proposer_reward": "0.010000000000000000",
-        "bonus_proposer_reward": "0.040000000000000000",
-        "community_tax": "0.020000000000000000",
-        "withdraw_addr_enabled": true
-      },
-      "validator_accumulated_commissions": [],
-      "validator_current_rewards": [],
-      "validator_historical_rewards": [],
-      "validator_slash_events": []
-    },
     "evidence": {
       "evidence": []
     },
     "globalfee": {
       "params": {
         "minimum_gas_prices": []
-      }
-    },
-    "gov": {
-      "deposit_params": {
-        "max_deposit_period": "172800s",
-        "min_deposit": [
-          {
-            "amount": "10000000",
-            "denom": "utgd"
-          }
-        ]
-      },
-      "starting_proposal_id": "1",
-      "tally_params": {
-        "quorum": "0.334000000000000000",
-        "threshold": "0.500000000000000000",
-        "veto_threshold": "0.334000000000000000"
-      },
-      "voting_params": {
-        "voting_period": "172800s"
       }
     },
     "ibc": {
@@ -146,30 +108,16 @@
         "connections": []
       }
     },
-    "mint": {
-      "minter": {
-        "annual_provisions": "0.000000000000000000",
-        "inflation": "0.130000000000000000"
-      },
-      "params": {
-        "blocks_per_year": "6311520",
-        "goal_bonded": "0.670000000000000000",
-        "inflation_max": "0.200000000000000000",
-        "inflation_min": "0.070000000000000000",
-        "inflation_rate_change": "0.130000000000000000",
-        "mint_denom": "utgd"
-      }
-    },
     "params": null,
     "poe": {
       "bond_denom": "utgd",
       "engagement": [
         {
-          "address": "tgrade1d43aete280wv8a3aty4sjtm4hjh74wnkwpgxvn",
+          "address": "tgrade159g8e7mx9yysr57r3zgx5ws2mlz7506nnp50qj",
           "weight": "2"
         },
         {
-          "address": "tgrade1j3hf5xnkar5p9cqx0puqkljlurxf8zmzvjfk28",
+          "address": "tgrade1fmtrj2ammgu28qftju7hu3962rr6yr8z6y2qss",
           "weight": "1"
         }
       ],
@@ -191,7 +139,7 @@
                 },
                 "public_key": {
                   "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "A/UquXYAjmDbZ3TLrJ8819cuFwyfkhH2lSScnioe/6/A"
+                  "key": "A4I/1yhmJXQeac5DM+i2zvOgTy/Ow7CBefenNO6uY2RL"
                 },
                 "sequence": "0"
               }
@@ -199,11 +147,11 @@
           },
           "body": {
             "extension_options": [],
-            "memo": "043d1c504940a3dbf0e2f37d1639a91f0f15dc8c@192.168.0.1:26656",
+            "memo": "4b1388a5d05540284b297ca710c780113362800f@192.168.0.1:26656",
             "messages": [
               {
                 "@type": "/confio.poe.v1beta1.MsgCreateValidator",
-                "delegator_address": "tgrade1j3hf5xnkar5p9cqx0puqkljlurxf8zmzvjfk28",
+                "delegator_address": "tgrade1fmtrj2ammgu28qftju7hu3962rr6yr8z6y2qss",
                 "description": {
                   "details": "",
                   "identity": "",
@@ -213,7 +161,7 @@
                 },
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "AYZSPZKcVEPdtRfPePLuXbMfnftLfEesw3y7+jOx+ks="
+                  "key": "/rXgqiiZQX+v8C9vKsFOaO9o+9LxfEwxeZ24DcsQmtY="
                 },
                 "value": {
                   "amount": "100000000",
@@ -225,33 +173,17 @@
             "timeout_height": "0"
           },
           "signatures": [
-            "Sy+ysoopr7DDJea/LiOCe7GsEID38zNyoH4qfHzLCik89cHRnrv1KavEPcWmIRHctTL07ivOsBorxEuGzyh6ew=="
+            "MmXuLIt9/Uruvg8ZODYDL8DZJnFBaRhSEFssxgdkMI0gPATw5nhDLMKLqesEul690cC68cNldn+77whI0o/hEw=="
           ]
         }
       ],
-      "seed_contracts": true,
-      "system_admin_address": "tgrade1d43aete280wv8a3aty4sjtm4hjh74wnkwpgxvn"
-    },
-    "slashing": {
-      "missed_blocks": [],
       "params": {
-        "downtime_jail_duration": "600s",
-        "min_signed_per_window": "0.500000000000000000",
-        "signed_blocks_window": "100",
-        "slash_fraction_double_sign": "0.050000000000000000",
-        "slash_fraction_downtime": "0.010000000000000000"
-      },
-      "signing_infos": []
-    },
-    "staking": {
-      "last_total_power": "0",
-      "params": {
-        "bond_denom": "utgd",
         "historical_entries": 10000,
-        "max_entries": 7,
-        "max_validators": 100,
-        "unbonding_time": "1814400s"
-      }
+        "initial_val_engagement_points": "1",
+        "min_delegation_amounts": []
+      },
+      "seed_contracts": true,
+      "system_admin_address": "tgrade159g8e7mx9yysr57r3zgx5ws2mlz7506nnp50qj"
     },
     "transfer": {
       "denom_traces": [],
@@ -275,7 +207,7 @@
       }
     }
   },
-  "chain_id": "chain-tUfpCC",
+  "chain_id": "chain-hWEH1q",
   "consensus_params": {
     "block": {
       "max_bytes": "22020096",
@@ -294,6 +226,6 @@
     },
     "version": {}
   },
-  "genesis_time": "2021-08-12T13:19:01.95530385Z",
+  "genesis_time": "2021-09-16T13:19:50.2631357Z",
   "initial_height": "1"
 }
