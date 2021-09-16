@@ -40,8 +40,9 @@ export function getAppConfig(configs: NetworkConfigs): NetworkConfig {
   return config;
 }
 
+// local docker deployment
 const local: NetworkConfig = {
-  chainId: "chain-tUfpCC",
+  chainId: "chain-hWEH1q",
   chainName: "Local Testing",
   addressPrefix: "tgrade",
   rpcUrl: "http://localhost:26657",
@@ -65,6 +66,32 @@ const local: NetworkConfig = {
   },
 };
 
+// dev.tgrade.finance
+const tgradeInternal: NetworkConfig = {
+  chainId: "tgrade-internal-2",
+  chainName: "Tgrade-internal-2",
+  addressPrefix: "tgrade",
+  rpcUrl: "https://rpc.internal-2.tgrade.io",
+  httpUrl: "https://lcd.internal-2.tgrade.io",
+  faucetUrl: "https://faucet.internal-2.tgrade.io",
+  feeToken: "utgd",
+  stakingToken: "utgd",
+  faucetTokens: ["utgd"],
+  coinMap: {
+    utgd: { denom: "TGD", fractionalDigits: 6 },
+  },
+  gasPrice: GasPrice.fromString("0.025utgd"),
+  factoryAddress: "tgrade14ejqjyq8um4p3xfqj74yld5waqljf88fysvrq7",
+  codeIds: {
+    tgradeDso: [5],
+    cw20Tokens: [6],
+    tgradeCw20: [7],
+    tgradeFactory: [8],
+    tgradePair: [9],
+  },
+};
+
+// try.tgrade.finance
 const tgradeTestnet: NetworkConfig = {
   chainId: "tgrade-testnet-2",
   chainName: "Tgrade-testnet-2",
@@ -89,5 +116,5 @@ const tgradeTestnet: NetworkConfig = {
   },
 };
 
-const configs: NetworkConfigs = { local, tgradeTestnet };
+const configs: NetworkConfigs = { local, tgradeInternal, tgradeTestnet };
 export const config = getAppConfig(configs);
