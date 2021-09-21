@@ -3,6 +3,15 @@ import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
 
 export type VoteOption = "yes" | "no" | "abstain";
 
+export interface PendingEscrow {
+  /// Associated proposal_id
+  readonly proposal_id: number;
+  /// Pending escrow amount
+  readonly amount: string;
+  /// Timestamp (seconds) when the pending escrow is enforced
+  readonly grace_ends_at: number;
+}
+
 export interface VotingRules {
   /// Length of voting period in days
   readonly voting_period: number;
@@ -19,7 +28,7 @@ export interface DsoResponse {
   readonly name: string;
   /// The required escrow amount, in the default denom (utgd)
   readonly escrow_amount: string;
-  readonly escrow_pending?: string | null;
+  readonly escrow_pending?: PendingEscrow | null;
   readonly rules: VotingRules;
 }
 
