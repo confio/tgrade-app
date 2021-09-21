@@ -10,6 +10,22 @@
     <meta name="theme-color" content="#fafafa" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Tgrade</title>
+    <!-- Dummy function if Google Analytics should not be used -->
+    <script>
+      function gtag() {}
+    </script>
+    <!-- Google Analytics for try.tgrade.finance only -->
+    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet") { %>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CL60E9X5BW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-CL60E9X5BW");
+    </script>
+    <% } %>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
