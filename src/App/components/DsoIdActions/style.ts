@@ -40,6 +40,7 @@ export const VotingRules = styled.div`
   & span.ant-typography {
     padding: var(--s-1) var(--s1);
     color: var(--color-text-1ary);
+    font-size: 13px;
 
     &:first-child {
       padding-right: 0;

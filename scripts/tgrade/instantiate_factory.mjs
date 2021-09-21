@@ -20,7 +20,7 @@ const networkConfig = {
   faucet: "",
   bech32prefix: "",
   feeDenom: "",
-  gasPrice: GasPrice.fromString(""),
+  gasPrice: GasPrice.fromString("0.025utgd"),
   gasLimitCreateFactory: 0,
   cw20LiquidityCodeId: 0,
   factoryCodeId: 0,

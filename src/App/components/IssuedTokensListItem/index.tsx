@@ -33,7 +33,6 @@ export default function IssueTokensListItem({
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
         <span>{humanBalance}</span>
-        <span>{totalSupply} %</span>
       </div>
     </ItemWrapper>
   );
