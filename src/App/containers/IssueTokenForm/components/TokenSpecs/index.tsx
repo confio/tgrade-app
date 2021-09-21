@@ -38,8 +38,9 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(tokenSymbolLabel)]: Yup.string()
     .typeError("Token symbol must be alphanumeric")
     .required("Token symbol is required")
-    .min(3, "Token symbol must have between 3 and 6 characters")
-    .max(6, "Token symbol must have between 3 and 6 characters"),
+    .min(3, "Token symbol must have between 3 and 12 characters")
+    .max(12, "Token symbol must have between 3 and 12 characters")
+    .matches(/^[a-zA-Z-]{3,12}$/, 'Token symbol must use a-z, A-Z, or "-" characters'),
   [getFormItemName(tokenNameLabel)]: Yup.string()
     .typeError("Token name must be alphanumeric")
     .required("Token name is required")
