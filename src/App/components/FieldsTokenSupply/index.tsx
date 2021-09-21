@@ -39,8 +39,7 @@ export default function FieldsTokenSupply({
 
     try {
       const decimalsInt = parseInt(decimalsValue, 10);
-      const floatAmount = Decimal.fromUserInput(supplyValue, decimalsInt).toFloatApproximation();
-      const amount = floatAmount / 10 ** decimalsInt;
+      const amount = Decimal.fromAtomics(supplyValue, decimalsInt).toString();
       return `${amount} ${symbolValue}`;
     } catch {
       return "—";
