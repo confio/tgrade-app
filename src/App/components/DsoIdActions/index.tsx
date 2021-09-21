@@ -63,7 +63,7 @@ export default function DsoIdActions(): JSX.Element {
   return (
     <StyledDsoIdActions>
       <header>
-        <Title>{dsoName}</Title>
+        <Title style={{ fontSize: "20px" }}>{dsoName}</Title>
         <div className="address-actions-container">
           <AddressTag address={dsoAddress} copyable onClose={() => console.count("close!")} />
           <Dropdown

@@ -2,9 +2,10 @@ import ExchangeListItem from "App/components/ExchangeListItem";
 import { TokenProps } from "utils/tokens";
 
 export default function ExchangeList(props: { tokens: TokenProps[] }): JSX.Element | null {
+  const filteredTokens = props.tokens.filter((token) => token.humanBalance !== "0");
   return (
     <ul style={{ width: "100%", listStyle: "none", paddingLeft: "0" }}>
-      {props.tokens.map((token) => (
+      {filteredTokens.map((token) => (
         <ExchangeListItem
           key={token.address}
           img={token.img}
