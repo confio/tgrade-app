@@ -48,12 +48,10 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(quorumLabel)]: Yup.number()
     .typeError("Quorum must be a number")
     .positive("Quorum must be positive")
-    .integer("Quorum must be an integer")
     .max(100, "Quorum must be 100 maximum"),
   [getFormItemName(thresholdLabel)]: Yup.number()
     .typeError("Threshold must be a number")
     .positive("Threshold must be positive")
-    .integer("Threshold must be an integer")
     .min(50, "Threshold must be 50 minimum")
     .max(100, "Threshold must be 100 maximum"),
   [getFormItemName(votingDurationLabel)]: Yup.number()
