@@ -77,13 +77,13 @@ export default function ConfirmationEditDso({
         {quorum ? (
           <ChangedField>
             <TextLabel>Quorum</TextLabel>
-            <TextValue>{quorum}</TextValue>
+            <TextValue>{quorum} %</TextValue>
           </ChangedField>
         ) : null}
         {threshold ? (
           <ChangedField>
             <TextLabel>Threshold</TextLabel>
-            <TextValue>{threshold}</TextValue>
+            <TextValue>{threshold} %</TextValue>
           </ChangedField>
         ) : null}
         {votingDuration ? (

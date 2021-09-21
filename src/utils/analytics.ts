@@ -17,12 +17,12 @@ async function getClientIp(): Promise<string> {
     const ipv6 = await getAnonIp("v6");
     return ipv6;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     try {
       const ipv4 = await getAnonIp("v4");
       return ipv4;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return "";
     }
   }

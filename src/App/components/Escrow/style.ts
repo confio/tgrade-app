@@ -37,13 +37,13 @@ export const YourEscrowStack = styled(Stack)`
 `;
 
 export const AmountStack = styled(Stack)`
-  & span.ant-typography:nth-child(1) {
-    color: var(--color-text-1ary);
-    font-size: var(--s-1);
-  }
-
-  & span.ant-typography:nth-child(2) {
+  & span.ant-typography {
     color: var(--color-text-2ary);
     font-weight: 500;
+  }
+
+  & > span.ant-typography:nth-child(1) {
+    color: var(--color-text-1ary);
+    font-size: var(--s-1);
   }
 `;

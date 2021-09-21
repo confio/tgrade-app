@@ -44,8 +44,8 @@ export default function DsoIdActions(): JSX.Element {
           { denom: config.feeToken, amount: dsoResponse.escrow_amount },
           config.coinMap,
         );
-        const quorum = (parseFloat(dsoResponse.rules.quorum) * 100).toFixed(0).toString();
-        const threshold = (parseFloat(dsoResponse.rules.threshold) * 100).toFixed(0).toString();
+        const quorum = (parseFloat(dsoResponse.rules.quorum) * 100).toFixed(2).toString();
+        const threshold = (parseFloat(dsoResponse.rules.threshold) * 100).toFixed(2).toString();
         const allowEndEarly = dsoResponse.rules.allow_end_early ? "Yes" : "No";
 
         setMinimumEscrow(minimumEscrow);

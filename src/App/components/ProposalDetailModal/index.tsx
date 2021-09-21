@@ -252,13 +252,17 @@ export default function ProposalDetailModal({
                   {proposalEditDso?.quorum ? (
                     <ChangedField>
                       <TextLabel>Quorum</TextLabel>
-                      <TextValue>{parseFloat(proposalEditDso.quorum) * 100}%</TextValue>
+                      <TextValue>
+                        {(parseFloat(proposalEditDso.quorum) * 100).toFixed(2).toString()}%
+                      </TextValue>
                     </ChangedField>
                   ) : null}
                   {proposalEditDso?.threshold ? (
                     <ChangedField>
                       <TextLabel>Threshold</TextLabel>
-                      <TextValue>{parseFloat(proposalEditDso.threshold) * 100}%</TextValue>
+                      <TextValue>
+                        {(parseFloat(proposalEditDso.threshold) * 100).toFixed(2).toString()}%
+                      </TextValue>
                     </ChangedField>
                   ) : null}
                   {proposalEditDso?.voting_period ? (
@@ -313,14 +317,14 @@ export default function ProposalDetailModal({
                   {proposalEditDso?.quorum ? (
                     <ChangedField>
                       <Paragraph>
-                        Quorum: <b>{parseFloat(proposalEditDso.quorum) * 100}%</b>
+                        Quorum: <b>{(parseFloat(proposalEditDso.quorum) * 100).toFixed(2).toString()}%</b>
                       </Paragraph>
                     </ChangedField>
                   ) : null}
                   {proposalEditDso?.threshold ? (
                     <Paragraph>
                       {`Threshold: > `}
-                      <b>{parseFloat(proposalEditDso.threshold) * 100}%</b>
+                      <b>{(parseFloat(proposalEditDso.threshold) * 100).toFixed(2).toString()}%</b>
                     </Paragraph>
                   ) : null}
                   {proposalEditDso?.voting_period ? (

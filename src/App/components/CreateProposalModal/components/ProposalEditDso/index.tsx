@@ -55,8 +55,8 @@ export default function ProposalEditDso({
       try {
         const dsoContract = new DsoContractQuerier(dsoAddress, client);
         const dsoResponse = await dsoContract.getDso();
-        const quorum = (parseFloat(dsoResponse.rules.quorum) * 100).toFixed(0).toString();
-        const threshold = (parseFloat(dsoResponse.rules.threshold) * 100).toFixed(0).toString();
+        const quorum = (parseFloat(dsoResponse.rules.quorum) * 100).toFixed(2).toString();
+        const threshold = (parseFloat(dsoResponse.rules.threshold) * 100).toFixed(2).toString();
         const escrowAmount = nativeCoinToDisplay(
           { denom: config.feeToken, amount: dsoResponse.escrow_amount },
           config.coinMap,
@@ -108,8 +108,8 @@ export default function ProposalEditDso({
 
     try {
       const nativeEscrowAmount = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
-      const nativeQuorum = quorum ? (parseFloat(quorum) / 100).toFixed(2).toString() : undefined;
-      const nativethreshold = threshold ? (parseFloat(threshold) / 100).toFixed(2).toString() : undefined;
+      const nativeQuorum = quorum ? (parseFloat(quorum) / 100).toString() : undefined;
+      const nativethreshold = threshold ? (parseFloat(threshold) / 100).toString() : undefined;
 
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.propose(address, comment, {

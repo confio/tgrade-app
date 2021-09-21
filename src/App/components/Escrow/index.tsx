@@ -2,14 +2,15 @@ import { Pie } from "@ant-design/charts";
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { Typography } from "antd";
 import Button from "App/components/Button";
+import DepositEscrowModal from "App/components/DepositEscrowModal";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
-import { DsoHomeParams } from "App/pages/DsoHome";
-import DepositEscrowModal from "App/components/DepositEscrowModal";
+import TooltipWrapper from "../TooltipWrapper";
 import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
 
 const { Title, Text } = Typography;
@@ -28,6 +29,8 @@ export default function Escrow(): JSX.Element {
   const [requiredEscrow, setRequiredEscrow] = useState("0");
   const [totalRequiredEscrow, setTotalRequiredEscrow] = useState(0);
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
+  const [pendingEscrow, setPendingEscrow] = useState<string>();
+  const [gracePeriod, setGracePeriod] = useState<string>();
 
   const refreshEscrows = useCallback(
     async function () {
@@ -50,11 +53,20 @@ export default function Escrow(): JSX.Element {
         }
 
         // get minimum escrow required for this DSO
-        const { escrow_amount } = await dsoContract.getDso();
+        const { escrow_amount, escrow_pending } = await dsoContract.getDso();
         const feeDecimals = config.coinMap[config.feeToken].fractionalDigits;
 
         const requiredEscrowDecimal = Decimal.fromAtomics(escrow_amount, feeDecimals);
         setRequiredEscrow(requiredEscrowDecimal.toString());
+
+        // get pending escrow and grace period if any
+        if (escrow_pending) {
+          const pendingEscrowAmount = Decimal.fromAtomics(escrow_pending.amount, feeDecimals).toString();
+          setPendingEscrow(pendingEscrowAmount);
+
+          const gracePeriod = new Date(escrow_pending.grace_ends_at * 1000).toLocaleString();
+          setGracePeriod(gracePeriod);
+        }
 
         // get member escrows to calculate total required and total paid
         const members = await dsoContract.getAllMembers();
@@ -167,7 +179,15 @@ export default function Escrow(): JSX.Element {
         </AmountStack>
         <AmountStack gap="s-4">
           <Text>Needed to get voting rights:</Text>
-          <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
+          {pendingEscrow ? (
+            <TooltipWrapper
+              title={`The current minimum escrow is ${requiredEscrow} ${feeDenom}, but ${pendingEscrow} ${feeDenom} will be needed after ${gracePeriod} in order to have voting rights`}
+            >
+              <Text>{`${pendingEscrow} ${feeDenom}`}</Text>
+            </TooltipWrapper>
+          ) : (
+            <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
+          )}
         </AmountStack>
         {address ? <Button onClick={() => setModalOpen(true)}>Deposit escrow</Button> : null}
       </YourEscrowStack>

@@ -41,7 +41,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
   const [dsoName, setDsoName] = useState("");
   const [votingDuration, setVotingDuration] = useState("14");
   const [quorum, setQuorum] = useState("1");
-  const [threshold, setThreshold] = useState("50");
+  const [threshold, setThreshold] = useState("50.01");
   const [allowEndEarly, setAllowEndEarly] = useState(true);
   const [members, setMembers] = useState<readonly string[]>([]);
 
