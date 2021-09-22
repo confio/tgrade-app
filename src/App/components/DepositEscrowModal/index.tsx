@@ -1,11 +1,13 @@
 import { Typography } from "antd";
+import closeIcon from "App/assets/icons/cross.svg";
+import modalBg from "App/assets/images/modal-background.jpg";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
-import Stack from "App/components/Stack/style";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
+import Stack from "App/components/Stack/style";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
@@ -14,9 +16,7 @@ import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { DsoHomeParams } from "App/pages/DsoHome";
-import closeIcon from "App/assets/icons/cross.svg";
-import modalBg from "App/assets/images/modal-background.jpg";
+import ConnectWalletModal from "../ConnectWalletModal";
 import { ButtonGroup, ModalHeader, Separator, StyledModal } from "./style";
 
 const { Title, Text } = Typography;
@@ -51,13 +51,14 @@ export default function DepositEscrowModal({
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { signingClient, config, address },
+    sdkState: { config, signer, address, signingClient },
   } = useSdk();
   const feeDenom = config.coinMap[config.feeToken].denom;
   const {
     dsoState: { dsos },
   } = useDso();
 
+  const [isConnectWalletModalOpen, setConnectWalletModalOpen] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
 
@@ -158,8 +159,13 @@ export default function DepositEscrowModal({
                   <Field label={escrowAmountLabel} placeholder="Enter amount" units="TGD" />
                   <Separator />
                   <ButtonGroup>
-                    <Button loading={isSubmitting} disabled={!isValid} danger onClick={() => submitForm()}>
-                      Pay escrow
+                    <Button
+                      loading={isSubmitting}
+                      disabled={!isValid}
+                      danger={!!signer}
+                      onClick={signer ? () => submitForm() : () => setConnectWalletModalOpen(true)}
+                    >
+                      {signer ? "Pay escrow" : "Connect wallet"}
                     </Button>
                     <Button disabled={isSubmitting} onClick={() => closeModal()}>
                       Cancel
@@ -171,6 +177,10 @@ export default function DepositEscrowModal({
           </Formik>
         </Stack>
       )}
+      <ConnectWalletModal
+        isModalOpen={isConnectWalletModalOpen}
+        closeModal={() => setConnectWalletModalOpen(false)}
+      />
     </StyledModal>
   );
 }
