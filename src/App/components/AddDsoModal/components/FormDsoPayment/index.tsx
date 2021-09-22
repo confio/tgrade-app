@@ -1,18 +1,18 @@
 import { Decimal } from "@cosmjs/math";
 import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
+import ConnectWalletModal from "App/components/ConnectWalletModal";
 import Field from "App/components/Field";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { DsoContract } from "utils/dso";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import BackButtonOrLink from "App/components/BackButtonOrLink";
 import { ButtonGroup, FeeField, FeeGroup, FormStack, Separator } from "./style";
 
 const { Text } = Typography;
@@ -39,8 +39,10 @@ interface FormDsoPaymentProps {
 export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentProps): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, signingClient },
+    sdkState: { config, signer, signingClient },
   } = useSdk();
+
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const [escrowAmount, setEscrowAmount] = useState("1");
   const [txFee, setTxFee] = useState("0");
@@ -90,47 +92,54 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
   ]);
 
   return (
-    <Formik
-      initialValues={{ [getFormItemName(escrowLabel)]: escrowAmount }}
-      enableReinitialize
-      validationSchema={validationSchema}
-      onSubmit={(values) => handleSubmit({ escrowAmount: values[getFormItemName(escrowLabel)] })}
-    >
-      {({ isValid, isSubmitting, submitForm }) => (
-        <Form>
-          <FormStack>
-            <Field
-              value={escrowAmount}
-              onInputChange={({ target: { value } }) => setEscrowAmount(value)}
-              disabled={isSubmitting}
-              label={escrowLabel}
-              placeholder="Enter escrow amount"
-              units={config.coinMap[config.feeToken]?.denom || "—"}
-            />
-            <FeeGroup>
-              <FeeField>
-                <Text style={{ fontSize: "13px" }}>Escrow amount</Text>
-                <Text>{`${escrowAmount || 0} ${mappedFeeToken.denom}`}</Text>
-              </FeeField>
-              <FeeField>
-                <Text style={{ fontSize: "13px" }}>Tx fee</Text>
-                <Text>{`~${txFee} ${mappedFeeToken.denom}`}</Text>
-              </FeeField>
-              <FeeField>
-                <Text style={{ fontSize: "13px" }}>Total charged</Text>
-                <Text>{`~${totalCharged} ${mappedFeeToken.denom}`}</Text>
-              </FeeField>
-            </FeeGroup>
-            <Separator />
-            <ButtonGroup>
-              <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />
-              <Button loading={isSubmitting} disabled={!isValid} onClick={() => submitForm()}>
-                <div>Sign transaction and pay escrow</div>
-              </Button>
-            </ButtonGroup>
-          </FormStack>
-        </Form>
-      )}
-    </Formik>
+    <>
+      <Formik
+        initialValues={{ [getFormItemName(escrowLabel)]: escrowAmount }}
+        enableReinitialize
+        validationSchema={validationSchema}
+        onSubmit={(values) => handleSubmit({ escrowAmount: values[getFormItemName(escrowLabel)] })}
+      >
+        {({ isValid, isSubmitting, submitForm }) => (
+          <Form>
+            <FormStack>
+              <Field
+                value={escrowAmount}
+                onInputChange={({ target: { value } }) => setEscrowAmount(value)}
+                disabled={isSubmitting}
+                label={escrowLabel}
+                placeholder="Enter escrow amount"
+                units={config.coinMap[config.feeToken]?.denom || "—"}
+              />
+              <FeeGroup>
+                <FeeField>
+                  <Text style={{ fontSize: "13px" }}>Escrow amount</Text>
+                  <Text>{`${escrowAmount || 0} ${mappedFeeToken.denom}`}</Text>
+                </FeeField>
+                <FeeField>
+                  <Text style={{ fontSize: "13px" }}>Tx fee</Text>
+                  <Text>{`~${txFee} ${mappedFeeToken.denom}`}</Text>
+                </FeeField>
+                <FeeField>
+                  <Text style={{ fontSize: "13px" }}>Total charged</Text>
+                  <Text>{`~${totalCharged} ${mappedFeeToken.denom}`}</Text>
+                </FeeField>
+              </FeeGroup>
+              <Separator />
+              <ButtonGroup>
+                <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />
+                <Button
+                  loading={isSubmitting}
+                  disabled={!isValid}
+                  onClick={signer ? () => submitForm() : () => setModalOpen(true)}
+                >
+                  <div>{signer ? "Sign transaction and pay escrow" : "Connect wallet"}</div>
+                </Button>
+              </ButtonGroup>
+            </FormStack>
+          </Form>
+        )}
+      </Formik>
+      <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
+    </>
   );
 }

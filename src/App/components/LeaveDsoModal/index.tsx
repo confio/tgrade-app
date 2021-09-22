@@ -1,18 +1,18 @@
 import { Typography } from "antd";
+import closeIcon from "App/assets/icons/cross.svg";
+import modalBg from "App/assets/images/modal-background.jpg";
 import Button from "App/components/Button";
 import Stack from "App/components/Stack/style";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import { paths } from "App/paths";
-import * as React from "react";
 import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getDsoName, removeDso, useDso, useError, useSdk } from "service";
 import { closeLeaveDsoModal } from "service/dsos";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { DsoHomeParams } from "App/pages/DsoHome";
+import ConnectWalletModal from "../ConnectWalletModal";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
-import closeIcon from "App/assets/icons/cross.svg";
-import modalBg from "App/assets/images/modal-background.jpg";
 import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./style";
 
 const { Title, Text } = Typography;
@@ -22,12 +22,14 @@ export default function LeaveDsoModal(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { signingClient, address, config },
+    sdkState: { config, signer, address, signingClient },
   } = useSdk();
   const {
     dsoState: { dsos, leaveDsoModalState },
     dsoDispatch,
   } = useDso();
+
+  const [isModalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
 
@@ -105,8 +107,12 @@ export default function LeaveDsoModal(): JSX.Element {
           </ModalHeader>
           <Separator />
           <ButtonGroup>
-            <Button loading={isSubmitting} danger onClick={() => submitLeaveDso()}>
-              Leave
+            <Button
+              loading={isSubmitting}
+              danger={!!signer}
+              onClick={signer ? () => submitLeaveDso() : () => setModalOpen(true)}
+            >
+              {signer ? "Leave" : "Connect wallet"}
             </Button>
             <Button disabled={isSubmitting} onClick={() => closeLeaveDsoModal(dsoDispatch)}>
               Cancel
@@ -114,6 +120,7 @@ export default function LeaveDsoModal(): JSX.Element {
           </ButtonGroup>
         </Stack>
       )}
+      <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
     </StyledLeaveDsoModal>
   );
 }

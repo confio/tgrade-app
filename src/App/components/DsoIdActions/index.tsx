@@ -1,16 +1,15 @@
 import { Coin } from "@cosmjs/stargate";
 import { Dropdown, Menu, Typography } from "antd";
-import AddressTag from "App/components/AddressTag";
+import gearIcon from "App/assets/icons/gear.svg";
 import { Separator } from "App/components/AddDsoModal/style";
-import * as React from "react";
+import AddressTag from "App/components/AddressTag";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDsoName, openLeaveDsoModal, useDso } from "service/dsos";
 import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier } from "utils/dso";
-import { DsoHomeParams } from "App/pages/DsoHome";
-import gearIcon from "App/assets/icons/gear.svg";
 import { ActionsButton, StyledDsoIdActions, VotingRules, VSeparator } from "./style";
 
 const { Title, Text } = Typography;
@@ -19,7 +18,7 @@ export default function DsoIdActions(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { config, client, address },
+    sdkState: { config, client },
   } = useSdk();
   const {
     dsoState: { dsos },
@@ -69,11 +68,9 @@ export default function DsoIdActions(): JSX.Element {
           <Dropdown
             overlay={
               <Menu>
-                {address ? (
-                  <Menu.Item key="1" onClick={() => openLeaveDsoModal(dsoDispatch)}>
-                    Leave Trusted Circle
-                  </Menu.Item>
-                ) : null}
+                <Menu.Item key="1" onClick={() => openLeaveDsoModal(dsoDispatch)}>
+                  Leave Trusted Circle
+                </Menu.Item>
               </Menu>
             }
             trigger={["click"]}
