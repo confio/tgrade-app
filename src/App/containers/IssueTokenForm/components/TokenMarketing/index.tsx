@@ -1,4 +1,5 @@
 import AddressTag from "App/components/AddressTag";
+import ConnectWalletModal from "App/components/ConnectWalletModal";
 import Field from "App/components/Field";
 import ModalButtons from "App/components/ModalButtons";
 import ModalHeader from "App/components/ModalHeader";
@@ -6,6 +7,7 @@ import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
+import { useState } from "react";
 import { useSdk } from "service";
 import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
@@ -35,8 +37,10 @@ export default function TokenMarketing({
   goBack,
 }: TokenMarketingProps): JSX.Element {
   const {
-    sdkState: { config, address },
+    sdkState: { config, signer, address },
   } = useSdk();
+
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const validationSchema = Yup.object().shape({
     [getFormItemName(projectLabel)]: Yup.string().typeError("Project must be alphanumeric"),
@@ -51,64 +55,67 @@ export default function TokenMarketing({
   });
 
   return (
-    <Formik
-      initialValues={{
-        [getFormItemName(projectLabel)]: "",
-        [getFormItemName(descriptionLabel)]: "",
-        [getFormItemName(dsoAddressLabel)]: "",
-      }}
-      enableReinitialize
-      validationSchema={validationSchema}
-      onSubmit={(values) => {
-        handleSubmit({
-          project: values[getFormItemName(projectLabel)].toString(),
-          description: values[getFormItemName(descriptionLabel)].toString(),
-          dsoAddress: values[getFormItemName(dsoAddressLabel)].toString(),
-        });
-      }}
-    >
-      {({ isValid, submitForm, isSubmitting }) => {
-        return (
-          <Stack gap="s2">
-            <ModalHeader title="Create digital asset" isSubmitting={isSubmitting} closeModal={closeModal}>
-              <Steps size="small" current={1}>
-                <Step />
-                <Step />
-              </Steps>
-            </ModalHeader>
-            <Separator />
-            <Form>
-              <FormStack gap="s1">
-                <IssuerStack>
-                  <IssuerText>Issuer's account</IssuerText>
-                  <AddressTag address={address || ""} />
-                </IssuerStack>
-                <FieldWrapper>
-                  <Field label={projectLabel} placeholder="Enter project" optional />
-                </FieldWrapper>
-                <Field label={descriptionLabel} placeholder="Enter description" optional />
-                <FieldWrapper>
-                  <Field label={dsoAddressLabel} placeholder="Enter address" optional />
-                </FieldWrapper>
-                <Separator />
-                <ModalButtons
-                  buttonPrimary={{
-                    text: "Create asset",
-                    disabled: !isValid,
-                    onClick: submitForm,
-                  }}
-                  backButton={{
-                    text: "Back",
-                    disabled: isSubmitting,
-                    onClick: goBack,
-                  }}
-                  isLoading={isSubmitting}
-                />
-              </FormStack>
-            </Form>
-          </Stack>
-        );
-      }}
-    </Formik>
+    <>
+      <Formik
+        initialValues={{
+          [getFormItemName(projectLabel)]: "",
+          [getFormItemName(descriptionLabel)]: "",
+          [getFormItemName(dsoAddressLabel)]: "",
+        }}
+        enableReinitialize
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          handleSubmit({
+            project: values[getFormItemName(projectLabel)].toString(),
+            description: values[getFormItemName(descriptionLabel)].toString(),
+            dsoAddress: values[getFormItemName(dsoAddressLabel)].toString(),
+          });
+        }}
+      >
+        {({ isValid, submitForm, isSubmitting }) => {
+          return (
+            <Stack gap="s2">
+              <ModalHeader title="Create digital asset" isSubmitting={isSubmitting} closeModal={closeModal}>
+                <Steps size="small" current={1}>
+                  <Step />
+                  <Step />
+                </Steps>
+              </ModalHeader>
+              <Separator />
+              <Form>
+                <FormStack gap="s1">
+                  <IssuerStack>
+                    <IssuerText>Issuer's account</IssuerText>
+                    <AddressTag address={address || ""} />
+                  </IssuerStack>
+                  <FieldWrapper>
+                    <Field label={projectLabel} placeholder="Enter project" optional />
+                  </FieldWrapper>
+                  <Field label={descriptionLabel} placeholder="Enter description" optional />
+                  <FieldWrapper>
+                    <Field label={dsoAddressLabel} placeholder="Enter address" optional />
+                  </FieldWrapper>
+                  <Separator />
+                  <ModalButtons
+                    buttonPrimary={{
+                      text: signer ? "Create asset" : "Connect wallet",
+                      disabled: !isValid,
+                      onClick: signer ? submitForm : () => setModalOpen(true),
+                    }}
+                    backButton={{
+                      text: "Back",
+                      disabled: isSubmitting,
+                      onClick: goBack,
+                    }}
+                    isLoading={isSubmitting}
+                  />
+                </FormStack>
+              </Form>
+            </Stack>
+          );
+        }}
+      </Formik>
+      <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
+    </>
   );
 }
