@@ -2,11 +2,11 @@ import { Typography } from "antd";
 import { SelectValue } from "antd/lib/select";
 import Button from "App/components/Button";
 import Select from "App/components/Select";
-
 import * as React from "react";
 import { useState } from "react";
 import { proposalLabels, ProposalStep, ProposalType } from "../..";
 import { ProposalStack, Separator, StyledSelect } from "./style";
+import { ReactComponent as DownArrow } from "App/assets/icons/down-arrow.svg";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -23,6 +23,7 @@ export default function SelectProposal({ setProposalStep }: SelectProposalProps)
       <ProposalStack gap="s-3">
         <Text>Proposal</Text>
         <StyledSelect
+          suffixIcon={<DownArrow />}
           defaultActiveFirstOption
           size="large"
           value={selectedProposal}

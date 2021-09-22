@@ -62,7 +62,7 @@ export const FieldGroup = styled.div`
 
 export const ButtonGroup = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   flex-wrap: wrap;
 
   & .ant-btn:first-child {
