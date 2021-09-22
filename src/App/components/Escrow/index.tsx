@@ -189,7 +189,7 @@ export default function Escrow(): JSX.Element {
             <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
           )}
         </AmountStack>
-        {address ? <Button onClick={() => setModalOpen(true)}>Deposit escrow</Button> : null}
+        <Button onClick={() => setModalOpen(true)}>Deposit escrow</Button>
       </YourEscrowStack>
       {modalOpen ? (
         <DepositEscrowModal

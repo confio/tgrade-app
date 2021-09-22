@@ -1,18 +1,17 @@
 import { Typography } from "antd";
+import closeIcon from "App/assets/icons/cross.svg";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
+import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import * as React from "react";
 import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getDecodedAddress, getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import { TxResult } from "App/components/ShowTxResult";
-import closeIcon from "App/assets/icons/cross.svg";
 import { ButtonGroup, ModalHeader, Separator } from "../style";
 
 const { Title, Text } = Typography;
@@ -31,7 +30,7 @@ interface AddExistingDsoProps {
 export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExistingDsoProps): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, client, address },
+    sdkState: { config, client },
   } = useSdk();
   const { dsoDispatch } = useDso();
 
@@ -103,11 +102,9 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
                 <Field label={dsoAddressLabel} placeholder="Enter address" />
                 <Separator />
                 <ButtonGroup>
-                  {address ? (
-                    <Text>
-                      or <Text onClick={() => goToCreateDso()}>Create Trusted Circle</Text>
-                    </Text>
-                  ) : null}
+                  <Text>
+                    or <Text onClick={() => goToCreateDso()}>Create Trusted Circle</Text>
+                  </Text>
                   <Button disabled={!isValid} onClick={() => submitForm()}>
                     <div>Enter</div>
                   </Button>
