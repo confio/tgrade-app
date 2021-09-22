@@ -1,8 +1,8 @@
 import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
-import Button from "App/components/Button";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
-import * as React from "react";
+import Button from "App/components/Button";
+import ConnectWalletModal from "App/components/ConnectWalletModal";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
@@ -47,9 +47,10 @@ export default function ConfirmationEditDso({
 }: ConfirmationEditDsoProps): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, signingClient },
+    sdkState: { config, signer, signingClient },
   } = useSdk();
 
+  const [isModalOpen, setModalOpen] = useState(false);
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
@@ -114,11 +115,12 @@ export default function ConfirmationEditDso({
             <Paragraph>Tx fee</Paragraph>
             <Paragraph>{`~${txFee} ${feeTokenDenom}`}</Paragraph>
           </Typography>
-          <Button loading={isSubmitting} onClick={() => submitForm()}>
-            <div>Confirm proposal</div>
+          <Button loading={isSubmitting} onClick={signer ? () => submitForm() : () => setModalOpen(true)}>
+            <div>{signer ? "Confirm proposal" : "Connect wallet"}</div>
           </Button>
         </FeeGroup>
       </ButtonGroup>
+      <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
     </>
   );
 }
