@@ -39,7 +39,7 @@ export const NavSidebar: React.FC = () => {
             <Icon.Oversight />
             <div style={{ flexDirection: "column" }}>
               <StyledText>Oversight Community</StyledText>
-              <Icon.Manage />
+              <Icon.Manage style={{ marginLeft: "0px" }} />
             </div>
           </Cell>
         </Link>

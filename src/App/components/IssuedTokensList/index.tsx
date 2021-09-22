@@ -1,9 +1,17 @@
 import IssueTokensListItem from "../IssuedTokensListItem";
 import { TokenProps } from "utils/tokens";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function IssuedTokensList(props: { tokens: TokenProps[] }): JSX.Element | null {
   return (
-    <ul style={{ width: "100%", listStyle: "none", paddingLeft: "0" }}>
+    <InfiniteScroll
+      dataLength={props.tokens.length}
+      next={() => null}
+      hasMore={false}
+      loader={<h4>Loading...</h4>}
+      height={300}
+      endMessage={undefined}
+    >
       {props.tokens.map((token) => (
         <IssueTokensListItem
           key={token.address}
@@ -17,6 +25,6 @@ export default function IssuedTokensList(props: { tokens: TokenProps[] }): JSX.E
           decimals={token.decimals}
         ></IssueTokensListItem>
       ))}
-    </ul>
+    </InfiniteScroll>
   );
 }

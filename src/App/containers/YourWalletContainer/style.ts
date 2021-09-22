@@ -5,5 +5,5 @@ background-color:#ffffff;
 display:flex;
 width:70%;
 margin-left:5px;
-border-radius:16px 0 16px 16px;
+border-radius:16px 0 0px 16px;
 `;

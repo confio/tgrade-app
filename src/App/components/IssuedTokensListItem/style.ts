@@ -8,9 +8,9 @@ justify-content:space-between;
 height:68px;
 width:325px;
 box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.25);
-border-radius: 16px;
 background: #FFFFFF;
-margin-bottom:8px;
+margin:0px;
+margin-bottom:2px;
 padding:8px;
 `;
 

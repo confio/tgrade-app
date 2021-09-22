@@ -10,7 +10,6 @@ width:325px;
 background: #FFFFFF;
 padding:8px;
 font-size:10px;
-border-radius:0 16px 16px 0;
 margin:0px;
 &:hover{
     cursor:pointer;
