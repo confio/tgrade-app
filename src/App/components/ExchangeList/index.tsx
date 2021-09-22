@@ -1,10 +1,18 @@
 import ExchangeListItem from "App/components/ExchangeListItem";
 import { TokenProps } from "utils/tokens";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function ExchangeList(props: { tokens: TokenProps[] }): JSX.Element | null {
   const filteredTokens = props.tokens.filter((token) => token.humanBalance !== "0");
   return (
-    <ul style={{ width: "100%", listStyle: "none", paddingLeft: "0" }}>
+    <InfiniteScroll
+      dataLength={props.tokens.length}
+      next={() => null}
+      hasMore={false}
+      loader={<h4>Loading...</h4>}
+      height={300}
+      endMessage={undefined}
+    >
       {filteredTokens.map((token) => (
         <ExchangeListItem
           key={token.address}
@@ -18,6 +26,6 @@ export default function ExchangeList(props: { tokens: TokenProps[] }): JSX.Eleme
           decimals={token.decimals}
         ></ExchangeListItem>
       ))}
-    </ul>
+    </InfiniteScroll>
   );
 }

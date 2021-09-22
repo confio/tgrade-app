@@ -1,6 +1,5 @@
 import React from "react";
 import { Line } from "@ant-design/charts";
-import { StyledButton } from "./style";
 
 const data = [
   { month: "Jan", value: 0 },
@@ -42,15 +41,6 @@ function Chart(): JSX.Element {
     <div>
       <div style={{ display: "flex", width: "100%" }}>
         <h2 style={{ margin: "5px" }}>Your Wallet</h2>
-        <div style={{ marginLeft: "400px" }}>
-          <StyledButton.Group size="small">
-            <StyledButton.Button value="h">H</StyledButton.Button>
-            <StyledButton.Button value="d">D</StyledButton.Button>
-            <StyledButton.Button value="w">W</StyledButton.Button>
-            <StyledButton.Button value="m">M</StyledButton.Button>
-            <StyledButton.Button value="y">Y</StyledButton.Button>
-          </StyledButton.Group>
-        </div>
       </div>
       <Line {...config} />
     </div>
