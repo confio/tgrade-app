@@ -18,7 +18,7 @@ import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 import ConnectWalletModal from "../ConnectWalletModal";
 import { ButtonGroup, ModalHeader, Separator, StyledModal } from "./style";
-
+import BackButtonOrLink from "../BackButtonOrLink";
 const { Title, Text } = Typography;
 
 const escrowAmountLabel = "Escrow amount";
@@ -159,16 +159,15 @@ export default function DepositEscrowModal({
                   <Field label={escrowAmountLabel} placeholder="Enter amount" units="TGD" />
                   <Separator />
                   <ButtonGroup>
+                    <BackButtonOrLink text={"Back"} onClick={() => closeModal()} />
                     <Button
+                      style={{ backgroundColor: "#0BB0B1", border: "none" }}
                       loading={isSubmitting}
                       disabled={!isValid}
                       danger={!!signer}
                       onClick={signer ? () => submitForm() : () => setConnectWalletModalOpen(true)}
                     >
                       {signer ? "Pay escrow" : "Connect wallet"}
-                    </Button>
-                    <Button disabled={isSubmitting} onClick={() => closeModal()}>
-                      Cancel
                     </Button>
                   </ButtonGroup>
                 </Stack>

@@ -17,7 +17,7 @@ export const ProposalStack = styled(Stack)`
 
 export const StyledSelect = styled(Select)`
   .ant-select-arrow {
-    color: black;
+    color: #8692a6;
   }
 `;
 
