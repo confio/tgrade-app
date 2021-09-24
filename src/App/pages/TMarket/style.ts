@@ -46,28 +46,3 @@ export const LightButton = Styled(Button)`
   color: var(--color-primary);
   background-color: white;
 `;
-
-export const LinkText = Styled.a`
-left: 264px;
-top: 116px;
-font-family: Quicksand;
-font-style: normal;
-font-weight: 500;
-font-size: 16px;
-line-height: 20px;
-
-color: #0BB0B1;
-&:onHover{
-    cursor:pointer;
-}
-`;
-
-export const Text = Styled.p`
-left: 264px;
-top: 82px;
-font-family: Quicksand;
-font-style: normal;
-font-weight: normal;
-font-size: 16px;
-line-height: 28px;
-color: #242730;`;
