@@ -6,10 +6,11 @@ import {
   QueryClient as ReactQueryClient,
   QueryClientProvider as ReactQueryClientProvider,
 } from "react-query";
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
 import { paths } from "./paths";
 import Dso from "./routes/Dso";
+import LandingPage from "./pages/LandingPage";
 
 export default function App(): JSX.Element {
   return (
@@ -22,7 +23,7 @@ export default function App(): JSX.Element {
                 <LayoutProvider>
                   <Switch>
                     <Route exact path="/">
-                      <Redirect to={paths.dso.prefix} />
+                      <LandingPage />
                     </Route>
                     <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
                       <DsoProvider>
