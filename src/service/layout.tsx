@@ -96,7 +96,6 @@ export const useLayout = (): NonNullable<LayoutContextType> => {
 export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   const [layoutState, layoutDispatch] = useReducer(layoutReducer, { isLoading: false });
   const location = useLocation();
-  console.log("layout pathname: ", location.pathname);
   return (
     <LayoutContext.Provider value={{ layoutState, layoutDispatch }}>
       <div style={{ display: "flex" }}>
