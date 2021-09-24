@@ -1,14 +1,13 @@
 import { paths } from "App/paths";
-import * as React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import TMarketPageLayout from "App/components/TMarketPageLayout";
+import TMarketProvider from "service/tmarket";
 import Exchange from "./exchange/";
 import Provide from "./provide/";
 import Withdraw from "./withdraw";
 
 export default function TMarket(): JSX.Element {
   return (
-    <TMarketPageLayout>
+    <TMarketProvider>
       <Switch>
         <Route path={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`}>
           <Exchange />
@@ -23,6 +22,6 @@ export default function TMarket(): JSX.Element {
           <Redirect to={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`} />
         </Route>
       </Switch>
-    </TMarketPageLayout>
+    </TMarketProvider>
   );
 }
