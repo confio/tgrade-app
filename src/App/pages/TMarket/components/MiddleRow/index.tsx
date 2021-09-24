@@ -13,7 +13,7 @@ const MiddleRow = ({ children }: { children: ReactChild }): JSX.Element => {
           Fee:<TokenLabel>{config.coinMap.utgd.denom}</TokenLabel>
         </FeeLabel>
       </Col>
-      <Col style={{ marginLeft: "27.5%" }} span={5}>
+      <Col style={{ marginLeft: "29.5%" }} span={5}>
         {children}
       </Col>
     </MiddleRowStyle>
