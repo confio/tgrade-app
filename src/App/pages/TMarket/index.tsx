@@ -1,14 +1,19 @@
-import YourWalletContainer from "App/containers/YourWalletContainer";
-import LiquidyContainer from "App/containers/LiquidyContainer";
-import ExchangeContainer from "App/containers/ExchangeContainer";
-import IssueTokensContainer from "App/containers/IssueTokensContainer";
-import { PageWrapper, Title, LinkText, Text } from "./style";
+import Stack from "App/components/Stack/style";
+import IssueTokenModal from "App/containers/IssueTokenModal";
+import { useState } from "react";
+import TMarket from "./routes";
+import { LightButton, LinkText, PageWrapper, Text, Title, TitleWrapper } from "./style";
 
 export default function TMarketHome(): JSX.Element | null {
+  const [isModalOpen, setModalOpen] = useState(false);
+
   return (
     <PageWrapper>
-      <div style={{ width: "100%", margin: "5px" }}>
-        <Title>Welcome to T-Market</Title>
+      <Stack>
+        <TitleWrapper>
+          <Title>Welcome to T-Market</Title>
+          <LightButton onClick={() => setModalOpen(true)}>Create Asset</LightButton>
+        </TitleWrapper>
         <Text>
           T-Market is an Automated Market Maker (AMM) which is constantly running and will always give a price
           for the listed pairs.
@@ -16,15 +21,9 @@ export default function TMarketHome(): JSX.Element | null {
         <LinkText href="https://confio.github.io/tgrade-docs/docs/onboarding/T-Market/">
           What is T-market?
         </LinkText>
-      </div>
-      <div style={{ display: "flex", width: "100%" }}>
-        <YourWalletContainer />
-        <ExchangeContainer />
-      </div>
-      <div style={{ display: "flex", width: "100%" }}>
-        <LiquidyContainer />
-        <IssueTokensContainer />
-      </div>
+        <TMarket />
+      </Stack>
+      <IssueTokenModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
     </PageWrapper>
   );
 }
