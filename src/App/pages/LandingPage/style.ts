@@ -54,7 +54,7 @@ export const TextSmall = styled.h2`
   font-family: Montserrat;
   font-size: 20px;
   font-style: normal;
-  font-weight: 800;
+  font-weight: 400;
   line-height: 50px;
   letter-spacing: 0em;
   text-align: left;
