@@ -82,7 +82,7 @@ export default function LandingPage(): JSX.Element | null {
           <a href="https://tgrade.finance/impressum/">
             <Paragraph>Legal Information / Impressum</Paragraph>
           </a>
-          <div style={{ width: "120px" }} />
+          <div style={{ width: "200px" }} />
           <a href="https://tgrade.finance/privacy-policy">
             <Paragraph>Privacy Policy</Paragraph>
           </a>
