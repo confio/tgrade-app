@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 export const CardCustom = styled(Card)`
   &.ant-card {
-    width: 554px;
+    width: 738px;
     min-height: 501px;
     border-radius: calc(var(--border-radius) + 10px);
     .ant-card-body {
