@@ -27,7 +27,7 @@ export const NavSidebar: React.FC = () => {
             <Icon.Join />
           </Cell>
         </Link>
-        <Link to={paths.tmarket.tmarket.prefix}>
+        <Link to={paths.tmarket.prefix}>
           <Cell>
             <Icon.Token />
             <StyledText>T-Market</StyledText>

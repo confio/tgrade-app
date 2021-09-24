@@ -33,10 +33,10 @@ export default function SelectTokenModal({
       bgTransparent={true}
       style={{
         padding: "var(--s4) 0",
-        maxWidth: "calc(554px + 15px)",
+        maxWidth: "calc(738px + 15px)",
       }}
       bodyStyle={{
-        maxWidth: "554px",
+        maxWidth: "738px",
         position: "relative",
         padding: "var(--s1)",
         backgroundColor: "var(--bg-body)",
