@@ -34,7 +34,7 @@ export const NavSidebar: React.FC = () => {
             <Icon.Trade />
           </Cell>
         </Link>
-        <Link to="/">
+        <Link to="#">
           <Cell>
             <Icon.Oversight />
             <div style={{ flexDirection: "column" }}>
@@ -43,14 +43,14 @@ export const NavSidebar: React.FC = () => {
             </div>
           </Cell>
         </Link>
-        <Link to="/">
+        <Link to="#">
           <Cell>
             <Icon.Wiki />
             <StyledText>Wiki</StyledText>
             <Icon.Learn />
           </Cell>
         </Link>
-        <Link to="/">
+        <Link to="#">
           <Cell>
             <Icon.Feedback />
             <StyledText>Feedback</StyledText>
@@ -58,7 +58,7 @@ export const NavSidebar: React.FC = () => {
           </Cell>
         </Link>
       </LinkWrapper>
-      <Link to="/" onClick={() => setModalOpen(true)} style={{ position: "fixed", top: "90%" }}>
+      <Link to="#" onClick={() => setModalOpen(true)} style={{ position: "fixed", top: "90%" }}>
         <Cell>
           {address ? (
             <StyledAddressTag>{ellipsifyAddress(address)}</StyledAddressTag>
