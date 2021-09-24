@@ -7,6 +7,9 @@ import {
   Text,
   TextSmall,
   LinkButton,
+  ContactForm,
+  Paragraph,
+  SubscribeButton,
 } from "./style";
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
 import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg";
@@ -62,7 +65,36 @@ export default function LandingPage(): JSX.Element | null {
           </LinkButton>
         </a>
       </ContentWrapper>
-      <Footer />
+      <Footer>
+        <div style={{ display: "flex", flexDirection: "column", marginLeft: "100px" }}>
+          <TgradeLogo style={{ width: "94px", marginBottom: "16px" }} />
+          <Paragraph>©2021 by Confio.gmbh</Paragraph>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginLeft: "100px",
+            marginRight: "100px",
+            marginTop: "46px",
+          }}
+        >
+          <a href="https://tgrade.finance/impressum/">
+            <Paragraph>Legal Information / Impressum</Paragraph>
+          </a>
+          <div style={{ width: "120px" }} />
+          <a href="https://tgrade.finance/privacy-policy">
+            <Paragraph>Privacy Policy</Paragraph>
+          </a>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <Paragraph>NEWSLETTER</Paragraph>
+          <ContactForm>
+            <Paragraph style={{ marginLeft: "13px", color: "#8692A6" }}>Enter your email address</Paragraph>
+            <SubscribeButton>Subscribe</SubscribeButton>
+          </ContactForm>
+        </div>
+      </Footer>
     </PageWrapper>
   );
 }
