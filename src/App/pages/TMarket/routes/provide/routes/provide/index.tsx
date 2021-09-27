@@ -28,7 +28,7 @@ import {
 } from "service/provide";
 import { updatePairs, updateToken, useTMarket } from "service/tmarket";
 import { DetailProvide, PairProps, ProvideFormValues, SimulationProvide, TokenProps } from "utils/tokens";
-import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, Tip, ToToken } from "../../components";
+import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, ToToken } from "../../components";
 import { handleSubmit, handleValidation } from "../../utils/form";
 import { FormCustom } from "./style";
 
@@ -119,7 +119,6 @@ export default function Provide(): JSX.Element {
       <CardCustom>
         <MenuAMM />
         <FormCustom>
-          <Tip />
           <FromToken />
           <MiddleRow>
             <PlusIcon />
