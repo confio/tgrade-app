@@ -1,4 +1,4 @@
-import { Card } from "antd";
+import { Card, Row } from "antd";
 import Button from "App/components/Button";
 import Styled from "styled-components";
 
@@ -45,4 +45,9 @@ export const LightButton = Styled(Button)`
   height: 30px;
   color: var(--color-primary);
   background-color: white;
+`;
+
+export const NotificationsContainer = Styled(Row)`
+  width: 100%;
+  justify-content: center;
 `;
