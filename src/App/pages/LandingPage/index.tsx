@@ -1,20 +1,21 @@
-import {
-  Header,
-  PageWrapper,
-  LogoWrapper,
-  Footer,
-  ContentWrapper,
-  Text,
-  TextSmall,
-  LinkButton,
-  ContactForm,
-  Paragraph,
-  SubscribeButton,
-} from "./style";
+import { ReactComponent as LinkedinLogo } from "App/assets/icons/linkedin-icon.svg";
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
 import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg";
-import { ReactComponent as LinkedinLogo } from "App/assets/icons/linkedin-icon.svg";
+import { paths } from "App/paths";
 import { Link } from "react-router-dom";
+import {
+  ContactForm,
+  ContentWrapper,
+  Footer,
+  Header,
+  LinkButton,
+  LogoWrapper,
+  PageWrapper,
+  Paragraph,
+  SubscribeButton,
+  Text,
+  TextSmall,
+} from "./style";
 
 export default function LandingPage(): JSX.Element | null {
   return (
@@ -36,7 +37,7 @@ export default function LandingPage(): JSX.Element | null {
             <b>Try Tgrade</b> and see for yourself - the power of Blockchain is closer than you think.
           </Text>
         </span>
-        <Link to="/dso">
+        <Link to={paths.dso.prefix}>
           <LinkButton>
             <TextSmall>
               Try the <b>Tgrade App</b>
