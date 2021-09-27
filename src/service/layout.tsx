@@ -1,6 +1,6 @@
 import { BackProps } from "App/components/BackButtonOrLink";
 import { NavSidebar } from "App/components/NavSidebar";
-import * as React from "react";
+import { paths } from "App/paths";
 import { createContext, HTMLAttributes, useContext, useReducer } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -95,11 +95,14 @@ export const useLayout = (): NonNullable<LayoutContextType> => {
 
 export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   const [layoutState, layoutDispatch] = useReducer(layoutReducer, { isLoading: false });
-  const location = useLocation();
+  const { pathname } = useLocation();
+
+  const showNavSidebar = pathname !== paths.root && pathname !== paths.documentation.prefix;
+
   return (
     <LayoutContext.Provider value={{ layoutState, layoutDispatch }}>
       <div style={{ display: "flex" }}>
-        {location.pathname === "/" ? null : <NavSidebar />}
+        {showNavSidebar ? <NavSidebar /> : null}
         {children}
       </div>
     </LayoutContext.Provider>
