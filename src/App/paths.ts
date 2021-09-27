@@ -10,7 +10,7 @@ export const paths = {
     lock: "/lock",
   },
   dso: {
-    prefix: "/dso",
+    prefix: "/trustedcircle",
     params: {
       dsoAddress: "/:dsoAddress",
       dsoAddressOptional: "/:dsoAddress?",

@@ -164,7 +164,7 @@ export const handleSubmit = async (
       } catch (e) {
         const error = getErrorFromStackTrace(e.message);
         console.error(error);
-        toast.error(error);
+        toast.error(error, { toastId: "t-market-toast-id" });
         setLoading(false);
       }
       break;
@@ -185,7 +185,7 @@ export const handleSubmit = async (
       } catch (e) {
         const error = getErrorFromStackTrace(e.message);
         console.error(error);
-        toast.error(error);
+        toast.error(error, { toastId: "t-market-toast-id" });
       }
       console.log("creating pair");
       break;

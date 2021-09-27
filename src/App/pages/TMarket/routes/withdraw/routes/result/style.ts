@@ -5,5 +5,5 @@ export default styled(Tag)`
   background: transparent;
   cursor: pointer;
   border: none;
-  color: var(--color-gray-0-98);
+  color: var(--color-primary);
 `;
