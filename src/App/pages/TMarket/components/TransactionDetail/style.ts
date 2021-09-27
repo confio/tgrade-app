@@ -5,11 +5,7 @@ import styled from "styled-components";
 export const Container = styled(Col)`
   min-width: 340px;
 `;
-export const Title = styled(Typography.Title)`
-  &.ant-typography {
-    color: var(--color-gray-0-98);
-  }
-`;
+
 export const ImageContainer = styled(Row)`
   margin-bottom: 60px;
   justify-content: center;
@@ -21,7 +17,6 @@ export const TitleContainer = styled(Row)`
 export const HorizontalDivider = styled(Divider)`
   margin: var(--s0) 0;
   opacity: 0.5;
-  background: var(--color-gray-0-98);
 `;
 export const RowContainer = styled(Row)`
   justify-content: space-between;
@@ -30,13 +25,12 @@ export const RowContainer = styled(Row)`
 `;
 export const Paragraph = styled(Typography.Paragraph)`
   &.ant-typography {
-    color: var(--color-gray-0-98);
+    color: var(--color-text-1ary);
     font-size: calc(var(--s0) * 0.85);
   }
 `;
 export const ParagraphStrong = styled(Typography.Paragraph)`
   &.ant-typography {
-    color: var(--color-gray-0-98);
     font-weight: 700;
     font-size: calc(var(--s0) * 0.85);
   }

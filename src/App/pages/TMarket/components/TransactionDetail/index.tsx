@@ -1,13 +1,8 @@
-import {
-  Title,
-  ImageContainer,
-  TitleContainer,
-  Container,
-  Paragraph,
-  ParagraphStrong,
-  RowContainer,
-} from "./style";
+import { Typography } from "antd";
 import iconConfirm from "./assets/confirmationIcon.png";
+import { Container, ImageContainer, Paragraph, ParagraphStrong, RowContainer, TitleContainer } from "./style";
+
+const { Title } = Typography;
 
 const TransactionDetail = (props: { children: any }): JSX.Element => {
   return (
