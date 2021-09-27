@@ -8,9 +8,9 @@ import {
 } from "react-query";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
+import LandingPage from "./pages/LandingPage";
 import { paths } from "./paths";
 import Dso from "./routes/Dso";
-import LandingPage from "./pages/LandingPage";
 
 export default function App(): JSX.Element {
   return (
@@ -22,7 +22,7 @@ export default function App(): JSX.Element {
               <Router basename={process.env.PUBLIC_URL}>
                 <LayoutProvider>
                   <Switch>
-                    <Route exact path="/">
+                    <Route exact path={paths.root}>
                       <LandingPage />
                     </Route>
                     <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
@@ -32,6 +32,9 @@ export default function App(): JSX.Element {
                     </Route>
                     <Route path={`${paths.tmarket.prefix}`}>
                       <TMarketHome />
+                    </Route>
+                    <Route path={`${paths.documentation.prefix}`}>
+                      <p>WIP documentation</p>
                     </Route>
                   </Switch>
                 </LayoutProvider>

@@ -1,4 +1,5 @@
 export const paths = {
+  root: "/",
   setup: {
     prefix: "/setup",
     welcome: "/welcome",
@@ -30,5 +31,8 @@ export const paths = {
       prefix: "/withdraw",
       result: "/result",
     },
+  },
+  documentation: {
+    prefix: "/doc",
   },
 };
