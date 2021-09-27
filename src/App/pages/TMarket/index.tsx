@@ -1,3 +1,4 @@
+import PageLayout from "App/components/PageLayout";
 import Stack from "App/components/Stack/style";
 import IssueTokenModal from "App/containers/IssueTokenModal";
 import { paths } from "App/paths";
@@ -6,14 +7,14 @@ import { useLocation } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TMarket from "./routes";
-import { LightButton, NotificationsContainer, PageWrapper, Title, TitleWrapper } from "./style";
+import { LightButton, NotificationsContainer, Title, TitleWrapper } from "./style";
 
 export default function TMarketHome(): JSX.Element | null {
   const { pathname } = useLocation();
   const [isModalOpen, setModalOpen] = useState(false);
 
   return (
-    <PageWrapper>
+    <PageLayout maxwidth="738px" centered="false">
       <Stack gap="s4">
         {!pathname.endsWith(paths.tmarket.exchange.result) ? (
           <TitleWrapper>
@@ -32,6 +33,6 @@ export default function TMarketHome(): JSX.Element | null {
         <TMarket />
       </Stack>
       <IssueTokenModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
-    </PageWrapper>
+    </PageLayout>
   );
 }
