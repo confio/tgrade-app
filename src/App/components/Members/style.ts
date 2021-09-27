@@ -9,7 +9,7 @@ export const MembersStack = styled(Stack)`
   text-align: left;
 
   h2.ant-typography {
-    font-size: var(--s1);
+    font-size: var(--s0);
   }
 `;
 
@@ -34,6 +34,10 @@ export const MemberCount = styled.div`
 
   &:first-child span.ant-typography:first-child {
     color: var(--color-primary);
+  }
+
+  span.ant-typography {
+    font-size: var(--s-1);
   }
 
   span.ant-typography:first-child {

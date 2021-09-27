@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 export const Menu = styled(AntMenu)`
   font-family: var(--ff-text);
-  font-size: var(--s1);
+  font-size: var(--s0);
   color: var(--color-text-1ary);
   font-weight: 500;
   &.ant-menu {
