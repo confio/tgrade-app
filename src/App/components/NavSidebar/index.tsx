@@ -1,11 +1,10 @@
 import { paths } from "App/paths";
-import * as React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSdk } from "service";
 import ConnectWalletModal from "../ConnectWalletModal";
 import * as Icon from "./icons";
-import { Cell, LinkWrapper, Navbar, StyledText, StyledAddressTag } from "./style";
+import { Cell, LinkWrapper, Navbar, StyledAddressTag, StyledText } from "./style";
 
 export const NavSidebar: React.FC = () => {
   const {
@@ -23,7 +22,7 @@ export const NavSidebar: React.FC = () => {
         <Link to={paths.dso.prefix}>
           <Cell>
             <Icon.TrustedCircle />
-            <StyledText>Trusted Circle</StyledText>
+            <StyledText>Trusted Circles</StyledText>
             <Icon.Join />
           </Cell>
         </Link>
@@ -34,7 +33,15 @@ export const NavSidebar: React.FC = () => {
             <Icon.Trade />
           </Cell>
         </Link>
-        <Link to="#">
+        <Link to={paths.documentation.prefix} target="_blank" rel="noopener noreferrer">
+          <Cell>
+            <Icon.CodeIcon />
+            <StyledText>Documentation</StyledText>
+            <Icon.ArrowTopRight style={{ height: "10px" }} />
+            <Icon.Code />
+          </Cell>
+        </Link>
+        {/* <Link to="#">
           <Cell>
             <Icon.Oversight />
             <div style={{ flexDirection: "column" }}>
@@ -46,7 +53,7 @@ export const NavSidebar: React.FC = () => {
         <Link to="#">
           <Cell>
             <Icon.Wiki />
-            <StyledText>Wiki</StyledText>
+            <StyledText>Knowledge base</StyledText>
             <Icon.Learn />
           </Cell>
         </Link>
@@ -56,7 +63,7 @@ export const NavSidebar: React.FC = () => {
             <StyledText>Feedback</StyledText>
             <Icon.Visit />
           </Cell>
-        </Link>
+        </Link> */}
       </LinkWrapper>
       <Link to="#" onClick={() => setModalOpen(true)} style={{ position: "fixed", top: "90%" }}>
         <Cell>

@@ -71,6 +71,7 @@ export const TitleParagraph = styled(Typography.Paragraph)`
     text-align: start;
     color: var(--color-text-1ary);
     font-weight: 700;
+    font-size: var(--s-1);
   }
 `;
 export const ErrorContainer = styled(Typography.Paragraph)`

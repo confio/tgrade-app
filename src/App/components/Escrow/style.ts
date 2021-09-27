@@ -10,7 +10,7 @@ export const StyledEscrow = styled.div`
   justify-content: space-between;
 
   h2.ant-typography {
-    font-size: var(--s1);
+    font-size: var(--s0);
   }
 `;
 

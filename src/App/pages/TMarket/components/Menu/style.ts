@@ -1,9 +1,10 @@
-import { Menu } from "antd";
+import { Menu as AntMenu } from "antd";
+import { ReactComponent as SoonIcon } from "App/assets/icons/soon.svg";
 import styled from "styled-components";
 
-export default styled(Menu)`
+export const Menu = styled(AntMenu)`
   font-family: var(--ff-text);
-  font-size: var(--s1);
+  font-size: var(--s0);
   color: var(--color-text-1ary);
   font-weight: 500;
   &.ant-menu {
@@ -20,4 +21,11 @@ export default styled(Menu)`
       }
     }
   }
+`;
+
+export const StyledSoonIcon = styled(SoonIcon)`
+  height: 18px;
+  position: absolute;
+  top: -3px;
+  right: -18px;
 `;
