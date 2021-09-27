@@ -29,6 +29,12 @@ border-left: 4px solid transparent;
 svg{
     margin:0.5rem;
 }
+svg:first-child{
+    width:1.5rem;
+}
+svg:last-child{
+    height: 18px;
+}
 &:hover{
     background-color:rgba(220,220,220,0.10);
     border-left: 4px solid white;
