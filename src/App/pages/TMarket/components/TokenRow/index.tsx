@@ -1,11 +1,12 @@
-import React from "react";
-import { Row, Col } from "antd";
-import { TokenRowProps } from "utils/tokens";
-import MaxButton from "App/components/MaxButton";
+import { Col, Row } from "antd";
 import InputNumber from "App/components/InputNumber";
-import { BalanceParagraph, TitleParagraph, TokenContainer, MaxContainer, ErrorContainer } from "./style";
+import MaxButton from "App/components/MaxButton";
+import { lazy, useState } from "react";
+import { TokenRowProps } from "utils/tokens";
 import SelectTokenTrigger from "../SelectTokenTrigger";
-import SelectTokenModal from "../SelecTokenModal";
+import { BalanceParagraph, ErrorContainer, MaxContainer, TitleParagraph, TokenContainer } from "./style";
+
+const SelectTokenModal = lazy(() => import("../SelecTokenModal"));
 
 export const EmptyCol = (): JSX.Element => <Col>&nbsp;</Col>;
 
@@ -22,7 +23,7 @@ function TokenRow({
   tokens,
   onChange,
 }: TokenRowProps): JSX.Element {
-  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const balance = token?.humanBalance ? token?.humanBalance : "0";
 
   return (

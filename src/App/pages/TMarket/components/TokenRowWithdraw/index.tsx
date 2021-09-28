@@ -1,10 +1,10 @@
-import React from "react";
-import { Row, Col } from "antd";
-import Input from "./style";
+import { Col, Row } from "antd";
+import { lazy, useState } from "react";
 import { TokenRowProps } from "utils/tokens";
-import { BalanceParagraph, TitleParagraph, TokenContainer, ErrorContainer } from "./style";
 import SelectTokenTrigger from "../SelectTokenTrigger";
-import SelectTokenModal from "../SelecTokenModal";
+import Input, { BalanceParagraph, ErrorContainer, TitleParagraph, TokenContainer } from "./style";
+
+const SelectTokenModal = lazy(() => import("../SelecTokenModal"));
 
 export const EmptyCol = (): JSX.Element => <Col>&nbsp;</Col>;
 
@@ -19,7 +19,7 @@ function TokenRowWithdraw({
   tokens,
   onChange,
 }: TokenRowProps): JSX.Element {
-  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const balance = token?.humanBalance ? token?.humanBalance : "0";
 
   return (
