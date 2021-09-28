@@ -24,7 +24,7 @@ export default function LandingPage(): JSX.Element | null {
     <div>
       <PageWrapper>
         <Header>
-          <TgradeLogo style={{ marginLeft: "100px", height = "30px" }} />
+          <TgradeLogo style={{ marginLeft: "100px", height: "30px" }} />
           <LogoWrapper>
             <a href="https://twitter.com/TgradeFinance">
               <TwitterLogo />
