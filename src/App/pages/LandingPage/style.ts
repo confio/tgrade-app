@@ -28,7 +28,7 @@ export const Footer = styled.div`
   display: flex;
   width: 100%;
   height: 132px;
-  position: fixed;
+  position: relative;
   align-items: center;
   justify-content: space-between;
   bottom: 0;
@@ -40,6 +40,7 @@ export const ContentWrapper = styled.div`
   flex-direction: column;
   margin-left: 50%;
   margin-top: 5%;
+  margin-right 5%;
 `;
 
 export const Text = styled.h2`
@@ -68,8 +69,10 @@ export const LinkButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 650px;
-  height: 74px;
+  max-width: 650px;
+  min-width: 300px;
+  max-height: 74px;
+  min-height: 30px;
   border: 1px solid #ffffff;
   box-sizing: border-box;
   border-radius: 106px;
