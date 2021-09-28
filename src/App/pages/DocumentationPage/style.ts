@@ -1,11 +1,19 @@
 import styled from "styled-components";
-import { Menu, Typography } from "antd";
+import { Menu } from "antd";
 
 export const StyledMenuItem = styled(Menu.Item)`
   color: #fff;
   & .ant-menu-item-active {
     background-color: rgba(220, 220, 220, 0.1);
+    color: #fff;
   }
+  font-family: Quicksand;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0em;
+  text-align: left;
 `;
 export const StyledItemGroup = styled(Menu.ItemGroup)`
   background-color: #054e4f;
@@ -15,12 +23,28 @@ export const StyledItemGroup = styled(Menu.ItemGroup)`
   }
   & .ant-menu-item-active {
     background-color: rgba(220, 220, 220, 0.1);
+    color: #fff;
   }
+  font-family: Quicksand;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0em;
+  text-align: left;
 `;
 export const StyledSubmenu = styled(Menu.SubMenu)`
   & .ant-menu-item-active {
     background-color: rgba(220, 220, 220, 0.1);
+    color: #fff;
   }
+  font-family: Quicksand;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0em;
+  text-align: left;
 `;
 export const StyledMenu = styled(Menu)`
   height: 100vh;
@@ -34,9 +58,10 @@ export const StyledMenu = styled(Menu)`
   & .ant-menu-item-selected {
     background-color: rgba(220, 220, 220, 0.1) !important;
   }
-`;
 
-export const StyledTypography = styled(Typography)`
+  & .ant-menu-sub {
+    background-color: #016465;
+  }
   font-family: Quicksand;
   font-size: 13px;
   font-style: normal;
