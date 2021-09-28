@@ -1,24 +1,25 @@
-import * as React from "react";
-import { Formik } from "formik";
-import {
-  SubmitButton,
-  ExitIcon,
-  MiddleRow,
-  MenuAMM,
-  EstimatedMessage,
-  ArrowIcon,
-} from "App/pages/TMarket/components";
 import { Divider } from "antd";
-import { FormCustom, CardCustom } from "./style";
-import { DetailWithdraw, LPToken, WithdrawFormValues } from "utils/tokens";
-import { FromToken, ToToken } from "../../components/";
-import { handleSubmit } from "../../utils/form";
+import {
+  ArrowIcon,
+  EstimatedMessage,
+  ExitIcon,
+  MenuAMM,
+  MiddleRow,
+  SubmitButton,
+} from "App/pages/TMarket/components";
+import { Formik } from "formik";
+import { lazy, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useSdk } from "service";
 import { updateLPToken, useTMarket } from "service/tmarket";
-import { useWithdraw, setLoading, setDetailWithdraw, setWithdrawButtonState } from "service/withdraw";
+import { setDetailWithdraw, setLoading, setWithdrawButtonState, useWithdraw } from "service/withdraw";
+import { DetailWithdraw, LPToken, WithdrawFormValues } from "utils/tokens";
+import { FromToken, ToToken } from "../../components/";
 import ExtraInfo from "../../components/ExtraInfo";
-import { useHistory } from "react-router-dom";
-import ConnectWalletModal from "App/components/ConnectWalletModal";
+import { handleSubmit } from "../../utils/form";
+import { CardCustom, FormCustom } from "./style";
+
+const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
 const initialValues: WithdrawFormValues = {
   To: "0 - 0",
@@ -37,9 +38,9 @@ export default function Withdraw(): JSX.Element {
   const setLoadingButton = (l: boolean) => setLoading(withdrawDispatch, l);
   const setDetail = (e: DetailWithdraw) => setDetailWithdraw(withdrawDispatch, e);
   const updateLP = (e: { [key: string]: LPToken }) => updateLPToken(tMarketDispatch, e);
-  const [isModalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!address) {
       setWithdrawButtonState(withdrawDispatch, { title: "Connect Wallet", type: "connect_wallet" });
     } else {

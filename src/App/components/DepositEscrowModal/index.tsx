@@ -8,7 +8,7 @@ import Stack from "App/components/Stack/style";
 import { DsoHomeParams } from "App/pages/DsoHome";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
@@ -16,9 +16,10 @@ import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
-import ConnectWalletModal from "../ConnectWalletModal";
-import { ButtonGroup, ModalHeader, Separator, StyledModal } from "./style";
 import BackButtonOrLink from "../BackButtonOrLink";
+import { ButtonGroup, ModalHeader, Separator, StyledModal } from "./style";
+
+const ConnectWalletModal = lazy(() => import("../ConnectWalletModal"));
 const { Title, Text } = Typography;
 
 const escrowAmountLabel = "Escrow amount";
