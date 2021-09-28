@@ -33,6 +33,9 @@ export const Footer = styled.div`
   justify-content: space-between;
   bottom: 0;
   background: #242730;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const ContentWrapper = styled.div`
