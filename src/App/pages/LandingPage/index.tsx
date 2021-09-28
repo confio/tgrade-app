@@ -54,7 +54,7 @@ export default function LandingPage(): JSX.Element | null {
               </TextSmall>
             </LinkButton>
           </a>
-          <Link to="/doc">
+          <Link target="_blank" to="/doc">
             <LinkButton>
               <TextSmall>
                 Read the <b>Documentation</b>
