@@ -119,3 +119,15 @@ export const SubscribeButton = styled(Button)`
   letter-spacing: 0em;
   text-align: center;
 `;
+
+export const LinkWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 46px 100px 0 100px;
+`;
+
+export const CopyrightWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 100px;
+`;

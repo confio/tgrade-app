@@ -15,6 +15,8 @@ import {
   SubscribeButton,
   Text,
   TextSmall,
+  LinkWrapper,
+  CopyrightWrapper,
 } from "./style";
 
 export default function LandingPage(): JSX.Element | null {
@@ -69,19 +71,11 @@ export default function LandingPage(): JSX.Element | null {
         </ContentWrapper>
       </PageWrapper>
       <Footer>
-        <div style={{ display: "flex", flexDirection: "column", marginLeft: "100px" }}>
+        <CopyrightWrapper>
           <TgradeLogo style={{ width: "94px", marginBottom: "16px" }} />
           <Paragraph>©2021 by Confio.gmbh</Paragraph>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginLeft: "100px",
-            marginRight: "100px",
-            marginTop: "46px",
-          }}
-        >
+        </CopyrightWrapper>
+        <LinkWrapper>
           <a href="https://tgrade.finance/impressum/">
             <Paragraph>Legal Information / Impressum</Paragraph>
           </a>
@@ -89,7 +83,7 @@ export default function LandingPage(): JSX.Element | null {
           <a href="https://tgrade.finance/privacy-policy">
             <Paragraph>Privacy Policy</Paragraph>
           </a>
-        </div>
+        </LinkWrapper>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <Paragraph>NEWSLETTER</Paragraph>
           <ContactForm>
