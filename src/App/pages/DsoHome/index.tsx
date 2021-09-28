@@ -1,14 +1,13 @@
-import PageLayout from "App/components/PageLayout";
+import { ReactComponent as CloseIcon } from "App/assets/icons/cross-tab.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
+import PageLayout from "App/components/PageLayout";
 import { paths } from "App/paths";
-import * as React from "react";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { openAddDsoModal, removeDso, useDso } from "service";
-import { ReactComponent as CloseIcon } from "App/assets/icons/cross-tab.svg";
-import DsoDetail from "App/components/DsoDetail";
 import { StyledTabs } from "./style";
 
+const DsoDetail = lazy(() => import("App/components/DsoDetail"));
 const { TabPane } = StyledTabs;
 
 export interface DsoHomeParams {
