@@ -1,11 +1,12 @@
 import ButtonAddNew from "App/components/ButtonAddNew";
 import IssuedTokensList from "App/components/IssuedTokensList";
-import { useState } from "react";
-import IssueTokenModal from "../IssueTokenModal";
-import { ItemWrapper, Title } from "./style";
 import { getTokensList } from "App/pages/TMarket/utils";
-import { TokenProps } from "utils/tokens";
+import { lazy, useState } from "react";
 import { useTMarket } from "service/tmarket";
+import { TokenProps } from "utils/tokens";
+import { ItemWrapper, Title } from "./style";
+
+const IssueTokenModal = lazy(() => import("../IssueTokenModal"));
 
 export default function IssueTokensContainer(): JSX.Element | null {
   const [isModalOpen, setModalOpen] = useState(false);

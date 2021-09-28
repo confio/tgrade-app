@@ -2,10 +2,8 @@ import { Pie } from "@ant-design/charts";
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { Typography } from "antd";
 import Button from "App/components/Button";
-import DepositEscrowModal from "App/components/DepositEscrowModal";
 import { DsoHomeParams } from "App/pages/DsoHome";
-import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { lazy, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
@@ -13,6 +11,7 @@ import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
 import TooltipWrapper from "../TooltipWrapper";
 import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
 
+const DepositEscrowModal = lazy(() => import("App/components/DepositEscrowModal"));
 const { Title, Text } = Typography;
 
 export default function Escrow(): JSX.Element {

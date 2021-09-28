@@ -1,10 +1,10 @@
 import { Col, Row } from "antd";
-import { HTMLAttributes } from "react";
 import pageCover from "App/assets/images/modal-background.jpg";
-import tgradeLogoTitle from "./assets/tgradeLogoTitle.svg";
-import { StyledMarketLayout, TgradeLogo, NotificationsContainer } from "./style";
+import tgradeLogoTitle from "App/assets/tgrade-logo.svg";
+import { HTMLAttributes } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { NotificationsContainer, StyledMarketLayout, TgradeLogo } from "./style";
 
 export default function TMarketPageLayout({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   return (

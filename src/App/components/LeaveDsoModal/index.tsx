@@ -5,16 +5,16 @@ import Button from "App/components/Button";
 import Stack from "App/components/Stack/style";
 import { DsoHomeParams } from "App/pages/DsoHome";
 import { paths } from "App/paths";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getDsoName, removeDso, useDso, useError, useSdk } from "service";
 import { closeLeaveDsoModal } from "service/dsos";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import ConnectWalletModal from "../ConnectWalletModal";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./style";
 
+const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Title, Text } = Typography;
 
 export default function LeaveDsoModal(): JSX.Element {

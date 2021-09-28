@@ -1,17 +1,16 @@
-import * as React from "react";
-import { Formik } from "formik";
-import { ToToken, FromToken, ExtraInfo } from "../../components/";
-import { DetailSwap, PairProps, SimulatedSwap, SwapFormValues, TokenProps } from "utils/tokens";
+import { Divider } from "antd";
 import {
-  SubmitButton,
-  MenuAMM,
-  ExitIcon,
   EstimatedMessage,
+  ExitIcon,
+  MenuAMM,
   MiddleRow,
+  SubmitButton,
   SwitchTokensButton,
 } from "App/pages/TMarket/components";
-import { Divider } from "antd";
-import { FormCustom } from "./style";
+import { CardCustom } from "App/pages/TMarket/style";
+import { Formik } from "formik";
+import { lazy, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useSdk } from "service";
 import {
   FormErrors,
@@ -22,13 +21,15 @@ import {
   setSimulatedSwap,
   setSwapButton,
   SwapButtonState,
+  useExchange,
 } from "service/exchange";
-import { handleSubmit, handleValidation } from "../../utils/form";
-import { CardCustom } from "App/pages/TMarket/style";
-import { useHistory } from "react-router-dom";
-import { useExchange } from "service/exchange";
 import { updateToken, useTMarket } from "service/tmarket";
-import ConnectWalletModal from "App/components/ConnectWalletModal";
+import { DetailSwap, PairProps, SimulatedSwap, SwapFormValues, TokenProps } from "utils/tokens";
+import { ExtraInfo, FromToken, ToToken } from "../../components/";
+import { handleSubmit, handleValidation } from "../../utils/form";
+import { FormCustom } from "./style";
+
+const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
 const initialValues: SwapFormValues = { To: 0.0, From: 0.0, selectFrom: undefined, selectTo: undefined };
 
@@ -49,9 +50,9 @@ export default function Exchange(): JSX.Element {
   const setNewError = (error: FormErrors) => setErrors(exchangeDispatch, error);
   const refreshToken = (t: TokenProps) => updateToken(tMarketDispatch, { [t.address]: t });
   const history = useHistory();
-  const [isModalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!address) {
       setSwapButtonState({ title: "Connect Wallet", type: "connect_wallet" });
     } else {

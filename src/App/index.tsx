@@ -1,6 +1,6 @@
-import TMarketHome from "App/pages/TMarket";
 import { config } from "config/network";
 import { i18n } from "i18n/config";
+import { lazy, Suspense } from "react";
 import { I18nextProvider } from "react-i18next";
 import {
   QueryClient as ReactQueryClient,
@@ -8,9 +8,12 @@ import {
 } from "react-query";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
+import LoadingSpinner from "./components/LoadingSpinner";
 import LandingPage from "./pages/LandingPage";
 import { paths } from "./paths";
-import Dso from "./routes/Dso";
+
+const Dso = lazy(() => import("./routes/Dso"));
+const TMarketHome = lazy(() => import("App/pages/TMarket"));
 
 export default function App(): JSX.Element {
   return (
@@ -18,28 +21,32 @@ export default function App(): JSX.Element {
       <ErrorProvider>
         <ReactQueryClientProvider client={new ReactQueryClient()}>
           <SdkProvider config={config}>
-            <ThemeProvider>
-              <Router basename={process.env.PUBLIC_URL}>
-                <LayoutProvider>
-                  <Switch>
-                    <Route exact path={paths.root}>
-                      <LandingPage />
-                    </Route>
-                    <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
-                      <DsoProvider>
-                        <Dso />
-                      </DsoProvider>
-                    </Route>
-                    <Route path={`${paths.tmarket.prefix}`}>
-                      <TMarketHome />
-                    </Route>
-                    <Route path={`${paths.documentation.prefix}`}>
-                      <p>WIP documentation</p>
-                    </Route>
-                  </Switch>
-                </LayoutProvider>
-              </Router>
-            </ThemeProvider>
+            <Suspense fallback={null}>
+              <ThemeProvider>
+                <Router basename={process.env.PUBLIC_URL}>
+                  <LayoutProvider>
+                    <Switch>
+                      <Suspense fallback={<LoadingSpinner fullPage />}>
+                        <Route exact path={paths.root}>
+                          <LandingPage />
+                        </Route>
+                        <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
+                          <DsoProvider>
+                            <Dso />
+                          </DsoProvider>
+                        </Route>
+                        <Route path={`${paths.tmarket.prefix}`}>
+                          <TMarketHome />
+                        </Route>
+                        <Route path={`${paths.documentation.prefix}`}>
+                          <p>WIP documentation</p>
+                        </Route>
+                      </Suspense>
+                    </Switch>
+                  </LayoutProvider>
+                </Router>
+              </ThemeProvider>
+            </Suspense>
           </SdkProvider>
         </ReactQueryClientProvider>
       </ErrorProvider>
