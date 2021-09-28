@@ -3,11 +3,10 @@ import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
-import ConnectWalletModal from "App/components/ConnectWalletModal";
 import Field from "App/components/Field";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { DsoContract } from "utils/dso";
@@ -15,6 +14,7 @@ import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 import { ButtonGroup, FeeField, FeeGroup, FormStack, Separator } from "./style";
 
+const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Text } = Typography;
 
 const escrowLabel = "Escrow amount";

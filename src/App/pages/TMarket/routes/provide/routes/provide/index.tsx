@@ -1,5 +1,4 @@
 import { Divider } from "antd";
-import ConnectWalletModal from "App/components/ConnectWalletModal";
 import {
   EstimatedMessage,
   ExitIcon,
@@ -10,7 +9,7 @@ import {
 } from "App/pages/TMarket/components";
 import { CardCustom } from "App/pages/TMarket/style";
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSdk } from "service";
 import {
@@ -31,6 +30,8 @@ import { DetailProvide, PairProps, ProvideFormValues, SimulationProvide, TokenPr
 import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, ToToken } from "../../components";
 import { handleSubmit, handleValidation } from "../../utils/form";
 import { FormCustom } from "./style";
+
+const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
 const initialValues: ProvideFormValues = {
   assetA: 0.0,

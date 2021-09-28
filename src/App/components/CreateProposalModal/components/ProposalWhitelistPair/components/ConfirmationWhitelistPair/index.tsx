@@ -3,13 +3,13 @@ import { Typography } from "antd";
 import AddressTag from "App/components/AddressTag";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
-import ConnectWalletModal from "App/components/ConnectWalletModal";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract } from "utils/dso";
 import { AddressStack, ButtonGroup, FeeGroup, FieldLabel, Separator, TextComment } from "./style";
 
+const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Paragraph } = Typography;
 
 interface ConfirmationWhitelistPairProps {

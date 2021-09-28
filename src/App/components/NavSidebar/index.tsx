@@ -1,10 +1,11 @@
 import { paths } from "App/paths";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSdk } from "service";
-import ConnectWalletModal from "../ConnectWalletModal";
 import * as Icon from "./icons";
 import { Cell, LinkWrapper, Navbar, StyledAddressTag, StyledText } from "./style";
+
+const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
 export const NavSidebar: React.FC = () => {
   const {

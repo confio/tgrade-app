@@ -1,5 +1,4 @@
 import AddressTag from "App/components/AddressTag";
-import ConnectWalletModal from "App/components/ConnectWalletModal";
 import Field from "App/components/Field";
 import ModalButtons from "App/components/ModalButtons";
 import ModalHeader from "App/components/ModalHeader";
@@ -7,12 +6,13 @@ import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { useSdk } from "service";
 import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
 import { FieldWrapper, FormStack, IssuerStack, IssuerText, Separator } from "./style";
 
+const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Step } = Steps;
 
 export interface FormMarketingFields {
