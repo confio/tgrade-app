@@ -3,18 +3,19 @@ import pendingIcon from "App/assets/icons/clock.svg";
 import rejectedIcon from "App/assets/icons/cross.svg";
 import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
-import DsoIdActions from "App/components/DsoIdActions";
-import Escrow from "App/components/Escrow";
-import Members from "App/components/Members";
-import ProposalDetailModal from "App/components/ProposalDetailModal";
-import Table from "App/components/Table";
-import * as React from "react";
-import { useEffect, useState } from "react";
+import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { DsoContractQuerier } from "utils/dso";
-import CreateProposalModal from "../CreateProposalModal";
 import Stack from "../Stack/style";
 import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
+
+const CreateProposalModal = lazy(() => import("../CreateProposalModal"));
+const ProposalDetailModal = lazy(() => import("App/components/ProposalDetailModal"));
+const DsoIdActions = lazy(() => import("App/components/DsoIdActions"));
+const Escrow = lazy(() => import("App/components/Escrow"));
+const Members = lazy(() => import("App/components/Members"));
+const Table = lazy(() => import("App/components/Table"));
+
 const { Title, Paragraph } = Typography;
 
 function getImgSrcFromStatus(status: string) {
@@ -113,7 +114,7 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
   const [proposals, setProposals] = useState<any>([]);
   const [clickedProposal, setClickedProposal] = useState<number>();
 
-  const refreshProposals = React.useCallback(async () => {
+  const refreshProposals = useCallback(async () => {
     if (!client) return;
 
     try {
