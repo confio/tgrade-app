@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "tgrade-487d8"
+  },
+  "targets": {
+    "tgrade-487d8": {
+      "hosting": {
+        "internal": [
+          "tgrade-internal"
+        ],
+        "public": [
+          "tgrade-public"
+        ]
+      }
+    }
+  }
+}

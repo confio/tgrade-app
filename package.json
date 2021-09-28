@@ -66,6 +66,7 @@
   },
   "devDependencies": {
     "axios": "^0.21.1",
+    "firebase-tools": "^9.18.0",
     "ts-proto": "^1.79.2"
   },
   "scripts": {
@@ -83,6 +84,8 @@
     "postbuild": "./.appflow/build_native_apps.sh",
     "deploy:branch": "netlify deploy --dir=build --alias=$(git branch --show-current)",
     "deploy": "netlify deploy --dir=build --prod",
+    "deploy:internal": "firebase deploy --only hosting:internal",
+    "deploy:public": "firebase deploy --only hosting:public",
     "test": "craco test",
     "lint": "tsc --noEmit && npx eslint src/**/*.ts{,x} --max-warnings 0",
     "compile": "tsc",
