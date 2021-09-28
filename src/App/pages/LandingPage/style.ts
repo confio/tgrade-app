@@ -28,11 +28,14 @@ export const Footer = styled.div`
   display: flex;
   width: 100%;
   height: 132px;
-  position: fixed;
+  position: relative;
   align-items: center;
   justify-content: space-between;
   bottom: 0;
   background: #242730;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const ContentWrapper = styled.div`
@@ -40,6 +43,7 @@ export const ContentWrapper = styled.div`
   flex-direction: column;
   margin-left: 50%;
   margin-top: 5%;
+  margin-right 5%;
 `;
 
 export const Text = styled.h2`
@@ -68,8 +72,10 @@ export const LinkButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 650px;
-  height: 74px;
+  max-width: 650px;
+  min-width: 300px;
+  max-height: 74px;
+  min-height: 30px;
   border: 1px solid #ffffff;
   box-sizing: border-box;
   border-radius: 106px;
@@ -115,4 +121,16 @@ export const SubscribeButton = styled(Button)`
   line-height: 16px;
   letter-spacing: 0em;
   text-align: center;
+`;
+
+export const LinkWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 46px 100px 0 100px;
+`;
+
+export const CopyrightWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 100px;
 `;
