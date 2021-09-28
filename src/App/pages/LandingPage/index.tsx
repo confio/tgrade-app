@@ -3,6 +3,7 @@ import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
 import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg";
 import { paths } from "App/paths";
 import { Link } from "react-router-dom";
+
 import {
   ContactForm,
   ContentWrapper,
@@ -54,7 +55,7 @@ export default function LandingPage(): JSX.Element | null {
               </TextSmall>
             </LinkButton>
           </a>
-          <Link target="_blank" to="/doc">
+          <Link target="_blank" to={paths.documentation.prefix}>
             <LinkButton>
               <TextSmall>
                 Read the <b>Documentation</b>
