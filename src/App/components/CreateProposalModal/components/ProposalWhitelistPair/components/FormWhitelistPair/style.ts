@@ -1,4 +1,11 @@
+import Select from "App/components/Select";
 import styled from "styled-components";
+
+export const StyledSelect = styled(Select)`
+  .ant-select-arrow {
+    color: #8692a6;
+  }
+`;
 
 export const Separator = styled.hr`
   margin: 0 -20px 0 -20px;
