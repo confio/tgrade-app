@@ -48,7 +48,7 @@ export default function LandingPage(): JSX.Element | null {
               </TextSmall>
             </LinkButton>
           </Link>
-          <a href="https://outlook.office365.com/owa/calendar/Tgrade@confio.gmbh/bookings/s/WgrBVH4R9Umi2xs9SHsWqw2">
+          <a href="https://outlook.office365.com/owa/calendar/Tgrade@confio.gmbh/bookings/">
             <LinkButton>
               <TextSmall>
                 Book a <b>Demo of Tgrade</b>
