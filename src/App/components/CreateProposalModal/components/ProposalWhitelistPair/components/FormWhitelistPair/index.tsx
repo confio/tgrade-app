@@ -1,3 +1,5 @@
+import { SelectValue } from "antd/lib/select";
+import { ReactComponent as DownArrow } from "App/assets/icons/down-arrow.svg";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
@@ -5,25 +7,29 @@ import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import { useSdk } from "service";
-import { getDecodedAddress, getFormItemName } from "utils/forms";
+import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
-import { ButtonGroup, Separator } from "./style";
+import { TokensPerPair } from "../..";
+import { ButtonGroup, Separator, StyledSelect } from "./style";
 
-const pairAddressLabel = "Address from the pair to be whitelisted";
+const { Option } = StyledSelect;
+
 const commentLabel = "Comment";
 
 export interface FormWhiteilstPairValues {
-  readonly pairAddress: string;
   readonly comment: string;
 }
 
 interface FormWhitelistPairProps extends FormWhiteilstPairValues {
+  readonly tokensPerPairs: readonly TokensPerPair[];
+  readonly pairAddress: string;
   readonly setPairAddress: React.Dispatch<React.SetStateAction<string>>;
   readonly goBack: () => void;
   readonly handleSubmit: (values: FormWhiteilstPairValues) => void;
 }
 
 export default function FormWhitelistPair({
+  tokensPerPairs,
   pairAddress,
   setPairAddress,
   comment,
@@ -31,54 +37,49 @@ export default function FormWhitelistPair({
   handleSubmit,
 }: FormWhitelistPairProps): JSX.Element {
   const {
-    sdkState: {
-      config: { addressPrefix },
-    },
+    sdkState: { config },
   } = useSdk();
 
   const validationSchema = Yup.object().shape({
-    [getFormItemName(pairAddressLabel)]: Yup.string()
-      .typeError("Pair address address must be alphanumeric")
-      .required("Pair address address is required")
-      .test(`is-valid-bech32`, "Pair address address is malformed", (address) => {
-        const decodedAddress = getDecodedAddress(address);
-        return !!decodedAddress;
-      })
-      .test(`has-valid-prefix`, `Pair address address must start with ${addressPrefix}`, (address) => {
-        const decodedAddress = getDecodedAddress(address);
-        return decodedAddress?.prefix === addressPrefix;
-      })
-      .test(`has-valid-length`, `Pair address address must have a data length of 20`, (address) => {
-        const decodedAddress = getDecodedAddress(address);
-        return decodedAddress?.data.length === 20;
-      }),
     [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
   });
 
   return (
     <Formik
-      initialValues={{
-        [getFormItemName(pairAddressLabel)]: pairAddress,
-        [getFormItemName(commentLabel)]: comment,
-      }}
+      initialValues={{ [getFormItemName(commentLabel)]: comment }}
       enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        const pairAddress = values[getFormItemName(pairAddressLabel)];
         const comment = values[getFormItemName(commentLabel)];
-        handleSubmit({ pairAddress, comment });
+        handleSubmit({ comment });
       }}
     >
       {({ isValid, submitForm }) => (
         <>
           <Form>
             <Stack gap="s1">
-              <Field label={pairAddressLabel} placeholder="Enter address" />
+              <StyledSelect
+                suffixIcon={<DownArrow />}
+                size="large"
+                value={
+                  isValidAddress(pairAddress, config.addressPrefix) ? pairAddress : "Select pair to whitelist"
+                }
+                onChange={(pair: SelectValue) => setPairAddress(pair as string)}
+              >
+                {tokensPerPairs.map((pair) => (
+                  <Option key={pair.pairAddress} value={pair.pairAddress}>
+                    {`${pair.tokenA.name} → ${pair.tokenB.name}`}
+                  </Option>
+                ))}
+              </StyledSelect>
               <Field label={commentLabel} placeholder="Enter comment" optional />
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />
-                <Button disabled={!isValid} onClick={() => submitForm()}>
+                <Button
+                  disabled={!isValid || !isValidAddress(pairAddress, config.addressPrefix)}
+                  onClick={() => submitForm()}
+                >
                   <div>Create proposal</div>
                 </Button>
               </ButtonGroup>
