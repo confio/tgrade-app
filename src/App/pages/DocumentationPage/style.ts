@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import ReactMarkdown from "react-markdown";
 import { Menu } from "antd";
 
 export const PageWrapper = styled.div`
@@ -9,7 +10,7 @@ export const PageWrapper = styled.div`
 
 export const ContentWrapper = styled.div`
   width: 100vw;
-  height: 800vh;
+  height: 500vh;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -92,4 +93,26 @@ export const StyledMenu = styled(Menu)`
   line-height: 16px;
   letter-spacing: 0em;
   text-align: left;
+`;
+
+export const StyledReactMarkdown = styled(ReactMarkdown)`
+  font-family: Quicksand;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 26px;
+  letter-spacing: 0em;
+  text-align: left;
+
+  & pre {
+    font-family: Space Mono;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 15px;
+    letter-spacing: 0em;
+    text-align: left;
+    background: #eceef2;
+    padding: 10px;
+  }
 `;

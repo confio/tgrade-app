@@ -177,7 +177,7 @@ The following data is all we need to connect to `tgrade-testnet-2`:
 
 ### Uploading the contract
 
-Now we will upload the code to Tgrade. Afterwards we can download the bytecode to verify if it is proper.
+Now we will upload the code to Tgrade. Afterwards we can download the bytecode to verify if it is proper
 
 ```bash
 	# see how many codes we have now
