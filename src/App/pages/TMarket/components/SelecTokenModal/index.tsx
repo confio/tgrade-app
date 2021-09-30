@@ -1,13 +1,12 @@
 import { Divider, Typography } from "antd";
 import Stack from "App/components/Stack/style";
 import { TokenProps } from "utils/tokens";
-import modalBg from "App/assets/images/modal-background.jpg";
-import Search from "./components/SearchToken";
-import closeIcon from "./assets/cross.svg";
-import StyledSelectTokenModal, { ModalHeader } from "./style";
 import backIcon from "./assets/arrow-back-icon.svg";
-import SelectTokenFilters from "./components/SelectTokenFilters";
+import closeIcon from "./assets/cross.svg";
 import ListTokens from "./components/ListTokens";
+import Search from "./components/SearchToken";
+import SelectTokenFilters from "./components/SelectTokenFilters";
+import StyledSelectTokenModal, { ModalHeader } from "./style";
 
 interface SelectTokenModalProps {
   readonly isModalOpen: boolean;
@@ -32,8 +31,10 @@ export default function SelectTokenModal({
       width="100%"
       bgTransparent={true}
       style={{
+        left: "calc(15.25rem / 2)",
+        right: "40px",
         padding: "var(--s4) 0",
-        maxWidth: "calc(738px + 15px)",
+        maxWidth: "738px",
       }}
       bodyStyle={{
         maxWidth: "738px",
@@ -41,10 +42,7 @@ export default function SelectTokenModal({
         padding: "var(--s1)",
         backgroundColor: "var(--bg-body)",
       }}
-      maskStyle={{
-        background: `linear-gradient(0deg, rgba(4, 119, 120, 0.9), rgba(4, 119, 120, 0.9)), url(${modalBg})`,
-        backgroundSize: "cover",
-      }}
+      maskStyle={{ background: "rgba(4,119,120,0.6)" }}
     >
       <ModalHeader>
         <img src={backIcon} alt="Go back" onClick={closeModal} />
