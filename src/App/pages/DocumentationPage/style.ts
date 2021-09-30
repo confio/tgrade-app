@@ -1,6 +1,11 @@
 import styled from "styled-components";
 import { Menu } from "antd";
 
+export const PageWrapper = styled.div`
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+`;
 export const StyledMenuItem = styled(Menu.Item)`
   color: #fff;
   & .ant-menu-item-active {
