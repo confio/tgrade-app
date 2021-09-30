@@ -17,13 +17,6 @@ export const ContentWrapper = styled.div`
   justify-content: center;
   margin-left: 245px;
   padding: 50px;
-  font-family: Quicksand;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 50px;
-  letter-spacing: 0em;
-  text-align: left;
 `;
 export const StyledMenuItem = styled(Menu.Item)`
   color: #fff;
