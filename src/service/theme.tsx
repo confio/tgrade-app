@@ -1,6 +1,12 @@
-import * as React from "react";
 import { createContext, HTMLAttributes, useContext, useReducer } from "react";
-import { GlobalAntOverride, GlobalColors, GlobalFonts, GlobalReset, GlobalSpacing } from "theme/GlobalStyle";
+import {
+  GlobalAntOverride,
+  GlobalColors,
+  GlobalFonts,
+  GlobalOverrideCookieyes,
+  GlobalReset,
+  GlobalSpacing,
+} from "theme/GlobalStyle";
 import { ThemeDark } from "theme/GlobalStyle/ThemeDark";
 import { ThemeLight } from "theme/GlobalStyle/ThemeLight";
 
@@ -71,6 +77,7 @@ export default function ThemeProvider({ children }: HTMLAttributes<HTMLOrSVGElem
       <GlobalColors />
       {themeState.theme === "light" ? <ThemeLight /> : <ThemeDark />}
       <GlobalFonts />
+      <GlobalOverrideCookieyes />
       <GlobalAntOverride />
       {children}
     </ThemeContext.Provider>
