@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
-import { StyledMenu, StyledSubmenu, StyledItemGroup, StyledMenuItem, PageWrapper } from "./style";
-import Markdown from "markdown-to-jsx";
+import {
+  StyledMenu,
+  StyledSubmenu,
+  StyledItemGroup,
+  StyledMenuItem,
+  PageWrapper,
+  ContentWrapper,
+} from "./style";
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
 
 export default function DocumentationPage(): JSX.Element | null {
   const [postMarkdown, setPostMarkdown] = useState("");
@@ -28,20 +36,9 @@ export default function DocumentationPage(): JSX.Element | null {
         </StyledSubmenu>
         <StyledSubmenu key="sub2" icon={undefined} title="Nodes"></StyledSubmenu>
       </StyledMenu>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          height: "100%",
-          marginLeft: "245px",
-          padding: "200px",
-        }}
-      >
-        <Markdown>{postMarkdown}</Markdown>
-      </div>
+      <ContentWrapper>
+        <ReactMarkdown children={postMarkdown} remarkPlugins={[remarkGfm]} />
+      </ContentWrapper>
     </PageWrapper>
   );
 }

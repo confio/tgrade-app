@@ -6,6 +6,24 @@ export const PageWrapper = styled.div`
   width: 100vw;
   height: 100vh;
 `;
+
+export const ContentWrapper = styled.div`
+  width: 100vw;
+  height: 800vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin-left: 245px;
+  padding: 50px;
+  font-family: Quicksand;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 50px;
+  letter-spacing: 0em;
+  text-align: left;
+`;
 export const StyledMenuItem = styled(Menu.Item)`
   color: #fff;
   & .ant-menu-item-active {
