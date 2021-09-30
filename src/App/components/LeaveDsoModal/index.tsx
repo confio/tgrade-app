@@ -79,7 +79,7 @@ export default function LeaveDsoModal(): JSX.Element {
         borderRadius: "16px",
         backgroundColor: txResult ? "transparent" : "var(--bg-body)",
       }}
-      maskStyle={{ background: "rgba(4,119,120,0.6)" }}
+      maskStyle={{ background: txResult ? "rgba(4,119,120,0.9)" : "rgba(4,119,120,0.6)" }}
     >
       {txResult ? (
         <ShowTxResult {...txResult}>
