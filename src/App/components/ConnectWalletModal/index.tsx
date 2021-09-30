@@ -1,7 +1,5 @@
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { hitFaucetIfNeeded, isSdkInitialized, useSdk } from "service";
-import modalBg from "App/assets/images/modal-background.jpg";
 import AuthorizeWallet from "./components/AuthorizeWallet";
 import ChooseWallet from "./components/ChooseWallet";
 import StyledConnectWalletModal from "./style";
@@ -40,18 +38,17 @@ export default function ConnectWalletModal({
       visible={isModalOpen}
       width="100%"
       style={{
+        right: "-40px",
         maxWidth: "63.25rem",
         paddingRight: "60px",
       }}
       bodyStyle={{
         position: "relative",
         padding: "var(--s1)",
+        borderRadius: "16px",
         backgroundColor: "var(--bg-body)",
       }}
-      maskStyle={{
-        background: `linear-gradient(0deg, rgba(4, 119, 120, 0.9), rgba(4, 119, 120, 0.9)), url(${modalBg})`,
-        backgroundSize: "cover",
-      }}
+      maskStyle={{ background: "rgba(4,119,120,0.6)" }}
     >
       {connectWalletStep === ConnectWalletSteps.Choose ? (
         <ChooseWallet
