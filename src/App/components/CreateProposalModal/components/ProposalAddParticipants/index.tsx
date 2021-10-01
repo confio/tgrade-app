@@ -1,6 +1,5 @@
 import { TxResult } from "App/components/ShowTxResult";
 import { DsoHomeParams } from "App/pages/DsoHome";
-import * as React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
@@ -49,12 +48,18 @@ export default function ProposalAddParticipants({
 
     try {
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
-        add_remove_non_voting_members: {
-          remove: [],
-          add: members,
+      const transactionHash = await dsoContract.propose(
+        signingClient,
+        config.factoryAddress,
+        address,
+        comment,
+        {
+          add_remove_non_voting_members: {
+            remove: [],
+            add: members,
+          },
         },
-      });
+      );
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({
