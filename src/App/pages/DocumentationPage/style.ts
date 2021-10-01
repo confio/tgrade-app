@@ -112,13 +112,3 @@ export const Text = styled.p`
   letter-spacing: 0em;
   text-align: left;
 `;
-
-export const Code = styled.p`
-  font-family: Space Mono;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 15px;
-  letter-spacing: 0em;
-  text-align: left;
-`;
