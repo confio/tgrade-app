@@ -14,12 +14,23 @@ export const ContentWrapper = styled.div`
   justify-content: flex-start;
   margin-left: 245px;
   padding: 50px;
+
+  & div {
+    margin-bottom: 25px;
+  }
 `;
 export const StyledMenuItem = styled(Menu.Item)`
   color: #fff;
   & .ant-menu-item-active {
     background-color: rgba(220, 220, 220, 0.1);
     color: #fff;
+  }
+
+  & a {
+    color: #fff;
+    :hover {
+      color: #fff;
+    }
   }
   font-family: Quicksand;
   font-size: 13px;
@@ -93,6 +104,7 @@ export const Title = styled.h1`
   line-height: 39px;
   letter-spacing: 0em;
   text-align: left;
+  margin-bottom: 25px;
 `;
 export const Subtitle = styled.h2`
   font-family: Quicksand;
@@ -102,6 +114,7 @@ export const Subtitle = styled.h2`
   line-height: 20px;
   letter-spacing: 0em;
   text-align: left;
+  margin-bottom: 20px;
 `;
 export const Text = styled.p`
   font-family: Quicksand;
@@ -111,4 +124,5 @@ export const Text = styled.p`
   line-height: 26px;
   letter-spacing: 0em;
   text-align: left;
+  margin-bottom: 10px;
 `;

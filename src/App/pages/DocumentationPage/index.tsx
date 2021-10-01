@@ -28,39 +28,33 @@ export default function DocumentationPage(): JSX.Element | null {
       .catch((err) => console.log(err));
   });
   */
+
   return (
     <PageWrapper>
-      <StyledMenu onClick={() => null} defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode="inline">
+      <StyledMenu defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode="inline">
         <StyledSubmenu key="sub1" icon={undefined} title="Introduction">
           <StyledItemGroup key="g1" title="Smart Contracts">
-            <StyledMenuItem key="1">Technical Guide - Creating d’Apps for a Syndicated loans</StyledMenuItem>
-            <StyledMenuItem key="2">Installation</StyledMenuItem>
-            <StyledMenuItem key="3">Setting up Environment</StyledMenuItem>
-            <StyledMenuItem key="4">The Test Net</StyledMenuItem>
-            <StyledMenuItem key="5">User create a trusted circle DSO</StyledMenuItem>
-            <StyledMenuItem key="6">Setup Command Line Interface – CLI</StyledMenuItem>
-            <StyledMenuItem key="7">CW20 token</StyledMenuItem>
-            <StyledMenuItem key="8">How to mint?</StyledMenuItem>
-            <StyledMenuItem key="9">Downloading and compiling contracts</StyledMenuItem>
-            <StyledMenuItem key="10">User create a trusted circle DSO</StyledMenuItem>
-            <StyledMenuItem key="11">Setup Command Line Interface – CLI</StyledMenuItem>
-            <StyledMenuItem key="12">CW20 token</StyledMenuItem>
-          </StyledItemGroup>
-        </StyledSubmenu>
-        <StyledSubmenu key="sub2" icon={undefined} title="Deploying and Interacting">
-          <StyledItemGroup key="g1" title="Smart Contracts">
-            <StyledMenuItem key="1">Technical Guide - Creating d’Apps for a Syndicated loans</StyledMenuItem>
-            <StyledMenuItem key="2">Installation</StyledMenuItem>
-            <StyledMenuItem key="3">Setting up Environment</StyledMenuItem>
-            <StyledMenuItem key="4">The Test Net</StyledMenuItem>
-            <StyledMenuItem key="5">User create a trusted circle DSO</StyledMenuItem>
-            <StyledMenuItem key="6">Setup Command Line Interface – CLI</StyledMenuItem>
-            <StyledMenuItem key="7">CW20 token</StyledMenuItem>
-            <StyledMenuItem key="8">How to mint?</StyledMenuItem>
-            <StyledMenuItem key="9">Downloading and compiling contracts</StyledMenuItem>
-            <StyledMenuItem key="10">User create a trusted circle DSO</StyledMenuItem>
-            <StyledMenuItem key="11">Setup Command Line Interface – CLI</StyledMenuItem>
-            <StyledMenuItem key="12">CW20 token</StyledMenuItem>
+            <StyledMenuItem key="1">
+              <a href="#installation">Installation</a>
+            </StyledMenuItem>
+            <StyledMenuItem key="2">
+              <a href="#environment">Setting up Environment</a>
+            </StyledMenuItem>
+            <StyledMenuItem key="3">
+              <a href="#trustedcircle">Create a trusted circle</a>
+            </StyledMenuItem>
+            <StyledMenuItem key="4">
+              <a href="#setupcli">Setup – CLI</a>
+            </StyledMenuItem>
+            <StyledMenuItem key="5">
+              <a href="#cw20">CW20 token</a>
+            </StyledMenuItem>
+            <StyledMenuItem key="6">
+              <a href="#mint">How to mint?</a>
+            </StyledMenuItem>
+            <StyledMenuItem key="7">
+              <a href="#download">Downloading and compiling contracts</a>
+            </StyledMenuItem>
           </StyledItemGroup>
         </StyledSubmenu>
       </StyledMenu>
@@ -69,7 +63,7 @@ export default function DocumentationPage(): JSX.Element | null {
         <Subtitle>
           Syndicated loan d’Apps deployed to Tgrade network and exchangeable on a marketplace
         </Subtitle>
-        <Title>Installation</Title>
+        <Title id="installation">Installation</Title>
         <Text>
           To develop, deploy and interact smart contracts to <a href="https://tgrade.finance/#work">Tgrade</a>{" "}
           it is necessary to install{" "}
@@ -81,7 +75,7 @@ export default function DocumentationPage(): JSX.Element | null {
           . References and documentation about Tgrade can be found{" "}
           <a href="https://github.com/confio/tgrade-docs">here.</a>
         </Text>
-        <Title>Setting up the environment</Title>
+        <Title id="environment">Setting up the environment</Title>
         <Subtitle>The Test Net</Subtitle>
         <Text>
           To run contracts is necessary to setup an environment. A contract can be easily deployed and run on
@@ -93,7 +87,7 @@ export default function DocumentationPage(): JSX.Element | null {
           Oysternet <a href="https://github.com/CosmWasm/testnets">here</a> and how to join the test net{" "}
           <a href="https://docs.cosmwasm.com/ecosystem/testnets/testnets">here</a>
         </Text>
-        <Subtitle>User create a trusted circle (DSO)</Subtitle>
+        <Subtitle id="trustedcircle">User create a trusted circle (DSO)</Subtitle>
         <Text>
           How to understand trusted circle – DSO you find it
           <a href="https://tgrade.finance/wp-content/uploads/2021/04/Decentralized-Social-Organisation-Introduction.pdf">
@@ -109,7 +103,7 @@ export default function DocumentationPage(): JSX.Element | null {
           and{" "}
           <a href="https://medium.com/tgradefinance/trusted-circles-and-front-running-46ce693ab10e"> here.</a>
         </Text>
-        <Subtitle>Setup Command Line Interface – CLI</Subtitle>
+        <Subtitle id="setupcli">Setup Command Line Interface – CLI</Subtitle>
         <Text>
           Let's configure wasmd exec, point it to test net, create wallet and ask tokens from faucet:
           <br />
@@ -200,7 +194,7 @@ export default function DocumentationPage(): JSX.Element | null {
           theme={monokai}
           wrapLines
         />
-        <Title>CW20 token</Title>
+        <Title id="cw20">CW20 token</Title>
         <Text>
           Details about CW20 can be found in the usage manual
           [here.](https://docs.cosmwasm.com/cw-plus/0.9.0/cw20/cw20-base-tutorial) and
@@ -209,7 +203,7 @@ export default function DocumentationPage(): JSX.Element | null {
           more than asset, we recommend to mint your own token by instantiating this binary, rather than
           developing your own.
         </Text>
-        <Title>How to mint?</Title>
+        <Title id="mint">How to mint?</Title>
         <Text>
           Using the pre-stored binary (recommended) The standard CW20 token is already stored in Terra network
           as code ID 3. *Please check
@@ -279,7 +273,7 @@ export default function DocumentationPage(): JSX.Element | null {
         <Text>
           Implement yourself – you find more details [here](https://docs.terraswap.io/docs/howto/token/
         </Text>
-        <Title>Downloading and compiling contracts</Title>
+        <Title id="download">Downloading and compiling contracts</Title>
         <Text>
           In this section we will download a sample contract and compile it to wasm binary executable. Now, we
           will download the repo in which we collect [cw-examples](https://github.com/CosmWasm/cw-examples)
@@ -437,7 +431,7 @@ export default function DocumentationPage(): JSX.Element | null {
           theme={monokai}
           wrapLines
         />
-        <div style={{ height: "250px" }}>ues</div>
+        <br />
       </ContentWrapper>
     </PageWrapper>
   );
