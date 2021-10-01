@@ -1,5 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
+import { Factory } from "./factory";
 
 export type VoteOption = "yes" | "no" | "abstain";
 
@@ -159,12 +160,25 @@ export interface InstantiateMsg {
   readonly initial_members: readonly string[];
 }
 
-function getProposalTitle(proposal: ProposalContent): string {
+export async function getProposalTitle(
+  client: CosmWasmClient,
+  factoryAddress: string,
+  proposal: ProposalContent,
+): Promise<string> {
   const proposalProp = Object.keys(proposal)[0];
 
   switch (proposalProp) {
     case "add_remove_non_voting_members":
-      //NOTE: this way of detecting the type makes WhitelistPair proposal to have the title: "Add participants"
+      // Determine if it's whitelist
+      if (proposal.add_remove_non_voting_members?.add.length === 1) {
+        const address = proposal.add_remove_non_voting_members?.add[0];
+        const pairs = await Factory.getPairs(client, factoryAddress);
+        for (const pair in pairs) {
+          if (pairs[pair].contract_addr === address) return "Whitelist pair";
+        }
+      }
+
+      // Determine if it's add or remove
       return proposal.add_remove_non_voting_members?.add.length ? "Add participants" : "Remove participants";
     case "add_voting_members":
       return "Add voting participants";
@@ -331,10 +345,16 @@ export class DsoContract extends DsoContractQuerier {
     return transactionHash;
   }
 
-  async propose(senderAddress: string, description: string, proposal: ProposalContent): Promise<string> {
+  async propose(
+    client: CosmWasmClient,
+    factoryAddress: string,
+    senderAddress: string,
+    description: string,
+    proposal: ProposalContent,
+  ): Promise<string> {
     const msg = {
       propose: {
-        title: getProposalTitle(proposal),
+        title: await getProposalTitle(client, factoryAddress, proposal),
         description,
         proposal,
       },

@@ -103,7 +103,7 @@ export default function ProposalEditDso({
   }
 
   async function submitCreateProposal() {
-    if (!signingClient || !address) return;
+    if (!signingClient || !client || !address) return;
     setSubmitting(true);
 
     try {
@@ -112,7 +112,7 @@ export default function ProposalEditDso({
       const nativethreshold = threshold ? (parseFloat(threshold) / 100).toString() : undefined;
 
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
+      const transactionHash = await dsoContract.propose(client, config.factoryAddress, address, comment, {
         edit_dso: {
           name: dsoName === currentDsoValues.dsoName ? undefined : dsoName,
           escrow_amount: nativeEscrowAmount,

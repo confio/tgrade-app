@@ -104,12 +104,12 @@ export default function ProposalWhitelistPair({
   }
 
   async function submitCreateProposal() {
-    if (!signingClient || !address) return;
+    if (!signingClient || !client || !address) return;
     setSubmitting(true);
 
     try {
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
+      const transactionHash = await dsoContract.propose(client, config.factoryAddress, address, comment, {
         add_remove_non_voting_members: {
           remove: [],
           add: [pairAddress],
