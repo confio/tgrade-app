@@ -4,7 +4,7 @@ import { Menu } from "antd";
 export const PageWrapper = styled.div`
   display: flex;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 `;
 
 export const ContentWrapper = styled.div`
@@ -50,6 +50,9 @@ export const StyledItemGroup = styled(Menu.ItemGroup)`
     background-color: rgba(220, 220, 220, 0.1);
     color: #fff;
   }
+  & .ant-menu-item-selected::after {
+    border-color: #fff;
+  }
   font-family: Quicksand;
   font-size: 13px;
   font-style: normal;
@@ -62,6 +65,12 @@ export const StyledSubmenu = styled(Menu.SubMenu)`
   & .ant-menu-item-active {
     background-color: rgba(220, 220, 220, 0.1);
     color: #fff;
+  }
+  & .ant-menu-submenu-title {
+    color: #fff;
+  }
+  & .ant-menu-submenu-arrow {
+    color: #fff !important;
   }
   font-family: Quicksand;
   font-size: 13px;
