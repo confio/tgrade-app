@@ -201,6 +201,16 @@ export class Contract20WS {
     });
     return result_allowance.allowance;
   }
+  static async getDsoAddress(client: CosmWasmClient, contractAddress?: string): Promise<string | undefined> {
+    if (!contractAddress) return undefined;
+
+    try {
+      const { address } = await client.queryContractSmart(contractAddress, { whitelist: {} });
+      return address;
+    } catch {
+      return undefined;
+    }
+  }
   static async Authorized(
     signingClient: SigningCosmWasmClient,
     contractAddress: string,

@@ -37,7 +37,7 @@ export interface ProvideFormValues {
   selectFrom: TokenProps | undefined;
   selectTo: TokenProps | undefined;
 }
-interface tokenObj {
+export interface tokenObj {
   token?: string;
   native?: string;
 }

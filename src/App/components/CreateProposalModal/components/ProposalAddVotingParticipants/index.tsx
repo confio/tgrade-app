@@ -1,12 +1,11 @@
 import { TxResult } from "App/components/ShowTxResult";
-import * as React from "react";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { ProposalStep, ProposalType } from "../..";
-import { DsoHomeParams } from "App/pages/DsoHome";
 import ConfirmationAddVotingParticipants from "./components/ConfirmationAddVotingParticipants";
 import FormAddVotingParticipants, {
   FormAddVotingParticipantsValues,
@@ -51,11 +50,17 @@ export default function ProposalAddVotingParticipants({
 
     try {
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
-        add_voting_members: {
-          voters: members,
+      const transactionHash = await dsoContract.propose(
+        signingClient,
+        config.factoryAddress,
+        address,
+        comment,
+        {
+          add_voting_members: {
+            voters: members,
+          },
         },
-      });
+      );
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({

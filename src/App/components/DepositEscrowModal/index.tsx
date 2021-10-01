@@ -1,6 +1,5 @@
 import { Typography } from "antd";
 import closeIcon from "App/assets/icons/cross.svg";
-import modalBg from "App/assets/images/modal-background.jpg";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
@@ -105,18 +104,17 @@ export default function DepositEscrowModal({
       width="100%"
       bgTransparent={!!txResult}
       style={{
+        right: "-40px",
         maxWidth: "63.25rem",
         paddingRight: "60px",
       }}
       bodyStyle={{
         position: "relative",
         padding: "var(--s1)",
+        borderRadius: "16px",
         backgroundColor: txResult ? "transparent" : "var(--bg-body)",
       }}
-      maskStyle={{
-        background: `linear-gradient(0deg, rgba(4, 119, 120, 0.9), rgba(4, 119, 120, 0.9)), url(${modalBg})`,
-        backgroundSize: "cover",
-      }}
+      maskStyle={{ background: txResult ? "rgba(4,119,120,0.9)" : "rgba(4,119,120,0.6)" }}
     >
       {txResult ? (
         <ShowTxResult {...txResult}>

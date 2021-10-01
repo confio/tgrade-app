@@ -1,8 +1,12 @@
-import { Divider, Modal, Typography, Button } from "antd";
+import { Button, Divider, Modal, Typography } from "antd";
 import Stack from "App/components/Stack/style";
 import styled from "styled-components";
 
 export const StyledModal = styled(Modal)`
+  & .ant-modal-content {
+    border-radius: 16px;
+  }
+
   ${({ bgTransparent }: { bgTransparent?: boolean }) =>
     bgTransparent &&
     `
