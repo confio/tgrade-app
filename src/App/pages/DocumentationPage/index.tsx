@@ -55,6 +55,18 @@ export default function DocumentationPage(): JSX.Element | null {
             <StyledMenuItem key="7">
               <a href="#download">Downloading and compiling contracts</a>
             </StyledMenuItem>
+            <StyledMenuItem key="8">
+              <a href="#deploy">Deploying and Interacting</a>
+            </StyledMenuItem>
+            <StyledMenuItem key="8">
+              <a href="#upload">Uploading a contract</a>
+            </StyledMenuItem>
+            <StyledMenuItem key="9">
+              <a href="#instantiating">Instantiating the contract</a>
+            </StyledMenuItem>
+            <StyledMenuItem key="8">
+              <a href="#store">Storing a contract</a>
+            </StyledMenuItem>
           </StyledItemGroup>
         </StyledSubmenu>
       </StyledMenu>
@@ -196,8 +208,8 @@ export default function DocumentationPage(): JSX.Element | null {
         />
         <Title id="cw20">CW20 token</Title>
         <Text>
-          Details about CW20 can be found in the usage manual
-          <a href="https://docs.cosmwasm.com/cw-plus/0.9.0/cw20/cw20-base-tutorial">here</a> and
+          Details about CW20 can be found in the usage manual{" "}
+          <a href="https://docs.cosmwasm.com/cw-plus/0.9.0/cw20/cw20-base-tutorial">here</a> and{" "}
           <a href="https://github.com/CosmWasm/cw-plus">here</a> This token contract is implemented under the
           CW20 standard and it fully supports terraswap feature. Except any function of your token itself
           contains more than asset, we recommend to mint your own token by instantiating this binary, rather
@@ -321,7 +333,7 @@ export default function DocumentationPage(): JSX.Element | null {
           Tests and Optimize Compilation – more details{" "}
           <a href="https://docs.cosmwasm.com/docs/0.16/getting-started/compile-contract">here</a>
         </Text>
-        <Subtitle>Deploying and Interacting</Subtitle>
+        <Subtitle id="deploy">Deploying and Interacting</Subtitle>
         <Text>
           We generated a wasm binary executable, now let’s put it into use.
           <br />
@@ -343,7 +355,7 @@ export default function DocumentationPage(): JSX.Element | null {
           <br />
           [Aneka/BLOCKEXPLORER](https://testnet.tgrade.aneka.io) - block explorer
         </Text>
-        <Subtitle>Uploading the contract</Subtitle>
+        <Subtitle id="upload">Uploading the contract</Subtitle>
         <Text>
           Now we will upload the code to Tgrade. Afterwards we can download the bytecode to verify if it is
           proper.
@@ -372,7 +384,7 @@ export default function DocumentationPage(): JSX.Element | null {
           theme={monokai}
           wrapLines
         />
-        <Subtitle>Instantiating the contract</Subtitle>
+        <Subtitle id="instantiating">Instantiating the contract</Subtitle>
         <Text>
           We can create an instance of this wasm contract. The verifier will find an escrow that will allow
           wallet to control payout and upon release the funds go to bob.
@@ -424,7 +436,7 @@ export default function DocumentationPage(): JSX.Element | null {
           theme={monokai}
           wrapLines
         />
-        <Subtitle>Storing a wasm contract to Tgrade chain</Subtitle>
+        <Subtitle id="store">Storing a wasm contract to Tgrade chain</Subtitle>
         <Text>The storing command of a wasm contract</Text>
         <CopyBlock
           text={`	

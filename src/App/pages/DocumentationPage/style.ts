@@ -63,6 +63,10 @@ export const StyledSubmenu = styled(Menu.SubMenu)`
     background-color: rgba(220, 220, 220, 0.1);
     color: #fff;
   }
+
+  & .ant-menu-submenu-title {
+    color: #fff;
+  }
   font-family: Quicksand;
   font-size: 13px;
   font-style: normal;
