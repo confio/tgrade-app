@@ -10,6 +10,7 @@ import {
   Text,
   Code,
 } from "./style";
+import { CopyBlock, monokai } from "react-code-blocks";
 
 export default function DocumentationPage(): JSX.Element | null {
   /* This is code to load & parse a local file
@@ -92,6 +93,66 @@ export default function DocumentationPage(): JSX.Element | null {
           <b>links need updating and made available</b> More information about other test net including
           Oysternet <a href="https://github.com/CosmWasm/testnets">here</a> and how to join the test net{" "}
           <a href="https://docs.cosmwasm.com/ecosystem/testnets/testnets">here</a>
+        </Text>
+        <Subtitle>User create a trusted circle (DSO)</Subtitle>
+        <Text>
+          How to understand trusted circle – DSO you find it
+          <a href="https://tgrade.finance/wp-content/uploads/2021/04/Decentralized-Social-Organisation-Introduction.pdf">
+            {" "}
+            here.
+          </a>
+          <br />
+          More details about how to setup a trusted circle you find
+          <a href="https://docs.servicenow.com/bundle/rome-security-management/page/product/trusted-circles/concept/admin-trusted-circles.html#create-profile">
+            {" "}
+            here.
+          </a>
+          and{" "}
+          <a href="https://medium.com/tgradefinance/trusted-circles-and-front-running-46ce693ab10e"> here.</a>
+        </Text>
+        <Subtitle>Setup Command Line Interface – CLI</Subtitle>
+        <Text>
+          Let's configure wasmd exec, point it to test net, create wallet and ask tokens from faucet:
+          <br />-<b>First, source the Oysternet network configurations to the shell:</b>
+        </Text>
+
+        <CopyBlock
+          text={
+            "source <(curl -sSL <https://raw.githubusercontent.com/CosmWasm/testnets/master/oysternet-1/defaults.env>)"
+          }
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>Add wallets for testing</Text>
+        <CopyBlock
+          text={`	
+            wasmd keys add fred
+          >
+          {
+            "name": "fred",
+            "type": "local",
+            "address": "wasm13nt9rxj7v2ly096hm8qsyfjzg5pr7vn5saqd50",*
+            "pubkey": "wasmpub1addwnpepqf4n9afaefugnfztg7udk50duwr4n8p7pwcjlm9tuumtlux5vud6qvfgp9g",
+            "mnemonic": "hobby bunker rotate piano satoshi planet network verify else market spring
+                         toward pledge turkey tip slim word jaguar congress thumb flag project chalk 
+                         inspire"
+          }
+          wasmd keys add bob
+          wasmd keys add thief
+      `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>
+          <b>Interacting with the network</b>
+        </Text>
+        <Text>
+          You use wasmd which is a Go Client. Here you need to create some tokens in your the address to
+          interact with the network. Requesting tokens from faucet:
         </Text>
       </ContentWrapper>
     </PageWrapper>
