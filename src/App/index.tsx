@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
 import LoadingSpinner from "./components/LoadingSpinner";
 import LandingPage from "./pages/LandingPage";
+import DocumentationPage from "./pages/DocumentationPage";
 import { paths } from "./paths";
 
 const Dso = lazy(() => import("./routes/Dso"));
@@ -39,7 +40,7 @@ export default function App(): JSX.Element {
                           <TMarketHome />
                         </Route>
                         <Route path={`${paths.documentation.prefix}`}>
-                          <p>WIP documentation</p>
+                          <DocumentationPage />
                         </Route>
                       </Suspense>
                     </Switch>

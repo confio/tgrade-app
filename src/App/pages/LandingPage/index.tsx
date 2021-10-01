@@ -3,6 +3,7 @@ import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
 import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg";
 import { paths } from "App/paths";
 import { Link } from "react-router-dom";
+
 import {
   ContactForm,
   ContentWrapper,
@@ -47,14 +48,14 @@ export default function LandingPage(): JSX.Element | null {
               </TextSmall>
             </LinkButton>
           </Link>
-          <a href="https://outlook.office365.com/owa/calendar/Tgrade@confio.gmbh/bookings/s/WgrBVH4R9Umi2xs9SHsWqw2">
+          <a href="https://outlook.office365.com/owa/calendar/Tgrade@confio.gmbh/bookings/">
             <LinkButton>
               <TextSmall>
                 Book a <b>Demo of Tgrade</b>
               </TextSmall>
             </LinkButton>
           </a>
-          <Link to="/doc">
+          <Link target="_blank" to={paths.documentation.prefix}>
             <LinkButton>
               <TextSmall>
                 Read the <b>Documentation</b>

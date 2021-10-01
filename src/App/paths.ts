@@ -33,6 +33,6 @@ export const paths = {
     },
   },
   documentation: {
-    prefix: "/doc",
+    prefix: "/docs",
   },
 };
