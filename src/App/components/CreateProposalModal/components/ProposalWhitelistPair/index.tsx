@@ -91,12 +91,12 @@ export default function ProposalWhitelistPair({
       );
 
       const tokensPerPairsWithDso = tokensPerPairs.filter(
-        (pair) => pair.tokenA.dsoAddress || pair.tokenB.dsoAddress,
+        (pair) => pair.tokenA.dsoAddress === dsoAddress || pair.tokenB.dsoAddress === dsoAddress,
       );
 
       setTokensPerPairs(tokensPerPairsWithDso);
     })();
-  }, [client, config.factoryAddress, getPairToken, signingClient]);
+  }, [client, config.factoryAddress, dsoAddress, getPairToken, signingClient]);
 
   async function submitWhitelistPair({ comment }: FormWhiteilstPairValues) {
     setComment(comment);

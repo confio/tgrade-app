@@ -140,7 +140,9 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
         </EscrowMembersContainer>
         <ProposalsContainer>
           <header>
-            <Title level={2}>Proposals</Title>
+            <Title level={2} style={{ fontSize: "var(--s1)" }}>
+              Proposals
+            </Title>
             <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
           </header>
           {proposals.length ? (
