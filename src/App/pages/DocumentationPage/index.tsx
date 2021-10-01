@@ -197,17 +197,19 @@ export default function DocumentationPage(): JSX.Element | null {
         <Title id="cw20">CW20 token</Title>
         <Text>
           Details about CW20 can be found in the usage manual
-          [here.](https://docs.cosmwasm.com/cw-plus/0.9.0/cw20/cw20-base-tutorial) and
-          [here.](https://github.com/CosmWasm/cw-plus) This token contract is implemented under the CW20
-          standard and it fully supports terraswap feature. Except any function of your token itself contains
-          more than asset, we recommend to mint your own token by instantiating this binary, rather than
-          developing your own.
+          <a href="https://docs.cosmwasm.com/cw-plus/0.9.0/cw20/cw20-base-tutorial">here</a> and
+          <a href="https://github.com/CosmWasm/cw-plus">here</a> This token contract is implemented under the
+          CW20 standard and it fully supports terraswap feature. Except any function of your token itself
+          contains more than asset, we recommend to mint your own token by instantiating this binary, rather
+          than developing your own.
         </Text>
         <Title id="mint">How to mint?</Title>
         <Text>
           Using the pre-stored binary (recommended) The standard CW20 token is already stored in Terra network
-          as code ID 3. *Please check
-          [here](https://docs.terraswap.io/docs/contract_resources/contract_addresses/) for more addresses.*
+          as code ID 3. Please check
+          <a href="https://docs.terraswap.io/docs/contract_resources/contract_addresses/">
+            for more addresses.
+          </a>
           You may instantiate your own token using the JSON as follows:
         </Text>
         <CopyBlock
@@ -271,12 +273,14 @@ export default function DocumentationPage(): JSX.Element | null {
         />
 
         <Text>
-          Implement yourself – you find more details [here](https://docs.terraswap.io/docs/howto/token/
+          Implement yourself – you find more details{" "}
+          <a href="https://docs.terraswap.io/docs/howto/token/">here</a>
         </Text>
         <Title id="download">Downloading and compiling contracts</Title>
         <Text>
           In this section we will download a sample contract and compile it to wasm binary executable. Now, we
-          will download the repo in which we collect [cw-examples](https://github.com/CosmWasm/cw-examples)
+          will download the repo in which we collect{" "}
+          <a href="https://github.com/CosmWasm/cw-examples">cw-examples</a>
           and try out a simple name service contract where mimics a name service marketplace. This is also
           de-facto cosmos – sdk entrance tutorial. First clone the repo, then try to build the wasm bundle:
         </Text>
@@ -314,8 +318,8 @@ export default function DocumentationPage(): JSX.Element | null {
           This produces a file about 162 kb. We use this and another optimizer (Optimize compilation section)
           to produce the final product uploaded to Tgrade. You don’t need to worry about running this yourself
           but you should have an idea of the final size of your contract, this way. You can also run Units
-          Tests and Optimize Compilation – more details[
-          here](https://docs.cosmwasm.com/docs/0.16/getting-started/compile-contract).
+          Tests and Optimize Compilation – more details{" "}
+          <a href="https://docs.cosmwasm.com/docs/0.16/getting-started/compile-contract">here</a>
         </Text>
         <Subtitle>Deploying and Interacting</Subtitle>
         <Text>
