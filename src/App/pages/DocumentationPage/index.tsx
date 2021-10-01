@@ -58,13 +58,13 @@ export default function DocumentationPage(): JSX.Element | null {
             <StyledMenuItem key="8">
               <a href="#deploy">Deploying and Interacting</a>
             </StyledMenuItem>
-            <StyledMenuItem key="8">
+            <StyledMenuItem key="9">
               <a href="#upload">Uploading a contract</a>
             </StyledMenuItem>
-            <StyledMenuItem key="9">
+            <StyledMenuItem key="10">
               <a href="#instantiating">Instantiating the contract</a>
             </StyledMenuItem>
-            <StyledMenuItem key="8">
+            <StyledMenuItem key="11">
               <a href="#store">Storing a contract</a>
             </StyledMenuItem>
           </StyledItemGroup>
