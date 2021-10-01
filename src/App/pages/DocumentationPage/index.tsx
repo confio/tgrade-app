@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   StyledMenu,
   StyledSubmenu,
@@ -6,14 +5,18 @@ import {
   StyledMenuItem,
   PageWrapper,
   ContentWrapper,
-  StyledReactMarkdown,
+  Title,
+  Subtitle,
+  Text,
+  Code,
 } from "./style";
-import remarkGfm from "remark-gfm";
 
 export default function DocumentationPage(): JSX.Element | null {
+  /* This is code to load & parse a local file
+     easy to adapt to fetching a md from github.
+
   const [postMarkdown, setPostMarkdown] = useState("");
   const file_name = "tech-guide.md";
-
   useEffect(() => {
     import(`./${file_name}`)
       .then((res) => {
@@ -24,6 +27,7 @@ export default function DocumentationPage(): JSX.Element | null {
       })
       .catch((err) => console.log(err));
   });
+  */
   return (
     <PageWrapper>
       <StyledMenu onClick={() => null} defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode="inline">
@@ -61,7 +65,34 @@ export default function DocumentationPage(): JSX.Element | null {
         </StyledSubmenu>
       </StyledMenu>
       <ContentWrapper>
-        <StyledReactMarkdown children={postMarkdown} remarkPlugins={[remarkGfm]} />
+        <Title>Technical Guide - Creating d’Apps for a Syndicated loans</Title>
+        <Subtitle>
+          Syndicated loan d’Apps deployed to Tgrade network and exchangeable on a marketplace
+        </Subtitle>
+        <Title>Installation</Title>
+        <Text>
+          To develop, deploy and interact smart contracts to <a href="https://tgrade.finance/#work">Tgrade</a>{" "}
+          it is necessary to install{" "}
+          <a href="https://docs.cosmwasm.com/docs/1.0/getting-started/installation">Cosmos SDK</a>. The coding
+          sequence for smart contracts are represented here as a{" "}
+          <a href="https://vimeo.com/showcase/6671477">
+            series of videos, leading you through the code structure
+          </a>
+          . References and documentation about Tgrade can be found{" "}
+          <a href="https://github.com/confio/tgrade-docs">here.</a>
+        </Text>
+        <Title>Setting up the environment</Title>
+        <Subtitle>The Test Net</Subtitle>
+        <Text>
+          To run contracts is necessary to setup an environment. A contract can be easily deployed and run on
+          Oysternet as test net. Before connecting to Oysternet, it is necessary to check up that the test net
+          is up and running and these links <a href="http://rpc.oysternet.cosmwasm.com/status">rpc</a> ,{" "}
+          <a href="https://faucet.oysternet.cosmwasm.com/status">faucet</a> and{" "}
+          <a href="http://lcd.oysternet.cosmwasm.com/node_info">lcd</a> are working as well.{" "}
+          <b>links need updating and made available</b> More information about other test net including
+          Oysternet <a href="https://github.com/CosmWasm/testnets">here</a> and how to join the test net{" "}
+          <a href="https://docs.cosmwasm.com/ecosystem/testnets/testnets">here</a>
+        </Text>
       </ContentWrapper>
     </PageWrapper>
   );

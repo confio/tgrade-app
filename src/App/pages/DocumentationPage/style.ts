@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import ReactMarkdown from "react-markdown";
 import { Menu } from "antd";
 
 export const PageWrapper = styled.div`
@@ -9,12 +8,10 @@ export const PageWrapper = styled.div`
 `;
 
 export const ContentWrapper = styled.div`
-  width: 100vw;
-  height: 500vh;
+  width: 70%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   margin-left: 245px;
   padding: 50px;
 `;
@@ -88,7 +85,25 @@ export const StyledMenu = styled(Menu)`
   text-align: left;
 `;
 
-export const StyledReactMarkdown = styled(ReactMarkdown)`
+export const Title = styled.h1`
+  font-family: Quicksand;
+  font-size: 31px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 39px;
+  letter-spacing: 0em;
+  text-align: left;
+`;
+export const Subtitle = styled.h2`
+  font-family: Quicksand;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0em;
+  text-align: left;
+`;
+export const Text = styled.p`
   font-family: Quicksand;
   font-size: 13px;
   font-style: normal;
@@ -96,16 +111,14 @@ export const StyledReactMarkdown = styled(ReactMarkdown)`
   line-height: 26px;
   letter-spacing: 0em;
   text-align: left;
+`;
 
-  & pre {
-    font-family: Space Mono;
-    font-size: 10px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 15px;
-    letter-spacing: 0em;
-    text-align: left;
-    background: #eceef2;
-    padding: 10px;
-  }
+export const Code = styled.p`
+  font-family: Space Mono;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 15px;
+  letter-spacing: 0em;
+  text-align: left;
 `;
