@@ -27,14 +27,9 @@ const ExtraInfo = (): JSX.Element | null => {
       "Your transaction will revert if there is a large, unfavorable price movement before it is confirmed.",
     priceImpact: "The difference between the market price and estimated price due to trade size.",
     liquidityProviderFee: (): JSX.Element => (
-      <>
-        For each trade a 0.25% fee is paid
-        <br /> - 0.17% to LP token holders
-        <br /> - 0.03% to the Treasury
-        <br /> - 0.05% towards CAKE buyback and burn`{" "}
-      </>
+      <span>For each trade there is a 0.3% fee which is paid to the liquidity providers</span>
     ),
-    txFee: "The Tx fee is an amount charged by miners for processing your transactions.",
+    txFee: "The Tx fee is charged by the blockchain data centers for processing your data transactions.",
   };
 
   return (
