@@ -75,7 +75,7 @@ const ExtraInfo = (): JSX.Element | null => {
         />
         <InfoRow
           label={`Tx fee`}
-          value={`${config.gasPrice.denom} ${config.coinMap.utgd.denom}`}
+          value={`${config.gasPrice.amount} ${config.gasPrice.denom}`}
           tooltip={"The Tx fee is an amount charged by miners for processing your transactions."}
         />
       </Col>
