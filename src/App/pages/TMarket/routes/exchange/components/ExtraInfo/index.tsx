@@ -29,8 +29,7 @@ const ExtraInfo = (): JSX.Element | null => {
     liquidityProviderFee: (): JSX.Element => (
       <span>For each trade there is a 0.3% fee which is paid to the liquidity providers</span>
     ),
-    txFee:
-      "The Tx fee is a fee charged by the blockchain data centers for processing your data transactions.",
+    txFee: "The Tx fee is charged by the blockchain data centers for processing your data transactions.",
   };
 
   return (

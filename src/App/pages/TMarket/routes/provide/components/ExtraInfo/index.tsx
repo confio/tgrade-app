@@ -77,7 +77,7 @@ const ExtraInfo = (): JSX.Element | null => {
           label={`Tx fee`}
           value={`${config.gasPrice} ${config.coinMap.utgd.denom}`}
           tooltip={
-            "The Tx fee is a fee charged by the blockchain data centers for processing your data transactions."
+            "The Tx fee is charged by the blockchain data centers for processing your data transactions."
           }
         />
       </Col>
