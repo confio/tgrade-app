@@ -1,6 +1,5 @@
 import { UserError } from "App/pages/TMarket/utils";
-import * as React from "react";
-import { createContext, HTMLAttributes, useContext, useReducer } from "react";
+import { createContext, HTMLAttributes, useCallback, useContext, useEffect, useReducer } from "react";
 import { useSdk } from "service";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
@@ -12,6 +11,10 @@ export type FormErrors = {
 };
 
 type tMarketAction =
+  | {
+      readonly type: "setRefreshTokens";
+      readonly payload: () => Promise<void>;
+    }
   | {
       readonly type: "setTokens";
       readonly payload: { [key: string]: TokenProps };
@@ -51,6 +54,7 @@ type tMarketAction =
 
 type tMarketDispatch = (action: tMarketAction) => void;
 type tMarketState = {
+  readonly refreshTokens: () => Promise<void>;
   readonly tokens: { [key: string]: TokenProps };
   readonly pairs: { [key: string]: PairProps };
   readonly lpTokens: { [key: string]: { token: TokenProps; pair: PairProps } };
@@ -71,6 +75,9 @@ const tMarketContext = createContext<tMarketContextType>(undefined);
 
 function tMarketReducer(tMarketState: tMarketState, action: tMarketAction): tMarketState {
   switch (action.type) {
+    case "setRefreshTokens": {
+      return { ...tMarketState, refreshTokens: action.payload };
+    }
     case "setTokens": {
       return { ...tMarketState, tokens: action.payload };
     }
@@ -161,7 +168,18 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
   const { sdkState } = useSdk();
   const { client, config, address } = sdkState;
 
+  const refreshTokens = useCallback(
+    async function (): Promise<void> {
+      if (!client || !address) return;
+
+      const allTokens = await Contract20WS.getAll(config, client, address);
+      tMarketDispatch({ type: "setTokens", payload: allTokens });
+    },
+    [address, client, config],
+  );
+
   const [tMarketState, tMarketDispatch] = useReducer(tMarketReducer, {
+    refreshTokens,
     tokens: {},
     lpTokens: {},
     searchText: undefined,
@@ -171,15 +189,15 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
     pool: undefined,
   });
 
-  React.useEffect(() => {
-    (async () => {
-      if (!client || !address) return;
-      const allTokens = await Contract20WS.getAll(config, client, address);
-      tMarketDispatch({ type: "setTokens", payload: allTokens });
-    })();
-  }, [address, client, config]);
+  useEffect(() => {
+    tMarketDispatch({ type: "setRefreshTokens", payload: refreshTokens });
+  }, [refreshTokens]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    refreshTokens();
+  }, [refreshTokens]);
+
+  useEffect(() => {
     (async () => {
       //Gets all pairs
       if (client) {
@@ -189,7 +207,7 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
     })();
   }, [client, config.factoryAddress]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       if (!client || !address) return;
       const lp_tokens = await Contract20WS.getLPTokens(
