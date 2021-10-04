@@ -1,8 +1,8 @@
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { TxResult } from "App/components/ShowTxResult";
-import * as React from "react";
 import { useState } from "react";
 import { useError, useSdk } from "service";
+import { useTMarket } from "service/tmarket";
 import { Contract20WS, EmbeddedLogoType, LogoType, MinterInterface } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import TokenMarketing, { FormMarketingFields } from "./components/TokenMarketing";
@@ -23,6 +23,9 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
   const {
     sdkState: { config, address, signingClient },
   } = useSdk();
+  const {
+    tMarketState: { refreshTokens },
+  } = useTMarket();
 
   const [issueTokenStep, setIssueTokenStep] = useState(IssueTokenSteps.Specs);
 
@@ -97,6 +100,8 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
         contractAddress,
         msg: `You created token ${tokenName} (${contractAddress}).`,
       });
+
+      await refreshTokens();
     } catch (error) {
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
