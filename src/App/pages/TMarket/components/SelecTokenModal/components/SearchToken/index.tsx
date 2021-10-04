@@ -9,7 +9,7 @@ export default function SearchToken(props: any): JSX.Element {
     <StyledSearch
       placeholder="Search token or trusted circle name"
       allowClear
-      onSearch={onSearch}
+      onChange={({ target }) => onSearch(target.value)}
       style={{ width: "100%", borderRadius: "100%" }}
     />
   );
