@@ -1,5 +1,6 @@
 import { Col, Row } from "antd";
 import { lazy, useState } from "react";
+import { setSearchText, useTMarket } from "service/tmarket";
 import { TokenRowProps } from "utils/tokens";
 import SelectTokenTrigger from "../SelectTokenTrigger";
 import Input, { BalanceParagraph, ErrorContainer, TitleParagraph, TokenContainer } from "./style";
@@ -19,6 +20,7 @@ function TokenRowWithdraw({
   tokens,
   onChange,
 }: TokenRowProps): JSX.Element {
+  const { tMarketDispatch } = useTMarket();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const balance = token?.humanBalance ? token?.humanBalance : "0";
 
@@ -60,6 +62,7 @@ function TokenRowWithdraw({
           tokens={tokens}
           closeModal={() => {
             setIsModalOpen(false);
+            setSearchText(tMarketDispatch, "");
           }}
           isModalOpen={isModalOpen}
           setToken={setToken}
