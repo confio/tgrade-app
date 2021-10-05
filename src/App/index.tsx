@@ -8,9 +8,10 @@ import {
 } from "react-query";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
+import TMarketProvider from "service/tmarket";
 import LoadingSpinner from "./components/LoadingSpinner";
-import LandingPage from "./pages/LandingPage";
 import DocumentationPage from "./pages/DocumentationPage";
+import LandingPage from "./pages/LandingPage";
 import { paths } from "./paths";
 
 const Dso = lazy(() => import("./routes/Dso"));
@@ -37,7 +38,9 @@ export default function App(): JSX.Element {
                           </DsoProvider>
                         </Route>
                         <Route path={`${paths.tmarket.prefix}`}>
-                          <TMarketHome />
+                          <TMarketProvider>
+                            <TMarketHome />
+                          </TMarketProvider>
                         </Route>
                         <Route path={`${paths.documentation.prefix}`}>
                           <DocumentationPage />
