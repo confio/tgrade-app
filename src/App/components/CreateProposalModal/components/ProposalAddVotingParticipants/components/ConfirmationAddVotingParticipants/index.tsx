@@ -52,7 +52,7 @@ export default function ConfirmationAddVotingParticipants({
     <>
       <AddressStack gap="s-3">
         <Text>Voting participant(s) to be added</Text>
-        <AddressList addresses={members} addressPrefix={config.addressPrefix} />
+        <AddressList short addresses={members} addressPrefix={config.addressPrefix} />
       </AddressStack>
       <TextComment>{comment}</TextComment>
       <Separator />

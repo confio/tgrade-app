@@ -5,15 +5,16 @@ import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
+import { useEffect, useState } from "react";
 import { useSdk } from "service";
-import { getFormItemName, isValidAddress } from "utils/forms";
+import { addressStringToArray, getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
 import { ButtonGroup, Separator } from "./style";
 
-const membersLabel = "Participants";
+const membersLabel = "Add member(s)";
 
 const validationSchema = Yup.object().shape({
-  [getFormItemName(membersLabel)]: Yup.string().typeError("Participants must be alphanumeric"),
+  [getFormItemName(membersLabel)]: Yup.string().typeError("Addresses must be alphanumeric"),
 });
 
 interface FormDsoMembersValues {
@@ -38,18 +39,24 @@ export default function FormDsoMembers({
     },
   } = useSdk();
 
+  const [membersString, setMembersString] = useState(members.join(","));
+  const [membersArray, setMembersArray] = useState(members);
+
+  useEffect(() => {
+    const membersArray = addressStringToArray(membersString);
+    setMembersArray(membersArray);
+  }, [membersString]);
+
   return (
     <Formik
       initialValues={{
-        [getFormItemName(membersLabel)]: members.join(","),
+        [getFormItemName(membersLabel)]: membersString,
       }}
       enableReinitialize
       validationSchema={validationSchema}
-      onSubmit={(values) => {
-        const membersString = values[getFormItemName(membersLabel)];
-        const membersArray = membersString.split(/[\s,]+/);
-        const nonEmptyOrDuplicateArray = [...new Set(membersArray.filter(Boolean))];
-        setMembers(nonEmptyOrDuplicateArray);
+      onSubmit={() => {
+        setMembers(membersArray);
+        goNext();
       }}
     >
       {({ submitForm }) => (
@@ -59,26 +66,31 @@ export default function FormDsoMembers({
               <Field
                 label={membersLabel}
                 optional
+                tooltip="You can add member(s) to your trusted circle by adding their addresses here. You can also add members later on"
                 placeholder="Type or paste addresses here"
-                value={members.join(",")}
-                onInputChange={() => {
-                  submitForm();
+                value={membersString}
+                onInputChange={({ target }) => {
+                  setMembersString(target.value);
                 }}
               />
               <AddressList
                 short
-                addresses={members}
+                addresses={membersArray}
                 addressPrefix={addressPrefix}
                 handleClose={(memberAddress) =>
-                  setMembers(members.filter((member) => member !== memberAddress))
+                  setMembersArray(membersArray.filter((member) => member !== memberAddress))
                 }
               />
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />
                 <Button
-                  disabled={members.some((memberAddress) => !isValidAddress(memberAddress, addressPrefix))}
-                  onClick={() => goNext()}
+                  disabled={membersArray.some(
+                    (memberAddress) => !isValidAddress(memberAddress, addressPrefix),
+                  )}
+                  onClick={() => {
+                    submitForm();
+                  }}
                 >
                   <div>Next</div>
                 </Button>

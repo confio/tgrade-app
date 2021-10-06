@@ -52,7 +52,7 @@ export default function ConfirmationRemoveParticipants({
     <>
       <AddressStack gap="s-3">
         <Text>Non voting participant(s) to be removed</Text>
-        <AddressList addresses={members} addressPrefix={config.addressPrefix} />
+        <AddressList short addresses={members} addressPrefix={config.addressPrefix} />
       </AddressStack>
       <TextComment>{comment}</TextComment>
       <Separator />

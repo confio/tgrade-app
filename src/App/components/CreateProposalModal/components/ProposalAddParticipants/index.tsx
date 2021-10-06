@@ -86,7 +86,6 @@ export default function ProposalAddParticipants({
       ) : (
         <FormAddParticipants
           members={members}
-          setMembers={setMembers}
           comment={comment}
           goBack={() => setProposalStep(undefined)}
           handleSubmit={submitAddParticipants}
