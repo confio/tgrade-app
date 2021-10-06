@@ -57,8 +57,8 @@ jobs:
           name: Install nodejs
           # In the current image, `sudo apt install nodejs` requires `sudo apt update` which is too slow
           command: |
-            curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-            sudo apt-get install -y nodejs
+            wget -O "$HOME/nodejs.deb" https://deb.nodesource.com/node_14.x/pool/main/n/nodejs/nodejs_14.18.0-deb-1nodesource1_amd64.deb
+            sudo dpkg -i "$HOME/nodejs.deb"
       - run:
           name: Install yarn
           command: |
