@@ -86,7 +86,6 @@ export default function ProposalRemoveParticipants({
       ) : (
         <FormRemoveParticipants
           members={members}
-          setMembers={setMembers}
           comment={comment}
           goBack={() => setProposalStep(undefined)}
           handleSubmit={submitRemoveParticipants}
