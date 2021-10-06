@@ -17,15 +17,10 @@ jobs:
           key: v1-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn compile
       - run: yarn lint
-      # I got this on CircleCI, even with no_output_timeout... seems it hits 4GB RAM limit
-      # Creating an optimized production build...
-      #              The build failed because the process exited too early.
-      #              This probably means the system ran out of memory or someone called
-      #              `kill -9` on the process.
-      # - run:
-      #     name: Webpack build
-      #     command: yarn build
-      #     no_output_timeout: 5m
+      - run:
+          name: Webpack build
+          command: yarn build
+          no_output_timeout: 5m
 
   test:
     machine:
