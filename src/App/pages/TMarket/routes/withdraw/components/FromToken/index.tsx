@@ -74,7 +74,7 @@ const FromToken = (): JSX.Element => {
         lpAfter: `-${values.From} LP`,
         sharePool: `${shareAfterTx} %`,
         txHash: "",
-        burned: `${values.From} LP`,
+        exchanged: `${values.From} LP`,
         fee: (Number(config.gasPrice.amount) / 2).toString(),
       });
       setSelectedLP(withdrawDispatch, lpToken);
