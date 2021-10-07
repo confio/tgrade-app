@@ -54,6 +54,7 @@ function TokenRow({
               <InputNumber
                 onChange={onChange}
                 placeholder="0.0"
+                defaultValue=""
                 bordered={false}
                 size="large"
                 name={id || title}
