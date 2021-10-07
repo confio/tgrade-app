@@ -4,6 +4,7 @@ import { paths } from "App/paths";
 import { NetworkConfig } from "config/network";
 import { toast } from "react-toastify";
 import { FormErrors, provideButtonState } from "service/provide";
+import { gtagTMarketAction, gtagTokenAction } from "utils/analytics";
 import { Contract20WS } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { Factory } from "utils/factory";
@@ -170,6 +171,7 @@ export const handleSubmit = async (
       break;
     case "create":
       try {
+        gtagTokenAction("create_pair_try");
         if (!signingClient || !address || !client) return;
         setLoading(true);
         const swapValues: SwapFormValues = {
@@ -179,6 +181,7 @@ export const handleSubmit = async (
           selectTo: values.selectTo,
         };
         await Factory.createPair(signingClient, address, factoryAddress, swapValues, config.gasPrice);
+        gtagTokenAction("create_pair_success");
         setProvideButtonState({ title: "Provide", type: "provide" });
         const pairs = await Factory.getPairs(client, factoryAddress);
         refreshPairs(pairs);
