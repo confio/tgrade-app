@@ -16,11 +16,26 @@ jobs:
             - node_modules
           key: v2-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn compile
-      - run: yarn lint
       - run:
           name: Webpack build
           command: yarn build
           no_output_timeout: 5m
+
+  lint:
+    docker:
+      - image: cimg/node:14.18.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "yarn.lock" }}
+      - run: yarn install --frozen-lockfile
+      - save_cache:
+          paths:
+            - ~/.cache/yarn
+            - node_modules
+          key: v2-dependencies-{{ checksum "yarn.lock" }}
+      - run: yarn lint
 
   test:
     machine:
@@ -97,4 +112,5 @@ workflows:
   build_and_test:
     jobs:
       - build
+      - lint
       - test
