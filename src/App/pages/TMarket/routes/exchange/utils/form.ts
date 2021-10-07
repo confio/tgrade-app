@@ -4,6 +4,7 @@ import { NetworkConfig } from "config/network";
 import { toast } from "react-toastify";
 import { SwapButtonState } from "service/exchange";
 import { FormErrors } from "service/tmarket";
+import { gtagTMarketAction } from "utils/analytics";
 import { Contract20WS } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import {
@@ -77,6 +78,7 @@ export const handleSubmit = async (
   refreshToken: (t: TokenProps) => void,
   setModalOpen: (b: boolean) => void,
 ): Promise<void> => {
+  gtagTMarketAction("exchange_try");
   if (!address) {
     setModalOpen(true);
   }
@@ -87,6 +89,7 @@ export const handleSubmit = async (
   if (values.From && signingClient && selectedPair && simulation) {
     try {
       const swap_result = await Token.Swap(signingClient, address, selectedPair, values, config.gasPrice);
+      gtagTMarketAction("exchange_success");
 
       setDetailSwap({
         from: `${values.From} ${values.selectFrom.symbol}`,

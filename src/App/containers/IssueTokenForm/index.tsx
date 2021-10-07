@@ -3,6 +3,7 @@ import { TxResult } from "App/components/ShowTxResult";
 import { useState } from "react";
 import { useError, useSdk } from "service";
 import { useTMarket } from "service/tmarket";
+import { gtagTokenAction } from "utils/analytics";
 import { Contract20WS, EmbeddedLogoType, LogoType, MinterInterface } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import TokenMarketing, { FormMarketingFields } from "./components/TokenMarketing";
@@ -50,6 +51,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
   }
 
   async function submitTokenMarketing(values: FormMarketingFields) {
+    gtagTokenAction("create_token_try");
     if (
       !signingClient ||
       !address ||
@@ -100,7 +102,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
         contractAddress,
         msg: `You created token ${tokenName} (${contractAddress}).`,
       });
-
+      gtagTokenAction("create_token_success");
       await refreshTokens();
     } catch (error) {
       setTxResult({ error: getErrorFromStackTrace(error) });

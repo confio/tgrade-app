@@ -5,13 +5,15 @@ import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Coin } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import { createContext, useContext, useEffect, useReducer } from "react";
-import { gtagSendWalletInfo } from "utils/analytics";
+import { gtagConnectWallet, gtagSendWalletInfo } from "utils/analytics";
 import {
   createClient,
   createSigningClient,
   getLastConnectedWallet,
   isKeplrAvailable,
+  isKeplrSigner,
   isLedgerAvailable,
+  isLedgerSigner,
   loadKeplrWallet,
   loadLedgerWallet,
   setLastConnectedWallet,
@@ -182,6 +184,14 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
       try {
         const { address } = (await sdkState.signer.getAccounts())[0];
         await gtagSendWalletInfo(address);
+
+        if (isKeplrSigner(sdkState.signer)) {
+          gtagConnectWallet("keplr", address);
+        }
+
+        if (isLedgerSigner(sdkState.signer)) {
+          gtagConnectWallet("ledger", address);
+        }
 
         if (mounted) sdkDispatch({ type: "setAddress", payload: address });
       } catch (error) {
