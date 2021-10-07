@@ -3,9 +3,9 @@ import closeIcon from "App/assets/icons/cross.svg";
 import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
-import * as React from "react";
 import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
+import { gtagDsoAction } from "utils/analytics";
 import { displayAmountToNative } from "utils/currency";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
@@ -61,6 +61,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
   }
 
   async function handleSubmitPayment({ escrowAmount }: FormDsoPaymentValues) {
+    gtagDsoAction("create_try");
     if (!signingClient || !address || !config.codeIds?.tgradeDso?.length) return;
 
     setSubmitting(true);
@@ -88,6 +89,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
         contractAddress,
         msg: `You are the voting participant in ${dsoName} (${contractAddress}).`,
       });
+      gtagDsoAction("create_success");
     } catch (error) {
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
