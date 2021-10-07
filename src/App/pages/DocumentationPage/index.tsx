@@ -1,4 +1,6 @@
 import { CopyBlock, monokai } from "react-code-blocks";
+import { isMobile } from "react-device-detect";
+
 import {
   ContentWrapper,
   PageWrapper,
