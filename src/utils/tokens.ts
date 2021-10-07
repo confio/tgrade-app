@@ -480,7 +480,7 @@ export interface DetailWithdraw {
   withdrawTokenB: string;
   priceImpact: string;
   txHash: string;
-  burned: string;
+  exchanged: string;
   lpAfter: string;
   sharePool: string;
   fee: string;

@@ -21,7 +21,7 @@ const WithdrawResult = (): JSX.Element => {
       <HorizontalDivider />
       <DetailRow title="Withdraw" value={detail.withdrawTokenB} />
       <HorizontalDivider />
-      <DetailRow title="Burned" value={detail.burned} />
+      <DetailRow title="Exchanged LP tokens" value={detail.exchanged} />
       <HorizontalDivider />
       <DetailRow title="Tx Hash" value={<TxHash value={detail.txHash} />} />
       <HorizontalDivider />
