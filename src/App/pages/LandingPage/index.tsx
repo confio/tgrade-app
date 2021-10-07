@@ -3,21 +3,21 @@ import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
 import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg";
 import { paths } from "App/paths";
 import { Link } from "react-router-dom";
-
+import { gtagLandingAction } from "utils/analytics";
 import {
   ContactForm,
   ContentWrapper,
+  CopyrightWrapper,
   Footer,
   Header,
   LinkButton,
+  LinkWrapper,
   LogoWrapper,
   PageWrapper,
   Paragraph,
   SubscribeButton,
   Text,
   TextSmall,
-  LinkWrapper,
-  CopyrightWrapper,
 } from "./style";
 
 export default function LandingPage(): JSX.Element | null {
@@ -41,28 +41,40 @@ export default function LandingPage(): JSX.Element | null {
               <b>Try Tgrade</b> and see for yourself - the power of Blockchain is closer than you think.
             </Text>
           </span>
-          <Link to={paths.dso.prefix}>
+          <Link to={paths.dso.prefix} onClick={() => gtagLandingAction("open_app")}>
             <LinkButton>
               <TextSmall>
                 Try the <b>Tgrade App</b>
               </TextSmall>
             </LinkButton>
           </Link>
-          <a href="https://outlook.office365.com/owa/calendar/Tgrade@confio.gmbh/bookings/">
+          <a
+            href="https://outlook.office365.com/owa/calendar/Tgrade@confio.gmbh/bookings/"
+            onClick={() => gtagLandingAction("book_demo")}
+          >
             <LinkButton>
               <TextSmall>
                 Book a <b>Demo of Tgrade</b>
               </TextSmall>
             </LinkButton>
           </a>
-          <Link target="_blank" to={paths.documentation.prefix}>
+          <Link
+            target="_blank"
+            to={paths.documentation.prefix}
+            onClick={() => gtagLandingAction("open_docs")}
+          >
             <LinkButton>
               <TextSmall>
                 Read the <b>Documentation</b>
               </TextSmall>
             </LinkButton>
           </Link>
-          <a href="https://tgrade.finance/">
+          <a
+            target="_blank"
+            href="https://tgrade.finance/"
+            onClick={() => gtagLandingAction("goto_tgrade_website")}
+            rel="noreferrer"
+          >
             <LinkButton>
               <TextSmall>
                 Learn more about <b>Tgrade</b>
