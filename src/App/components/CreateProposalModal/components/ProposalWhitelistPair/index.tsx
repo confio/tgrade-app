@@ -7,7 +7,8 @@ import { gtagProposalAction } from "utils/analytics";
 import { Contract20WS } from "utils/cw20";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { PairProps, tokenObj } from "utils/tokens";
+import { getPairsEager } from "utils/factory";
+import { tokenObj } from "utils/tokens";
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationWhitelistPair from "./components/ConfirmationWhitelistPair";
 import FormWhitelistPair, { FormWhiteilstPairValues } from "./components/FormWhitelistPair";
@@ -74,12 +75,7 @@ export default function ProposalWhitelistPair({
     (async function getPairs() {
       if (!client || !signingClient) return;
 
-      const { pairs }: { pairs: readonly PairProps[] } = await client.queryContractSmart(
-        config.factoryAddress,
-        {
-          pairs: {},
-        },
-      );
+      const pairs = await getPairsEager(client, config.factoryAddress);
 
       const tokensPerPairs: readonly TokensPerPair[] = await Promise.all(
         pairs.map(async (pair) => {
