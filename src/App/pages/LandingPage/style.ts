@@ -2,11 +2,15 @@ import styled from "styled-components";
 import Button from "App/components/Button";
 import LandingBG from "App/assets/images/landing-page-background.png";
 
-export const PageWrapper = styled.div`
+interface StyledProps {
+  isMobile?: boolean;
+}
+
+export const PageWrapper = styled.div<StyledProps>`
   background: url(${LandingBG});
   background-size: cover;
   width: 100vw;
-  height: 100vh;
+  height: ${(props) => (props.isMobile ? "85vh" : "100vh")};
 `;
 
 export const Header = styled.div`
@@ -17,19 +21,20 @@ export const Header = styled.div`
   height: 80px;
 `;
 
-export const LogoWrapper = styled.div`
+export const LogoWrapper = styled.div<StyledProps>`
   display: flex;
   justify-content: space-between;
   width: 110px;
-  margin-right: 100px;
+  margin-right: ${(props) => (props.isMobile ? "5px" : "100px")};
 `;
 
-export const Footer = styled.div`
+export const Footer = styled.div<StyledProps>`
   display: flex;
+  flex-direction: ${(props) => (props.isMobile ? "column" : "row")};
   width: 100%;
   height: 132px;
   position: relative;
-  align-items: center;
+  align-items: ${(props) => (props.isMobile ? "flex-start" : "center")};
   justify-content: space-between;
   bottom: 0;
   background: #242730;
@@ -38,10 +43,10 @@ export const Footer = styled.div`
   text-overflow: ellipsis;
 `;
 
-export const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div<StyledProps>`
   display: flex;
   flex-direction: column;
-  margin-left: 50%;
+  margin-left: ${(props) => (props.isMobile ? "1rem" : "50%")};
   margin-top: 5%;
   margin-right 5%;
 `;
@@ -68,18 +73,18 @@ export const TextSmall = styled.h2`
   color: #fff;
 `;
 
-export const LinkButton = styled.div`
+export const LinkButton = styled.div<StyledProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 650px;
-  min-width: 300px;
-  max-height: 74px;
-  min-height: 30px;
+  max-width: ${(props) => (props.isMobile ? "100%" : "650px")};
+  min-width: ${(props) => (props.isMobile ? "100%" : "300px")};
+  max-height: ${(props) => (props.isMobile ? "3rem" : "74px")};
+  min-height: ${(props) => (props.isMobile ? "3rem" : "30px")};
   border: 1px solid #ffffff;
   box-sizing: border-box;
   border-radius: 106px;
-  margin-top: 20px;
+  margin-top: ${(props) => (props.isMobile ? "1rem" : "20px")};
   cursor: pointer;
 `;
 
@@ -123,14 +128,17 @@ export const SubscribeButton = styled(Button)`
   text-align: center;
 `;
 
-export const LinkWrapper = styled.div`
+export const LinkWrapper = styled.div<StyledProps>`
   display: flex;
+  flex-direction: ${(props) => (props.isMobile ? "column" : "row")};
   justify-content: space-between;
-  margin: 46px 100px 0 100px;
+  margin: ${(props) => (props.isMobile ? "0" : "46px 100px 0 100px")};
 `;
 
-export const CopyrightWrapper = styled.div`
+export const CopyrightWrapper = styled.div<StyledProps>`
   display: flex;
-  flex-direction: column;
-  margin-left: 100px;
+  width: ${(props) => (props.isMobile ? "100vw" : "")};
+  flex-direction: ${(props) => (props.isMobile ? "row" : "column")};
+  justify-content: ${(props) => (props.isMobile ? "space-between" : "")};
+  margin-left: ${(props) => (props.isMobile ? "" : "100px")};
 `;

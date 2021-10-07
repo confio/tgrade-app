@@ -1,4 +1,5 @@
 import { CopyBlock, monokai } from "react-code-blocks";
+
 import {
   ContentWrapper,
   PageWrapper,
@@ -12,23 +13,6 @@ import {
 } from "./style";
 
 export default function DocumentationPage(): JSX.Element | null {
-  /* This is code to load & parse a local file
-     easy to adapt to fetching a md from github.
-
-  const [postMarkdown, setPostMarkdown] = useState("");
-  const file_name = "tech-guide.md";
-  useEffect(() => {
-    import(`./${file_name}`)
-      .then((res) => {
-        fetch(res.default)
-          .then((res) => res.text())
-          .then((res) => setPostMarkdown(res))
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err));
-  });
-  */
-
   return (
     <PageWrapper>
       <StyledMenu defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode="inline">

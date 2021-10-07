@@ -4,6 +4,7 @@ import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg
 import { paths } from "App/paths";
 import { Link } from "react-router-dom";
 import { gtagLandingAction } from "utils/analytics";
+import { isMobile } from "react-device-detect";
 import {
   ContactForm,
   ContentWrapper,
@@ -23,10 +24,10 @@ import {
 export default function LandingPage(): JSX.Element | null {
   return (
     <div>
-      <PageWrapper>
+      <PageWrapper isMobile={isMobile}>
         <Header>
-          <TgradeLogo style={{ marginLeft: "100px", height: "30px" }} />
-          <LogoWrapper>
+          <TgradeLogo style={{ marginLeft: isMobile ? "10px" : "100px", height: "30px" }} />
+          <LogoWrapper isMobile={isMobile}>
             <a href="https://twitter.com/TgradeFinance">
               <TwitterLogo />
             </a>
@@ -35,14 +36,20 @@ export default function LandingPage(): JSX.Element | null {
             </a>
           </LogoWrapper>
         </Header>
-        <ContentWrapper>
-          <span style={{ marginLeft: "2rem", maxWidth: "650px", minWidth: "300px" }}>
+        <ContentWrapper isMobile={isMobile}>
+          <span
+            style={{
+              marginLeft: isMobile ? "0.5rem" : "2rem",
+              maxWidth: isMobile ? "90vw" : "650px",
+              minWidth: "300px",
+            }}
+          >
             <Text>
               <b>Try Tgrade</b> and see for yourself - the power of Blockchain is closer than you think.
             </Text>
           </span>
           <Link to={paths.dso.prefix} onClick={() => gtagLandingAction("open_app")}>
-            <LinkButton>
+            <LinkButton isMobile={isMobile}>
               <TextSmall>
                 Try the <b>Tgrade App</b>
               </TextSmall>
@@ -52,7 +59,7 @@ export default function LandingPage(): JSX.Element | null {
             href="https://outlook.office365.com/owa/calendar/Tgrade@confio.gmbh/bookings/"
             onClick={() => gtagLandingAction("book_demo")}
           >
-            <LinkButton>
+            <LinkButton isMobile={isMobile}>
               <TextSmall>
                 Book a <b>Demo of Tgrade</b>
               </TextSmall>
@@ -63,7 +70,7 @@ export default function LandingPage(): JSX.Element | null {
             to={paths.documentation.prefix}
             onClick={() => gtagLandingAction("open_docs")}
           >
-            <LinkButton>
+            <LinkButton isMobile={isMobile}>
               <TextSmall>
                 Read the <b>Documentation</b>
               </TextSmall>
@@ -75,7 +82,7 @@ export default function LandingPage(): JSX.Element | null {
             onClick={() => gtagLandingAction("goto_tgrade_website")}
             rel="noreferrer"
           >
-            <LinkButton>
+            <LinkButton isMobile={isMobile}>
               <TextSmall>
                 Learn more about <b>Tgrade</b>
               </TextSmall>
@@ -83,26 +90,33 @@ export default function LandingPage(): JSX.Element | null {
           </a>
         </ContentWrapper>
       </PageWrapper>
-      <Footer>
-        <CopyrightWrapper>
+      <Footer isMobile={isMobile}>
+        <CopyrightWrapper isMobile={isMobile}>
           <TgradeLogo style={{ width: "94px", marginBottom: "16px" }} />
           <Paragraph>©2021 by Confio.gmbh</Paragraph>
         </CopyrightWrapper>
-        <LinkWrapper>
+        <LinkWrapper isMobile={isMobile}>
           <a href="https://tgrade.finance/impressum/">
             <Paragraph>Legal Information / Impressum</Paragraph>
           </a>
-          <div style={{ width: "200px" }} />
+          <div style={{ width: isMobile ? "" : "200px" }} />
           <a href="https://tgrade.finance/privacy-policy">
             <Paragraph>Privacy Policy</Paragraph>
           </a>
         </LinkWrapper>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <Paragraph>NEWSLETTER</Paragraph>
-          <ContactForm>
-            <Paragraph style={{ marginLeft: "13px", color: "#8692A6" }}>Enter your email address</Paragraph>
-            <SubscribeButton>Subscribe</SubscribeButton>
-          </ContactForm>
+          {isMobile ? null : (
+            <div>
+              {" "}
+              <Paragraph>NEWSLETTER</Paragraph>
+              <ContactForm>
+                <Paragraph style={{ marginLeft: "13px", color: "#8692A6" }}>
+                  Enter your email address
+                </Paragraph>
+                <SubscribeButton>Subscribe</SubscribeButton>
+              </ContactForm>
+            </div>
+          )}
         </div>
       </Footer>
     </div>
