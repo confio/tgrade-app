@@ -33,3 +33,39 @@ export async function gtagSendWalletInfo(address: string): Promise<void> {
   const walletInfo = `${new Date().getTime()}|${address}|${ip}`;
   window.gtag("event", "user_data", { wallet_info: walletInfo });
 }
+
+export async function gtagLandingAction(
+  action: "open_app" | "open_docs" | "book_demo" | "goto_tgrade_website",
+): Promise<void> {
+  window.gtag("event", "do_landing", { tc_action: action });
+}
+
+export async function gtagConnectWallet(type: "keplr" | "ledger", address: string): Promise<void> {
+  window.gtag("event", "connect_wallet", { wallet_type: type, wallet_address: address });
+}
+
+export async function gtagDsoAction(action: "create_try" | "create_success"): Promise<void> {
+  window.gtag("event", "do_trusted_circle", { tc_action: action });
+}
+
+export async function gtagProposalAction(action: "whitelist_try" | "whitelist_success"): Promise<void> {
+  window.gtag("event", "do_proposal", { proposal_action: action });
+}
+
+export async function gtagTokenAction(
+  action: "create_token_try" | "create_token_success" | "create_pair_try" | "create_pair_success",
+): Promise<void> {
+  window.gtag("event", "do_token", { token_action: action });
+}
+
+export async function gtagTMarketAction(
+  action:
+    | "provide_try"
+    | "provide_success"
+    | "exchange_try"
+    | "exchange_success"
+    | "withdraw_try"
+    | "withdraw_success",
+): Promise<void> {
+  window.gtag("event", "do_tmarket", { tmarket_action: action });
+}
