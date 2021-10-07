@@ -20,7 +20,7 @@
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
-    "target": "ES6"
+    "target": "ES2017"
   },
   "include": ["src"]
 }
