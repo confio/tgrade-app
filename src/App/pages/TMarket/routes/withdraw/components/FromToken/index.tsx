@@ -1,12 +1,14 @@
+import { Decimal } from "@cosmjs/math";
 import { TokenRow } from "App/pages/TMarket/components";
+import { getLPTokensList } from "App/pages/TMarket/utils";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { useSdk } from "service";
 import { useTMarket } from "service/tmarket";
+import { FormErrors, setDetailWithdraw, setErrors, setSelectedLP, useWithdraw } from "service/withdraw";
+import { Contract20WS } from "utils/cw20";
 import { Pool, PoolProps, TokenProps, WithdrawFormValues } from "utils/tokens";
-import { useWithdraw, setSelectedLP, setErrors, FormErrors, setDetailWithdraw } from "service/withdraw";
-import { Decimal } from "@cosmjs/math";
-import { getLPTokensList } from "App/pages/TMarket/utils";
+
 const FromToken = (): JSX.Element => {
   const { values, setValues, setFieldValue } = useFormikContext<WithdrawFormValues>();
   const { tMarketState } = useTMarket();
@@ -52,8 +54,25 @@ const FromToken = (): JSX.Element => {
       if (!indexA || !indexB) return;
       const symbolA = tokens[result.assets[0].info?.native || result.assets[0].info?.token || ""].symbol;
       const symbolB = tokens[result.assets[1].info?.native || result.assets[1].info?.token || ""].symbol;
-      const amountA = Decimal.fromAtomics(result.assets[0].amount, 6).toFloatApproximation();
-      const amountB = Decimal.fromAtomics(result.assets[1].amount, 6).toFloatApproximation();
+      if (!sdkState.address || !sdkState.client) return;
+      const decimalsA = (
+        await Contract20WS.getTokenInfo(
+          sdkState.client,
+          sdkState.address,
+          result.assets[0].info?.native || result.assets[0].info?.token || "",
+          config,
+        )
+      ).decimals;
+      const decimalsB = (
+        await Contract20WS.getTokenInfo(
+          sdkState.client,
+          sdkState.address,
+          result.assets[1].info?.native || result.assets[1].info?.token || "",
+          config,
+        )
+      ).decimals;
+      const amountA = Decimal.fromAtomics(result.assets[0].amount, decimalsA).toFloatApproximation();
+      const amountB = Decimal.fromAtomics(result.assets[1].amount, decimalsB).toFloatApproximation();
       const received_a = ((amountA / total_supply) * values.From).toFixed(2);
       const received_b = ((amountB / total_supply) * values.From).toFixed(2);
       const priceImpact = ((values.From * 100) / total_supply).toFixed(2);
