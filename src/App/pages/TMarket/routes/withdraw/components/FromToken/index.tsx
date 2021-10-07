@@ -15,7 +15,7 @@ const FromToken = (): JSX.Element => {
   const { withdrawState, withdrawDispatch } = useWithdraw();
   const { sdkState } = useSdk();
   const { lpTokens, estimatingFromA, tokens, searchText } = tMarketState;
-  const { client, config } = sdkState;
+  const { address, client, config } = sdkState;
   const setToken = (value: TokenProps) => {
     setValues({
       ...values,
@@ -54,19 +54,19 @@ const FromToken = (): JSX.Element => {
       if (!indexA || !indexB) return;
       const symbolA = tokens[result.assets[0].info?.native || result.assets[0].info?.token || ""].symbol;
       const symbolB = tokens[result.assets[1].info?.native || result.assets[1].info?.token || ""].symbol;
-      if (!sdkState.address || !sdkState.client) return;
+      if (!address) return;
       const decimalsA = (
         await Contract20WS.getTokenInfo(
-          sdkState.client,
-          sdkState.address,
+          client,
+          address,
           result.assets[0].info?.native || result.assets[0].info?.token || "",
           config,
         )
       ).decimals;
       const decimalsB = (
         await Contract20WS.getTokenInfo(
-          sdkState.client,
-          sdkState.address,
+          client,
+          address,
           result.assets[1].info?.native || result.assets[1].info?.token || "",
           config,
         )
