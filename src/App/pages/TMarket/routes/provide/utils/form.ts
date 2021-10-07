@@ -118,6 +118,7 @@ export const handleSubmit = async (
 ): Promise<void> => {
   switch (provideButtonState.type) {
     case "provide":
+      gtagTMarketAction("provide_try");
       if (
         !values.selectTo ||
         !values.selectFrom ||
@@ -137,6 +138,8 @@ export const handleSubmit = async (
           values,
           config.gasPrice,
         );
+        gtagTMarketAction("provide_success");
+
         if (simulation) {
           setDetailProvide({
             providedA: `${values.assetA} ${values.selectFrom.symbol}`,
