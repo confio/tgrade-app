@@ -3,6 +3,7 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
+import { gtagProposalAction } from "utils/analytics";
 import { Contract20WS } from "utils/cw20";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
@@ -104,6 +105,7 @@ export default function ProposalWhitelistPair({
   }
 
   async function submitCreateProposal() {
+    gtagProposalAction("whitelist_try");
     if (!signingClient || !client || !address) return;
     setSubmitting(true);
 
@@ -120,6 +122,7 @@ export default function ProposalWhitelistPair({
       setTxResult({
         msg: `Created proposal for whitelisting pair to ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
       });
+      gtagProposalAction("whitelist_success");
     } catch (error) {
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
