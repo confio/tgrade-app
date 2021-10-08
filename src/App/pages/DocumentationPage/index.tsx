@@ -1,5 +1,5 @@
 import { CopyBlock, monokai } from "react-code-blocks";
-
+import { isMobile } from "react-device-detect";
 import {
   ContentWrapper,
   PageWrapper,
@@ -15,25 +15,27 @@ import {
 export default function DocumentationPage(): JSX.Element | null {
   return (
     <PageWrapper>
-      <StyledMenu defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode="inline">
-        <StyledSubmenu key="sub1" icon={undefined} title="Introduction">
-          <StyledItemGroup key="g1" title="Smart Contracts">
-            <StyledMenuItem key="1">
-              <a href="#installation">Installation</a>
-            </StyledMenuItem>
-            <StyledMenuItem key="2">
-              <a href="#environment">Setting Up the Environment</a>
-            </StyledMenuItem>
-            <StyledMenuItem key="3">
-              <a href="#compiling">Optimizing the Compilation</a>
-            </StyledMenuItem>
-            <StyledMenuItem key="4">
-              <a href="#uploading">Uploading and Verifying</a>
-            </StyledMenuItem>
-          </StyledItemGroup>
-        </StyledSubmenu>
-      </StyledMenu>
-      <ContentWrapper>
+      {isMobile ? null : (
+        <StyledMenu defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode="inline">
+          <StyledSubmenu key="sub1" icon={undefined} title="Introduction">
+            <StyledItemGroup key="g1" title="Smart Contracts">
+              <StyledMenuItem key="1">
+                <a href="#installation">Installation</a>
+              </StyledMenuItem>
+              <StyledMenuItem key="2">
+                <a href="#environment">Setting Up the Environment</a>
+              </StyledMenuItem>
+              <StyledMenuItem key="3">
+                <a href="#compiling">Optimizing the Compilation</a>
+              </StyledMenuItem>
+              <StyledMenuItem key="4">
+                <a href="#uploading">Uploading and Verifying</a>
+              </StyledMenuItem>
+            </StyledItemGroup>
+          </StyledSubmenu>
+        </StyledMenu>
+      )}
+      <ContentWrapper isMobile={isMobile}>
         <Title id="installation">Installation</Title>
         <Text>
           In this section, we will gear up your workhorse for developing, deploying and, enjoying smart

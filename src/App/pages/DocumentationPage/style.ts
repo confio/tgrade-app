@@ -1,19 +1,22 @@
 import styled from "styled-components";
 import { Menu } from "antd";
 
+interface StyledProps {
+  isMobile?: boolean;
+}
 export const PageWrapper = styled.div`
   display: flex;
   width: 100vw;
   min-height: 100vh;
 `;
 
-export const ContentWrapper = styled.div`
-  width: 70%;
+export const ContentWrapper = styled.div<StyledProps>`
+  width: ${(props) => (props.isMobile ? "100vw" : "70%")};
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin-left: 245px;
-  padding: 50px;
+  margin-left: ${(props) => (props.isMobile ? "5px" : "245")};
+  padding: ${(props) => (props.isMobile ? "5px" : "50")};
 
   & div {
     margin-bottom: 25px;
