@@ -15,7 +15,7 @@ export const ContentWrapper = styled.div<StyledProps>`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin-left: ${(props) => (props.isMobile ? "5px" : "245")};
+  margin-left: ${(props) => (props.isMobile ? "5px" : "245px")};
   padding: ${(props) => (props.isMobile ? "5px" : "50")};
 
   & div {
