@@ -67,8 +67,7 @@
   },
   "devDependencies": {
     "axios": "^0.21.1",
-    "firebase-tools": "^9.18.0",
-    "ts-proto": "^1.79.2"
+    "firebase-tools": "^9.18.0"
   },
   "scripts": {
     "start:base": "craco start",
