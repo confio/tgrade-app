@@ -13,7 +13,7 @@ const dsoNameLabel = "Trusted Circle name";
 const votingDurationLabel = "Voting duration";
 const quorumLabel = "Quorum";
 const thresholdLabel = "Threshold";
-const allowEndEarlyLabel = "Allow end early?";
+const allowEndEarlyLabel = "Allow voting to end early?";
 
 const validationSchema = Yup.object().shape({
   [getFormItemName(dsoNameLabel)]: Yup.string()
@@ -105,7 +105,7 @@ export default function FormDsoBasicData({
                     units="%"
                   />
                 </FieldGroup>
-                <StyledTooltipWrapper title="Allows proposals to pass as soon as the threshold is met">
+                <StyledTooltipWrapper title="Allows proposals to pass before the end of the voting duration. Requires that the threshold and quorum are met, measured against all eligible voters">
                   <Checkbox name={getFormItemName(allowEndEarlyLabel)}>{allowEndEarlyLabel}</Checkbox>
                 </StyledTooltipWrapper>
                 {showDurationWarning ? <WarningText>Warning: voting duration very long</WarningText> : null}
