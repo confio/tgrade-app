@@ -13,7 +13,7 @@ const dsoNameLabel = "Trusted Circle name";
 const votingDurationLabel = "Voting duration";
 const quorumLabel = "Quorum";
 const thresholdLabel = "Threshold";
-const allowEndEarlyLabel = "Allow end early?";
+const allowEndEarlyLabel = "Allow voting to end early?";
 
 const validationSchema = Yup.object().shape({
   [getFormItemName(dsoNameLabel)]: Yup.string()
