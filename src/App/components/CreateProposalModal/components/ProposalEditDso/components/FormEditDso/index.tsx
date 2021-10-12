@@ -124,7 +124,7 @@ export default function FormEditDso({
                     placeholder="Enter quorum"
                     units="%"
                     optional
-                    tooltip="Percentage of voters needeed"
+                    tooltip="Percentage of voters needed"
                   />
                   <Field
                     label={thresholdLabel}
