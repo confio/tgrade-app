@@ -15,6 +15,10 @@ export const StyledTabs = styled(Tabs)`
     font-weight: 500;
   }
 
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    text-shadow: 0 0 0 currentColor;
+  }
+
   & .ant-tabs-ink-bar {
     background-color: var(--color-text-1ary);
   }
