@@ -128,14 +128,6 @@ export const SubscribeButton = styled(Button)`
   text-align: center;
 `;
 
-export const LinkWrapper = styled.div<StyledProps>`
-  display: flex;
-  flex-direction: ${(props) => (props.isMobile ? "column" : "row")};
-  justify-content: space-between;
-  margin: ${(props) => (props.isMobile ? "0" : "46px 100px 0 100px")};
-  padding: ${(props) => (props.isMobile ? "5px" : "")};
-`;
-
 export const CopyrightWrapper = styled.div<StyledProps>`
   display: flex;
   width: ${(props) => (props.isMobile ? "100vw" : "")};

@@ -12,7 +12,6 @@ import {
   Footer,
   Header,
   LinkButton,
-  LinkWrapper,
   LogoWrapper,
   PageWrapper,
   Paragraph,
@@ -95,15 +94,12 @@ export default function LandingPage(): JSX.Element | null {
           <TgradeLogo style={{ width: "94px", marginBottom: "16px" }} />
           <Paragraph>©2021 by Confio.gmbh</Paragraph>
         </CopyrightWrapper>
-        <LinkWrapper isMobile={isMobile}>
-          <a href="https://tgrade.finance/impressum/">
-            <Paragraph>Legal Information / Impressum</Paragraph>
-          </a>
-          <div style={{ width: isMobile ? "" : "200px" }} />
-          <a href="https://tgrade.finance/privacy-policy">
-            <Paragraph>Privacy Policy</Paragraph>
-          </a>
-        </LinkWrapper>
+        <a href="https://tgrade.finance/impressum/">
+          <Paragraph>Legal Information / Impressum</Paragraph>
+        </a>
+        <a href="https://tgrade.finance/privacy-policy">
+          <Paragraph>Privacy Policy</Paragraph>
+        </a>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {isMobile ? null : (
             <div>
