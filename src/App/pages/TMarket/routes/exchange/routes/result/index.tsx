@@ -39,7 +39,5 @@ const TxHash = (props: { value: string }): JSX.Element => {
   const offset = 8;
   if (value.length < offset * 2) return <>----</>;
 
-  //const shortV = `${value.substring(0, offset)}...${value.substring(value.length - offset, value.length)}`;
-
   return <Tag onClick={() => copyToClipboard(value)}>{value}</Tag>;
 };
