@@ -295,7 +295,7 @@ export class DsoContract extends DsoContractQuerier {
         funds: funds,
       },
     );
-    console.log(contractAddress);
+    console.log("New contract address:", contractAddress);
     return contractAddress;
   }
 
