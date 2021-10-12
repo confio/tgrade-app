@@ -4,12 +4,16 @@ import { HorizontalDivider, OkButton } from "App/pages/TMarket/components/Transa
 import { Redirect } from "react-router-dom";
 import copyToClipboard from "clipboard-copy";
 import Tag from "./style";
+import { useSdk } from "service";
 
 import { setDetailSwap, useExchange } from "service/exchange";
 
 const ExchangeResult = (): JSX.Element => {
   const { exchangeState, exchangeDispatch } = useExchange();
   const { detailSwap } = exchangeState;
+  const {
+    sdkState: { config },
+  } = useSdk();
 
   if (!detailSwap) {
     return <Redirect to={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`} />;
@@ -26,7 +30,7 @@ const ExchangeResult = (): JSX.Element => {
       <HorizontalDivider />
       <DetailRow title="Tx Hash" value={<TxHash value={detailSwap.txHash} />} />
       <HorizontalDivider />
-      <DetailRow title="Fee" value={`${detailSwap.fee} TGD`} />
+      <DetailRow title="Fee" value={`${detailSwap.fee} ${config.coinMap[config.feeToken].denom}`} />
       <HorizontalDivider />
       <OkButton onClick={() => setDetailSwap(exchangeDispatch, undefined)}>Ok</OkButton>
     </TransactionDetail>
