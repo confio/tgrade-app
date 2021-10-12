@@ -1,11 +1,11 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { FaucetClient } from "@cosmjs/faucet-client";
 import { LedgerSigner } from "@cosmjs/ledger-amino";
 import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Coin } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import { createContext, useContext, useEffect, useReducer } from "react";
 import { gtagConnectWallet, gtagSendWalletInfo } from "utils/analytics";
+import { Faucet } from "utils/faucet";
 import {
   createClient,
   createSigningClient,
@@ -28,7 +28,7 @@ type SdkState = {
   readonly address?: string;
   readonly signingClient?: SigningCosmWasmClient;
   readonly getBalance?: (address?: string) => Promise<readonly Coin[]>;
-  readonly hitFaucet?: () => Promise<void>;
+  readonly faucet?: Faucet;
 };
 
 type SdkAction =
@@ -61,8 +61,8 @@ type SdkAction =
       readonly payload?: (address?: string) => Promise<readonly Coin[]>;
     }
   | {
-      readonly type: "setHitFaucet";
-      readonly payload?: () => Promise<void>;
+      readonly type: "setFaucet";
+      readonly payload?: Faucet;
     };
 
 type SdkDispatch = (action: SdkAction) => void;
@@ -77,7 +77,7 @@ function sdkReducer(state: SdkState, action: SdkAction): SdkState {
         address: undefined,
         signingClient: undefined,
         getBalance: undefined,
-        hitFaucet: undefined,
+        faucet: undefined,
       };
     }
     case "setConfig": {
@@ -98,8 +98,8 @@ function sdkReducer(state: SdkState, action: SdkAction): SdkState {
     case "setGetBalance": {
       return { ...state, getBalance: action.payload };
     }
-    case "setHitFaucet": {
-      return { ...state, hitFaucet: action.payload };
+    case "setFaucet": {
+      return { ...state, faucet: action.payload };
     }
     default: {
       throw new Error("Unhandled action type");
@@ -119,9 +119,11 @@ export function setAddress(dispatch: SdkDispatch, address: string): void {
 }
 
 export async function hitFaucetIfNeeded(state: SdkState): Promise<void> {
-  const balance = (await state.getBalance?.()) ?? [];
+  if (!state.getBalance || !state.faucet || !state.address) return;
+
+  const balance = await state.getBalance();
   if (balance.find((coin) => coin.amount === "0")) {
-    await state.hitFaucet?.();
+    await state.faucet.creditAll(state.address);
   }
 }
 
@@ -155,7 +157,7 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
     address: undefined,
     signingClient: undefined,
     getBalance: undefined,
-    hitFaucet: undefined,
+    faucet: undefined,
   });
 
   useEffect(() => {
@@ -274,24 +276,9 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
   }, [handleError, sdkState.address, sdkState.client, sdkState.config.coinMap]);
 
   useEffect(() => {
-    async function hitFaucet(): Promise<void> {
-      if (!sdkState.address) return;
-
-      const config = sdkState.config;
-      const tokens = config.faucetTokens || [config.feeToken];
-
-      try {
-        for (const token of tokens) {
-          const faucet = new FaucetClient(config.faucetUrl);
-          await faucet.credit(sdkState.address, token);
-        }
-      } catch (error) {
-        handleError(error);
-      }
-    }
-
-    sdkDispatch({ type: "setHitFaucet", payload: hitFaucet });
-  }, [handleError, sdkState.address, sdkState.config]);
+    const faucet = new Faucet(sdkState.config);
+    sdkDispatch({ type: "setFaucet", payload: faucet });
+  }, [sdkState.config]);
 
   return <SdkContext.Provider value={{ sdkState, sdkDispatch }}>{children}</SdkContext.Provider>;
 }
