@@ -26,7 +26,7 @@ const ExchangeResult = (): JSX.Element => {
       <HorizontalDivider />
       <DetailRow title="Tx Hash" value={<TxHash value={detailSwap.txHash} />} />
       <HorizontalDivider />
-      <DetailRow title="Fee" value={detailSwap.fee} />
+      <DetailRow title="Fee" value={`${detailSwap.fee} TGD`} />
       <HorizontalDivider />
       <OkButton onClick={() => setDetailSwap(exchangeDispatch, undefined)}>Ok</OkButton>
     </TransactionDetail>
