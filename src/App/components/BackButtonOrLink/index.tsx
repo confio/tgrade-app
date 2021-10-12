@@ -36,7 +36,7 @@ export default function BackButtonOrLink({
   text,
 }: BackButtonOrLinkProps): JSX.Element {
   return onClick ? (
-    <StyledButton disabled={disabled} onClick={disabled ? () => {} : onClick}>
+    <StyledButton type="button" disabled={disabled} onClick={disabled ? () => {} : onClick}>
       <BackContent text={text} />
     </StyledButton>
   ) : (
