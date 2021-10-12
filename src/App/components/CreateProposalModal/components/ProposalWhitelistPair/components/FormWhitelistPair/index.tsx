@@ -68,7 +68,7 @@ export default function FormWhitelistPair({
               >
                 {tokensPerPairs.map((pair) => (
                   <Option key={pair.pairAddress} value={pair.pairAddress}>
-                    {`${pair.tokenA.name} → ${pair.tokenB.name}`}
+                    {`${pair.tokenA.name} ⇄ ${pair.tokenB.name}`}
                   </Option>
                 ))}
               </StyledSelect>

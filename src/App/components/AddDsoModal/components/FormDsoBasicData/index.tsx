@@ -95,7 +95,7 @@ export default function FormDsoBasicData({
                   <Field
                     label={quorumLabel}
                     placeholder="Enter quorum"
-                    tooltip="Percentage of voters needeed"
+                    tooltip="Percentage of voters needed"
                     units="%"
                   />
                   <Field
