@@ -47,7 +47,7 @@ export const handleValidation = async (
   if (!pair) return;
 
   //Check allowance A
-  if (values.selectFrom.address !== "utgd") {
+  if (values.selectFrom.address !== "utgd" && values.assetA) {
     const result = await Contract20WS.getAllowance(
       client,
       values.selectFrom.address,
@@ -64,7 +64,7 @@ export const handleValidation = async (
     setIsApprovedA(true);
   }
   //Check allowance B
-  if (values.selectTo.address !== "utgd") {
+  if (values.selectTo.address !== "utgd" && values.assetB) {
     const result = await Contract20WS.getAllowance(
       client,
       values.selectTo.address,
@@ -85,14 +85,21 @@ export const handleValidation = async (
     to: undefined,
   };
   //Insufficient balance FROM
-  values.assetA > parseFloat(values.selectFrom.humanBalance)
+  values.assetA && values.assetA > parseFloat(values.selectFrom.humanBalance)
     ? (errors.from = "Insufficient Balance")
     : (errors.from = undefined);
 
   //Insufficient balance TO
-  values.assetB > parseFloat(values.selectTo.humanBalance)
+  values.assetB && values.assetB > parseFloat(values.selectTo.humanBalance)
     ? (errors.to = "Insufficient Balance")
     : (errors.to = undefined);
+
+  //Insufficient provide FROM
+  values.assetA && values.assetA >= 0
+    ? (errors.from = undefined)
+    : (errors.from = "Must provide some liquidity");
+  //Insufficient provide TO
+  values.assetB && values.assetB >= 0 ? (errors.to = undefined) : (errors.to = "Must provide some liquidity");
 
   setErrors(errors);
 };
@@ -175,7 +182,7 @@ export const handleSubmit = async (
     case "create":
       try {
         gtagTokenAction("create_pair_try");
-        if (!signingClient || !address || !client) return;
+        if (!signingClient || !address || !client || !values.assetA || !values.assetB) return;
         setLoading(true);
         const swapValues: SwapFormValues = {
           From: values.assetA,
@@ -193,7 +200,6 @@ export const handleSubmit = async (
         console.error(error);
         toast.error(error, { toastId: "t-market-toast-id" });
       }
-      console.log("creating pair");
       break;
     case "connect_wallet":
       setModalOpen(true);
