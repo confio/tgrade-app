@@ -23,7 +23,7 @@ const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"
 
 const initialValues: WithdrawFormValues = {
   To: "0 - 0",
-  From: 0.0,
+  From: 1.0,
   selectFrom: undefined,
   selectTo: undefined,
 };

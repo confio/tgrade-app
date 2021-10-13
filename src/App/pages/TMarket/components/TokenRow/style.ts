@@ -1,4 +1,4 @@
-import { Row, Typography, Col } from "antd";
+import { Col, Row, Typography } from "antd";
 import styled from "styled-components";
 
 export const TokenContainer = styled(Row)`
@@ -77,9 +77,8 @@ export const TitleParagraph = styled(Typography.Paragraph)`
 export const ErrorContainer = styled(Typography.Paragraph)`
   &.ant-typography {
     position: absolute;
+    right: var(--s3);
     z-index: 999;
-    width: 200px;
-    transform: translate(150%, 15%);
     text-align: end;
     color: hsl(360, 100%, 70%);
     font-size: calc(var(--s0) * 0.85);

@@ -34,8 +34,8 @@ import { FormCustom } from "./style";
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
 const initialValues: ProvideFormValues = {
-  assetA: 0.0,
-  assetB: 0.0,
+  assetA: 1.0,
+  assetB: 1.0,
   selectFrom: undefined,
   selectTo: undefined,
 };

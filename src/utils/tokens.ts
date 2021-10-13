@@ -32,8 +32,8 @@ export interface WithdrawFormValues {
   selectTo: TokenProps | undefined;
 }
 export interface ProvideFormValues {
-  assetA: number;
-  assetB: number;
+  assetA: number | null;
+  assetB: number | null;
   selectFrom: TokenProps | undefined;
   selectTo: TokenProps | undefined;
 }
@@ -313,6 +313,7 @@ export class Pool {
     const price = numberFormat.format(pools);
     const priceReverse = numberFormat.format(1 / pools);
 
+    if (!values.assetA || !values.assetB) return null;
     const amountA = parseFloat(
       Decimal.fromUserInput(values.assetA.toString(), values.selectFrom.decimals).toString(),
     );
@@ -346,7 +347,7 @@ export class Pool {
     values: ProvideFormValues,
     gasPrice: GasPrice,
   ): Promise<any> {
-    if (!values.selectTo || !values.selectFrom) return;
+    if (!values.selectTo || !values.selectFrom || !values.assetA || !values.assetB) return;
     const keyTokenA = values.selectFrom?.address === "utgd" ? "native" : "token";
     const keyTokenB = values.selectTo?.address === "utgd" ? "native" : "token";
 

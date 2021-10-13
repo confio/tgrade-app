@@ -1,6 +1,9 @@
 import TokenRow from "App/pages/TMarket/components/TokenRow";
+import { getTokensList } from "App/pages/TMarket/utils";
 import { useFormikContext } from "formik";
+import { useEffect } from "react";
 import { useSdk } from "service";
+import { setExtraInfo, setIsPoolEmpty, setPool, setSimulationProvide, useProvide } from "service/provide";
 import { setEstimatingFromA, useTMarket } from "service/tmarket";
 import {
   ExtraInfoProvide,
@@ -12,9 +15,6 @@ import {
   Token,
   TokenProps,
 } from "utils/tokens";
-import { useProvide, setSimulationProvide, setPool, setIsPoolEmpty, setExtraInfo } from "service/provide";
-import { useEffect } from "react";
-import { getTokensList } from "App/pages/TMarket/utils";
 
 const FromToken = (): JSX.Element => {
   const { values, setValues, setFieldValue } = useFormikContext<ProvideFormValues>();
@@ -55,7 +55,7 @@ const FromToken = (): JSX.Element => {
       )
         return;
 
-      if (values.assetA > 0) {
+      if (values.assetA && values.assetA > 0 && values.assetB) {
         const pool_result: PoolProps = await Pool.queryPool(client, selectedPair?.contract_addr);
 
         if (parseFloat(pool_result.total_share) === 0) {

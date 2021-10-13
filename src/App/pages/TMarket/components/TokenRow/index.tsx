@@ -53,7 +53,7 @@ function TokenRow({
             <Col span={10}>
               <InputNumber
                 onChange={onChange}
-                placeholder="0.0"
+                placeholder="1.0"
                 defaultValue=""
                 bordered={false}
                 size="large"

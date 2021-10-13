@@ -44,7 +44,7 @@ export const handleSubmit = async (
     );
     gtagTMarketAction("withdraw_success");
     const token_info = await Contract20WS.getTokenInfo(client, address, values.selectFrom.address, config);
-    values.To = "0.0";
+    values.To = "1.0";
     updateLPtoken({ [lpSelected.token.address]: { token: token_info, pair: lpSelected.pair } });
     setDetail({ ...detailsWithdraw, txHash: result.transactionHash });
     setLoading(false);
