@@ -50,7 +50,7 @@ function TokenRowWithdraw({
               <Input
                 disabled={true}
                 onChange={onChange}
-                placeholder="0.0"
+                placeholder="1.0"
                 bordered={false}
                 size="large"
                 name={id || title}

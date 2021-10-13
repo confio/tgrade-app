@@ -31,7 +31,7 @@ import { FormCustom } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
-const initialValues: SwapFormValues = { To: 0.0, From: 0.0, selectFrom: undefined, selectTo: undefined };
+const initialValues: SwapFormValues = { To: 1.0, From: 1.0, selectFrom: undefined, selectTo: undefined };
 
 export default function Exchange(): JSX.Element {
   const { sdkState } = useSdk();
