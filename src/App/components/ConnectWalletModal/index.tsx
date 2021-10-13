@@ -5,9 +5,10 @@ import ChooseWallet from "./components/ChooseWallet";
 import StyledConnectWalletModal from "./style";
 
 enum ConnectWalletSteps {
-  Choose = "Choose",
-  AuthorizeKeplr = "AuthorizeKeplr",
-  AuthorizeLedger = "AuthorizeLedger",
+  Choose = "choose",
+  AuthorizeKeplr = "keplr",
+  AuthorizeLedger = "ledger",
+  LoadWeb = "web",
 }
 
 interface ConnectWalletModalProps {
@@ -55,12 +56,13 @@ export default function ConnectWalletModal({
           closeModal={closeModal}
           chooseKeplr={() => setConnectWalletStep(ConnectWalletSteps.AuthorizeKeplr)}
           chooseLedger={() => setConnectWalletStep(ConnectWalletSteps.AuthorizeLedger)}
+          chooseWeb={() => setConnectWalletStep(ConnectWalletSteps.LoadWeb)}
         />
       ) : (
         <AuthorizeWallet
           closeModal={closeModal}
           goBack={() => setConnectWalletStep(ConnectWalletSteps.Choose)}
-          walletType={connectWalletStep === ConnectWalletSteps.AuthorizeKeplr ? "keplr" : "ledger"}
+          walletType={connectWalletStep}
         />
       )}
     </StyledConnectWalletModal>
