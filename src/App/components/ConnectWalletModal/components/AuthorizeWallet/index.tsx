@@ -6,8 +6,10 @@ import {
   isKeplrSigner,
   isLedgerAvailable,
   isLedgerSigner,
+  isWebSigner,
   loadKeplrWallet,
   loadLedgerWallet,
+  loadOrCreateWallet,
   setLastConnectedWallet,
   WalletLoader,
 } from "utils/sdk";
@@ -23,7 +25,7 @@ const { Title, Text } = Typography;
 interface AuthorizeWalletProps {
   readonly closeModal: () => void;
   readonly goBack: () => void;
-  readonly walletType: "keplr" | "ledger";
+  readonly walletType: "keplr" | "ledger" | "web";
 }
 
 export default function AuthorizeWallet({
@@ -46,7 +48,7 @@ export default function AuthorizeWallet({
   const connectWallet = useCallback(
     async function (loadWallet: WalletLoader) {
       try {
-        // Get a keplr or ledger signer
+        // Get a keplr, ledger, or web signer
         const signer = await loadWallet(sdkState.config);
 
         if (isLedgerSigner(signer)) {
@@ -60,16 +62,22 @@ export default function AuthorizeWallet({
         // Detect the type of signer and store it to know which one should reconnect
         if (isKeplrSigner(signer)) {
           setLastConnectedWallet("keplr");
-        } else {
+        }
+        if (isLedgerSigner(signer)) {
           setLastConnectedWallet("ledger");
+        }
+        if (isWebSigner(signer)) {
+          setLastConnectedWallet("web");
         }
 
         dismiss();
       } catch (error) {
+        setLastConnectedWallet("");
         handleError(error);
+        if (walletType === "web") return;
+
         const toConnect = walletType === "keplr" ? "the Keplr extension" : "your Ledger";
         setError(`Please make sure ${toConnect} is connected`);
-        setLastConnectedWallet("");
       }
     },
     [dismiss, handleError, sdkDispatch, sdkState.config, walletType],
@@ -92,12 +100,13 @@ export default function AuthorizeWallet({
         setError("Your ledger is not available");
       }
     }
+    if (walletType === "web") connectWallet(loadOrCreateWallet);
   }, [connectWallet, walletType]);
 
   return (
     <Stack gap="s1">
       <ModalHeader>
-        <Title>Authorize your Wallet</Title>
+        <Title>{walletType === "web" ? "Loading your Wallet" : "Authorize your Wallet"}</Title>
         <img alt="Close button" src={closeIcon} onClick={() => closeModal()} />
       </ModalHeader>
       {error ? (

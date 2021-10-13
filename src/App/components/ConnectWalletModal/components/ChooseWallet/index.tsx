@@ -1,8 +1,8 @@
 import { Typography } from "antd";
-import * as React from "react";
 import { resetSdk, useSdk } from "service";
-import { isKeplrSigner, isLedgerSigner, setLastConnectedWallet } from "utils/sdk";
+import { isKeplrSigner, isLedgerSigner, isWebSigner, setLastConnectedWallet } from "utils/sdk";
 import closeIcon from "../../../../assets/icons/cross.svg";
+import webIcon from "../../../../assets/icons/web.svg";
 import keplrIcon from "../../../../assets/images/keplr-logo.png";
 import ledgerIcon from "../../../../assets/images/ledger-logo.png";
 import Stack from "../../../Stack/style";
@@ -15,12 +15,14 @@ interface ChooseWalletProps {
   readonly closeModal: () => void;
   readonly chooseKeplr: () => void;
   readonly chooseLedger: () => void;
+  readonly chooseWeb: () => void;
 }
 
 export default function ChooseWallet({
   closeModal,
   chooseKeplr,
   chooseLedger,
+  chooseWeb,
 }: ChooseWalletProps): JSX.Element {
   const {
     sdkState: { signer, address },
@@ -65,6 +67,14 @@ export default function ChooseWallet({
                 onClick={() => chooseLedger()}
               />
             ) : null}
+            {!isWebSigner(signer) ? (
+              <WalletButton
+                iconSrc={webIcon}
+                iconAlt="Web logo"
+                text="Web wallet"
+                onClick={() => chooseWeb()}
+              />
+            ) : null}
           </Stack>
         </SwitchButtons>
       ) : (
@@ -85,6 +95,14 @@ export default function ChooseWallet({
                 iconAlt="Ledger logo"
                 text="Ledger wallet"
                 onClick={() => chooseLedger()}
+              />
+            ) : null}
+            {!isWebSigner(signer) ? (
+              <WalletButton
+                iconSrc={webIcon}
+                iconAlt="Web logo"
+                text="Web wallet"
+                onClick={() => chooseWeb()}
               />
             ) : null}
           </ChooseButtons>
