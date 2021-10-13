@@ -142,6 +142,10 @@ export function isLedgerSigner(signer?: OfflineDirectSigner | LedgerSigner): sig
   return !!(signer as any)?.ledger;
 }
 
+export function isWebSigner(signer?: OfflineDirectSigner | LedgerSigner): signer is OfflineDirectSigner {
+  return signer !== undefined && !isKeplrSigner(signer) && !isLedgerSigner(signer);
+}
+
 export function isKeplrAvailable(): boolean {
   const canGetSigner = !!window.getOfflineSigner;
   const canSuggestChain = !!window.keplr?.experimentalSuggestChain;
