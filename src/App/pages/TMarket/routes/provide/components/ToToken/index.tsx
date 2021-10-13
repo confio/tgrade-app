@@ -1,5 +1,9 @@
 import TokenRow from "App/pages/TMarket/components/TokenRow";
+import { getTokensList } from "App/pages/TMarket/utils";
 import { useFormikContext } from "formik";
+import { useEffect } from "react";
+import { useSdk } from "service";
+import { setExtraInfo, setIsPoolEmpty, setPool, setSimulationProvide, useProvide } from "service/provide";
 import { setEstimatingFromB, useTMarket } from "service/tmarket";
 import {
   ExtraInfoProvide,
@@ -11,10 +15,6 @@ import {
   Token,
   TokenProps,
 } from "utils/tokens";
-import { setSimulationProvide, useProvide, setPool, setIsPoolEmpty, setExtraInfo } from "service/provide";
-import { useSdk } from "service";
-import { useEffect } from "react";
-import { getTokensList } from "App/pages/TMarket/utils";
 
 const ToToken = (): JSX.Element => {
   const { values, setValues, setFieldValue } = useFormikContext<ProvideFormValues>();
@@ -44,7 +44,7 @@ const ToToken = (): JSX.Element => {
       )
         return;
 
-      if (values.assetB > 0) {
+      if (values.assetB && values.assetB > 0 && values.assetA) {
         const val: SwapFormValues = {
           selectFrom: values.selectFrom,
           selectTo: values.selectTo,
