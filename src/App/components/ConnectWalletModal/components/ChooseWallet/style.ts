@@ -1,5 +1,5 @@
-import Button from "App/components/Button";
 import AddressTag from "App/components/AddressTag";
+import Button from "App/components/Button";
 import styled from "styled-components";
 
 export const ModalHeader = styled.header`
@@ -34,13 +34,10 @@ export const StyledAddressTag = styled(AddressTag)`
 export const ChooseButtons = styled.div`
   display: flex;
   flex-wrap: wrap;
+  gap: var(--s1);
 
   & button {
     flex-basis: calc(50% - calc(var(--s1) / 2));
-  }
-
-  & button + button {
-    margin-left: var(--s1);
   }
 
   & .ant-btn {
@@ -58,10 +55,6 @@ export const SwitchButtons = styled.div`
 
   & button {
     flex-basis: calc(50% - calc(var(--s1) / 2));
-  }
-
-  & button + button {
-    margin-left: var(--s1);
   }
 
   & .ant-btn {
