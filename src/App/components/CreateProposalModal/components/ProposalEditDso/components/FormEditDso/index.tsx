@@ -138,7 +138,7 @@ export default function FormEditDso({
                   <Field label={votingDurationLabel} placeholder="Enter duration" units="Days" optional />
                   <Field label={escrowAmountLabel} placeholder="Enter amount" units="TGD" optional />
                 </FieldGroup>
-                <StyledTooltipWrapper title="Allows proposals to pass before the end of the voting duration. Requires that the threshold and quorum are met, measured against all eligible voters">
+                <StyledTooltipWrapper title="Allow proposals to pass before the end of the voting duration. Requires that the threshold and quorum are met, measured against all eligible voters">
                   <Checkbox name={getFormItemName(earlyPassLabel)}>{earlyPassLabel}</Checkbox>
                 </StyledTooltipWrapper>
                 <Field label={commentLabel} placeholder="Enter comment" optional />
