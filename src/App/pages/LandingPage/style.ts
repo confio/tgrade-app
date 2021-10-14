@@ -34,7 +34,7 @@ export const Footer = styled.div<StyledProps>`
   width: 100%;
   height: 132px;
   position: relative;
-  align-items: ${(props) => (props.isMobile ? "flex-start" : "center")};
+  align-items: center;
   justify-content: space-between;
   bottom: 0;
   background: #242730;
@@ -51,9 +51,9 @@ export const ContentWrapper = styled.div<StyledProps>`
   margin-right 5%;
 `;
 
-export const Text = styled.h2`
+export const Text = styled.h2<StyledProps>`
   font-family: Montserrat;
-  font-size: 30px;
+  font-size: ${(props) => (props.isMobile ? "1rem" : "30px")};
   font-style: normal;
   font-weight: 400;
   line-height: 50px;
@@ -62,9 +62,9 @@ export const Text = styled.h2`
   color: #fff;
 `;
 
-export const TextSmall = styled.h2`
+export const TextSmall = styled.h2<StyledProps>`
   font-family: Montserrat;
-  font-size: 20px;
+  font-size: ${(props) => (props.isMobile ? "0.75rem" : "20px")};
   font-style: normal;
   font-weight: 400;
   line-height: 50px;
