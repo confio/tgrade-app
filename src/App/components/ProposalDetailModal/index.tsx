@@ -58,7 +58,7 @@ export default function ProposalDetailModal({
 
   const [submitting, setSubmitting] = useState<VoteOption | "executing">();
   const [txResult, setTxResult] = useState<TxResult>();
-  const [createdProposal, setCreatedProposal] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
 
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
@@ -126,7 +126,7 @@ export default function ProposalDetailModal({
       try {
         const dsoContract = new DsoContractQuerier(dsoAddress, client);
         const voter = await dsoContract.getVote(proposalId, address);
-        setCreatedProposal(voter.vote?.voter === address);
+        setHasVoted(voter.vote?.voter === address);
       } catch (error) {
         handleError(error);
       }
@@ -203,7 +203,7 @@ export default function ProposalDetailModal({
 
   const canUserVote =
     address &&
-    !createdProposal &&
+    !hasVoted &&
     isProposalNotExpired &&
     membership === "voting" &&
     (proposal?.status === "open" || proposal?.status === "passed");
