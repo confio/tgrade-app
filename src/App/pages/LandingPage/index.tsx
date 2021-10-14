@@ -43,13 +43,13 @@ export default function LandingPage(): JSX.Element | null {
               minWidth: "300px",
             }}
           >
-            <Text>
+            <Text isMobile={isMobile}>
               <b>Try Tgrade</b> and see for yourself - the power of Blockchain is closer than you think.
             </Text>
           </span>
           <Link to={paths.dso.prefix} onClick={() => gtagLandingAction("open_app")}>
             <LinkButton isMobile={isMobile}>
-              <TextSmall>
+              <TextSmall isMobile={isMobile}>
                 Try the <b>Tgrade App</b>
               </TextSmall>
             </LinkButton>
