@@ -58,6 +58,7 @@ export default function ProposalDetailModal({
 
   const [submitting, setSubmitting] = useState<VoteOption | "executing">();
   const [txResult, setTxResult] = useState<TxResult>();
+  const [hasVoted, setHasVoted] = useState(false);
 
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
@@ -117,6 +118,20 @@ export default function ProposalDetailModal({
       }
     })();
   }, [config.coinMap, config.feeToken, handleError, proposalEditDso?.escrow_amount]);
+
+  useEffect(() => {
+    (async function queryVoter() {
+      if (!address || !client || !proposalId) return;
+
+      try {
+        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const voter = await dsoContract.getVote(proposalId, address);
+        setHasVoted(voter.vote?.voter === address);
+      } catch (error) {
+        handleError(error);
+      }
+    })();
+  }, [client, address, dsoAddress, handleError, proposalId]);
 
   useEffect(() => {
     (async function queryMembership() {
@@ -188,6 +203,7 @@ export default function ProposalDetailModal({
 
   const canUserVote =
     address &&
+    !hasVoted &&
     isProposalNotExpired &&
     membership === "voting" &&
     (proposal?.status === "open" || proposal?.status === "passed");
