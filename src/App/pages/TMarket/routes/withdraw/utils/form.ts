@@ -19,7 +19,6 @@ export const handleSubmit = async (
   history: any,
   setModalOpen: (b: boolean) => void,
 ): Promise<void> => {
-  console.log("SUBMIT WITH");
   gtagTMarketAction("withdraw_try");
   if (!address) {
     setModalOpen(true);
