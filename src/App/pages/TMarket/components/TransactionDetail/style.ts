@@ -7,12 +7,12 @@ export const Container = styled(Col)`
 `;
 
 export const ImageContainer = styled(Row)`
-  margin-bottom: 60px;
+  margin-bottom: var(--s1);
   justify-content: center;
 `;
 
 export const TitleContainer = styled(Row)`
-  margin-bottom: 16px;
+  margin-bottom: var(--s6);
   justify-content: center;
 
   & h1.ant-typography {
@@ -32,7 +32,10 @@ export const HorizontalDivider = styled(Divider)`
 export const RowContainer = styled(Row)`
   justify-content: space-between;
   align-items: center;
-  padding: calc(var(--s0) / 2) 0;
+
+  & + & {
+    margin-top: var(--s-2);
+  }
 `;
 
 export const Paragraph = styled(Typography.Paragraph)`
