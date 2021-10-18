@@ -280,5 +280,13 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
     sdkDispatch({ type: "setFaucet", payload: faucet });
   }, [sdkState.config]);
 
+  useEffect(() => {
+    (async function hitFaucetIfInit() {
+      if (isSdkInitialized(sdkState)) {
+        await hitFaucetIfNeeded(sdkState);
+      }
+    })();
+  }, [sdkState]);
+
   return <SdkContext.Provider value={{ sdkState, sdkDispatch }}>{children}</SdkContext.Provider>;
 }
