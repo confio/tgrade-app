@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import iconConfirm from "./assets/confirmationIcon.png";
-import { Container, ImageContainer, Paragraph, ParagraphStrong, RowContainer, TitleContainer } from "./style";
+import { Container, ImageContainer, Paragraph, RowContainer, TitleContainer } from "./style";
 
 const { Title } = Typography;
 
@@ -23,7 +23,7 @@ export default TransactionDetail;
 export const DetailRow = (props: { title: string; value: string | JSX.Element }): JSX.Element => {
   return (
     <RowContainer>
-      <Paragraph>{props.title} </Paragraph> <ParagraphStrong>{props.value}</ParagraphStrong>
+      <Paragraph>{props.title} </Paragraph> <Paragraph>{props.value}</Paragraph>
     </RowContainer>
   );
 };

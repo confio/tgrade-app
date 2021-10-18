@@ -57,7 +57,7 @@ export const handleValidation = async (
     const token_allowance = Number(result);
     const assetA = Decimal.fromUserInput(
       values.assetA.toString(),
-      values.selectTo.decimals,
+      values.selectFrom.decimals,
     ).toFloatApproximation();
     assetA > token_allowance || token_allowance === 0 ? setIsApprovedA(false) : setIsApprovedA(true);
   } else {
