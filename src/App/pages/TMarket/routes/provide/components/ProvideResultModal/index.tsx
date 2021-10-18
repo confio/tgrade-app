@@ -45,7 +45,6 @@ export default function ProvideResultModal({ isModalOpen }: ProvideResultModalPr
     >
       {detailProvide ? (
         <TransactionDetail>
-          <HorizontalDivider />
           <DetailRow title="Provide" value={detailProvide.providedA} />
           <HorizontalDivider />
           <DetailRow title="Provide" value={detailProvide.providedB} />
@@ -55,7 +54,6 @@ export default function ProvideResultModal({ isModalOpen }: ProvideResultModalPr
           <DetailRow title="Tx Hash" value={<TxHash value={detailProvide.txHash} />} />
           <HorizontalDivider />
           <DetailRow title="Fee" value={detailProvide.fee} />
-          <HorizontalDivider />
           <OkButton onClick={() => setDetailProvide(provideDispatch, undefined)}>Ok</OkButton>
         </TransactionDetail>
       ) : null}

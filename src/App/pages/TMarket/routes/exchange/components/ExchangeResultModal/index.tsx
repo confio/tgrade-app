@@ -47,7 +47,6 @@ export default function ExchangeResultModal({ isModalOpen }: ExchangeResultModal
     >
       {detailSwap ? (
         <TransactionDetail>
-          <HorizontalDivider />
           <DetailRow title="From" value={detailSwap.from} />
           <HorizontalDivider />
           <DetailRow title="To" value={detailSwap.to} />
@@ -57,7 +56,6 @@ export default function ExchangeResultModal({ isModalOpen }: ExchangeResultModal
           <DetailRow title="Tx Hash" value={<TxHash value={detailSwap.txHash} />} />
           <HorizontalDivider />
           <DetailRow title="Fee" value={`${detailSwap.fee} ${config.coinMap[config.feeToken].denom}`} />
-          <HorizontalDivider />
           <OkButton onClick={closeResult}>Ok</OkButton>
         </TransactionDetail>
       ) : null}

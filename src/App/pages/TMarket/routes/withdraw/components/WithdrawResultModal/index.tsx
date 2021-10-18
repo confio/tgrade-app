@@ -41,7 +41,6 @@ export default function WithdrawResultModal({ isModalOpen }: WithdrawResultModal
     >
       {detail ? (
         <TransactionDetail>
-          <HorizontalDivider />
           <DetailRow title="Withdraw" value={detail.withdrawTokenA} />
           <HorizontalDivider />
           <DetailRow title="Withdraw" value={detail.withdrawTokenB} />
@@ -51,7 +50,6 @@ export default function WithdrawResultModal({ isModalOpen }: WithdrawResultModal
           <DetailRow title="Tx Hash" value={<TxHash value={detail.txHash} />} />
           <HorizontalDivider />
           <DetailRow title="Fee" value={detail.fee} />
-          <HorizontalDivider />
           <OkButton onClick={() => setDetailWithdraw(withdrawDispatch, undefined)}>Ok</OkButton>
         </TransactionDetail>
       ) : null}
