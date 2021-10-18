@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { hitFaucetIfNeeded, isSdkInitialized, useSdk } from "service";
+import { useState } from "react";
 import AuthorizeWallet from "./components/AuthorizeWallet";
 import ChooseWallet from "./components/ChooseWallet";
 import StyledConnectWalletModal from "./style";
@@ -20,16 +19,7 @@ export default function ConnectWalletModal({
   isModalOpen,
   closeModal,
 }: ConnectWalletModalProps): JSX.Element {
-  const { sdkState } = useSdk();
   const [connectWalletStep, setConnectWalletStep] = useState(ConnectWalletSteps.Choose);
-
-  useEffect(() => {
-    (async function hitFaucetIfInit() {
-      if (isSdkInitialized(sdkState)) {
-        await hitFaucetIfNeeded(sdkState);
-      }
-    })();
-  }, [sdkState]);
 
   return (
     <StyledConnectWalletModal
