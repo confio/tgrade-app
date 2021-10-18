@@ -23,6 +23,10 @@ export const TitleContainer = styled(Row)`
 export const HorizontalDivider = styled(Divider)`
   margin: var(--s0) 0;
   opacity: 0.5;
+
+  &.ant-divider {
+    border-top: 1px solid var(--color-primary);
+  }
 `;
 
 export const RowContainer = styled(Row)`
