@@ -19,6 +19,7 @@ import {
   Text,
   TextSmall,
 } from "./style";
+import { copyrightNote } from "config/constants";
 
 export default function LandingPage(): JSX.Element | null {
   return (
@@ -92,7 +93,7 @@ export default function LandingPage(): JSX.Element | null {
       <Footer isMobile={isMobile}>
         <CopyrightWrapper isMobile={isMobile}>
           <TgradeLogo style={{ width: "94px", marginBottom: "16px" }} />
-          <Paragraph>©2021 by Confio.gmbh</Paragraph>
+          <Paragraph>{copyrightNote}</Paragraph>
         </CopyrightWrapper>
         <a href="https://tgrade.finance/impressum/">
           <Paragraph>Legal Information / Impressum</Paragraph>
