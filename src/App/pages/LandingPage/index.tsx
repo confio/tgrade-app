@@ -27,6 +27,7 @@ export default function LandingPage(): JSX.Element | null {
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e: any) => {
+    console.log("submit fired");
     e.preventDefault();
     if (!email) return;
 
@@ -40,11 +41,11 @@ export default function LandingPage(): JSX.Element | null {
       },
     };
     const response = await axios.post(
-      `${hubspotURL}/${hubspotPortalId}/${hubspotFormGuid}`,
+      `${hubspotURL}${hubspotPortalId}/${hubspotFormGuid}`,
       {
         hubspotPortalId,
         hubspotFormGuid,
-        fields: [{ email: "email", value: email }],
+        fields: [{ name: "email", value: email }],
       },
       config,
     );
@@ -143,8 +144,8 @@ export default function LandingPage(): JSX.Element | null {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   ></input>
+                  <SubscribeButton onClick={handleSubmit}>Subscribe</SubscribeButton>
                 </form>
-                <SubscribeButton>Subscribe</SubscribeButton>
               </ContactForm>
             </div>
           )}
