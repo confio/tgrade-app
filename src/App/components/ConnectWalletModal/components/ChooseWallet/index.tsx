@@ -1,6 +1,12 @@
 import { Typography } from "antd";
 import { resetSdk, useSdk } from "service";
-import { isKeplrSigner, isLedgerSigner, isWebSigner, setLastConnectedWallet } from "utils/sdk";
+import {
+  getLastConnectedWallet,
+  isKeplrSigner,
+  isLedgerSigner,
+  isWebSigner,
+  setLastConnectedWallet,
+} from "utils/sdk";
 import closeIcon from "../../../../assets/icons/cross.svg";
 import webIcon from "../../../../assets/icons/web.svg";
 import keplrIcon from "../../../../assets/images/keplr-logo.png";
@@ -46,7 +52,7 @@ export default function ChooseWallet({
       {address ? (
         <SwitchButtons>
           <Stack gap="s1">
-            <Text>Currently connected to {isKeplrSigner(signer) ? "Keplr" : "Ledger"}:</Text>
+            <Text>Currently connected to {getLastConnectedWallet() || ""} wallet:</Text>
             <StyledAddressTag address={address} copyable />
           </Stack>
           <Stack gap="s1">
