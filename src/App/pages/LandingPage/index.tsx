@@ -30,10 +30,9 @@ export default function LandingPage(): JSX.Element | null {
     console.log("submit fired");
     e.preventDefault();
     if (!email) return;
-
-    const HubspotResponse = await submitForm(email);
-    console.log(HubspotResponse);
+    submitForm(email);
   };
+
   const submitForm = async (email: string) => {
     const config = {
       headers: {
