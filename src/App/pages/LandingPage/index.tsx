@@ -1,3 +1,5 @@
+import { useState } from "react";
+import axios from "axios";
 import { ReactComponent as LinkedinLogo } from "App/assets/icons/linkedin-icon.svg";
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
 import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg";
@@ -19,9 +21,36 @@ import {
   Text,
   TextSmall,
 } from "./style";
-import { copyrightNote } from "config/constants";
+import { copyrightNote, hubspotFormGuid, hubspotPortalId, hubspotURL } from "config/constants";
 
 export default function LandingPage(): JSX.Element | null {
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    if (!email) return;
+
+    const HubspotResponse = await submitForm(email);
+    console.log(HubspotResponse);
+  };
+  const submitForm = async (email: string) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.post(
+      `${hubspotURL}/${hubspotPortalId}/${hubspotFormGuid}`,
+      {
+        hubspotPortalId,
+        hubspotFormGuid,
+        fields: [{ email: "email", value: email }],
+      },
+      config,
+    );
+    return response;
+  };
+
   return (
     <div>
       <PageWrapper isMobile={isMobile}>
@@ -107,9 +136,14 @@ export default function LandingPage(): JSX.Element | null {
               {" "}
               <Paragraph>NEWSLETTER</Paragraph>
               <ContactForm>
-                <Paragraph style={{ marginLeft: "13px", color: "#8692A6" }}>
-                  Enter your email address
-                </Paragraph>
+                <form onSubmit={handleSubmit}>
+                  <input
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  ></input>
+                </form>
                 <SubscribeButton>Subscribe</SubscribeButton>
               </ContactForm>
             </div>
