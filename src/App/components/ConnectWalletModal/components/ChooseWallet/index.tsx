@@ -71,7 +71,7 @@ export default function ChooseWallet({
               <WalletButton
                 iconSrc={webIcon}
                 iconAlt="Web logo"
-                text="Web wallet"
+                text="Web wallet (demo)"
                 onClick={() => chooseWeb()}
               />
             ) : null}
@@ -101,7 +101,7 @@ export default function ChooseWallet({
               <WalletButton
                 iconSrc={webIcon}
                 iconAlt="Web logo"
-                text="Web wallet"
+                text="Web wallet (demo)"
                 onClick={() => chooseWeb()}
               />
             ) : null}
