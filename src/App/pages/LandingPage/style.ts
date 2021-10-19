@@ -93,6 +93,7 @@ export const EmailInput = styled.input`
   background: #242730;
   border: none;
   color: white;
+  padding-left: 15px;
   &:focus {
     outline: none;
   }

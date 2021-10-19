@@ -139,7 +139,7 @@ export default function LandingPage(): JSX.Element | null {
               <ContactForm onSubmit={handleSubmit}>
                 <EmailInput
                   name="email"
-                  placeholder="Enter your email"
+                  placeholder="Enter your email address"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
