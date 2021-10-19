@@ -88,8 +88,18 @@ export const LinkButton = styled.div<StyledProps>`
   cursor: pointer;
 `;
 
-export const ContactForm = styled.div`
+export const EmailInput = styled.input`
+  width: 100%;
+  background: #242730;
+  border: none;
+  color: white;
+  &:focus {
+    outline: none;
+  }
+`;
+export const ContactForm = styled.form`
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   width: 333px;

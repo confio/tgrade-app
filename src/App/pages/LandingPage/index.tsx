@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { ReactComponent as LinkedinLogo } from "App/assets/icons/linkedin-icon.svg";
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
@@ -20,17 +20,18 @@ import {
   SubscribeButton,
   Text,
   TextSmall,
+  EmailInput,
 } from "./style";
 import { copyrightNote, hubspotFormGuid, hubspotPortalId, hubspotURL } from "config/constants";
 
 export default function LandingPage(): JSX.Element | null {
   const [email, setEmail] = useState("");
 
-  const handleSubmit = async (e: any) => {
-    console.log("submit fired");
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!email) return;
-    submitForm(email);
+    const formResponse = await submitForm(email);
+    console.log(formResponse.status);
   };
 
   const submitForm = async (email: string) => {
@@ -135,16 +136,15 @@ export default function LandingPage(): JSX.Element | null {
             <div>
               {" "}
               <Paragraph>NEWSLETTER</Paragraph>
-              <ContactForm>
-                <form onSubmit={handleSubmit}>
-                  <input
-                    name="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  ></input>
-                  <SubscribeButton onClick={handleSubmit}>Subscribe</SubscribeButton>
-                </form>
+              <ContactForm onSubmit={handleSubmit}>
+                <EmailInput
+                  name="email"
+                  placeholder="Enter your email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                ></EmailInput>
+                <SubscribeButton onClick={handleSubmit}>Subscribe</SubscribeButton>
               </ContactForm>
             </div>
           )}
