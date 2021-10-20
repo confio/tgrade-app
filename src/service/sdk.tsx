@@ -16,6 +16,7 @@ import {
   isLedgerSigner,
   loadKeplrWallet,
   loadLedgerWallet,
+  loadOrCreateWallet,
   setLastConnectedWallet,
 } from "utils/sdk";
 import { retry } from "utils/ui";
@@ -221,6 +222,10 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
         }
         if (lastConnectedWallet === "ledger" && isLedgerAvailable()) {
           const signer = await loadLedgerWallet(config);
+          if (mounted) sdkDispatch({ type: "setSigner", payload: signer });
+        }
+        if (lastConnectedWallet === "web") {
+          const signer = await loadOrCreateWallet(config);
           if (mounted) sdkDispatch({ type: "setSigner", payload: signer });
         }
       } catch (error) {
