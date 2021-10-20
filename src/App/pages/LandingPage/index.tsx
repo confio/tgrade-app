@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+import axios from "axios";
 import { ReactComponent as LinkedinLogo } from "App/assets/icons/linkedin-icon.svg";
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
 import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg";
@@ -18,10 +20,38 @@ import {
   SubscribeButton,
   Text,
   TextSmall,
+  EmailInput,
 } from "./style";
-import { copyrightNote } from "config/constants";
+import { copyrightNote, hubspotFormGuid, hubspotPortalId, hubspotURL } from "config/constants";
 
 export default function LandingPage(): JSX.Element | null {
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    const formResponse = await submitForm(email);
+    console.log(formResponse.status);
+  };
+
+  const submitForm = async (email: string) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.post(
+      `${hubspotURL}${hubspotPortalId}/${hubspotFormGuid}`,
+      {
+        hubspotPortalId,
+        hubspotFormGuid,
+        fields: [{ name: "email", value: email }],
+      },
+      config,
+    );
+    return response;
+  };
+
   return (
     <div>
       <PageWrapper isMobile={isMobile}>
@@ -106,11 +136,15 @@ export default function LandingPage(): JSX.Element | null {
             <div>
               {" "}
               <Paragraph>NEWSLETTER</Paragraph>
-              <ContactForm>
-                <Paragraph style={{ marginLeft: "13px", color: "#8692A6" }}>
-                  Enter your email address
-                </Paragraph>
-                <SubscribeButton>Subscribe</SubscribeButton>
+              <ContactForm onSubmit={handleSubmit}>
+                <EmailInput
+                  name="email"
+                  placeholder="Enter your email address"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                ></EmailInput>
+                <SubscribeButton onClick={handleSubmit}>Subscribe</SubscribeButton>
               </ContactForm>
             </div>
           )}
