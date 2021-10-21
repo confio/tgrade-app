@@ -32,6 +32,7 @@ export default function LandingPage(): JSX.Element | null {
     if (!email) return;
     const formResponse = await submitForm(email);
     console.log(formResponse.status);
+    setEmail("");
   };
 
   const submitForm = async (email: string) => {
