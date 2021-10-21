@@ -8,6 +8,9 @@
         "internal": [
           "tgrade-internal"
         ],
+        "staging": [
+          "tgrade-staging"
+        ],
         "public": [
           "tgrade-public"
         ]

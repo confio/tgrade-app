@@ -85,6 +85,7 @@
     "deploy:branch": "netlify deploy --dir=build --alias=$(git branch --show-current)",
     "deploy": "netlify deploy --dir=build --prod",
     "deploy:internal": "firebase deploy --only hosting:internal",
+    "deploy:staging": "firebase deploy --only hosting:staging",
     "deploy:public": "firebase deploy --only hosting:public",
     "test": "craco test",
     "lint": "npx eslint src/**/*.ts{,x} --max-warnings 0",
