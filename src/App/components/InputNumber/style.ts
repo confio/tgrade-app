@@ -7,9 +7,10 @@ export default styled(InputNumber)`
   border-radius: var(--border-radius);
   color: var(--color-button-2ary);
   .ant-input-number-input {
-    font-size: calc(1rem);
+    font-size: 1rem;
     padding: 0 var(--s0);
     text-align: end;
+    width: 100% !important;
   }
   .ant-input-number-handler-wrap {
     display: none;
