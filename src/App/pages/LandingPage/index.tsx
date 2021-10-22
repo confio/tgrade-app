@@ -36,18 +36,12 @@ export default function LandingPage(): JSX.Element | null {
       notification.open({
         message: "Succesfully Subscribed",
         description: "Thanks. Please check your inbox",
-        onClick: () => {
-          console.log("Subscription success");
-        },
       });
       setEmail("");
     } else {
       notification.open({
         message: "Something went wrong.",
         description: "Something went wrong. Please try again",
-        onClick: () => {
-          console.log("subscription error");
-        },
       });
     }
   };
