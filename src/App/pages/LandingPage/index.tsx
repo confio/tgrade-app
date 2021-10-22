@@ -7,6 +7,7 @@ import { paths } from "App/paths";
 import { Link } from "react-router-dom";
 import { gtagLandingAction } from "utils/analytics";
 import { isMobile } from "react-device-detect";
+import { notification } from "antd";
 import {
   ContactForm,
   ContentWrapper,
@@ -31,8 +32,24 @@ export default function LandingPage(): JSX.Element | null {
     e.preventDefault();
     if (!email) return;
     const formResponse = await submitForm(email);
-    console.log(formResponse.status);
-    setEmail("");
+    if (formResponse.status === 200) {
+      notification.open({
+        message: "Succesfully Subscribed",
+        description: "Thanks. Please check your inbox",
+        onClick: () => {
+          console.log("Subscription success");
+        },
+      });
+      setEmail("");
+    } else {
+      notification.open({
+        message: "Something went wrong.",
+        description: "Something went wrong. Please try again",
+        onClick: () => {
+          console.log("subscription error");
+        },
+      });
+    }
   };
 
   const submitForm = async (email: string) => {
