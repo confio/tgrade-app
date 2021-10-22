@@ -77,7 +77,12 @@ export default function ListTokens({ setToken, closeModal }: ListTokensProps): J
       renderItem={(item: any) => {
         const token: TokenProps = item;
         return (
-          <TokenListItem>
+          <TokenListItem
+            onClick={() => {
+              setToken(token);
+              closeModal();
+            }}
+          >
             <ContainerLogoNames>
               <img src={token.img} alt={token.img} />
               <ContainerNames>
