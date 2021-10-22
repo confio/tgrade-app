@@ -1,11 +1,18 @@
-import { Col, Row } from "antd";
-import InputNumber from "App/components/InputNumber";
-import MaxButton from "App/components/MaxButton";
 import { lazy, useState } from "react";
+import { Col, Row } from "antd";
+import {
+  StyledInput,
+  BalanceParagraph,
+  ErrorContainer,
+  MaxContainer,
+  TitleParagraph,
+  TokenContainer,
+} from "./style";
+//import InputNumber from "App/components/InputNumber";
+import MaxButton from "App/components/MaxButton";
 import { setSearchText, useTMarket } from "service/tmarket";
 import { TokenRowProps } from "utils/tokens";
 import SelectTokenTrigger from "../SelectTokenTrigger";
-import { BalanceParagraph, ErrorContainer, MaxContainer, TitleParagraph, TokenContainer } from "./style";
 
 const SelectTokenModal = lazy(() => import("../SelecTokenModal"));
 
@@ -51,7 +58,7 @@ function TokenRow({
               {(maxButton || onMaxClick) && <MaxButton onClick={onMaxClick}>MAX</MaxButton>}
             </MaxContainer>
             <Col span={10}>
-              <InputNumber
+              <StyledInput
                 onChange={onChange}
                 placeholder="1.0"
                 defaultValue=""
