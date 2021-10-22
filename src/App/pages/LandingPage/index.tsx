@@ -57,7 +57,10 @@ export default function LandingPage(): JSX.Element | null {
       {
         hubspotPortalId,
         hubspotFormGuid,
-        fields: [{ name: "email", value: email }],
+        fields: [
+          { name: "email", value: email },
+          { name: "tgrade_general", value: true },
+        ],
       },
       config,
     );
