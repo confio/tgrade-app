@@ -1,34 +1,27 @@
-import React from "react";
-import { Checkbox, Row } from "antd";
-
-const CheckboxGroup = Checkbox.Group;
-
-const plainOptions = ["Available only", "Trusted Circle associated", "Public only"];
-const defaultCheckedList = ["All"];
+import { Radio, Row } from "antd";
+import { StyledRadioGroup } from "./style";
+import { useEffect, useState } from "react";
+import { setTokensFilter, TokensFilter, useTMarket } from "service/tmarket";
 
 const SelectTokenFilters = (): JSX.Element => {
-  const [checkedList, setCheckedList] = React.useState<Array<any>>(defaultCheckedList);
-  const [indeterminate, setIndeterminate] = React.useState(true);
-  const [checkAll, setCheckAll] = React.useState(false);
+  const { tMarketDispatch } = useTMarket();
+  const [filter, setFilter] = useState<TokensFilter>("whitelist");
 
-  const onChange = (list: any) => {
-    setCheckedList(list);
-    setIndeterminate(!!list.length && list.length < plainOptions.length);
-    setCheckAll(list.length === plainOptions.length);
-  };
-
-  const onCheckAllChange = (e: any) => {
-    setCheckedList(e.target.checked ? plainOptions : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
-  };
+  useEffect(() => {
+    setTokensFilter(tMarketDispatch, filter);
+  }, [filter, tMarketDispatch]);
 
   return (
-    <Row style={{ padding: "var(--s0)" }} justify="center">
-      <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
-        All
-      </Checkbox>
-      <CheckboxGroup options={plainOptions} value={checkedList} onChange={onChange} />
+    <Row>
+      <StyledRadioGroup
+        onChange={({ target }) => {
+          setFilter(target.value);
+        }}
+        value={filter}
+      >
+        <Radio value="whitelist">Show with balance</Radio>
+        <Radio value="all">Show all</Radio>
+      </StyledRadioGroup>
     </Row>
   );
 };
