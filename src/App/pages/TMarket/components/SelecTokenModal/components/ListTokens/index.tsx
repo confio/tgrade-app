@@ -56,10 +56,10 @@ export default function ListTokens({ setToken, closeModal }: ListTokensProps): J
         ? tokensList.filter((token) => pinnedTokens.includes(token.address) || token.balance !== "0")
         : tokensList;
 
-    // Always remove liquidity tokens
-    const nonLiquidityTokensList = filteredTokensList.filter((token) => token.symbol !== "uLP");
+    // TODO: Always remove liquidity tokens, but this also removes them from Withdraw
+    //const nonLiquidityTokensList = filteredTokensList.filter((token) => token.symbol !== "uLP");
 
-    const sortedTokensList = nonLiquidityTokensList.sort(compareTokensWithPinned);
+    const sortedTokensList = filteredTokensList.sort(compareTokensWithPinned);
     setTokensList(sortedTokensList);
   }, [compareTokensWithPinned, pinnedTokens, searchText, tokens, tokensFilter]);
 
