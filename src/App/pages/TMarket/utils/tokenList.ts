@@ -12,8 +12,9 @@ export const getTokensList = (
       .map((k) => tokens[k])
       .filter(
         (t) =>
+          t.symbol.toLowerCase().search(searchText.toLowerCase()) !== -1 ||
           t.name.toLowerCase().search(searchText.toLowerCase()) !== -1 ||
-          t.symbol.toLowerCase().search(searchText.toLowerCase()) !== -1,
+          t.address.toLowerCase().search(searchText.toLowerCase()) !== -1,
       );
   }
   return result;
@@ -30,8 +31,9 @@ export const getLPTokensList = (
       .map((addr) => tokens[addr].token)
       .filter(
         (t) =>
+          t.symbol.toLowerCase().search(searchText.toLowerCase()) !== -1 ||
           t.name.toLowerCase().search(searchText.toLowerCase()) !== -1 ||
-          t.symbol.toLowerCase().search(searchText.toLowerCase()) !== -1,
+          t.address.toLowerCase().search(searchText.toLowerCase()) !== -1,
       );
   }
   return result;
