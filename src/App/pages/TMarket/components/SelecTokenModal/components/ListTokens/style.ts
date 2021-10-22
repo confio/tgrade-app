@@ -2,9 +2,19 @@ import { List } from "antd";
 import styled from "styled-components";
 
 export const TokenListItem = styled(List.Item)`
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: var(--s-2);
+
+  &.ant-list-item {
+    margin: 0 -20px;
+    padding: 10px 20px;
+  }
+
+  &:hover {
+    background-color: hsla(180, 88%, 37%, 0.6);
+  }
 `;
 
 export const ContainerLogoNames = styled.div`
