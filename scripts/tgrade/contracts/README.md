@@ -7,7 +7,7 @@ Tgrade smart contracts
 
 Example to download contracts for CosmWasm plus `v0.1.2`, tgrade contracts `v0.3.4`, and tfi `v0.5.6`.
 ```sh
-./download_releases.sh v0.1.2
+./download_releases.sh v0.1.2 v0.3.4 v0.5.6
 ```
 
 ### OSX
