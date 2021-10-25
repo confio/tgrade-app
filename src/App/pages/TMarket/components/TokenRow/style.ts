@@ -13,7 +13,7 @@ export const StyledInput = styled(InputNumber)`
   .ant-input-number-handler-wrap {
     display: none;
   }
-  .ant-col-10 {
+  .ant-col ant-col-10 {
     display: flex;
     justify-content: flex-end;
     flex: 0 0 41.66666667%;
