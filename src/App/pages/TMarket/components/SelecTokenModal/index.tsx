@@ -5,6 +5,7 @@ import backIcon from "./assets/arrow-back-icon.svg";
 import closeIcon from "./assets/cross.svg";
 import ListTokens from "./components/ListTokens";
 import Search from "./components/SearchToken";
+import SelectTokenFilters from "./components/SelectTokenFilters";
 import StyledSelectTokenModal, { ModalHeader } from "./style";
 
 interface SelectTokenModalProps {
@@ -49,14 +50,13 @@ export default function SelectTokenModal({
         <img className="exit" alt="Close button" src={closeIcon} onClick={closeModal} />
       </ModalHeader>
       <Divider />
-      <Search />
-      {/* <Stack gap="s-1">
+      <Stack gap="s-1">
         <Search />
         <SelectTokenFilters />
       </Stack>
-      <Divider style={{ margin: "5px 0" }} /> */}
+      <Divider style={{ margin: "5px 0" }} />
       <Stack gap="s0">
-        <ListTokens tokens={tokens} closeModal={closeModal} setToken={setToken} />
+        <ListTokens closeModal={closeModal} setToken={setToken} />
       </Stack>
     </StyledSelectTokenModal>
   );

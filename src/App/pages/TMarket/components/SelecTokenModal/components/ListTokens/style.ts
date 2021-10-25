@@ -1,54 +1,65 @@
-import { Divider, List, Typography } from "antd";
+import { List } from "antd";
 import styled from "styled-components";
 
-export default styled(List)`
-  li {
-    display: flex;
-    flex-direction: column;
+export const TokenListItem = styled(List.Item)`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+
+  &.ant-list-item {
+    margin: 0 -20px;
+    padding: 10px 20px;
   }
-  .token-item {
+
+  &:hover {
+    background-color: hsla(180, 88%, 37%, 0.6);
+  }
+`;
+
+export const ContainerLogoNames = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-shrink: 0;
+
+  & img {
+    height: 32px;
+  }
+`;
+
+export const ContainerNames = styled.div`
+  & div.ant-typography {
+    font-size: var(--s-1);
+
+    &:first-child {
+      font-size: var(--s0);
+      font-weight: 700;
+      color: var(--color-text-1ary);
+    }
+  }
+`;
+
+export const ContainerNumbersPin = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+
+  img {
     cursor: pointer;
-    width: 100%;
-    padding: calc(var(--s0) * 0.5) var(--s0);
-    column-gap: 10px;
-    img {
-      width: 50px;
-      height: 50px;
-    }
-    div {
-      h1 {
-        &.ant-typography {
-          font-size: var(--s1);
-        }
-      }
-    }
-    &:hover {
-      background: var(--color-primary);
-      border-radius: 3px;
-      color: var(--bg-body);
-    }
-    &.disabled {
-      opacity: 0.5;
-      cursor: default;
-      &:hover {
-        background: transparent;
-        color: rgba(0, 0, 0, 0.85);
-      }
-    }
+    height: 16px;
   }
 `;
 
-export const Title = styled(Typography.Title)`
-  &.ant-typography {
-    font-size: var(--s0);
-    padding: 0 var(--s0);
-    font-weight: 500;
-    width: 100%;
-    text-aling: start;
-    margin: 5px 0;
-  }
-`;
+export const ContainerNumbers = styled.div`
+  & div.ant-typography {
+    text-align: end;
+    font-size: var(--s-1);
 
-export const StyledDivider = styled(Divider)`
-  margin: 0;
+    &:first-child {
+      font-size: var(--s0);
+      font-weight: 700;
+      color: var(--color-text-1ary);
+    }
+  }
 `;

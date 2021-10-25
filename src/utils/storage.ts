@@ -35,6 +35,11 @@ export function useLocalStorage<T>(
   return [storedValue, setValue];
 }
 
+export const usePinnedTokens = (): [
+  readonly string[],
+  React.Dispatch<React.SetStateAction<readonly string[]>>,
+] => useLocalStorage<readonly string[]>("pinned-tokens", [], JSON.stringify, JSON.parse);
+
 export async function getFileImgType(file: File): Promise<"svg" | "png"> {
   const text = await file.text();
   const isSvg = text.trim().endsWith("</svg>");
