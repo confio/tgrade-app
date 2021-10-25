@@ -18,7 +18,7 @@ jobs:
       - run: yarn compile
       - run:
           name: Webpack build
-          command: yarn build
+          command: yarn build:local
           no_output_timeout: 5m
 
   lint:
