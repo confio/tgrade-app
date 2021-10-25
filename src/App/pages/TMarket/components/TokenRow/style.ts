@@ -4,7 +4,6 @@ import { InputNumber } from "formik-antd";
 
 export const StyledInput = styled(InputNumber)`
   width: 100%;
-  padding: var(--s-6);
   border-radius: var(--border-radius);
   color: var(--color-button-2ary);
   .ant-input-number-input {
