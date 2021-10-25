@@ -8,7 +8,6 @@ import {
   TitleParagraph,
   TokenContainer,
 } from "./style";
-//import InputNumber from "App/components/InputNumber";
 import MaxButton from "App/components/MaxButton";
 import { setSearchText, useTMarket } from "service/tmarket";
 import { TokenRowProps } from "utils/tokens";

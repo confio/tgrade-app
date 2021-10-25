@@ -13,6 +13,12 @@ export const StyledInput = styled(InputNumber)`
   .ant-input-number-handler-wrap {
     display: none;
   }
+  .ant-col-10 {
+    display: flex;
+    flex: 0 0 41.66666667%;
+    max-width: 41.66666667%;
+    justify-content: flex-end;
+  }
 
   &.ant-input-number:hover {
     color: var(--color-text-1ary);
