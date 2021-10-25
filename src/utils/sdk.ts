@@ -124,8 +124,7 @@ export const loadKeplrWallet: WalletLoader = (config) => {
         throw new Error("Keplr extension is not available");
       }
 
-      // Type declaration because isOfflineDirectSigner is not narrowing type
-      const signer: OfflineDirectSigner = window.getOfflineSigner(config.chainId);
+      const signer = window.getOfflineSigner(config.chainId);
       if (!isOfflineDirectSigner(signer)) {
         throw new Error("Got amino signer instead of direct");
       }
