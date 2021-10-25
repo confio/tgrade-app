@@ -1,6 +1,32 @@
-import { Col, Row, Typography } from "antd";
 import styled from "styled-components";
+import { Col, Row, Typography } from "antd";
+import { InputNumber } from "formik-antd";
 
+export const StyledInput = styled(InputNumber)`
+  width: 100%;
+  border-radius: var(--border-radius);
+  color: var(--color-button-2ary);
+
+  .ant-input-number-input {
+    font-size: 1rem;
+    text-align: end;
+  }
+  .ant-input-number-handler-wrap {
+    display: none;
+  }
+
+  &.ant-input-number:hover {
+    color: var(--color-text-1ary);
+  }
+
+  &.ant-input-number:focus {
+    border-color: var(--bg-button-1ary);
+  }
+
+  .ant-input-number-input:focus {
+    color: var(--color-text-1ary);
+  }
+`;
 export const TokenContainer = styled(Row)`
   &.positionTop {
     &::after {
