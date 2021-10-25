@@ -10,6 +10,8 @@ export type FormErrors = {
   to: UserError | undefined;
 };
 
+export type TokensFilter = "whitelist" | "all";
+
 type tMarketAction =
   | {
       readonly type: "setRefreshTokens";
@@ -18,6 +20,10 @@ type tMarketAction =
   | {
       readonly type: "setTokens";
       readonly payload: { [key: string]: TokenProps };
+    }
+  | {
+      readonly type: "setTokensFilter";
+      readonly payload: TokensFilter;
     }
   | {
       readonly type: "setPairs";
@@ -56,6 +62,7 @@ type tMarketDispatch = (action: tMarketAction) => void;
 type tMarketState = {
   readonly refreshTokens: () => Promise<void>;
   readonly tokens: { [key: string]: TokenProps };
+  readonly tokensFilter: TokensFilter;
   readonly pairs: { [key: string]: PairProps };
   readonly lpTokens: { [key: string]: { token: TokenProps; pair: PairProps } };
   readonly pool: PoolProps | undefined;
@@ -80,6 +87,9 @@ function tMarketReducer(tMarketState: tMarketState, action: tMarketAction): tMar
     }
     case "setTokens": {
       return { ...tMarketState, tokens: action.payload };
+    }
+    case "setTokensFilter": {
+      return { ...tMarketState, tokensFilter: action.payload };
     }
     case "setLPTokens": {
       return { ...tMarketState, lpTokens: action.payload };
@@ -132,6 +142,9 @@ export function setLPTokens(
 export function updateLPToken(dispatch: tMarketDispatch, token: { [key: string]: LPToken }): void {
   dispatch({ type: "updateLPToken", payload: token });
 }
+export function setTokensFilter(dispatch: tMarketDispatch, filter: TokensFilter): void {
+  dispatch({ type: "setTokensFilter", payload: filter });
+}
 export function updatePairs(dispatch: tMarketDispatch, pairs: { [key: string]: PairProps }): void {
   dispatch({ type: "setPairs", payload: pairs });
 }
@@ -181,6 +194,7 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
   const [tMarketState, tMarketDispatch] = useReducer(tMarketReducer, {
     refreshTokens,
     tokens: {},
+    tokensFilter: "whitelist",
     lpTokens: {},
     searchText: undefined,
     estimatingFromB: false,

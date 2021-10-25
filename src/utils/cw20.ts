@@ -1,6 +1,8 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
 import { calculateFee, GasPrice } from "@cosmjs/stargate";
+import tgradeLogo from "App/assets/icons/tgradeLogo.svg";
+import tempImgUrl from "App/assets/icons/token-placeholder.png";
 import { NetworkConfig } from "config/network";
 import { UINT128_MAX } from "./currency";
 import { PairProps, TokenProps } from "./tokens";
@@ -33,6 +35,21 @@ export type EmbeddedLogoType = {
 } & {
   readonly png?: string;
 };
+
+export type LogoInfo = {
+  readonly url?: string;
+} & "embedded";
+export interface MarketingInfoResponse {
+  readonly project?: string | null;
+  readonly description?: string | null;
+  readonly marketing?: string | null;
+  readonly logo?: LogoInfo;
+}
+
+export interface DownloadLogoResponse {
+  readonly mime_type: string;
+  readonly data: string;
+}
 
 export class Contract20WS {
   static readonly GAS_CREATE_TOKEN = 500_000;
@@ -90,14 +107,36 @@ export class Contract20WS {
 
     return balance;
   }
+  static async getMarketingInfo(
+    client: CosmWasmClient,
+    contractAddress: string,
+  ): Promise<MarketingInfoResponse> {
+    const marketingInfo: MarketingInfoResponse = await client.queryContractSmart(contractAddress, {
+      marketing_info: {},
+    });
+    return marketingInfo;
+  }
+  static async getLogoSrc(client: CosmWasmClient, contractAddress: string): Promise<string> {
+    const { logo }: MarketingInfoResponse = await this.getMarketingInfo(client, contractAddress);
+    if (logo?.url) return logo.url;
+
+    if (logo === "embedded") {
+      const { mime_type, data }: DownloadLogoResponse = await client.queryContractSmart(contractAddress, {
+        download_logo: {},
+      });
+
+      const base64Src = `data:${mime_type};base64, ${data}`;
+      return base64Src;
+    }
+
+    return tempImgUrl;
+  }
   static async getTokenInfo(
     client: CosmWasmClient,
     address: string,
     contractAddress: string,
     config: NetworkConfig,
   ): Promise<TokenProps> {
-    const temp_img_url = "https://i.ibb.co/Lkq69SV/download-1-1.png";
-
     if (contractAddress === "utgd") {
       const { amount: balance_utgd } = await client.getBalance(address, "utgd");
       return {
@@ -108,7 +147,7 @@ export class Contract20WS {
         name: "Tgrade",
         symbol: config.coinMap.utgd.denom,
         total_supply: "",
-        img: temp_img_url,
+        img: tgradeLogo,
       };
     } else {
       const token_info = await client.queryContractSmart(contractAddress, {
@@ -116,12 +155,13 @@ export class Contract20WS {
       });
       const balance: any = await this.getBalance(client, contractAddress, address);
       const humanBalance = Decimal.fromAtomics(balance.balance, token_info?.decimals).toString();
+      const imgSrc = await this.getLogoSrc(client, contractAddress);
       const result = {
         ...token_info,
         ...balance,
         humanBalance: humanBalance,
         address: contractAddress,
-        img: temp_img_url,
+        img: imgSrc,
       };
       return result;
     }
@@ -132,24 +172,31 @@ export class Contract20WS {
     client: CosmWasmClient,
     clientAddress: string,
   ): Promise<{ [key: string]: TokenProps }> {
-    const cw20TokensAddresses = config.codeIds?.cw20Tokens?.length
-      ? await client.getContracts(config.codeIds.cw20Tokens[0])
-      : [];
-    const tgradeCw20Addresses = config.codeIds?.tgradeCw20?.length
-      ? await client.getContracts(config.codeIds.tgradeCw20[0])
-      : [];
-    const addresses = [...cw20TokensAddresses, ...tgradeCw20Addresses];
-
     const tokensMap: { [key: string]: TokenProps } = {};
-    //Add utgd to lists
-    const utgd = await this.getTokenInfo(client, clientAddress, "utgd", config);
-    tokensMap["utgd"] = utgd;
-    addresses.map(
-      async (address): Promise<void> => {
-        const token_info: TokenProps = await this.getTokenInfo(client, clientAddress, address, config);
-        tokensMap[address] = token_info;
-      },
+
+    // Add feeToken to lists
+    const feeTokenInfo = await this.getTokenInfo(client, clientAddress, config.feeToken, config);
+    tokensMap[config.feeToken] = feeTokenInfo;
+
+    // Get cw20 and tgrade token addresses
+    const cw20TokensAddressesPromise = config.codeIds?.cw20Tokens?.length
+      ? client.getContracts(config.codeIds.cw20Tokens[0])
+      : Promise.resolve([]);
+    const tgradeCw20AddressesPromise = config.codeIds?.tgradeCw20?.length
+      ? client.getContracts(config.codeIds.tgradeCw20[0])
+      : Promise.resolve([]);
+    const tokenAddresses = (
+      await Promise.all([cw20TokensAddressesPromise, tgradeCw20AddressesPromise])
+    ).flat();
+
+    // Fill map with tokens info
+    const tokensInfos = await Promise.all(
+      tokenAddresses.map((address) => this.getTokenInfo(client, clientAddress, address, config)),
     );
+    tokensInfos.forEach((tokenInfo) => {
+      tokensMap[tokenInfo.address] = tokenInfo;
+    });
+
     return tokensMap;
   }
 
