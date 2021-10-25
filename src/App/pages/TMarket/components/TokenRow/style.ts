@@ -15,9 +15,9 @@ export const StyledInput = styled(InputNumber)`
   }
   .ant-col-10 {
     display: flex;
+    justify-content: flex-end;
     flex: 0 0 41.66666667%;
     max-width: 41.66666667%;
-    justify-content: flex-end;
   }
 
   &.ant-input-number:hover {
