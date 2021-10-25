@@ -121,18 +121,6 @@ export default function LandingPage(): JSX.Element | null {
               </TextSmall>
             </LinkButton>
           </Link>
-          <a
-            target="_blank"
-            href="https://tgrade.finance/"
-            onClick={() => gtagLandingAction("goto_tgrade_website")}
-            rel="noreferrer"
-          >
-            <LinkButton isMobile={isMobile}>
-              <TextSmall>
-                Learn more about <b>Tgrade</b>
-              </TextSmall>
-            </LinkButton>
-          </a>
         </ContentWrapper>
       </PageWrapper>
       <Footer isMobile={isMobile}>
