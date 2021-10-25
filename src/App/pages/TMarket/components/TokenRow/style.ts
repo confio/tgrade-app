@@ -8,7 +8,6 @@ export const StyledInput = styled(InputNumber)`
   color: var(--color-button-2ary);
   .ant-input-number-input {
     font-size: 1rem;
-    padding: 0 var(--s0);
     text-align: end;
   }
   .ant-input-number-handler-wrap {
