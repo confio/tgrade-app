@@ -56,8 +56,9 @@ function TokenRow({
             <MaxContainer span={4}>
               {(maxButton || onMaxClick) && <MaxButton onClick={onMaxClick}>MAX</MaxButton>}
             </MaxContainer>
-            <Col span={10}>
+            <Col style={{ display: "flex", justifyContent: "flex-end" }} span={10}>
               <StyledInput
+                style={{ width: "100%" }}
                 onChange={onChange}
                 placeholder="1.0"
                 defaultValue=""

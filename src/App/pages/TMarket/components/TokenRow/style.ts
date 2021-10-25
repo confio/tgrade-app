@@ -6,18 +6,13 @@ export const StyledInput = styled(InputNumber)`
   width: 100%;
   border-radius: var(--border-radius);
   color: var(--color-button-2ary);
+
   .ant-input-number-input {
     font-size: 1rem;
     text-align: end;
   }
   .ant-input-number-handler-wrap {
     display: none;
-  }
-  .ant-col ant-col-10 {
-    display: flex;
-    justify-content: flex-end;
-    flex: 0 0 41.66666667%;
-    max-width: 41.66666667%;
   }
 
   &.ant-input-number:hover {
