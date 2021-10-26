@@ -210,27 +210,29 @@ export class Contract20WS {
   ): Promise<{ [id: string]: { token: TokenProps; pair: PairProps } }> {
     const tokensMap: { [key: string]: { token: TokenProps; pair: PairProps } } = {};
 
-    Object.keys(pairs).map(async (address): Promise<void> => {
-      const pair = pairs[address];
-      const identifierA = pair.asset_infos[0].native || pair.asset_infos[0].token;
-      const identifierB = pair.asset_infos[1].native || pair.asset_infos[1].token;
-      const token_info: TokenProps = await this.getTokenInfo(
-        client,
-        clientAddress,
-        pair.liquidity_token,
-        config,
-      );
-      if (identifierA && identifierB) {
-        const tokenA = tokens[identifierA];
-        const tokenB = tokens[identifierB];
-        if (!tokenA || !tokenB) return;
-        const name = `${tokenA.symbol}-${tokenB.symbol}`;
-        tokensMap[`${pair.liquidity_token}`] = { token: { ...token_info, name: name }, pair: pair };
-        return;
-      } else {
-        tokensMap[`${pair.liquidity_token}`] = { token: token_info, pair: pair };
-      }
-    });
+    Object.keys(pairs).map(
+      async (address): Promise<void> => {
+        const pair = pairs[address];
+        const identifierA = pair.asset_infos[0].native || pair.asset_infos[0].token;
+        const identifierB = pair.asset_infos[1].native || pair.asset_infos[1].token;
+        const token_info: TokenProps = await this.getTokenInfo(
+          client,
+          clientAddress,
+          pair.liquidity_token,
+          config,
+        );
+        if (identifierA && identifierB) {
+          const tokenA = tokens[identifierA];
+          const tokenB = tokens[identifierB];
+          if (!tokenA || !tokenB) return;
+          const name = `${tokenA.symbol}-${tokenB.symbol}`;
+          tokensMap[`${pair.liquidity_token}`] = { token: { ...token_info, name: name }, pair: pair };
+          return;
+        } else {
+          tokensMap[`${pair.liquidity_token}`] = { token: token_info, pair: pair };
+        }
+      },
+    );
     return tokensMap;
   }
   static async getAllowance(

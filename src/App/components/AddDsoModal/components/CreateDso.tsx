@@ -10,10 +10,10 @@ import { displayAmountToNative } from "utils/currency";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
+import { ModalHeader, Separator } from "../style";
 import FormDsoBasicData, { FormDsoBasicDataValues } from "./FormDsoBasicData";
 import FormDsoMembers from "./FormDsoMembers";
 import FormDsoPayment, { FormDsoPaymentValues } from "./FormDsoPayment";
-import { ModalHeader, Separator } from "./style";
 
 const { Title } = Typography;
 const { Step } = Steps;

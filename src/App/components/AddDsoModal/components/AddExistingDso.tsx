@@ -6,10 +6,8 @@ import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { getDecodedAddress, getFormItemName } from "utils/forms";
-import * as Yup from "yup";
 
-import { ButtonGroup, ModalHeader, Separator } from "../style";
+import { ModalHeader, Separator } from "../style";
 import FormDsoAddExisting from "./FormDsoAddExisting";
 
 const { Title } = Typography;
