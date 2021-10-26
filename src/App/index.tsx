@@ -8,14 +8,14 @@ import {
 } from "react-query";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
+import { paths } from "./paths";
 import TMarketProvider from "service/tmarket";
 import LoadingSpinner from "./components/LoadingSpinner";
-import DocumentationPage from "./pages/DocumentationPage";
-import LandingPage from "./pages/LandingPage";
 import CookiePolicy from "./pages/LandingPage/CookiePolicy";
 import PrivacyPolicy from "./pages/LandingPage/PrivacyPolicy";
 import Impressum from "./pages/LandingPage/Impressum";
-import { paths } from "./paths";
+import DocumentationPage from "./pages/DocumentationPage";
+import LandingPage from "./pages/LandingPage";
 const Dso = lazy(() => import("./routes/Dso"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
 
