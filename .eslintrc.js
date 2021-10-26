@@ -9,7 +9,6 @@ module.exports = {
   ],
   plugins: ["simple-import-sort"],
   rules: {
-    "prettier/prettier": ["error", { endOfLine: "auto" }],
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
     "@typescript-eslint/no-explicit-any": "off",
