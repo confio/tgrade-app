@@ -13,9 +13,11 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import DocumentationPage from "./pages/DocumentationPage";
 import LandingPage from "./pages/LandingPage";
 import { paths } from "./paths";
-
 const Dso = lazy(() => import("./routes/Dso"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
+const CookiePolicy = lazy(() => import("App/pages/LandingPage/CookiePolicy"));
+const PrivacyPolicy = lazy(() => import("App/pages/LandingPage/PrivacyPolicy"));
+const Impressum = lazy(() => import("App/pages/LandingPage/Impressum"));
 
 export default function App(): JSX.Element {
   return (
@@ -31,6 +33,15 @@ export default function App(): JSX.Element {
                       <Suspense fallback={<LoadingSpinner fullPage />}>
                         <Route exact path={paths.root}>
                           <LandingPage />
+                        </Route>
+                        <Route path={`${paths.privacypolicy.prefix}`}>
+                          <PrivacyPolicy />
+                        </Route>
+                        <Route path={`${paths.cookiepolicy.prefix}`}>
+                          <CookiePolicy />
+                        </Route>
+                        <Route path={`${paths.impressum.prefix}`}>
+                          <Impressum />
                         </Route>
                         <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
                           <DsoProvider>

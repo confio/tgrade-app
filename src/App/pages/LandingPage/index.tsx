@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { gtagLandingAction } from "utils/analytics";
 import { isMobile } from "react-device-detect";
 import { notification } from "antd";
+
 import {
   ContactForm,
   ContentWrapper,
@@ -128,12 +129,15 @@ export default function LandingPage(): JSX.Element | null {
           <TgradeLogo style={{ width: "94px", marginBottom: "16px" }} />
           <Paragraph>{copyrightNote}</Paragraph>
         </CopyrightWrapper>
-        <a href="https://tgrade.finance/impressum/">
-          <Paragraph>Legal Information / Impressum</Paragraph>
-        </a>
-        <a href="https://tgrade.finance/privacy-policy">
+        <Link target="_blank" to={paths.impressum.prefix}>
+          <Paragraph>Impressum</Paragraph>
+        </Link>
+        <Link target="_blank" to={paths.privacypolicy.prefix}>
           <Paragraph>Privacy Policy</Paragraph>
-        </a>
+        </Link>
+        <Link target="_blank" to={paths.cookiepolicy.prefix}>
+          <Paragraph>Cookie Policy</Paragraph>
+        </Link>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {isMobile ? null : (
             <div>

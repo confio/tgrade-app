@@ -1,5 +1,14 @@
 export const paths = {
   root: "/",
+  privacypolicy: {
+    prefix: "/privacy-policy",
+  },
+  impressum: {
+    prefix: "/impressum",
+  },
+  cookiepolicy: {
+    prefix: "/cookie-policy",
+  },
   setup: {
     prefix: "/setup",
     welcome: "/welcome",
