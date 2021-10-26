@@ -147,8 +147,10 @@ export class Token {
   ): Promise<SimulatedSwap | null> {
     if (!form.selectFrom || !form.selectTo) return null;
 
-    const amount = Decimal.fromUserInput(form.To.toFixed(form.selectTo?.decimals), form.selectTo?.decimals)
-      .atomics;
+    const amount = Decimal.fromUserInput(
+      form.To.toFixed(form.selectTo?.decimals),
+      form.selectTo?.decimals,
+    ).atomics;
     try {
       if (form.selectTo?.address === "utgd") {
         const result: SimulatedSwapReverse = await client.queryContractSmart(pair.contract_addr, {
