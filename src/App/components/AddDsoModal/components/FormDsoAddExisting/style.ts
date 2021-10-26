@@ -8,10 +8,18 @@ export const Separator = styled.hr`
 
 export const ButtonGroup = styled.div`
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-end;
   flex-wrap: wrap;
 
-  button:first-child {
+  & > span.ant-typography {
     margin-right: var(--s0);
+  }
+
+  & span.ant-typography > span.ant-typography {
+    cursor: pointer;
+    color: var(--color-primary);
+    font-weight: 500;
+    text-decoration: underline;
   }
 `;
