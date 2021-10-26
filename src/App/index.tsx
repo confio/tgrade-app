@@ -34,15 +34,6 @@ export default function App(): JSX.Element {
                         <Route exact path={paths.root}>
                           <LandingPage />
                         </Route>
-                        <Route path={`${paths.privacypolicy.prefix}`}>
-                          <PrivacyPolicy />
-                        </Route>
-                        <Route path={`${paths.cookiepolicy.prefix}`}>
-                          <CookiePolicy />
-                        </Route>
-                        <Route path={`${paths.impressum.prefix}`}>
-                          <Impressum />
-                        </Route>
                         <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
                           <DsoProvider>
                             <Dso />
@@ -55,6 +46,15 @@ export default function App(): JSX.Element {
                         </Route>
                         <Route path={`${paths.documentation.prefix}`}>
                           <DocumentationPage />
+                        </Route>
+                        <Route path={`${paths.privacypolicy.prefix}`}>
+                          <PrivacyPolicy />
+                        </Route>
+                        <Route path={`${paths.cookiepolicy.prefix}`}>
+                          <CookiePolicy />
+                        </Route>
+                        <Route path={`${paths.impressum.prefix}`}>
+                          <Impressum />
                         </Route>
                       </Suspense>
                     </Switch>
