@@ -41,6 +41,7 @@
     "craco-antd": "^1.19.0",
     "eslint-config-prettier": "^8.2.0",
     "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "formik": "^2.2.6",
     "formik-antd": "^2.0.1",
     "i18next": "^20.2.1",
