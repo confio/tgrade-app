@@ -10,11 +10,11 @@ export default function PrivacyPolicy(): JSX.Element | null {
       <br />
       <p>
         This Privacy Policy describes the policies of Confio GmbH, Potsdamer Platz 1, 7th Floor, Europe 10785
-        Berlin, Germany, email: hello@confio.gmbh, phone: 0000000000 on the collection, use and disclosure of
-        your information that we collect when you use our website ( try.tgrade.finance ). (the “Service”). By
-        accessing or using the Service, you are consenting to the collection, use and disclosure of your
-        information in accordance with this Privacy Policy. If you do not consent to the same, please do not
-        access or use the Service.
+        Berlin, Germany, email: hello@confio.gmbh, on the collection, use and disclosure of your information
+        that we collect when you use our website ( try.tgrade.finance ). (the “Service”). By accessing or
+        using the Service, you are consenting to the collection, use and disclosure of your information in
+        accordance with this Privacy Policy. If you do not consent to the same, please do not access or use
+        the Service.
       </p>
 
       <p>
