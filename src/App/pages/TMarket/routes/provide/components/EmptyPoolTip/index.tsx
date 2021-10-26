@@ -1,6 +1,7 @@
 import { Row } from "antd";
-import Container, { Title, Paragraph } from "./style";
 import { useProvide } from "service/provide";
+
+import Container, { Paragraph, Title } from "./style";
 
 const EmptyPoolTip = (): JSX.Element => {
   const { provideState } = useProvide();

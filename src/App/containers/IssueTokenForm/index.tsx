@@ -6,6 +6,7 @@ import { useTMarket } from "service/tmarket";
 import { gtagTokenAction } from "utils/analytics";
 import { Contract20WS, EmbeddedLogoType, LogoType, MinterInterface } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
+
 import TokenMarketing, { FormMarketingFields } from "./components/TokenMarketing";
 import TokenSpecs, { FormTokenSpecsFields } from "./components/TokenSpecs";
 

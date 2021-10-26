@@ -3,7 +3,7 @@ import { getTokensList } from "App/pages/TMarket/utils";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { useSdk } from "service";
-import { useExchange, setSimulatedSwap } from "service/exchange";
+import { setSimulatedSwap, useExchange } from "service/exchange";
 import { setEstimatingFromA, useTMarket } from "service/tmarket";
 import { SimulatedSwap, SwapFormValues, Token, TokenProps } from "utils/tokens";
 

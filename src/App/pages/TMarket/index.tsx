@@ -1,8 +1,10 @@
+import "react-toastify/dist/ReactToastify.css";
+
 import PageLayout from "App/components/PageLayout";
 import Stack from "App/components/Stack/style";
 import { lazy, useState } from "react";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import TMarket from "./routes";
 import { LightButton, NotificationsContainer, Title, TitleWrapper } from "./style";
 

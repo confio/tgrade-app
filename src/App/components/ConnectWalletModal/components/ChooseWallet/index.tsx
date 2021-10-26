@@ -7,6 +7,7 @@ import {
   isWebSigner,
   setLastConnectedWallet,
 } from "utils/sdk";
+
 import closeIcon from "../../../../assets/icons/cross.svg";
 import webIcon from "../../../../assets/icons/web.svg";
 import keplrIcon from "../../../../assets/images/keplr-logo.png";

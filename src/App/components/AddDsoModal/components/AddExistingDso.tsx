@@ -6,6 +6,7 @@ import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+
 import { ModalHeader, Separator } from "../style";
 import FormDsoAddExisting from "./FormDsoAddExisting";
 

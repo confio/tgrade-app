@@ -1,8 +1,9 @@
 import { Row, Typography } from "antd";
 import { MouseEventHandler } from "react";
 import { TokenProps } from "utils/tokens";
-import StyledSelectTokenButton, { SelectTokenParagraph, Image } from "./style";
+
 import arrowDownIcon from "./assets/arrow-down-icon.svg";
+import StyledSelectTokenButton, { Image, SelectTokenParagraph } from "./style";
 const { Paragraph } = Typography;
 const SelectTokenTrigger = ({
   Token,

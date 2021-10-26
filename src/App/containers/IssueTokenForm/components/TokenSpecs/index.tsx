@@ -12,6 +12,7 @@ import { useState } from "react";
 import { EmbeddedLogoType } from "utils/cw20";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
+
 import { FormStack, NameWrapper, Separator } from "./style";
 
 const { Step } = Steps;

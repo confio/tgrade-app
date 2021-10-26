@@ -1,6 +1,7 @@
 import { paths } from "App/paths";
 import * as React from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+
 import Tutorial from "./routes/Tutorial";
 import Welcome from "./routes/Welcome";
 

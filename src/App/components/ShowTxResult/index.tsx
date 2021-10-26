@@ -1,10 +1,11 @@
-import Stack from "App/components/Stack/style";
+import successIcon from "App/assets/icons/tick.svg";
+import failIcon from "App/assets/icons/warning.svg";
 import Center from "App/components/Center";
+import Stack from "App/components/Stack/style";
 import * as React from "react";
 import { HTMLAttributes, useEffect } from "react";
 import { useError } from "service";
-import successIcon from "App/assets/icons/tick.svg";
-import failIcon from "App/assets/icons/warning.svg";
+
 import { ButtonStack, ResultDescription, ResultIcon, ResultText } from "./style";
 
 export interface TxResult {

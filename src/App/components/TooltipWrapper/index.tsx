@@ -1,4 +1,5 @@
 import { HTMLAttributes } from "react";
+
 import Tooltip from "../Tooltip";
 import StyledTooltipWrapper from "./style";
 

@@ -10,6 +10,7 @@ import { useError, useSdk } from "service";
 import { getDsoName, openLeaveDsoModal, useDso } from "service/dsos";
 import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier } from "utils/dso";
+
 import { ActionsButton, StyledDsoIdActions, VotingRules, VSeparator } from "./style";
 
 const { Title, Text } = Typography;

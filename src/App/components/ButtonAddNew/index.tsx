@@ -1,7 +1,8 @@
 import { Typography } from "antd";
+import addIcon from "App/assets/icons/add.svg";
 import * as React from "react";
 import { HTMLAttributes } from "react";
-import addIcon from "App/assets/icons/add.svg";
+
 import StyledButtonAddNew from "./style";
 
 const { Text } = Typography;

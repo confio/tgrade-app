@@ -17,6 +17,7 @@ import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee, nativeCoinToDisplay } from "utils/currency";
 import { DsoContract, DsoContractQuerier, ProposalResponse, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+
 import {
   AbstainedButton,
   AcceptButton,

@@ -1,6 +1,7 @@
 import { Typography } from "antd";
 import * as React from "react";
 import { LinkProps } from "react-router-dom";
+
 import arrowRightIcon from "./assets/arrowRight.svg";
 import { IconWrapper, StyledLink, TitleStack } from "./style";
 

@@ -5,6 +5,7 @@ import { paths } from "App/paths";
 import { lazy, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { openAddDsoModal, removeDso, useDso } from "service";
+
 import { StyledTabs } from "./style";
 
 const DsoDetail = lazy(() => import("App/components/DsoDetail"));

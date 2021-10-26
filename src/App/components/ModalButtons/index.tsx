@@ -1,4 +1,5 @@
 import Button from "App/components/Button";
+
 import BackButtonOrLink from "../BackButtonOrLink";
 import { StyledModalButtons } from "./style";
 

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { EmbeddedLogoType } from "utils/cw20";
 import { isValidUrl } from "utils/query";
 import { fileToBase64, getFileImgType } from "utils/storage";
+
 import { StyledFieldsTokenLogo, UploadLabel } from "./style";
 
 interface FieldsTokenLogoProps {

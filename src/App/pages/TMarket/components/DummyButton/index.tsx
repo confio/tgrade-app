@@ -1,6 +1,7 @@
 import ButtonCircle from "App/components/ButtonCircle";
-import plusIcon from "../assets/plus-icon.png";
+
 import arrowIcon from "../assets/arrow-down-icon.png";
+import plusIcon from "../assets/plus-icon.png";
 
 export const PlusIcon = (): JSX.Element => {
   return (

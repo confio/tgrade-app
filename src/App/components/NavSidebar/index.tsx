@@ -2,6 +2,7 @@ import { paths } from "App/paths";
 import { lazy, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSdk } from "service";
+
 import * as Icon from "./icons";
 import { Cell, LinkWrapper, Navbar, StyledAddressTag, StyledText } from "./style";
 

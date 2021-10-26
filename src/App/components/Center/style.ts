@@ -1,4 +1,5 @@
 import styled from "styled-components";
+
 import Center from "./component";
 
 export default styled(Center)`

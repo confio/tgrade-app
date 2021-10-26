@@ -2,8 +2,9 @@ import { Col } from "antd";
 import InfoRow from "App/components/InfoRow";
 import { useFormikContext } from "formik";
 import { useSdk } from "service";
-import { ProvideFormValues } from "utils/tokens";
 import { useProvide } from "service/provide";
+import { ProvideFormValues } from "utils/tokens";
+
 import Divider from "./style";
 
 const ExtraInfo = (): JSX.Element | null => {

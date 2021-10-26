@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { Tabs } from "antd";
+import styled from "styled-components";
 
 export const LiquidityWrapper = styled.div`
   background-color: #ffffff;

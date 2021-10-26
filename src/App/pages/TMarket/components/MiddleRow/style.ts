@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { Row, Typography } from "antd";
+import styled from "styled-components";
 
 export const MiddleRowStyle = styled(Row)`
   row-gap: 0px;

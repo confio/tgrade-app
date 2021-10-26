@@ -1,6 +1,6 @@
-import { Row, Typography, Col } from "antd";
-import styled from "styled-components";
+import { Col, Row, Typography } from "antd";
 import { Input } from "formik-antd";
+import styled from "styled-components";
 
 export const TokenContainer = styled(Row)`
   &.positionTop {

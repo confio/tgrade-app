@@ -1,4 +1,5 @@
-import { useTMarket, setSearchText } from "service/tmarket";
+import { setSearchText, useTMarket } from "service/tmarket";
+
 import StyledSearch from "./style";
 
 export default function SearchToken(props: any): JSX.Element {

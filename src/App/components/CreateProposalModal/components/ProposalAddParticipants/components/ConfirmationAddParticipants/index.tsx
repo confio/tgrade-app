@@ -7,6 +7,7 @@ import { lazy, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract } from "utils/dso";
+
 import { AddressStack, ButtonGroup, FeeGroup, Separator, TextComment } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));

@@ -1,5 +1,6 @@
-import Stack from "../../components/Stack/style";
 import styled from "styled-components";
+
+import Stack from "../../components/Stack/style";
 
 export const StyledText = styled.h2`
   font-size: 18px;

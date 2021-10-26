@@ -1,10 +1,11 @@
 import { Typography } from "antd";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
-import { DsoHomeParams } from "App/pages/DsoHome";
+
 import { MemberCount, MemberCounts, MembersStack } from "./style";
 
 const { Title, Text } = Typography;

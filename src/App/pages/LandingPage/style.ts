@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import Button from "App/components/Button";
 import LandingBG from "App/assets/images/landing-page-background.png";
+import Button from "App/components/Button";
+import styled from "styled-components";
 
 interface StyledProps {
   isMobile?: boolean;

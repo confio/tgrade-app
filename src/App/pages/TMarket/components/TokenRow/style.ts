@@ -1,6 +1,6 @@
-import styled from "styled-components";
 import { Col, Row, Typography } from "antd";
 import { InputNumber } from "formik-antd";
+import styled from "styled-components";
 
 export const StyledInput = styled(InputNumber)`
   width: 100%;

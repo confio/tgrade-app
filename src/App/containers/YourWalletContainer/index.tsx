@@ -1,4 +1,5 @@
 import Chart from "App/components/Chart";
+
 import { ContainerWrapper } from "./style";
 export default function ChartContainer(): JSX.Element | null {
   return (

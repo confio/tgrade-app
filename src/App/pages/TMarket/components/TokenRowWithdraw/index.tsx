@@ -2,6 +2,7 @@ import { Col, Row } from "antd";
 import { lazy, useState } from "react";
 import { setSearchText, useTMarket } from "service/tmarket";
 import { TokenRowProps } from "utils/tokens";
+
 import SelectTokenTrigger from "../SelectTokenTrigger";
 import Input, { BalanceParagraph, ErrorContainer, TitleParagraph, TokenContainer } from "./style";
 

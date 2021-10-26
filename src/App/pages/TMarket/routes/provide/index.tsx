@@ -27,6 +27,7 @@ import {
 } from "service/provide";
 import { updatePairs, updateToken, useTMarket } from "service/tmarket";
 import { DetailProvide, PairProps, ProvideFormValues, SimulationProvide, TokenProps } from "utils/tokens";
+
 import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, ToToken } from "./components";
 import ProvideResultModal from "./components/ProvideResultModal";
 import { FormCustom } from "./style";

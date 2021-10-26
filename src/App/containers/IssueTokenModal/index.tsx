@@ -1,6 +1,7 @@
 import Button from "App/components/Button";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import { useState } from "react";
+
 import IssueTokenForm from "../IssueTokenForm";
 import { default as StyledIssueTokenModal } from "./style";
 

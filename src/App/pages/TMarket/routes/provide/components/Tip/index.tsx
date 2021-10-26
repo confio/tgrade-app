@@ -1,7 +1,8 @@
 import { Col, Row } from "antd";
-import Container, { Title, Paragraph, Img } from "./style";
-import exitIcon from "./asset/cross.svg";
 import { setDisplayTip, useProvide } from "service/provide";
+
+import exitIcon from "./asset/cross.svg";
+import Container, { Img, Paragraph, Title } from "./style";
 
 const Tip = (): JSX.Element => {
   const { provideState, provideDispatch } = useProvide();

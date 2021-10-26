@@ -1,5 +1,6 @@
 import { paths } from "App/paths";
 import { useHistory, useLocation } from "react-router-dom";
+
 import { Menu, StyledSoonIcon } from "./style";
 
 const MenuAMM = (): JSX.Element => {

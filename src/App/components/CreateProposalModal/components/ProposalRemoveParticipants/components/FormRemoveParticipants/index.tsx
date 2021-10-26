@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import { addressStringToArray, getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
+
 import { ButtonGroup, Separator } from "./style";
 
 const membersLabel = "Non voting participants to be removed";

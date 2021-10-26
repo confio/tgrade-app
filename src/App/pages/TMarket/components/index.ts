@@ -1,4 +1,4 @@
-export { PlusIcon, ArrowIcon } from "./DummyButton";
+export { ArrowIcon, PlusIcon } from "./DummyButton";
 export { default as EstimatedMessage } from "./EstimatedMessage";
 export { default as ExitIcon } from "./ExitIcon";
 export { default as MenuAMM } from "./Menu";
@@ -9,4 +9,4 @@ export { default as SubmitButton } from "./SubmitButton";
 export { default as SwitchTokensButton } from "./SwitchButton";
 export { default as TokenRow } from "./TokenRow";
 export { default as TokenRowWithdraw } from "./TokenRowWithdraw";
-export { default as TransactionDetail, DetailRow } from "./TransactionDetail";
+export { DetailRow, default as TransactionDetail } from "./TransactionDetail";

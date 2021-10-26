@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import ReactPlayer from "react-player/lazy";
+import styled from "styled-components";
 
 export default styled(ReactPlayer)`
   overflow: hidden;

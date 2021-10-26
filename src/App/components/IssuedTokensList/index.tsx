@@ -1,6 +1,7 @@
-import IssueTokensListItem from "../IssuedTokensListItem";
-import { TokenProps } from "utils/tokens";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { TokenProps } from "utils/tokens";
+
+import IssueTokensListItem from "../IssuedTokensListItem";
 
 export default function IssuedTokensList(props: { tokens: TokenProps[] }): JSX.Element | null {
   return (

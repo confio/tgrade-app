@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import Button from "App/components/Button";
+import styled from "styled-components";
 
 export default styled(Button)`
   background: transparent;

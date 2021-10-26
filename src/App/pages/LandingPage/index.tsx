@@ -1,17 +1,20 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { notification } from "antd";
 import { ReactComponent as LinkedinLogo } from "App/assets/icons/linkedin-icon.svg";
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
 import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg";
 import { paths } from "App/paths";
+import axios from "axios";
+import { copyrightNote, hubspotFormGuid, hubspotPortalId, hubspotURL } from "config/constants";
+import React, { useState } from "react";
+import { isMobile } from "react-device-detect";
 import { Link } from "react-router-dom";
 import { gtagLandingAction } from "utils/analytics";
-import { isMobile } from "react-device-detect";
-import { notification } from "antd";
+
 import {
   ContactForm,
   ContentWrapper,
   CopyrightWrapper,
+  EmailInput,
   Footer,
   Header,
   LinkButton,
@@ -21,9 +24,7 @@ import {
   SubscribeButton,
   Text,
   TextSmall,
-  EmailInput,
 } from "./style";
-import { copyrightNote, hubspotFormGuid, hubspotPortalId, hubspotURL } from "config/constants";
 
 export default function LandingPage(): JSX.Element | null {
   const [email, setEmail] = useState("");
@@ -128,12 +129,15 @@ export default function LandingPage(): JSX.Element | null {
           <TgradeLogo style={{ width: "94px", marginBottom: "16px" }} />
           <Paragraph>{copyrightNote}</Paragraph>
         </CopyrightWrapper>
-        <a href="https://tgrade.finance/impressum/">
-          <Paragraph>Legal Information / Impressum</Paragraph>
-        </a>
-        <a href="https://tgrade.finance/privacy-policy">
+        <Link target="_blank" to={paths.impressum.prefix}>
+          <Paragraph>Impressum</Paragraph>
+        </Link>
+        <Link target="_blank" to={paths.privacypolicy.prefix}>
           <Paragraph>Privacy Policy</Paragraph>
-        </a>
+        </Link>
+        <Link target="_blank" to={paths.cookiepolicy.prefix}>
+          <Paragraph>Cookie Policy</Paragraph>
+        </Link>
         <div style={{ display: "flex", flexDirection: "column" }}>
           {isMobile ? null : (
             <div>

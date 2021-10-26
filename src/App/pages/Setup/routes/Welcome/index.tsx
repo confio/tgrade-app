@@ -3,6 +3,7 @@ import PageLayout from "App/components/PageLayout";
 import Stack from "App/components/Stack/style";
 import { paths } from "App/paths";
 import * as React from "react";
+
 import newUserIcon from "./assets/newUser.svg";
 import tgradeLogoIcon from "./assets/tgradeLogo.svg";
 import { TextStack } from "./style";

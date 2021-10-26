@@ -9,6 +9,7 @@ import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getPairsEager } from "utils/factory";
 import { tokenObj } from "utils/tokens";
+
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationWhitelistPair from "./components/ConfirmationWhitelistPair";
 import FormWhitelistPair, { FormWhiteilstPairValues } from "./components/FormWhitelistPair";
