@@ -65,7 +65,8 @@ export default function FieldsTokenLogo({
             setPreviewLogoUrl("");
             setLogoUrl(undefined);
             setLogoFile(undefined);
-            setLogoError(error);
+            if (!(error instanceof Error)) return;
+            setLogoError(error.message);
           }
         }}
       />

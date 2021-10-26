@@ -45,6 +45,7 @@ export default function ConfirmationRemoveParticipants({
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
+      if (!(error instanceof Error)) return;
       handleError(error);
     }
   }, [config, handleError, signingClient]);

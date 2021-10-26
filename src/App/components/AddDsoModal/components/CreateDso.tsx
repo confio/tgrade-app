@@ -10,10 +10,10 @@ import { displayAmountToNative } from "utils/currency";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
-import { ModalHeader, Separator } from "../../style";
-import FormDsoBasicData, { FormDsoBasicDataValues } from "../FormDsoBasicData";
-import FormDsoMembers from "../FormDsoMembers";
-import FormDsoPayment, { FormDsoPaymentValues } from "../FormDsoPayment";
+import FormDsoBasicData, { FormDsoBasicDataValues } from "./FormDsoBasicData";
+import FormDsoMembers from "./FormDsoMembers";
+import FormDsoPayment, { FormDsoPaymentValues } from "./FormDsoPayment";
+import { ModalHeader, Separator } from "./style";
 
 const { Title } = Typography;
 const { Step } = Steps;
@@ -92,6 +92,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
       });
       gtagDsoAction("create_success");
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {

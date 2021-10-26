@@ -79,6 +79,7 @@ export default function ProposalEditDso({
         setEscrowAmount(escrowAmount);
         setEarlyPass(dsoResponse.rules.allow_end_early);
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -129,6 +130,7 @@ export default function ProposalEditDso({
         msg: `Created proposal for editing ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {

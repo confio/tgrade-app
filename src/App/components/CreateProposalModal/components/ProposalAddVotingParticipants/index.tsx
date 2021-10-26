@@ -68,6 +68,7 @@ export default function ProposalAddVotingParticipants({
         msg: `Created proposal for adding voting participants to ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {

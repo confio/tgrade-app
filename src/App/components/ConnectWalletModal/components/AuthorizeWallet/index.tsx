@@ -74,11 +74,13 @@ export default function AuthorizeWallet({
         dismiss();
       } catch (error) {
         setLastConnectedWallet("");
-        handleError(error);
         if (walletType === "web") return;
 
         const toConnect = walletType === "keplr" ? "the Keplr extension" : "your Ledger";
         setError(`Please make sure ${toConnect} is connected`);
+
+        if (!(error instanceof Error)) return;
+        handleError(error);
       }
     },
     [dismiss, handleError, sdkDispatch, sdkState.config, walletType],

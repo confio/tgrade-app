@@ -54,6 +54,7 @@ export default function LeaveDsoModal(): JSX.Element {
       });
       removeDso(dsoDispatch, dsoAddress);
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {

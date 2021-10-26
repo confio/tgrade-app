@@ -84,6 +84,7 @@ export default function ProposalDetailModal({
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
+      if (!(error instanceof Error)) return;
       handleError(error);
     }
   }, [config, handleError, signingClient]);
@@ -97,6 +98,7 @@ export default function ProposalDetailModal({
         const proposal = await dsoContract.getProposal(proposalId);
         setProposal(proposal);
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -115,6 +117,7 @@ export default function ProposalDetailModal({
 
         setDisplayEscrow(displayEscrow);
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -129,6 +132,7 @@ export default function ProposalDetailModal({
         const voter = await dsoContract.getVote(proposalId, address);
         setHasVoted(voter.vote?.voter === address);
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -149,6 +153,7 @@ export default function ProposalDetailModal({
           setMembership("participant");
         }
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -172,6 +177,7 @@ export default function ProposalDetailModal({
         msg: `Voted proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {
@@ -195,6 +201,7 @@ export default function ProposalDetailModal({
         msg: `Executed proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {

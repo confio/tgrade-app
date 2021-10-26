@@ -106,6 +106,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
       gtagTokenAction("create_token_success");
       await refreshTokens();
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     }

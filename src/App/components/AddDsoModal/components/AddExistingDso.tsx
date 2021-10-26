@@ -1,11 +1,7 @@
 import { Typography } from "antd";
 import closeIcon from "App/assets/icons/cross.svg";
-import Button from "App/components/Button";
-import Field from "App/components/Field";
 import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
-import { Formik } from "formik";
-import { Form } from "formik-antd";
 import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { DsoContractQuerier } from "utils/dso";
@@ -14,10 +10,9 @@ import { getDecodedAddress, getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 
 import { ButtonGroup, ModalHeader, Separator } from "../style";
+import FormDsoAddExisting from "./FormDsoAddExisting";
 
-const { Title, Text } = Typography;
-
-const dsoAddressLabel = "Trusted Circle address";
+const { Title } = Typography;
 
 interface AddExistingDsoFormValues {
   readonly dsoAddress: string;
@@ -48,34 +43,13 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
 
       setTxResult({ contractAddress: dsoAddress, msg: `Added Trusted Circle: ${dsoName} (${dsoAddress}).` });
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     }
 
     setSubmitting(false);
   }
-
-  const validationSchema = Yup.object().shape({
-    [getFormItemName(dsoAddressLabel)]: Yup.string()
-      .typeError("Trusted Circle address must be alphanumeric")
-      .required("Trusted Circle address is required")
-      .test(`is-valid-bech32`, "Trusted Circle address is malformed", (address) => {
-        const decodedAddress = getDecodedAddress(address);
-        return !!decodedAddress;
-      })
-      .test(
-        `has-valid-prefix`,
-        `Trusted Circle address must start with ${config.addressPrefix}`,
-        (address) => {
-          const decodedAddress = getDecodedAddress(address);
-          return decodedAddress?.prefix === config.addressPrefix;
-        },
-      )
-      .test(`has-valid-length`, `Trusted Circle address must have a data length of 20`, (address) => {
-        const decodedAddress = getDecodedAddress(address);
-        return decodedAddress?.data.length === 20;
-      }),
-  });
 
   return (
     <Stack gap="s1">
@@ -88,33 +62,11 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
         ) : null}
       </ModalHeader>
       <Separator />
-      <Formik
-        initialValues={{
-          [getFormItemName(dsoAddressLabel)]: "",
-        }}
-        enableReinitialize
-        validationSchema={validationSchema}
-        onSubmit={(values) => checkDsoAndStore({ dsoAddress: values[getFormItemName(dsoAddressLabel)] })}
-      >
-        {({ submitForm, isValid }) => (
-          <>
-            <Form>
-              <Stack gap="s1">
-                <Field label={dsoAddressLabel} placeholder="Enter address" />
-                <Separator />
-                <ButtonGroup>
-                  <Text>
-                    or <Text onClick={() => goToCreateDso()}>Create Trusted Circle</Text>
-                  </Text>
-                  <Button disabled={!isValid} onClick={() => submitForm()}>
-                    <div>Enter</div>
-                  </Button>
-                </ButtonGroup>
-              </Stack>
-            </Form>
-          </>
-        )}
-      </Formik>
+      <FormDsoAddExisting
+        addressPrefix={config.addressPrefix}
+        handleSubmit={checkDsoAndStore}
+        goToCreateDso={goToCreateDso}
+      />
     </Stack>
   );
 }

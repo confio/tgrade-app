@@ -80,6 +80,7 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
       setTxFee(txFeeToDisplay.amount);
       setTotalCharged(totalChargedToDisplay.amount);
     } catch (error) {
+      if (!(error instanceof Error)) return;
       handleError(error);
     }
   }, [

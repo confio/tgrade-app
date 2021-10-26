@@ -107,7 +107,8 @@ export const handleSubmit = async (
       refreshToken(tokenB);
       history.push(`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}${paths.tmarket.exchange.result}`);
     } catch (e) {
-      const error = getErrorFromStackTrace(e.message);
+      if (!(e instanceof Error)) return;
+      const error = getErrorFromStackTrace(e);
       console.error(error);
       toast.error(error, { toastId: "t-market-toast-id" });
       setLoading(false);

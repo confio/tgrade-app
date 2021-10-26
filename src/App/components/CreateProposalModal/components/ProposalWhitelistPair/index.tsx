@@ -121,6 +121,7 @@ export default function ProposalWhitelistPair({
       });
       gtagProposalAction("whitelist_success");
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {

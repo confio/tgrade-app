@@ -88,6 +88,7 @@ export default function DepositEscrowModal({
       });
       refreshEscrows();
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {

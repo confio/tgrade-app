@@ -98,6 +98,7 @@ export default function Escrow(): JSX.Element {
         }
         setTotalPaidEscrow(totalPaidEscrow.toFloatApproximation());
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     },

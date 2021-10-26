@@ -173,7 +173,8 @@ export const handleSubmit = async (
         refreshToken(tokenB);
         history.push(`${paths.tmarket.prefix}${paths.tmarket.provide.prefix}${paths.tmarket.provide.result}`);
       } catch (e) {
-        const error = getErrorFromStackTrace(e.message);
+        if (!(e instanceof Error)) return;
+        const error = getErrorFromStackTrace(e);
         console.error(error);
         toast.error(error, { toastId: "t-market-toast-id" });
         setLoading(false);
@@ -196,7 +197,8 @@ export const handleSubmit = async (
         const pairs = await Factory.getPairs(client, factoryAddress);
         refreshPairs(pairs);
       } catch (e) {
-        const error = getErrorFromStackTrace(e.message);
+        if (!(e instanceof Error)) return;
+        const error = getErrorFromStackTrace(e);
         console.error(error);
         toast.error(error, { toastId: "t-market-toast-id" });
       }
