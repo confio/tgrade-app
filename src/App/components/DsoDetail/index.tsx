@@ -122,6 +122,7 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
       const proposals = await dsoContract.getProposals();
       setProposals(proposals);
     } catch (error) {
+      if (!(error instanceof Error)) return;
       handleError(error);
     }
   }, [client, dsoAddress, handleError]);

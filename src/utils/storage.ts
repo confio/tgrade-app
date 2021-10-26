@@ -17,7 +17,9 @@ export function useLocalStorage<T>(
       const item = window.localStorage.getItem(key);
       return item ? deserialize(item) : initialValue;
     } catch (error) {
-      handleError(error);
+      if (error instanceof Error) {
+        handleError(error);
+      }
       return initialValue;
     }
   });
@@ -28,6 +30,7 @@ export function useLocalStorage<T>(
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, serialize(valueToStore));
     } catch (error) {
+      if (!(error instanceof Error)) return;
       handleError(error);
     }
   };

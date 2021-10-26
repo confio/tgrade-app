@@ -47,6 +47,7 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
 
       setTxResult({ contractAddress: dsoAddress, msg: `Added Trusted Circle: ${dsoName} (${dsoAddress}).` });
     } catch (error) {
+      if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     }
