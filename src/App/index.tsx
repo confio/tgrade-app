@@ -12,12 +12,12 @@ import TMarketProvider from "service/tmarket";
 import LoadingSpinner from "./components/LoadingSpinner";
 import DocumentationPage from "./pages/DocumentationPage";
 import LandingPage from "./pages/LandingPage";
+import CookiePolicy from "./pages/LandingPage/CookiePolicy";
+import PrivacyPolicy from "./pages/LandingPage/PrivacyPolicy";
+import Impressum from "./pages/LandingPage/Impressum";
 import { paths } from "./paths";
 const Dso = lazy(() => import("./routes/Dso"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
-const CookiePolicy = lazy(() => import("App/pages/LandingPage/CookiePolicy"));
-const PrivacyPolicy = lazy(() => import("App/pages/LandingPage/PrivacyPolicy"));
-const Impressum = lazy(() => import("App/pages/LandingPage/Impressum"));
 
 export default function App(): JSX.Element {
   return (
