@@ -45,6 +45,7 @@ export default function Members(): JSX.Element {
         setNumVoters(numVoters);
         setNumNonVoters(numNonVoters);
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -65,6 +66,7 @@ export default function Members(): JSX.Element {
           setMembership("nonVoting");
         }
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();

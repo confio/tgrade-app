@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import Table from "antd/lib/table/Table";
 import styled from "styled-components";
 
 export default styled(Table)`

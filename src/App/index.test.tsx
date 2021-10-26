@@ -221,7 +221,8 @@ describe.skip("should have a happy path for", () => {
           userEvent.click(await screen.findByRole("button", { name: /withdraw rewards/i }));
         } catch (error) {
           userEvent.click(screen.getByAltText(/back arrow/i));
-          throw new Error(error);
+          if (!(error instanceof Error)) return;
+          throw new Error(error.message);
         }
       },
       { timeout: 10_000 },

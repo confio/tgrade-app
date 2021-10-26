@@ -54,6 +54,7 @@ export default function DsoIdActions(): JSX.Element {
         setVotingDuration(dsoResponse.rules.voting_period.toString());
         setAllowEndEarly(allowEndEarly);
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();

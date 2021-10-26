@@ -169,6 +169,7 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
         const client = await createClient(sdkState.config.rpcUrl);
         if (mounted) sdkDispatch({ type: "setClient", payload: client });
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -198,6 +199,7 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
 
         if (mounted) sdkDispatch({ type: "setAddress", payload: address });
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -230,6 +232,7 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
         }
       } catch (error) {
         setLastConnectedWallet("");
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -249,6 +252,7 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
         const signingClient = await createSigningClient(sdkState.config, sdkState.signer);
         if (mounted) sdkDispatch({ type: "setSigningClient", payload: signingClient });
       } catch (error) {
+        if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
@@ -272,7 +276,9 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
         }
         return balance;
       } catch (error) {
-        handleError(error);
+        if (error instanceof Error) {
+          handleError(error);
+        }
         return balance;
       }
     }
