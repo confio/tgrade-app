@@ -127,7 +127,9 @@ export default function PrivacyPolicy(): JSX.Element | null {
           <p>
             To learn more about how we use these and your choices in relation to these tracking technologies,
             please refer to our
-            <a href="try.tgrade.finance/cookiepolicy">Cookie Policy.</a>
+            <a rel="noreferrer" href="try.tgrade.finance/cookiepolicy">
+              Cookie Policy.
+            </a>
           </p>
         </li>
         <br />
@@ -165,7 +167,11 @@ export default function PrivacyPolicy(): JSX.Element | null {
       </ol>
       <p>
         Privacy Policy generated with{" "}
-        <a target="_blank" href="https://www.cookieyes.com/?utm_source=PP&utm_medium=footer&utm_campaign=UW">
+        <a
+          rel="noreferrer"
+          target="_blank"
+          href="https://www.cookieyes.com/?utm_source=PP&utm_medium=footer&utm_campaign=UW"
+        >
           CookieYes
         </a>
       </p>
