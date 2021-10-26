@@ -1,6 +1,6 @@
 import ExchangeListItem from "App/components/ExchangeListItem";
-import { TokenProps } from "utils/tokens";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { TokenProps } from "utils/tokens";
 
 export default function ExchangeList(props: { tokens: TokenProps[] }): JSX.Element | null {
   const filteredTokens = props.tokens.filter((token) => token.humanBalance !== "0");

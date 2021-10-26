@@ -1,7 +1,8 @@
 import { Typography } from "antd";
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import * as React from "react";
 import { ComponentProps, HTMLAttributes } from "react";
-import BackButtonOrLink from "App/components/BackButtonOrLink";
+
 import StyledHeaderBack, { TitleStack } from "./style";
 
 const { Title } = Typography;

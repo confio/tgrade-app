@@ -7,6 +7,7 @@ import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { DsoContract, DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationEditDso from "./components/ConfirmationEditDso";
 import FormEditDso, { FormEditDsoValues } from "./components/FormEditDso";

@@ -1,18 +1,20 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { notification } from "antd";
 import { ReactComponent as LinkedinLogo } from "App/assets/icons/linkedin-icon.svg";
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-logo.svg";
 import { ReactComponent as TwitterLogo } from "App/assets/icons/twitter-icon.svg";
 import { paths } from "App/paths";
+import axios from "axios";
+import { copyrightNote, hubspotFormGuid, hubspotPortalId, hubspotURL } from "config/constants";
+import React, { useState } from "react";
+import { isMobile } from "react-device-detect";
 import { Link } from "react-router-dom";
 import { gtagLandingAction } from "utils/analytics";
-import { isMobile } from "react-device-detect";
-import { notification } from "antd";
 
 import {
   ContactForm,
   ContentWrapper,
   CopyrightWrapper,
+  EmailInput,
   Footer,
   Header,
   LinkButton,
@@ -22,9 +24,7 @@ import {
   SubscribeButton,
   Text,
   TextSmall,
-  EmailInput,
 } from "./style";
-import { copyrightNote, hubspotFormGuid, hubspotPortalId, hubspotURL } from "config/constants";
 
 export default function LandingPage(): JSX.Element | null {
   const [email, setEmail] = useState("");

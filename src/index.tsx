@@ -1,10 +1,12 @@
+import "./index.css";
+
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { credentials } from "config/credentials";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom";
+
 import App from "./App";
-import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 

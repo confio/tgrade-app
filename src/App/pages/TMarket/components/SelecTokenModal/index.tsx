@@ -1,6 +1,7 @@
 import { Divider, Typography } from "antd";
 import Stack from "App/components/Stack/style";
 import { TokenProps } from "utils/tokens";
+
 import backIcon from "./assets/arrow-back-icon.svg";
 import closeIcon from "./assets/cross.svg";
 import ListTokens from "./components/ListTokens";

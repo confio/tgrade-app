@@ -1,11 +1,11 @@
 import Button from "App/components/Button";
-import { useHistory } from "react-router";
 import ExchangeList from "App/components/ExchangeList";
-import { paths } from "App/paths";
 import { ItemWrapper } from "App/components/ExchangeListItem/style";
 import { getTokensList } from "App/pages/TMarket/utils";
-import { TokenProps } from "utils/tokens";
+import { paths } from "App/paths";
+import { useHistory } from "react-router";
 import { useTMarket } from "service/tmarket";
+import { TokenProps } from "utils/tokens";
 
 export default function ExchangeContainer(): JSX.Element | null {
   const history = useHistory();

@@ -4,6 +4,7 @@ import { useFormikContext } from "formik";
 import { useSdk } from "service";
 import { useWithdraw } from "service/withdraw";
 import { SwapFormValues } from "utils/tokens";
+
 import Divider from "./style";
 
 const ExtraInfo = (): JSX.Element | null => {

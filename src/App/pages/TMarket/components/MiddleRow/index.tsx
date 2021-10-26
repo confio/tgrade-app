@@ -1,6 +1,7 @@
 import { Col } from "antd";
 import { ReactChild } from "react";
 import { useSdk } from "service";
+
 import { FeeLabel, MiddleRowStyle, TokenLabel } from "./style";
 
 const MiddleRow = ({ children }: { children: ReactChild }): JSX.Element => {

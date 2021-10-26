@@ -1,5 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
+
 import { Factory } from "./factory";
 
 export type VoteOption = "yes" | "no" | "abstain";

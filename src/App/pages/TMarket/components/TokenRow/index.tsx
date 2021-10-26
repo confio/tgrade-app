@@ -1,17 +1,18 @@
-import { lazy, useState } from "react";
 import { Col, Row } from "antd";
+import MaxButton from "App/components/MaxButton";
+import { lazy, useState } from "react";
+import { setSearchText, useTMarket } from "service/tmarket";
+import { TokenRowProps } from "utils/tokens";
+
+import SelectTokenTrigger from "../SelectTokenTrigger";
 import {
-  StyledInput,
   BalanceParagraph,
   ErrorContainer,
   MaxContainer,
+  StyledInput,
   TitleParagraph,
   TokenContainer,
 } from "./style";
-import MaxButton from "App/components/MaxButton";
-import { setSearchText, useTMarket } from "service/tmarket";
-import { TokenRowProps } from "utils/tokens";
-import SelectTokenTrigger from "../SelectTokenTrigger";
 
 const SelectTokenModal = lazy(() => import("../SelecTokenModal"));
 

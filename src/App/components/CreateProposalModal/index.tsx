@@ -6,6 +6,7 @@ import Steps from "App/components/Steps";
 import { lazy, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso } from "service";
+
 import { DsoHomeParams } from "../../pages/DsoHome";
 import SelectProposal from "./components/SelectProposal";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";

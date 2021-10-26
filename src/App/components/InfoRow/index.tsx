@@ -1,5 +1,6 @@
 import { QuestionCircleFilled } from "@ant-design/icons";
-import Row, { Label, Value, StyledToolTip } from "./style";
+
+import Row, { Label, StyledToolTip, Value } from "./style";
 
 const InfoRow = (props: { label: string; value: string; tooltip?: any }): JSX.Element => {
   return (

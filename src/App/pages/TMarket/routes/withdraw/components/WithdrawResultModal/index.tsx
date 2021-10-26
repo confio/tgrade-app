@@ -5,6 +5,7 @@ import { paths } from "App/paths";
 import copyToClipboard from "clipboard-copy";
 import { Redirect } from "react-router-dom";
 import { setDetailWithdraw, useWithdraw } from "service/withdraw";
+
 import { StyledModal, StyledTag, TxHashContainer } from "./style";
 
 interface WithdrawResultModalProps {

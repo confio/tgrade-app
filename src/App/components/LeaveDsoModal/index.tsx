@@ -10,6 +10,7 @@ import { getDsoName, removeDso, useDso, useError, useSdk } from "service";
 import { closeLeaveDsoModal } from "service/dsos";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./style";
 

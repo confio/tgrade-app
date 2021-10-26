@@ -1,6 +1,7 @@
 import { ExitIcon } from "App/components/TMarketPageLayout/style";
 import { paths } from "App/paths";
 import { Link } from "react-router-dom";
+
 import exitIcon from "./assets/cross.svg";
 const Exit = (): JSX.Element => {
   return (

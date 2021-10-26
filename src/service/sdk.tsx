@@ -20,6 +20,7 @@ import {
   setLastConnectedWallet,
 } from "utils/sdk";
 import { retry } from "utils/ui";
+
 import { useError } from "./error";
 
 type SdkState = {

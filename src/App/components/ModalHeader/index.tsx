@@ -1,6 +1,7 @@
 import { Typography } from "antd";
 import closeIcon from "App/assets/icons/cross.svg";
 import { HTMLAttributes } from "react";
+
 import { StyledModalHeader } from "./style";
 
 const { Title } = Typography;

@@ -1,4 +1,5 @@
 import { Typography } from "antd";
+
 import iconConfirm from "./assets/confirmationIcon.png";
 import { Container, ImageContainer, Paragraph, RowContainer, TitleContainer } from "./style";
 

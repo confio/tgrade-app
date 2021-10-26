@@ -6,6 +6,7 @@ import copyToClipboard from "clipboard-copy";
 import { useHistory } from "react-router";
 import { useSdk } from "service";
 import { setDetailSwap, useExchange } from "service/exchange";
+
 import { StyledModal, StyledTag, TxHashContainer } from "./style";
 
 interface ExchangeResultModalProps {

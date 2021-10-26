@@ -10,6 +10,7 @@ import { lazy, useState } from "react";
 import { useSdk } from "service";
 import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
+
 import { FieldWrapper, FormStack, IssuerStack, IssuerText, Separator } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));

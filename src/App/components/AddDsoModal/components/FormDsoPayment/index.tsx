@@ -12,6 +12,7 @@ import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { DsoContract } from "utils/dso";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
+
 import { ButtonGroup, FeeField, FeeGroup, FormStack, Separator } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));

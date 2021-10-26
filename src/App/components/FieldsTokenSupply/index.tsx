@@ -3,6 +3,7 @@ import { Typography } from "antd";
 import Field from "App/components/Field";
 import { FormikErrors } from "formik";
 import { getFormItemName } from "utils/forms";
+
 import { StyledFieldsTokenSupply, TokenLookStack } from "./style";
 
 const { Text } = Typography;

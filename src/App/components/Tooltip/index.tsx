@@ -1,4 +1,5 @@
 import { ComponentProps } from "react";
+
 import questionBubbleIcon from "../../assets/icons/question-bubble.svg";
 import StyledTooltip from "./style";
 

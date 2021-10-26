@@ -1,7 +1,8 @@
 import { Radio, Row } from "antd";
-import { StyledRadioGroup } from "./style";
 import { useEffect, useState } from "react";
 import { setTokensFilter, TokensFilter, useTMarket } from "service/tmarket";
+
+import { StyledRadioGroup } from "./style";
 
 const SelectTokenFilters = (): JSX.Element => {
   const { tMarketDispatch } = useTMarket();

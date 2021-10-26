@@ -5,6 +5,7 @@ import { paths } from "App/paths";
 import copyToClipboard from "clipboard-copy";
 import { Redirect } from "react-router-dom";
 import { setDetailProvide, useProvide } from "service/provide";
+
 import { StyledModal, StyledTag, TxHashContainer } from "./style";
 
 interface ProvideResultModalProps {

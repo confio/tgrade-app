@@ -2,6 +2,7 @@ import HeaderBack from "App/components/HeaderBack";
 import * as React from "react";
 import { ComponentProps } from "react";
 import { useLayout } from "service";
+
 import StyledPageLayout, { StyledMain, StyledMainProps } from "./style";
 
 export type PageLayoutProps = ComponentProps<typeof StyledPageLayout> & StyledMainProps;

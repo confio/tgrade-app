@@ -16,10 +16,10 @@ export {
   useLayout,
 } from "./layout";
 export {
-  default as SdkProvider,
   hitFaucetIfNeeded,
   isSdkInitialized,
   resetSdk,
+  default as SdkProvider,
   setSigner,
   useSdk,
 } from "./sdk";

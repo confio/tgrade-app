@@ -1,6 +1,7 @@
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
 import { ComponentProps } from "react";
+
 import PageLayout from "../PageLayout";
 
 const loadingIcon = <LoadingOutlined style={{ color: "var(--color-primary)", fontSize: 50 }} spin />;

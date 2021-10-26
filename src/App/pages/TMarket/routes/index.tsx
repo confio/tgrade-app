@@ -3,6 +3,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import ExchangeProvider from "service/exchange";
 import ProvideProvider from "service/provide";
 import WithdrawProvider from "service/withdraw";
+
 import Exchange from "./exchange";
 import Provide from "./provide";
 import Withdraw from "./withdraw";

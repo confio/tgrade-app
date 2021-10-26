@@ -1,6 +1,6 @@
+import Select from "App/components/Select";
 import Stack from "App/components/Stack/style";
 import styled from "styled-components";
-import Select from "App/components/Select";
 
 export const ProposalStack = styled(Stack)`
   & span.ant-typography {

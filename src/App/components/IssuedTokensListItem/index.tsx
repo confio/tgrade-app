@@ -1,4 +1,5 @@
 import { ReactComponent as TgradeLogo } from "App/assets/icons/tgrade-token-round.svg";
+
 import { ItemWrapper, Title } from "./style";
 
 interface itemProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -3,6 +3,7 @@ import Button from "App/components/Button";
 import PageLayout from "App/components/PageLayout";
 import VideoPlayer from "App/components/VideoPlayer";
 import * as React from "react";
+
 import { TextStack, TutorialStack } from "./style";
 
 const { Title, Paragraph } = Typography;

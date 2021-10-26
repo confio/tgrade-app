@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
+
 import TooltipWrapper from "../TooltipWrapper";
 import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
 

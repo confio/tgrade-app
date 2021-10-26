@@ -13,6 +13,7 @@ import {
   setLastConnectedWallet,
   WalletLoader,
 } from "utils/sdk";
+
 import closeIcon from "../../../../assets/icons/cross.svg";
 import loadingIcon from "../../../../assets/icons/loading.svg";
 import errorIcon from "../../../../assets/icons/warning.svg";

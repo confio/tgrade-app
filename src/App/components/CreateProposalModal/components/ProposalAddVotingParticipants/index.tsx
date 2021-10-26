@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationAddVotingParticipants from "./components/ConfirmationAddVotingParticipants";
 import FormAddVotingParticipants, {

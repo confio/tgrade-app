@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import AuthorizeWallet from "./components/AuthorizeWallet";
 import ChooseWallet from "./components/ChooseWallet";
 import StyledConnectWalletModal from "./style";

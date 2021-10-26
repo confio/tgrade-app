@@ -1,5 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, GasPrice } from "@cosmjs/stargate";
+
 import { PairProps, SwapFormValues } from "./tokens";
 
 export async function getPairsEager(
