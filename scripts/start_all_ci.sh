@@ -13,4 +13,4 @@ echo "3 blocks produced!"
 "$SCRIPT_DIR/faucet/start.sh" &
 echo "Wait for faucet to start up..."
 timeout 60 bash -c "until curl -s http://localhost:8000/status > /dev/null; do sleep 0.5; done"
-sleep 1
+sleep 5
