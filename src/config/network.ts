@@ -128,7 +128,7 @@ const tgradeTestnet2: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
-  factoryAddress: "tgrade12eu6c7f67l8gdl2lt0hz0dgdh24dhune2lvyj2",
+  factoryAddress: "tgrade14ejqjyq8um4p3xfqj74yld5waqljf88fysvrq7",
   codeIds: {
     tgradeDso: [5],
     cw20Tokens: [6],
