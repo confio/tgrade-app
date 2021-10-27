@@ -4,8 +4,12 @@
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 
-// Fix for antd v4: https://github.com/ant-design/ant-design/issues/21096#issuecomment-725301551
+import { TextEncoder } from "util";
 
+// Fix for "ReferenceError: TextEncoder is not defined": https://github.com/facebook/jest/issues/9983#issuecomment-696427273
+global.TextEncoder = TextEncoder;
+
+// Fix for antd v4: https://github.com/ant-design/ant-design/issues/21096#issuecomment-725301551
 global.matchMedia =
   global.matchMedia ||
   function () {
