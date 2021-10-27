@@ -78,6 +78,9 @@ jobs:
       - run:
           name: Version information
           command: echo "node $(node --version)"; echo "yarn $(yarn --version)"
+      - run:
+          name: Node memory limit
+          command: export NODE_OPTIONS="--max-old-space-size=4096"
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
