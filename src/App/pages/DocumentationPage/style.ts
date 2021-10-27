@@ -16,12 +16,35 @@ export const ContentWrapper = styled.div<StyledProps>`
   flex-direction: column;
   justify-content: flex-start;
   margin-left: ${(props) => (props.isMobile ? "5px" : "245px")};
-  padding: ${(props) => (props.isMobile ? "5px" : "50")};
+  padding: ${(props) => (props.isMobile ? "5px" : "50px")};
 
   & div {
     margin-bottom: 25px;
   }
 `;
+
+export const RequirementList = styled.ul`
+  &[class] {
+    margin: var(--s-2);
+    list-style-type: "- ";
+  }
+`;
+
+export const ReferenceList = styled.ol`
+  &[class] {
+    margin: var(--s-2) 0;
+    counter-reset: bracket-counter;
+
+    & li {
+      counter-increment: bracket-counter;
+
+      &::before {
+        content: "[" counter(bracket-counter) "] ";
+      }
+    }
+  }
+`;
+
 export const StyledMenuItem = styled(Menu.Item)`
   color: #fff;
   & .ant-menu-item-active {
