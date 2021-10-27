@@ -53,7 +53,7 @@ jobs:
           name: Start tgrade and faucet
           command: |
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
-            ./scripts/start_all.sh
+            ./scripts/start_all_ci.sh
             docker logout
           background: true
       - run:
