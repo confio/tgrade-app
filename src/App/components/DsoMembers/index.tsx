@@ -10,7 +10,7 @@ import { MemberCount, MemberCounts, MembersStack } from "./style";
 
 const { Title, Text } = Typography;
 
-export default function Members(): JSX.Element {
+export default function DsoMembers(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {

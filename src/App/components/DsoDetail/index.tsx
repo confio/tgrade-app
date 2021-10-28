@@ -5,16 +5,16 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { DsoContractQuerier } from "utils/dso";
+import { DsoContractQuerier, ProposalResponse } from "utils/dso";
 
 import Stack from "../Stack/style";
 import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
-const CreateProposalModal = lazy(() => import("../CreateProposalModal"));
-const ProposalDetailModal = lazy(() => import("App/components/ProposalDetailModal"));
+const DsoCreateProposalModal = lazy(() => import("App/components/DsoCreateProposalModal"));
+const DsoProposalDetailModal = lazy(() => import("App/components/DsoProposalDetailModal"));
 const DsoIdActions = lazy(() => import("App/components/DsoIdActions"));
-const Escrow = lazy(() => import("App/components/Escrow"));
-const Members = lazy(() => import("App/components/Members"));
+const DsoEscrow = lazy(() => import("App/components/DsoEscrow"));
+const DsoMembers = lazy(() => import("App/components/DsoMembers"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
@@ -112,7 +112,7 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
-  const [proposals, setProposals] = useState<any>([]);
+  const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
   const [clickedProposal, setClickedProposal] = useState<number>();
 
   const refreshProposals = useCallback(async () => {
@@ -137,8 +137,8 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
       <Stack>
         <DsoIdActions />
         <EscrowMembersContainer>
-          <Escrow />
-          <Members />
+          <DsoEscrow />
+          <DsoMembers />
         </EscrowMembersContainer>
         <ProposalsContainer>
           <header>
@@ -152,19 +152,19 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
               columns={columns}
               pagination={false}
               dataSource={proposals}
-              onRow={(record: any) => ({
-                onClick: () => setClickedProposal(record.id),
+              onRow={(proposal: ProposalResponse) => ({
+                onClick: () => setClickedProposal(proposal.id),
               })}
             />
           ) : null}
         </ProposalsContainer>
       </Stack>
-      <CreateProposalModal
+      <DsoCreateProposalModal
         isModalOpen={isCreateProposalModalOpen}
         closeModal={() => setCreateProposalModalOpen(false)}
         refreshProposals={refreshProposals}
       />
-      <ProposalDetailModal
+      <DsoProposalDetailModal
         isModalOpen={!!clickedProposal}
         closeModal={() => setClickedProposal(undefined)}
         proposalId={clickedProposal ?? 0}

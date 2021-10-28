@@ -66,7 +66,7 @@ export default function DsoIdActions(): JSX.Element {
       <header>
         <Title style={{ fontSize: "20px" }}>{dsoName}</Title>
         <div className="address-actions-container">
-          <AddressTag address={dsoAddress} copyable onClose={() => console.count("close!")} />
+          <AddressTag address={dsoAddress} copyable />
           <Dropdown
             overlay={
               <Menu>

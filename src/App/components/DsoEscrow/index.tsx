@@ -12,10 +12,10 @@ import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
 import TooltipWrapper from "../TooltipWrapper";
 import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
 
-const DepositEscrowModal = lazy(() => import("App/components/DepositEscrowModal"));
+const DepositDsoEscrowModal = lazy(() => import("App/components/DepositDsoEscrowModal"));
 const { Title, Text } = Typography;
 
-export default function Escrow(): JSX.Element {
+export default function DsoEscrow(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
@@ -193,7 +193,7 @@ export default function Escrow(): JSX.Element {
         <Button onClick={() => setModalOpen(true)}>Deposit escrow</Button>
       </YourEscrowStack>
       {modalOpen ? (
-        <DepositEscrowModal
+        <DepositDsoEscrowModal
           isModalOpen={modalOpen}
           closeModal={() => setModalOpen(false)}
           requiredEscrow={requiredEscrow}
