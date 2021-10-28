@@ -1,31 +1,31 @@
 import { Typography } from "antd";
-import { DsoHomeParams } from "App/pages/DsoHome";
-import * as React from "react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useError, useSdk } from "service";
+import { useError, useOc, useSdk } from "service";
 import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
 
 import { MemberCount, MemberCounts, MembersStack } from "./style";
 
 const { Title, Text } = Typography;
 
-export default function Members(): JSX.Element {
-  const { dsoAddress }: DsoHomeParams = useParams();
+export default function OcMembers(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { client, address },
   } = useSdk();
+  const {
+    ocState: { ocAddress },
+  } = useOc();
+
   const [numVoters, setNumVoters] = useState(0);
   const [numNonVoters, setNumNonVoters] = useState(0);
   const [membership, setMembership] = useState<"voting" | "nonVoting">();
 
   useEffect(() => {
     (async function updateNumMembers() {
-      if (!client) return;
+      if (!ocAddress || !client) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new DsoContractQuerier(ocAddress, client);
         const members = await dsoContract.getAllMembers();
 
         const memberEscrowPromises = members.map(({ addr }) => dsoContract.getEscrow(addr));
@@ -50,14 +50,14 @@ export default function Members(): JSX.Element {
         handleError(error);
       }
     })();
-  }, [client, dsoAddress, handleError]);
+  }, [client, ocAddress, handleError]);
 
   useEffect(() => {
     (async function queryMembership() {
-      if (!client || !address) return;
+      if (!ocAddress || !client || !address) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new DsoContractQuerier(ocAddress, client);
         const escrowResponse = await dsoContract.getEscrow(address);
 
         if (escrowResponse) {
@@ -71,7 +71,7 @@ export default function Members(): JSX.Element {
         handleError(error);
       }
     })();
-  }, [address, client, dsoAddress, handleError]);
+  }, [address, client, ocAddress, handleError]);
 
   return (
     <MembersStack>

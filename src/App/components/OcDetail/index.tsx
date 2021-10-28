@@ -4,17 +4,17 @@ import rejectedIcon from "App/assets/icons/cross.svg";
 import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
-import { useError, useSdk } from "service";
+import { useError, useOc, useSdk } from "service";
 import { DsoContractQuerier, ProposalResponse } from "utils/dso";
 
 import Stack from "../Stack/style";
 import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
-const DsoCreateProposalModal = lazy(() => import("App/components/DsoCreateProposalModal"));
-const DsoProposalDetailModal = lazy(() => import("App/components/DsoProposalDetailModal"));
-const DsoIdActions = lazy(() => import("App/components/DsoIdActions"));
-const DsoEscrow = lazy(() => import("App/components/DsoEscrow"));
-const DsoMembers = lazy(() => import("App/components/DsoMembers"));
+const OcCreateProposalModal = lazy(() => import("App/components/OcCreateProposalModal"));
+const OcProposalDetailModal = lazy(() => import("App/components/OcProposalDetailModal"));
+const OcIdActions = lazy(() => import("App/components/OcIdActions"));
+const OcEscrow = lazy(() => import("App/components/OcEscrow"));
+const OcMembers = lazy(() => import("App/components/OcMembers"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
@@ -100,15 +100,14 @@ const columns = [
   },
 ];
 
-interface DsoDetailParams {
-  readonly dsoAddress: string;
-}
-
-export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element {
+export default function OcDetail(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { client },
   } = useSdk();
+  const {
+    ocState: { ocAddress },
+  } = useOc();
 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
@@ -116,17 +115,17 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
   const [clickedProposal, setClickedProposal] = useState<number>();
 
   const refreshProposals = useCallback(async () => {
-    if (!client) return;
+    if (!ocAddress || !client) return;
 
     try {
-      const dsoContract = new DsoContractQuerier(dsoAddress, client);
+      const dsoContract = new DsoContractQuerier(ocAddress, client);
       const proposals = await dsoContract.getProposals();
       setProposals(proposals);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
     }
-  }, [client, dsoAddress, handleError]);
+  }, [client, handleError, ocAddress]);
 
   useEffect(() => {
     refreshProposals();
@@ -134,11 +133,11 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
 
   return (
     <>
-      <Stack>
-        <DsoIdActions />
+      <Stack style={{ width: "100%" }}>
+        <OcIdActions />
         <EscrowMembersContainer>
-          <DsoEscrow />
-          <DsoMembers />
+          <OcEscrow />
+          <OcMembers />
         </EscrowMembersContainer>
         <ProposalsContainer>
           <header>
@@ -159,12 +158,12 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
           ) : null}
         </ProposalsContainer>
       </Stack>
-      <DsoCreateProposalModal
+      <OcCreateProposalModal
         isModalOpen={isCreateProposalModalOpen}
         closeModal={() => setCreateProposalModalOpen(false)}
         refreshProposals={refreshProposals}
       />
-      <DsoProposalDetailModal
+      <OcProposalDetailModal
         isModalOpen={!!clickedProposal}
         closeModal={() => setClickedProposal(undefined)}
         proposalId={clickedProposal ?? 0}

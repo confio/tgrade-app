@@ -38,19 +38,19 @@ import {
   Title,
 } from "./style";
 
-interface ProposalDetailModalProps {
+interface DsoProposalDetailModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly proposalId: number | undefined;
   readonly refreshProposals: () => void;
 }
 
-export default function ProposalDetailModal({
+export default function DsoProposalDetailModal({
   isModalOpen,
   closeModal,
   proposalId,
   refreshProposals,
-}: ProposalDetailModalProps): JSX.Element {
+}: DsoProposalDetailModalProps): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {

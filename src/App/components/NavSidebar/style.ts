@@ -26,19 +26,32 @@ width:15.25rem;
 height:4.875rem;
 color:#fff;
 border-left: 4px solid transparent;
-svg{
-    margin:0.5rem;
-}
 svg:first-child{
+    margin:0.5rem;
     width:1.5rem;
-}
-svg:last-child{
-    height: 18px;
 }
 &:hover{
     background-color:rgba(220,220,220,0.10);
     border-left: 4px solid white;
 }
+`;
+
+export const TextCell = Styled.div`
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  svg:last-child{
+    margin: 0.3rem;
+    margin-left: 0.5rem;
+    height: 18px;
+  }
+
+  & > div > svg:last-child {
+    margin: 0rem;
+    margin-left: 0.5rem;
+  }
 `;
 
 export const StyledText = Styled(Typography.Text)`

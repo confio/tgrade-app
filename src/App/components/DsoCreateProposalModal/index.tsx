@@ -61,17 +61,17 @@ function getCurrentStepIndex(step?: ProposalStep): number {
   return step?.confirmation ? 2 : step?.type ? 1 : 0;
 }
 
-interface CreateProposalModalProps {
+interface DsoCreateProposalModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly refreshProposals: () => void;
 }
 
-export default function CreateProposalModal({
+export default function DsoCreateProposalModal({
   isModalOpen,
   closeModal,
   refreshProposals,
-}: CreateProposalModalProps): JSX.Element {
+}: DsoCreateProposalModalProps): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const {
     dsoState: { dsos },
