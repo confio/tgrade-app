@@ -7,7 +7,7 @@ import {
   QueryClientProvider as ReactQueryClientProvider,
 } from "react-query";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { DsoProvider, ErrorProvider, LayoutProvider, SdkProvider, ThemeProvider } from "service";
+import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, ThemeProvider } from "service";
 import TMarketProvider from "service/tmarket";
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -17,7 +17,9 @@ import CookiePolicy from "./pages/LandingPage/CookiePolicy";
 import Impressum from "./pages/LandingPage/Impressum";
 import PrivacyPolicy from "./pages/LandingPage/PrivacyPolicy";
 import { paths } from "./paths";
+
 const Dso = lazy(() => import("./routes/Dso"));
+const OcHome = lazy(() => import("./pages/OcHome"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
 
 export default function App(): JSX.Element {
@@ -30,35 +32,41 @@ export default function App(): JSX.Element {
               <ThemeProvider>
                 <Router basename={process.env.PUBLIC_URL}>
                   <LayoutProvider>
-                    <Switch>
-                      <Suspense fallback={<LoadingSpinner fullPage />}>
-                        <Route exact path={paths.root}>
-                          <LandingPage />
-                        </Route>
-                        <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
-                          <DsoProvider>
+                    {/* Temporarily move DsoProvider out so it can be used by OcProvider */}
+                    <DsoProvider>
+                      <Switch>
+                        <Suspense fallback={<LoadingSpinner fullPage />}>
+                          <Route exact path={paths.root}>
+                            <LandingPage />
+                          </Route>
+                          <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
                             <Dso />
-                          </DsoProvider>
-                        </Route>
-                        <Route path={`${paths.tmarket.prefix}`}>
-                          <TMarketProvider>
-                            <TMarketHome />
-                          </TMarketProvider>
-                        </Route>
-                        <Route path={`${paths.documentation.prefix}`}>
-                          <DocumentationPage />
-                        </Route>
-                        <Route path={`${paths.privacypolicy.prefix}`}>
-                          <PrivacyPolicy />
-                        </Route>
-                        <Route path={`${paths.cookiepolicy.prefix}`}>
-                          <CookiePolicy />
-                        </Route>
-                        <Route path={`${paths.impressum.prefix}`}>
-                          <Impressum />
-                        </Route>
-                      </Suspense>
-                    </Switch>
+                          </Route>
+                          <Route path={paths.oc.prefix}>
+                            <OcProvider>
+                              <OcHome />
+                            </OcProvider>
+                          </Route>
+                          <Route path={`${paths.tmarket.prefix}`}>
+                            <TMarketProvider>
+                              <TMarketHome />
+                            </TMarketProvider>
+                          </Route>
+                          <Route path={`${paths.documentation.prefix}`}>
+                            <DocumentationPage />
+                          </Route>
+                          <Route path={`${paths.privacypolicy.prefix}`}>
+                            <PrivacyPolicy />
+                          </Route>
+                          <Route path={`${paths.cookiepolicy.prefix}`}>
+                            <CookiePolicy />
+                          </Route>
+                          <Route path={`${paths.impressum.prefix}`}>
+                            <Impressum />
+                          </Route>
+                        </Suspense>
+                      </Switch>
+                    </DsoProvider>
                   </LayoutProvider>
                 </Router>
               </ThemeProvider>

@@ -26,6 +26,9 @@ export const paths = {
       dsoAddressOptional: "/:dsoAddress?",
     },
   },
+  oc: {
+    prefix: "/oversightcommittee",
+  },
   tmarket: {
     prefix: "/tmarket",
     exchange: {
