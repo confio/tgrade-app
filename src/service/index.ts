@@ -15,6 +15,7 @@ export {
   setLoading,
   useLayout,
 } from "./layout";
+export { closeLeaveOcModal, default as OcProvider, openLeaveOcModal, useOc } from "./oversightCommittee";
 export {
   hitFaucetIfNeeded,
   isSdkInitialized,
