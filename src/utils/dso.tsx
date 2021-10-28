@@ -283,6 +283,7 @@ export class DsoContract extends DsoContractQuerier {
       threshold: (parseFloat(threshold) / 100).toString(),
       initial_members: members,
       allow_end_early: allowEndEarly,
+      edit_trusted_circle_disabled: false, // TODO: revisit what makes sense here
     };
 
     const { contractAddress } = await signingClient.instantiate(
