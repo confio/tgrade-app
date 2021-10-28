@@ -1,10 +1,11 @@
+// eslint-disable-next-line simple-import-sort/imports
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
 import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
-import { SwapFormValues } from "utils/tokens";
+import { SwapFormValues, ProvideFormValues } from "utils/tokens";
 
 it("creates a Digital Asset", async () => {
   const signer = await loadOrCreateWallet(config);
@@ -39,14 +40,14 @@ it("creates a Digital Asset", async () => {
   );
   expect(cw20tokenAddress.startsWith(config.addressPrefix)).toBeTruthy();
 
-  const cw20tokenInfo = await signingClient.queryContractSmart(cw20tokenAddress, {
-    token_info: {},
-  });
+  const tokens = await Contract20WS.getAll(config, signingClient, address);
+  const cw20tokenInfo = tokens[cw20tokenAddress];
+  console.log("cw20token after query", tokens);
 
   const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
   const pairValues: SwapFormValues = {
-    From: 1.0,
     To: 1.0,
+    From: 1.0,
     selectFrom: {
       address: config.feeToken,
       balance: balance_utgd,
@@ -61,7 +62,7 @@ it("creates a Digital Asset", async () => {
 
   await Factory.createPair(signingClient, address, config.factoryAddress, pairValues, config.gasPrice);
   const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
-});
+}, 10000);
 
 /*   const provideValues: ProvideFormValues = {
     assetA: 1.0,
