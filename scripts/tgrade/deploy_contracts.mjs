@@ -35,18 +35,6 @@ async function main() {
   await faucet.credit(address, config.feeDenom);
   console.info("...done");
 
-  //tgrade_dso
-  console.info("Uploading DSO wasm...");
-  const contract = "tgrade_dso.wasm";
-  let wasmDso = fs.readFileSync(path.join(process.cwd(), "contracts", contract));
-  const uploadReceipt = await client.upload(
-    address,
-    wasmDso,
-    calculateFee(2500000, config.gasPrice),
-    "upload dso wasm",
-  );
-  console.info(`Upload DSO Contract succeeded. Receipt: ${JSON.stringify(uploadReceipt)}`);
-
   //CW20-base
   console.info("Uploading CW20 Base wasm...");
   const cw20 = "cw20_base.wasm";
@@ -54,7 +42,7 @@ async function main() {
   const uploadReceiptCW20 = await client.upload(
     address,
     wasmCW20,
-    calculateFee(2500000, config.gasPrice),
+    calculateFee(25000000, config.gasPrice),
     "upload cw20 wasm",
   );
   console.info(`Upload CW20-base Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptCW20)}`);
@@ -66,7 +54,7 @@ async function main() {
   const uploadReceiptDsoToken = await client.upload(
     address,
     wasmDsoToken,
-    calculateFee(2500000, config.gasPrice),
+    calculateFee(25000000, config.gasPrice),
     "upload dso token wasm",
   );
   console.info(`Upload DSO token Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptDsoToken)}`);
@@ -78,7 +66,7 @@ async function main() {
   const uploadReceiptFactory = await client.upload(
     address,
     wasmFactory,
-    calculateFee(2500000, config.gasPrice),
+    calculateFee(25000000, config.gasPrice),
     "upload factory wasm",
   );
   console.info(`Upload Factory Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptFactory)}`);
@@ -90,7 +78,7 @@ async function main() {
   const uploadReceiptPair = await client.upload(
     address,
     wasmPair,
-    calculateFee(2500000, config.gasPrice),
+    calculateFee(25000000, config.gasPrice),
     "upload pair wasm",
   );
   console.info(`Upload Pair Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptPair)}`);

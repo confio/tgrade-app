@@ -2,14 +2,13 @@
 set -o errexit -o nounset -o pipefail
 command -v shellcheck > /dev/null && shellcheck "$0"
 
-if [ $# -ne 3 ]; then
-  echo "Usage: ./download_releases.sh cwplus_tag tgrade_contracts_tag tfi_tag"
+if [ $# -ne 2 ]; then
+  echo "Usage: ./download_releases.sh cwplus_tag tfi_tag"
   exit 1
 fi
 
 cwplus_tag="$1"
-tgrade_contracts_tag="$2"
-tfi_tag="$3"
+tfi_tag="$2"
 
 # load token from OS keychain when not set via ENV
 GITHUB_API_TOKEN=${GITHUB_API_TOKEN:-"$(security find-generic-password -a "$USER" -s "github_api_key" -w)"}
@@ -27,16 +26,6 @@ for contract in $CWPLUS; do
   curl -LJO -H 'Accept: application/octet-stream' -H "Authorization: token $GITHUB_API_TOKEN" "$artifact_url"
 done
 echo "CWPLUS_TAG=$cwplus_tag" >> version.txt
-
-TGRADE_CONTRACTS="tgrade_dso"
-for contract in $TGRADE_CONTRACTS; do
-  list_asset_url="https://api.github.com/repos/confio/tgrade-contracts/releases/tags/${tgrade_contracts_tag}"
-  # get url for artifact with name==${contract}.wasm
-  asset_url=$(curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $GITHUB_API_TOKEN" "${list_asset_url}" | jq -r ".assets[] | select(.name==\"${contract}.wasm\") | .url")
-  # download the artifact
-  curl -LJO -H 'Accept: application/octet-stream' -H "Authorization: token $GITHUB_API_TOKEN" "$asset_url"
-done
-echo "TGRADE_CONTRACTS_TAG=$tgrade_contracts_tag" >> version.txt
 
 TFI="dso_token tfi_factory tfi_pair"
 for contract in $TFI; do
