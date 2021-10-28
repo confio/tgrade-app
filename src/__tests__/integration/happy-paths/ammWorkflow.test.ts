@@ -5,7 +5,7 @@ import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
 import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
-import { SwapFormValues, ProvideFormValues } from "utils/tokens";
+import { SwapFormValues } from "utils/tokens";
 
 it("creates a Digital Asset", async () => {
   const signer = await loadOrCreateWallet(config);
@@ -61,7 +61,7 @@ it("creates a Digital Asset", async () => {
   };
 
   await Factory.createPair(signingClient, address, config.factoryAddress, pairValues, config.gasPrice);
-  const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
+  //const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
 }, 10000);
 
 /*   const provideValues: ProvideFormValues = {
