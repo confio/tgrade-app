@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useSdk } from "service";
 
 import * as Icon from "./icons";
-import { Cell, LinkWrapper, Navbar, StyledAddressTag, StyledText } from "./style";
+import { Cell, LinkWrapper, Navbar, StyledAddressTag, StyledText, TextCell } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
@@ -24,23 +24,40 @@ export const NavSidebar: React.FC = () => {
         <Link to={paths.dso.prefix}>
           <Cell>
             <Icon.TrustedCircle />
-            <StyledText>Trusted Circles</StyledText>
-            <Icon.Join />
+            <TextCell>
+              <StyledText>Trusted Circles</StyledText>
+              <Icon.Join />
+            </TextCell>
           </Cell>
         </Link>
         <Link to={paths.tmarket.prefix}>
           <Cell>
             <Icon.Token />
-            <StyledText>T-Market</StyledText>
-            <Icon.Trade />
+            <TextCell>
+              <StyledText>T-Market</StyledText>
+              <Icon.Trade />
+            </TextCell>
+          </Cell>
+        </Link>
+        <Link to={paths.oc.prefix}>
+          <Cell>
+            <Icon.Oversight />
+            <TextCell>
+              <StyledText>Oversight Committee</StyledText>
+              <Icon.Manage />
+            </TextCell>
           </Cell>
         </Link>
         <Link to={paths.documentation.prefix} target="_blank" rel="noopener noreferrer">
           <Cell>
             <Icon.CodeIcon />
-            <StyledText>Documentation</StyledText>
-            <Icon.ArrowTopRight style={{ height: "10px" }} />
-            <Icon.Code />
+            <TextCell>
+              <div>
+                <StyledText>Documentation</StyledText>
+                <Icon.ArrowTopRight style={{ height: "10px" }} />
+              </div>
+              <Icon.Code />
+            </TextCell>
           </Cell>
         </Link>
         {/* <Link to="#">
