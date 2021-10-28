@@ -93,6 +93,7 @@ export class Contract20WS {
       "CW20 instance",
       calculateFee(Contract20WS.GAS_CREATE_TOKEN, gasPrice),
     );
+    console.log("New contract address:", contractAddress);
     return contractAddress;
   }
   static async getBalance(
@@ -151,6 +152,7 @@ export class Contract20WS {
         img: tgradeLogo,
       };
     } else {
+      console.log(contractAddress);
       const token_info = await client.queryContractSmart(contractAddress, {
         token_info: {},
       });
@@ -164,6 +166,7 @@ export class Contract20WS {
         address: contractAddress,
         img: imgSrc,
       };
+
       return result;
     }
   }
@@ -178,7 +181,8 @@ export class Contract20WS {
     // Add feeToken to lists
     const feeTokenInfo = await this.getTokenInfo(client, clientAddress, config.feeToken, config);
     tokensMap[config.feeToken] = feeTokenInfo;
-
+    console.log(feeTokenInfo);
+    console.log(tokensMap);
     // Get cw20 and tgrade token addresses
     const cw20TokensAddressesPromise = config.codeIds?.cw20Tokens?.length
       ? client.getContracts(config.codeIds.cw20Tokens[0])
@@ -192,7 +196,10 @@ export class Contract20WS {
 
     // Fill map with tokens info
     const tokensInfos = await Promise.all(
-      tokenAddresses.map((address) => this.getTokenInfo(client, clientAddress, address, config)),
+      tokenAddresses.map((address) => {
+        console.log("token address map", address);
+        return this.getTokenInfo(client, clientAddress, address, config);
+      }),
     );
     tokensInfos.forEach((tokenInfo) => {
       tokensMap[tokenInfo.address] = tokenInfo;
