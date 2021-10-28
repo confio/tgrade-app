@@ -8,7 +8,7 @@ import { TextDecoder, TextEncoder } from "util";
 
 // Fix for "ReferenceError: TextEncoder is not defined": https://github.com/facebook/jest/issues/9983#issuecomment-696427273
 global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+global.TextDecoder = TextDecoder as any;
 
 // Fix for antd v4: https://github.com/ant-design/ant-design/issues/21096#issuecomment-725301551
 global.matchMedia =
