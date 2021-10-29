@@ -35,6 +35,10 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
     setSubmitting(true);
 
     try {
+      if (dsoAddress === config.ocAddress) {
+        throw new Error("Cannot add Oversight Committee as Trusted Circle");
+      }
+
       const dsoContract = new DsoContractQuerier(dsoAddress, client);
       const { name: dsoName } = await dsoContract.getDso();
       addDso(dsoDispatch, dsoAddress);
