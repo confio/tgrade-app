@@ -32,41 +32,40 @@ export default function App(): JSX.Element {
               <ThemeProvider>
                 <Router basename={process.env.PUBLIC_URL}>
                   <LayoutProvider>
-                    {/* Temporarily move DsoProvider out so it can be used by OcProvider */}
-                    <DsoProvider>
-                      <Switch>
-                        <Suspense fallback={<LoadingSpinner fullPage />}>
-                          <Route exact path={paths.root}>
-                            <LandingPage />
-                          </Route>
-                          <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
+                    <Switch>
+                      <Suspense fallback={<LoadingSpinner fullPage />}>
+                        <Route exact path={paths.root}>
+                          <LandingPage />
+                        </Route>
+                        <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
+                          <DsoProvider>
                             <Dso />
-                          </Route>
-                          <Route path={paths.oc.prefix}>
-                            <OcProvider>
-                              <OcHome />
-                            </OcProvider>
-                          </Route>
-                          <Route path={`${paths.tmarket.prefix}`}>
-                            <TMarketProvider>
-                              <TMarketHome />
-                            </TMarketProvider>
-                          </Route>
-                          <Route path={`${paths.documentation.prefix}`}>
-                            <DocumentationPage />
-                          </Route>
-                          <Route path={`${paths.privacypolicy.prefix}`}>
-                            <PrivacyPolicy />
-                          </Route>
-                          <Route path={`${paths.cookiepolicy.prefix}`}>
-                            <CookiePolicy />
-                          </Route>
-                          <Route path={`${paths.impressum.prefix}`}>
-                            <Impressum />
-                          </Route>
-                        </Suspense>
-                      </Switch>
-                    </DsoProvider>
+                          </DsoProvider>
+                        </Route>
+                        <Route path={paths.oc.prefix}>
+                          <OcProvider>
+                            <OcHome />
+                          </OcProvider>
+                        </Route>
+                        <Route path={`${paths.tmarket.prefix}`}>
+                          <TMarketProvider>
+                            <TMarketHome />
+                          </TMarketProvider>
+                        </Route>
+                        <Route path={`${paths.documentation.prefix}`}>
+                          <DocumentationPage />
+                        </Route>
+                        <Route path={`${paths.privacypolicy.prefix}`}>
+                          <PrivacyPolicy />
+                        </Route>
+                        <Route path={`${paths.cookiepolicy.prefix}`}>
+                          <CookiePolicy />
+                        </Route>
+                        <Route path={`${paths.impressum.prefix}`}>
+                          <Impressum />
+                        </Route>
+                      </Suspense>
+                    </Switch>
                   </LayoutProvider>
                 </Router>
               </ThemeProvider>
