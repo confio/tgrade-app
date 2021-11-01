@@ -21,7 +21,7 @@
       function gtag() {}
     </script>
     <!-- Google Analytics for try.tgrade.finance only -->
-    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet") { %>
+    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet2") { %>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CL60E9X5BW"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -35,9 +35,10 @@
     <script>
       !(function (e, t, n, s, u, a) {
         e.twq ||
-          ((s = e.twq = function () {
-            s.exe ? s.exe.apply(s, arguments) : s.queue.push(arguments);
-          }),
+          ((s = e.twq =
+            function () {
+              s.exe ? s.exe.apply(s, arguments) : s.queue.push(arguments);
+            }),
           (s.version = "1.1"),
           (s.queue = []),
           (u = t.createElement(n)),
@@ -76,7 +77,8 @@
       onload="this.media='all'"
     />
     <!-- Start cookieyes banner -->
-    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet") { %>
+    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet2" || process.env.REACT_APP_NETWORK ===
+    "tgradeInternal3") { %>
     <script
       id="cookieyes"
       type="text/javascript"
