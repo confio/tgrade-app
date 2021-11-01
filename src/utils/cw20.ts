@@ -93,7 +93,6 @@ export class Contract20WS {
       "CW20 instance",
       calculateFee(Contract20WS.GAS_CREATE_TOKEN, gasPrice),
     );
-    console.log("New contract address:", contractAddress);
     return contractAddress;
   }
   static async getBalance(
