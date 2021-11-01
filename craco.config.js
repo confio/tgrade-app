@@ -13,12 +13,21 @@ module.exports = {
       },
     ],
   },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        parallel: true,
-      }),
-    ],
+  webpack: {
+    configure: (webpackConfig) => ({
+      ...webpackConfig,
+      optimization: {
+        ...webpackConfig.optimization,
+        // Workaround for CircleCI bug caused by the number of CPUs shown
+        // https://github.com/facebook/create-react-app/issues/8320
+        minimizer: webpackConfig.optimization.minimizer.map((item) => {
+          if (item instanceof TerserPlugin) {
+            item.options.parallel = 0;
+          }
+
+          return item;
+        }),
+      },
+    }),
   },
 };
