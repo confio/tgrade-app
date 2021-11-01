@@ -164,7 +164,6 @@ export class Contract20WS {
         address: contractAddress,
         img: imgSrc,
       };
-
       return result;
     }
   }
