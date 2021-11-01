@@ -4,8 +4,8 @@ jobs:
   build:
     docker:
       - image: cimg/node:14.18.0
-    environment:
-      NODE_OPTIONS: --max-old-space-size=4096
+environment:
+NODE_OPTIONS: --max-old-space-size=4096
 
 
     steps:
@@ -79,7 +79,6 @@ jobs:
           command: |
             wget -O "$HOME/yarn.deb" https://dl.yarnpkg.com/debian/pool/main/y/yarn/yarn_1.22.15_all.deb
             sudo dpkg -i "$HOME/yarn.deb"
-
       - run:
           name: Version information
           command: echo "node $(node --version)"; echo "yarn $(yarn --version)"
