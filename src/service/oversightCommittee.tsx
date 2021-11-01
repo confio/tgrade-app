@@ -1,6 +1,6 @@
 import LeaveOcModal from "App/components/LeaveOcModal";
 import { createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
-import { useDso } from "service";
+import { useSdk } from "service";
 import { useLocalStorage } from "utils/storage";
 
 type ModalState = "open" | "closed";
@@ -54,13 +54,11 @@ export const useOc = (): NonNullable<OcContextType> => {
 };
 
 export default function OcProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
-  /* 
-  NOTE first dso address is used as OC address temporarily
-  */
   const {
-    dsoState: { dsoAddresses },
-  } = useDso();
-  /**/
+    sdkState: {
+      config: { ocAddress },
+    },
+  } = useSdk();
 
   const [localOcAddress, setLocalOcAddress] = useLocalStorage<string | undefined>("oversight-committee", "");
   const [ocState, ocDispatch] = useReducer(ocReducer, {
@@ -70,9 +68,8 @@ export default function OcProvider({ children }: HTMLAttributes<HTMLOrSVGElement
 
   useEffect(() => {
     // TODO get ocAddress from chain
-    const ocAddress = dsoAddresses.length ? dsoAddresses[0] : "";
     setLocalOcAddress(ocAddress);
-  }, [dsoAddresses, setLocalOcAddress]);
+  }, [ocAddress, setLocalOcAddress]);
 
   return (
     <OcContext.Provider value={{ ocState, ocDispatch }}>

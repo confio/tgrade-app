@@ -139,7 +139,7 @@ tar xzvf v0.18.0.tar.gz
 cd wasmd-0.18.0
   
 # Run GO install for the upcoming binary,
-# all those flags option will made wasmd available to run tgarde addresses
+# all those optional flags will make wasmd available to run tgrade addresses
 go install -mod=readonly -ldflags \\
     "-X github.com/cosmos/cosmos-sdk/version.Name=tgrade \\
     -X github.com/cosmos/cosmos-sdk/version.AppName=tgrade \\
