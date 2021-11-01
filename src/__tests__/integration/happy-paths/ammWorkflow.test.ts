@@ -68,20 +68,25 @@ it("creates a Digital Asset", async () => {
 
   await Factory.createPair(signingClient, address, config.factoryAddress, CreatePairValues, config.gasPrice);
   const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
-  console.log("created pair");
+  expect(pairs).toBeTruthy();
 
   const pair = pairs[Object.keys(pairs)[Object.keys(pairs).length - 1]];
   const pairAddress = pair.contract_addr;
   await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress, config.gasPrice);
-  console.log("Authorized cw20 token");
-  await Pool.ProvideLiquidity(signingClient, pairAddress, address, provideValues, config.gasPrice);
-  console.log("provided liquidity");
+  const provideStatus = await Pool.ProvideLiquidity(
+    signingClient,
+    pairAddress,
+    address,
+    provideValues,
+    config.gasPrice,
+  );
+  expect(provideStatus).toBeTruthy();
   const SwapPairValues: SwapFormValues = {
     From: 1.0,
     To: 0.0, // This is simulated
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
-  await Token.Swap(signingClient, address, pair, SwapPairValues, config.gasPrice);
-  console.log("swapped");
+  const swappedStatus = await Token.Swap(signingClient, address, pair, SwapPairValues, config.gasPrice);
+  expect(swappedStatus).toBeTruthy();
 }, 30000);
