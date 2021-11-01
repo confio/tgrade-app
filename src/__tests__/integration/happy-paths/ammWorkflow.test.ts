@@ -82,12 +82,12 @@ it("creates a CW20 token and swaps it with TGD", async () => {
   );
   expect(provideStatus).toBeTruthy();
 
-  const SwapPairValues: SwapFormValues = {
+  const swapPairValues: SwapFormValues = {
     From: 1.0,
     To: 0.0, // This is simulated
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
-  const swappedStatus = await Token.Swap(signingClient, address, pair, SwapPairValues, config.gasPrice);
+  const swappedStatus = await Token.Swap(signingClient, address, pair, swapPairValues, config.gasPrice);
   expect(swappedStatus).toBeTruthy();
 }, 30000);
