@@ -6,7 +6,7 @@ import { Factory } from "utils/factory";
 import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
 import { Pool, ProvideFormValues, SwapFormValues, Token } from "utils/tokens";
 
-it("creates a Digital Asset", async () => {
+it("creates a CW20 token and swaps it with TGD", async () => {
   const signer = await loadOrCreateWallet(config);
   const signingClient = await createSigningClient(config, signer);
   const address = (await signer.getAccounts())[0].address;
@@ -53,7 +53,7 @@ it("creates a Digital Asset", async () => {
     symbol: config.coinMap.utgd.denom,
     total_supply: "",
   };
-  const CreatePairValues: SwapFormValues = {
+  const createPairValues: SwapFormValues = {
     From: 1.0,
     To: 10.0,
     selectFrom: tgradeToken,
@@ -66,7 +66,7 @@ it("creates a Digital Asset", async () => {
     selectTo: cw20tokenInfo,
   };
 
-  await Factory.createPair(signingClient, address, config.factoryAddress, CreatePairValues, config.gasPrice);
+  await Factory.createPair(signingClient, address, config.factoryAddress, createPairValues, config.gasPrice);
   const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
   expect(pairs).toBeTruthy();
 
@@ -81,6 +81,7 @@ it("creates a Digital Asset", async () => {
     config.gasPrice,
   );
   expect(provideStatus).toBeTruthy();
+
   const SwapPairValues: SwapFormValues = {
     From: 1.0,
     To: 0.0, // This is simulated
