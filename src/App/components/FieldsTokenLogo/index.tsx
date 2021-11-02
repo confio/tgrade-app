@@ -72,8 +72,30 @@ export default function FieldsTokenLogo({
       />
       {isValidUrl(previewLogoUrl) ? (
         <>
-          <img alt="Token logo" src={previewLogoUrl} onLoad={() => URL.revokeObjectURL(previewLogoUrl)} />
-          <img alt="Remove logo" src={darkCloseIcon} onClick={() => setPreviewLogoUrl("")} />
+          <img
+            alt="Token logo"
+            src={previewLogoUrl}
+            onLoad={() => {
+              URL.revokeObjectURL(previewLogoUrl);
+              setLogoError(undefined);
+            }}
+            onError={(event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+              event.currentTarget.onerror = null;
+              setLogoUrl(undefined);
+              setLogoFile(undefined);
+              setLogoError("Url must point to png or svg");
+            }}
+          />
+          <img
+            alt="Remove logo"
+            src={darkCloseIcon}
+            onClick={() => {
+              setPreviewLogoUrl("");
+              setLogoUrl(undefined);
+              setLogoFile(undefined);
+              setLogoError(undefined);
+            }}
+          />
         </>
       ) : null}
     </StyledFieldsTokenLogo>

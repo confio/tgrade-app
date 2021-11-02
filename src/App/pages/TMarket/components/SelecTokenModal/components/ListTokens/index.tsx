@@ -1,6 +1,7 @@
 import { List, Typography } from "antd";
 import pinDarkIcon from "App/assets/icons/pin-dark.svg";
 import pinLightIcon from "App/assets/icons/pin-light.svg";
+import tempImgUrl from "App/assets/icons/token-placeholder.png";
 import LoadingSpinner from "App/components/LoadingSpinner";
 import { getTokensList } from "App/pages/TMarket/utils";
 import { useCallback, useEffect, useState } from "react";
@@ -18,6 +19,11 @@ import {
 } from "./style";
 
 const { Paragraph } = Typography;
+
+function loadDefaultImg(event: React.SyntheticEvent<HTMLImageElement, Event>): void {
+  event.currentTarget.onerror = null;
+  event.currentTarget.src = tempImgUrl;
+}
 
 interface ListTokensProps {
   setToken: (t: TokenProps) => void;
@@ -85,7 +91,7 @@ export default function ListTokens({ setToken, closeModal }: ListTokensProps): J
             }}
           >
             <ContainerLogoNames>
-              <img src={token.img} alt={token.img} />
+              <img src={token.img} alt={token.img} onError={loadDefaultImg} />
               <ContainerNames>
                 <Paragraph>{token.symbol}</Paragraph>
                 <Paragraph>{token.name}</Paragraph>
