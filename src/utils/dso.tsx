@@ -46,7 +46,7 @@ export type ProposalContent = {
     readonly voters: readonly string[];
   };
 } & {
-  readonly edit_dso?: {
+  readonly edit_trusted_circle?: {
     /// Length of voting period in days
     readonly name?: string | null;
     /// Length of voting period in days
@@ -183,7 +183,7 @@ export async function getProposalTitle(
       return proposal.add_remove_non_voting_members?.add.length ? "Add participants" : "Remove participants";
     case "add_voting_members":
       return "Add voting participants";
-    case "edit_dso":
+    case "edit_trusted_circle":
       return "Edit Trusted Circle";
     default:
       throw new Error("Error: unhandled proposal type");
@@ -200,7 +200,7 @@ export class DsoContractQuerier {
   }
 
   async getDso(): Promise<DsoResponse> {
-    const query = { dso: {} };
+    const query = { trusted_circle: {} };
     const response: DsoResponse = await this.client.queryContractSmart(this.address, query);
     return response;
   }
