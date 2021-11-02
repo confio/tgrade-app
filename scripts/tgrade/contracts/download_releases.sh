@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o errexit -o nounset -o pipefail
+set -o errexit -o nounset -o pipefail -x
 command -v shellcheck > /dev/null && shellcheck "$0"
 
 if [ $# -ne 2 ]; then
@@ -27,7 +27,7 @@ for contract in $CWPLUS; do
 done
 echo "CWPLUS_TAG=$cwplus_tag" >> version.txt
 
-TFI="dso_token tfi_factory tfi_pair"
+TFI="trusted_token tfi_factory tfi_pair"
 for contract in $TFI; do
   list_asset_url="https://api.github.com/repos/confio/tfi/releases/tags/${tfi_tag}"
   # get url for artifact with name==${contract}.wasm
