@@ -117,6 +117,31 @@ const tgradeInternal3: NetworkConfig = {
     tgradePair: [8],
   },
 };
+const tgradeInternal4: NetworkConfig = {
+  chainId: "tgrade-internal-4",
+  chainName: "Tgrade-internal-4",
+  addressPrefix: "tgrade",
+  rpcUrl: "https://rpc.internal-4.tgrade.io",
+  httpUrl: "https://lcd.internal-4.tgrade.io",
+  faucetUrl: "https://faucet.internal-4.tgrade.io",
+  feeToken: "utgd",
+  stakingToken: "utgd",
+  faucetTokens: ["utgd"],
+  coinMap: {
+    utgd: { denom: "TGD", fractionalDigits: 6 },
+  },
+  gasPrice: GasPrice.fromString("0.025utgd"),
+  factoryAddress: "tgrade1tqwwyth34550lg2437m05mjnjp8w7h5kejfw2j",
+  ocAddress: "tgrade1j08452mqwadp8xu25kn9rleyl2gufgfjpmnrj3",
+  codeIds: {
+    // The first 5 codeIds are reserved by tgrade automatically when launched
+    tgradeDso: [5],
+    cw20Tokens: [6],
+    tgradeCw20: [7],
+    tgradeFactory: [8],
+    tgradePair: [9],
+  },
+};
 
 const tgradeTestnet2: NetworkConfig = {
   chainId: "tgrade-testnet-2",
@@ -143,5 +168,5 @@ const tgradeTestnet2: NetworkConfig = {
   },
 };
 
-const configs: NetworkConfigs = { local, tgradeInternal2, tgradeInternal3, tgradeTestnet2 };
+const configs: NetworkConfigs = { local, tgradeInternal2, tgradeInternal3, tgradeInternal4, tgradeTestnet2 };
 export const config = getAppConfig(configs);
