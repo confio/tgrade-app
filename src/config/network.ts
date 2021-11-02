@@ -43,7 +43,7 @@ export function getAppConfig(configs: NetworkConfigs): NetworkConfig {
 
 // local docker deployment
 const local: NetworkConfig = {
-  chainId: "chain-hWEH1q",
+  chainId: "chain-LTJPI3",
   chainName: "Local Testing",
   addressPrefix: "tgrade",
   rpcUrl: "http://localhost:26657",
