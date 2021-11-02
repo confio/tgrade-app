@@ -1,3 +1,4 @@
+import { Typography } from "antd";
 import Stack from "App/components/Stack/style";
 import styled from "styled-components";
 
@@ -25,5 +26,11 @@ export const NameWrapper = styled.div`
   .ant-form-item + .ant-form-item {
     flex-basis: auto;
     flex-grow: 1;
+  }
+`;
+
+export const LogoErrorText = styled(Typography.Text)`
+  &.ant-typography {
+    color: var(--color-error-form);
   }
 `;
