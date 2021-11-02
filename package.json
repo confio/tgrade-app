@@ -74,6 +74,7 @@
     "start:local": "REACT_APP_NETWORK=local yarn start:base",
     "start:tgradeInternal2": "REACT_APP_NETWORK=tgradeInternal2 yarn start:base",
     "start:tgradeInternal3": "REACT_APP_NETWORK=tgradeInternal3 yarn start:base",
+    "start:tgradeInternal4": "REACT_APP_NETWORK=tgradeInternal4 yarn start:base",
     "start:tgradeTestnet2": "REACT_APP_NETWORK=tgradeTestnet2 yarn start:base",
     "start:android": "npx cap open android",
     "build:base": "craco build",

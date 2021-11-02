@@ -35,62 +35,50 @@ async function main() {
   await faucet.credit(address, config.feeDenom);
   console.info("...done");
 
-  //tgrade_dso
-  console.info("Uploading DSO wasm...");
-  const contract = "tgrade_dso.wasm";
-  let wasmDso = fs.readFileSync(path.join(process.cwd(), "contracts", contract));
-  const uploadReceipt = await client.upload(
-    address,
-    wasmDso,
-    calculateFee(2500000, config.gasPrice),
-    "upload dso wasm",
-  );
-  console.info(`Upload DSO Contract succeeded. Receipt: ${JSON.stringify(uploadReceipt)}`);
-
-  //CW20-base
+  //CW20-base - codeid: 6
   console.info("Uploading CW20 Base wasm...");
   const cw20 = "cw20_base.wasm";
   let wasmCW20 = fs.readFileSync(path.join(process.cwd(), "contracts", cw20));
   const uploadReceiptCW20 = await client.upload(
     address,
     wasmCW20,
-    calculateFee(2500000, config.gasPrice),
+    calculateFee(25000000, config.gasPrice),
     "upload cw20 wasm",
   );
   console.info(`Upload CW20-base Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptCW20)}`);
 
-  //Dso token
-  console.info("Uploading DSO token wasm...");
-  const dsoToken = "dso_token.wasm";
+  //Trusted token: 7
+  console.info("Uploading trusted token wasm...");
+  const dsoToken = "trusted_token.wasm";
   let wasmDsoToken = fs.readFileSync(path.join(process.cwd(), "contracts", dsoToken));
   const uploadReceiptDsoToken = await client.upload(
     address,
     wasmDsoToken,
-    calculateFee(2500000, config.gasPrice),
-    "upload dso token wasm",
+    calculateFee(25000000, config.gasPrice),
+    "upload trusted token wasm",
   );
-  console.info(`Upload DSO token Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptDsoToken)}`);
+  console.info(`Upload trusted token Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptDsoToken)}`);
 
-  //factory
+  //factory: 8
   console.info("Uploading TFI Factory wasm...");
   const factory = "tfi_factory.wasm";
   let wasmFactory = fs.readFileSync(path.join(process.cwd(), "contracts", factory));
   const uploadReceiptFactory = await client.upload(
     address,
     wasmFactory,
-    calculateFee(2500000, config.gasPrice),
+    calculateFee(25000000, config.gasPrice),
     "upload factory wasm",
   );
   console.info(`Upload Factory Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptFactory)}`);
 
-  // Pair Contract
+  // Pair Contract: 9
   console.info("Uploading TFI Pair wasm...");
   const pair = "tfi_pair.wasm";
   let wasmPair = fs.readFileSync(path.join(process.cwd(), "contracts", pair));
   const uploadReceiptPair = await client.upload(
     address,
     wasmPair,
-    calculateFee(2500000, config.gasPrice),
+    calculateFee(25000000, config.gasPrice),
     "upload pair wasm",
   );
   console.info(`Upload Pair Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptPair)}`);

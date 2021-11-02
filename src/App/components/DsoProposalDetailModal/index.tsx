@@ -71,7 +71,7 @@ export default function DsoProposalDetailModal({
   const proposalAddMembers = proposal?.proposal.add_remove_non_voting_members?.add;
   const proposalRemoveMembers = proposal?.proposal.add_remove_non_voting_members?.remove;
   const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
-  const proposalEditDso = proposal?.proposal.edit_dso;
+  const proposalEditDso = proposal?.proposal.edit_trusted_circle;
 
   const [displayEscrow, setDisplayEscrow] = useState("0");
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
