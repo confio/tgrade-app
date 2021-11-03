@@ -62,7 +62,7 @@ export default function OcProvider({ children }: HTMLAttributes<HTMLOrSVGElement
     sdkState: { config },
   } = useSdk();
 
-  const [localOcAddress, setLocalOcAddress] = useLocalStorage<string | undefined>("oversight-committee", "");
+  const [localOcAddress, setLocalOcAddress] = useOcAddress();
   const [ocState, ocDispatch] = useReducer(ocReducer, {
     ocAddress: localOcAddress,
     leaveOcModalState: "closed",
