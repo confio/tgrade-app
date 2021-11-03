@@ -91,7 +91,8 @@
     "test": "craco test",
     "lint": "npx eslint src/**/*.ts{,x} --max-warnings 0",
     "compile": "tsc",
-    "format": "prettier --write --loglevel warn \"./src/**/*.ts{,x}\""
+    "format": "prettier --write --loglevel warn \"./src/**/*.ts{,x}\"",
+    "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh"
   },
   "browserslist": [
     "last 2 chrome versions",
