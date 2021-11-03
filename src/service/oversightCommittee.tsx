@@ -1,7 +1,11 @@
+import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import LeaveOcModal from "App/components/LeaveOcModal";
+import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
+import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
 import { useSdk } from "service";
-import { useLocalStorage } from "utils/storage";
+import { useOcAddress } from "utils/storage";
 
 type ModalState = "open" | "closed";
 
@@ -55,9 +59,7 @@ export const useOc = (): NonNullable<OcContextType> => {
 
 export default function OcProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   const {
-    sdkState: {
-      config: { ocAddress },
-    },
+    sdkState: { config },
   } = useSdk();
 
   const [localOcAddress, setLocalOcAddress] = useLocalStorage<string | undefined>("oversight-committee", "");
@@ -67,9 +69,18 @@ export default function OcProvider({ children }: HTMLAttributes<HTMLOrSVGElement
   });
 
   useEffect(() => {
-    // TODO get ocAddress from chain
-    setLocalOcAddress(ocAddress);
-  }, [ocAddress, setLocalOcAddress]);
+    (async function loadOcAddressFromChain() {
+      const tendermintClient = await Tendermint34Client.connect(config.rpcUrl);
+      const queryClient = new QueryClient(tendermintClient);
+      const rpcClient = createProtobufRpcClient(queryClient);
+      const queryService = new QueryClientImpl(rpcClient);
+      const { address: ocAddress } = await queryService.ContractAddress({
+        contractType: PoEContractType.OVERSIGHT_COMMITTEE,
+      });
+
+      setLocalOcAddress(ocAddress);
+    })();
+  }, [config.rpcUrl, setLocalOcAddress]);
 
   return (
     <OcContext.Provider value={{ ocState, ocDispatch }}>
