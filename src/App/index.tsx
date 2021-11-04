@@ -28,48 +28,48 @@ export default function App(): JSX.Element {
       <ErrorProvider>
         <ReactQueryClientProvider client={new ReactQueryClient()}>
           <SdkProvider config={config}>
-            <Suspense fallback={null}>
-              <ThemeProvider>
-                <Router basename={process.env.PUBLIC_URL}>
-                  <LayoutProvider>
-                    <Switch>
-                      <Suspense fallback={<LoadingSpinner fullPage />}>
-                        <Route exact path={paths.root}>
-                          <LandingPage />
-                        </Route>
-                        <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
-                          <DsoProvider>
-                            <Dso />
-                          </DsoProvider>
-                        </Route>
-                        <Route path={paths.oc.prefix}>
-                          <OcProvider>
+            <OcProvider>
+              <Suspense fallback={null}>
+                <ThemeProvider>
+                  <Router basename={process.env.PUBLIC_URL}>
+                    <LayoutProvider>
+                      <Switch>
+                        <Suspense fallback={<LoadingSpinner fullPage />}>
+                          <Route exact path={paths.root}>
+                            <LandingPage />
+                          </Route>
+                          <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
+                            <DsoProvider>
+                              <Dso />
+                            </DsoProvider>
+                          </Route>
+                          <Route path={paths.oc.prefix}>
                             <OcHome />
-                          </OcProvider>
-                        </Route>
-                        <Route path={`${paths.tmarket.prefix}`}>
-                          <TMarketProvider>
-                            <TMarketHome />
-                          </TMarketProvider>
-                        </Route>
-                        <Route path={`${paths.documentation.prefix}`}>
-                          <DocumentationPage />
-                        </Route>
-                        <Route path={`${paths.privacypolicy.prefix}`}>
-                          <PrivacyPolicy />
-                        </Route>
-                        <Route path={`${paths.cookiepolicy.prefix}`}>
-                          <CookiePolicy />
-                        </Route>
-                        <Route path={`${paths.impressum.prefix}`}>
-                          <Impressum />
-                        </Route>
-                      </Suspense>
-                    </Switch>
-                  </LayoutProvider>
-                </Router>
-              </ThemeProvider>
-            </Suspense>
+                          </Route>
+                          <Route path={`${paths.tmarket.prefix}`}>
+                            <TMarketProvider>
+                              <TMarketHome />
+                            </TMarketProvider>
+                          </Route>
+                          <Route path={`${paths.documentation.prefix}`}>
+                            <DocumentationPage />
+                          </Route>
+                          <Route path={`${paths.privacypolicy.prefix}`}>
+                            <PrivacyPolicy />
+                          </Route>
+                          <Route path={`${paths.cookiepolicy.prefix}`}>
+                            <CookiePolicy />
+                          </Route>
+                          <Route path={`${paths.impressum.prefix}`}>
+                            <Impressum />
+                          </Route>
+                        </Suspense>
+                      </Switch>
+                    </LayoutProvider>
+                  </Router>
+                </ThemeProvider>
+              </Suspense>
+            </OcProvider>
           </SdkProvider>
         </ReactQueryClientProvider>
       </ErrorProvider>

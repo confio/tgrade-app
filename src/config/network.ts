@@ -14,7 +14,6 @@ export interface NetworkConfig {
   readonly coinMap: CoinMap;
   readonly gasPrice: GasPrice;
   readonly factoryAddress: string;
-  readonly ocAddress: string;
   readonly codeIds?: {
     readonly tgradeDso?: readonly [number, ...number[]];
     readonly cw20Tokens?: readonly [number, ...number[]];
@@ -57,7 +56,6 @@ const local: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
   factoryAddress: "tgrade1tqwwyth34550lg2437m05mjnjp8w7h5kejfw2j",
-  ocAddress: "tgrade1j08452mqwadp8xu25kn9rleyl2gufgfjpmnrj3",
   codeIds: {
     // The first 5 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [5],
@@ -83,7 +81,6 @@ const tgradeInternal2: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
   factoryAddress: "tgrade14ejqjyq8um4p3xfqj74yld5waqljf88fysvrq7",
-  ocAddress: "tgrade1j08452mqwadp8xu25kn9rleyl2gufgfjpmnrj3",
   codeIds: {
     tgradeDso: [5],
     cw20Tokens: [6],
@@ -108,7 +105,6 @@ const tgradeInternal3: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
   factoryAddress: "tgrade13ehuhysn5mqjeaheeuew2gjs785f6k7jgvt3wl",
-  ocAddress: "tgrade1j08452mqwadp8xu25kn9rleyl2gufgfjpmnrj3",
   codeIds: {
     tgradeDso: [5],
     cw20Tokens: [9],
@@ -132,7 +128,6 @@ const tgradeInternal4: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
   factoryAddress: "tgrade1tqwwyth34550lg2437m05mjnjp8w7h5kejfw2j",
-  ocAddress: "tgrade1j08452mqwadp8xu25kn9rleyl2gufgfjpmnrj3",
   codeIds: {
     // The first 5 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [5],
@@ -158,7 +153,6 @@ const tgradeTestnet2: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
   factoryAddress: "tgrade14ejqjyq8um4p3xfqj74yld5waqljf88fysvrq7",
-  ocAddress: "tgrade1j08452mqwadp8xu25kn9rleyl2gufgfjpmnrj3",
   codeIds: {
     tgradeDso: [5],
     cw20Tokens: [6],

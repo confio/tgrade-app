@@ -6,6 +6,7 @@ import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import { useOcAddress } from "utils/storage";
 
 import { ModalHeader, Separator } from "../style";
 import FormDsoAddExisting from "./FormDsoAddExisting";
@@ -27,6 +28,7 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
     sdkState: { config, client },
   } = useSdk();
   const { dsoDispatch } = useDso();
+  const [ocAddress] = useOcAddress();
 
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -35,7 +37,7 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
     setSubmitting(true);
 
     try {
-      if (dsoAddress === config.ocAddress) {
+      if (dsoAddress === ocAddress) {
         throw new Error("Cannot add Oversight Committee as Trusted Circle");
       }
 
