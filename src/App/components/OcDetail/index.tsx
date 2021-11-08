@@ -8,13 +8,13 @@ import { useError, useOc, useSdk } from "service";
 import { DsoContractQuerier, ProposalResponse } from "utils/dso";
 
 import Stack from "../Stack/style";
-import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
+import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
 const OcCreateProposalModal = lazy(() => import("App/components/OcCreateProposalModal"));
 const OcProposalDetailModal = lazy(() => import("App/components/OcProposalDetailModal"));
 const OcIdActions = lazy(() => import("App/components/OcIdActions"));
 const OcEscrow = lazy(() => import("App/components/OcEscrow"));
-const OcMembers = lazy(() => import("App/components/OcMembers"));
+const OcEngagement = lazy(() => import("App/components/OcEngagement"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
@@ -135,10 +135,10 @@ export default function OcDetail(): JSX.Element {
     <>
       <Stack style={{ width: "100%" }}>
         <OcIdActions />
-        <EscrowMembersContainer>
+        <EscrowEngagementContainer>
           <OcEscrow />
-          <OcMembers />
-        </EscrowMembersContainer>
+          <OcEngagement />
+        </EscrowEngagementContainer>
         <ProposalsContainer>
           <header>
             <Title level={2} style={{ fontSize: "var(--s1)" }}>
