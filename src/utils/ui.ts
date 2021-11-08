@@ -46,3 +46,19 @@ export async function retry(cb: () => boolean, retries = 3): Promise<void> {
     await retry(cb, retries - 1);
   }
 }
+
+export function getTimeFromSeconds(seconds: number): string {
+  const numDays = Math.floor(seconds / (3600 * 24));
+  const numHours = Math.floor((seconds % (3600 * 24)) / 3600);
+  const numMinutes = Math.floor((seconds % 3600) / 60);
+  const numSeconds = Math.floor(seconds % 60);
+
+  const strDays = numDays > 0 ? numDays + (numDays === 1 ? " day, " : " days, ") : "";
+  const strHours = numHours > 0 ? numHours + (numHours === 1 ? " hour, " : " hours, ") : "";
+  const strMinutes = numMinutes > 0 ? numMinutes + (numMinutes === 1 ? " minute, " : " minutes, ") : "";
+  const strSeconds = numSeconds > 0 ? numSeconds + (numSeconds === 1 ? " second" : " seconds") : "";
+
+  const time = strDays + strHours + strMinutes + strSeconds;
+
+  return time.endsWith(", ") ? time.slice(undefined, -2) : time;
+}
