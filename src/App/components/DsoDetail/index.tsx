@@ -107,13 +107,13 @@ interface DsoDetailParams {
 export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { client },
+    sdkState: { client, address },
   } = useSdk();
 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
-
   const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
   const [clickedProposal, setClickedProposal] = useState<number>();
+  const [isVotingMember, setVotingMember] = useState<boolean>(false);
 
   const refreshProposals = useCallback(async () => {
     if (!client) return;
@@ -121,12 +121,13 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
     try {
       const dsoContract = new DsoContractQuerier(dsoAddress, client);
       const proposals = await dsoContract.getProposals();
+      setVotingMember((await dsoContract.getVotingMembers()).some((member) => member.addr === address));
       setProposals(proposals);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
     }
-  }, [client, dsoAddress, handleError]);
+  }, [client, dsoAddress, address, handleError]);
 
   useEffect(() => {
     refreshProposals();
@@ -145,7 +146,9 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
             <Title level={2} style={{ fontSize: "var(--s1)" }}>
               Proposals
             </Title>
-            <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
+            {isVotingMember && (
+              <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
+            )}
           </header>
           {proposals.length ? (
             <Table
