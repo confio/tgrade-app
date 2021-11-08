@@ -113,7 +113,7 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
   const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
   const [clickedProposal, setClickedProposal] = useState<number>();
-  const [isVotingMember, setVotingMember] = useState<boolean>(false);
+  const [isVotingMember, setVotingMember] = useState(false);
 
   const refreshProposals = useCallback(async () => {
     if (!client) return;
@@ -121,7 +121,8 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
     try {
       const dsoContract = new DsoContractQuerier(dsoAddress, client);
       const proposals = await dsoContract.getProposals();
-      setVotingMember((await dsoContract.getVotingMembers()).some((member) => member.addr === address));
+      const isVotingMember = (await dsoContract.getVotingMembers()).some((member) => member.addr === address);
+      setVotingMember(isVotingMember);
       setProposals(proposals);
     } catch (error) {
       if (!(error instanceof Error)) return;
