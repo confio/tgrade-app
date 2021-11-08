@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const { Paragraph } = Typography;
 
-export const EscrowMembersContainer = styled.div`
+export const EscrowEngagementContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--s0);
