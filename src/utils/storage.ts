@@ -46,7 +46,7 @@ export const usePinnedTokens = (): [
 export const useOcAddress = (): [
   string | undefined,
   React.Dispatch<React.SetStateAction<string | undefined>>,
-] => useLocalStorage<string | undefined>("oversight-committee", "");
+] => useLocalStorage<string | undefined>("oversight-community", "");
 
 export async function getFileImgType(file: File): Promise<"svg" | "png"> {
   const text = await file.text();
