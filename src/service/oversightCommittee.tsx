@@ -75,7 +75,7 @@ export default function OcProvider({ children }: HTMLAttributes<HTMLOrSVGElement
       const rpcClient = createProtobufRpcClient(queryClient);
       const queryService = new QueryClientImpl(rpcClient);
       const { address: ocAddress } = await queryService.ContractAddress({
-        contractType: PoEContractType.OVERSIGHT_COMMITTEE,
+        contractType: PoEContractType.OVERSIGHT_COMMUNITY,
       });
 
       setLocalOcAddress(ocAddress);
