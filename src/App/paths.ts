@@ -27,7 +27,7 @@ export const paths = {
     },
   },
   oc: {
-    prefix: "/oversightcommittee",
+    prefix: "/oversightcommunity",
   },
   tmarket: {
     prefix: "/tmarket",

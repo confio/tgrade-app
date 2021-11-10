@@ -42,7 +42,7 @@ export function getAppConfig(configs: NetworkConfigs): NetworkConfig {
 
 // local docker deployment
 const local: NetworkConfig = {
-  chainId: "chain-LTJPI3",
+  chainId: "chain-JAynv8",
   chainName: "Local Testing",
   addressPrefix: "tgrade",
   rpcUrl: "http://localhost:26657",
@@ -55,14 +55,14 @@ const local: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
-  factoryAddress: "tgrade1tqwwyth34550lg2437m05mjnjp8w7h5kejfw2j",
+  factoryAddress: "tgrade1gurgpv8savnfw66lckwzn4zk7fp394lp9sqaw4",
   codeIds: {
     // The first 5 codeIds are reserved by tgrade automatically when launched
-    tgradeDso: [5],
-    cw20Tokens: [6],
-    tgradeCw20: [7],
-    tgradeFactory: [8],
-    tgradePair: [9],
+    tgradeDso: [2],
+    cw20Tokens: [7],
+    tgradeCw20: [8],
+    tgradeFactory: [9],
+    tgradePair: [10],
   },
 };
 

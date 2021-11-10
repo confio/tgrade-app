@@ -5,11 +5,11 @@
       "accounts": [
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "tgrade1kmkfg8yqmv9k3fvdlkwe0mdnxlyug37tn3a33k"
+          "address": "tgrade12g76yu4hh2vahak8f2wawf4zpafl73tt7lp6r8"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "tgrade129ed7y9ldm89dhznjslxmys30vvhsc4qeakm2k"
+          "address": "tgrade1a7pa85nwuwyrzkvp0qjdzd40wzrs75zneh3vcq"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
@@ -27,14 +27,10 @@
     "bank": {
       "balances": [
         {
-          "address": "tgrade129ed7y9ldm89dhznjslxmys30vvhsc4qeakm2k",
+          "address": "tgrade12g76yu4hh2vahak8f2wawf4zpafl73tt7lp6r8",
           "coins": [
             {
-              "amount": "1000000000",
-              "denom": "node0token"
-            },
-            {
-              "amount": "500000000",
+              "amount": "100000000000",
               "denom": "utgd"
             }
           ]
@@ -49,10 +45,14 @@
           ]
         },
         {
-          "address": "tgrade1kmkfg8yqmv9k3fvdlkwe0mdnxlyug37tn3a33k",
+          "address": "tgrade1a7pa85nwuwyrzkvp0qjdzd40wzrs75zneh3vcq",
           "coins": [
             {
-              "amount": "100000000000",
+              "amount": "1000000000",
+              "denom": "node0token"
+            },
+            {
+              "amount": "500000000",
               "denom": "utgd"
             }
           ]
@@ -113,11 +113,11 @@
       "bond_denom": "utgd",
       "engagement": [
         {
-          "address": "tgrade1kmkfg8yqmv9k3fvdlkwe0mdnxlyug37tn3a33k",
+          "address": "tgrade12g76yu4hh2vahak8f2wawf4zpafl73tt7lp6r8",
           "weight": "2"
         },
         {
-          "address": "tgrade129ed7y9ldm89dhznjslxmys30vvhsc4qeakm2k",
+          "address": "tgrade1a7pa85nwuwyrzkvp0qjdzd40wzrs75zneh3vcq",
           "weight": "1"
         }
       ],
@@ -142,7 +142,7 @@
                 },
                 "public_key": {
                   "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "ApXpwzxsAWdp7kEcH1KLQc3x2jtWdQLli5YlrKPn/3UZ"
+                  "key": "A/dXWL0K4UCtDoVnR/9hV024/cEfmj9B60+NLIeR5kun"
                 },
                 "sequence": "0"
               }
@@ -150,7 +150,7 @@
           },
           "body": {
             "extension_options": [],
-            "memo": "527c76efa735aa3ec5740c9eea1a67f46461158f@192.168.0.1:26656",
+            "memo": "ed1981acc65e7e30919f59464d017bed7696fae6@192.168.0.1:26656",
             "messages": [
               {
                 "@type": "/confio.poe.v1beta1.MsgCreateValidator",
@@ -161,10 +161,10 @@
                   "security_contact": "",
                   "website": ""
                 },
-                "operator_address": "tgrade129ed7y9ldm89dhznjslxmys30vvhsc4qeakm2k",
+                "operator_address": "tgrade1a7pa85nwuwyrzkvp0qjdzd40wzrs75zneh3vcq",
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "NfH+O0X8lYvgsX8XsMnid0l9zSlILDe9RciP2VGHrPA="
+                  "key": "1JZwGc07AT9eJ8Nk2nP4q1tSAMjh0+8M6pGKgwl5tsw="
                 },
                 "value": {
                   "amount": "100000000",
@@ -176,7 +176,7 @@
             "timeout_height": "0"
           },
           "signatures": [
-            "3gcgVjA50MVNj23tL3rjgxnLaOGv5prf+G0Txtc/qLdddniSy2d2nQQ7wLAILX5nveVZISm5bCtz4nkD3ltOvg=="
+            "mYQ12KLT8cAAbh8LY9v7O1txnzNfBDoXpCx6TTL/m/p/H8bUHsQ9L/27WWMs5Wg1IJvaP2XKHxzZirTi6Cw2Og=="
           ]
         }
       ],
@@ -186,7 +186,7 @@
           "amount": "1000000",
           "denom": "utgd"
         },
-        "name": "Oversight Committee",
+        "name": "Oversight Community",
         "quorum": "50.000000000000000000",
         "threshold": "66.000000000000000000",
         "voting_period": 1
@@ -200,11 +200,10 @@
       "stake_contract_config": {
         "claim_autoreturn_limit": 20,
         "min_bond": "1",
-        "pre_auths": 1,
         "tokens_per_weight": "1",
         "unbonding_period": "1814400s"
       },
-      "system_admin_address": "tgrade1kmkfg8yqmv9k3fvdlkwe0mdnxlyug37tn3a33k",
+      "system_admin_address": "tgrade12g76yu4hh2vahak8f2wawf4zpafl73tt7lp6r8",
       "valset_contract_config": {
         "ValidatorsRewardRatio": 50,
         "epoch_length": "60s",
@@ -240,7 +239,7 @@
       }
     }
   },
-  "chain_id": "chain-LTJPI3",
+  "chain_id": "chain-JAynv8",
   "consensus_params": {
     "block": {
       "max_bytes": "22020096",
@@ -259,6 +258,6 @@
     },
     "version": {}
   },
-  "genesis_time": "2021-10-28T15:21:05.324009244Z",
+  "genesis_time": "2021-11-08T13:47:02.1076855Z",
   "initial_height": "1"
 }

@@ -60,7 +60,7 @@ export default function ProposalRemoveParticipants({
       );
 
       setTxResult({
-        msg: `Created proposal for removing participants from Oversight Committee (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for removing participants from Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

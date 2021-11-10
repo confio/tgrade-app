@@ -43,7 +43,7 @@ export const NavSidebar: React.FC = () => {
           <Cell>
             <Icon.Oversight />
             <TextCell>
-              <StyledText>Oversight Committee</StyledText>
+              <StyledText>Oversight Community</StyledText>
               <Icon.Manage />
             </TextCell>
           </Cell>

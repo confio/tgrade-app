@@ -79,7 +79,7 @@ export default function DepositOcEscrowModal({
       ]);
 
       setTxResult({
-        msg: `Deposited escrow ${escrowAmount}${config.feeToken} in the Oversight Committee (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Deposited escrow ${escrowAmount}${config.feeToken} in the Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
       });
       refreshEscrows();
     } catch (error) {
@@ -121,14 +121,14 @@ export default function DepositOcEscrowModal({
             </Button>
           ) : null}
           <Button onClick={() => resetModal()}>
-            <span>Go to Oversight Committee details</span>
+            <span>Go to Oversight Community details</span>
           </Button>
         </ShowTxResult>
       ) : (
         <Stack gap="s1">
           <ModalHeader>
             <Stack gap="s1">
-              <Title>Deposit escrow in the Oversight Committee?</Title>
+              <Title>Deposit escrow in the Oversight Community?</Title>
               <Text>
                 Required escrow: {requiredEscrow} {feeDenom}
               </Text>

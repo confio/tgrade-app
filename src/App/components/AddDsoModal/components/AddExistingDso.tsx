@@ -38,7 +38,7 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
 
     try {
       if (dsoAddress === ocAddress) {
-        throw new Error("Cannot add Oversight Committee as Trusted Circle");
+        throw new Error("Cannot add Oversight Community as Trusted Circle");
       }
 
       const dsoContract = new DsoContractQuerier(dsoAddress, client);

@@ -58,14 +58,14 @@ export default function OcIdActions(): JSX.Element {
   return (
     <StyledOcIdActions>
       <header>
-        <Title style={{ fontSize: "20px" }}>Oversight Committee</Title>
+        <Title style={{ fontSize: "20px" }}>Oversight Community</Title>
         <div className="address-actions-container">
           <AddressTag address={ocAddress || ""} copyable />
           <Dropdown
             overlay={
               <Menu>
                 <Menu.Item key="1" onClick={() => openLeaveOcModal(ocDispatch)}>
-                  Leave Oversight Committee
+                  Leave Oversight Community
                 </Menu.Item>
               </Menu>
             }
