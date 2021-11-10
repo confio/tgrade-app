@@ -13,6 +13,7 @@ const ProposalAddParticipants = lazy(() => import("./components/ProposalAddParti
 const ProposalAddVotingParticipants = lazy(() => import("./components/ProposalAddVotingParticipants"));
 const ProposalRemoveParticipants = lazy(() => import("./components/ProposalRemoveParticipants"));
 const ProposalWhitelistPair = lazy(() => import("./components/ProposalWhitelistPair"));
+const ProposalPunishValidator = lazy(() => import("./components/ProposalPunishValidator"));
 
 const { Title, Text } = Typography;
 const { Step } = Steps;
@@ -22,6 +23,7 @@ export enum ProposalType {
   RemoveParticipants = "remove-participants",
   AddVotingParticipants = "add-voting-participants",
   WhitelistPair = "whitelist-pair",
+  PunishValidator = "punish-validator",
 }
 
 export const proposalLabels = {
@@ -29,6 +31,7 @@ export const proposalLabels = {
   [ProposalType.RemoveParticipants]: "Remove non voting participants",
   [ProposalType.AddVotingParticipants]: "Add voting participants",
   [ProposalType.WhitelistPair]: "Whitelist Pair",
+  [ProposalType.PunishValidator]: "Punish Validator",
 };
 
 export const proposalTitles = {
@@ -37,6 +40,7 @@ export const proposalTitles = {
   [ProposalType.RemoveParticipants]: "Remove participant(s)",
   [ProposalType.AddVotingParticipants]: "Add voting participant(s)",
   [ProposalType.WhitelistPair]: "Whitelist Pair",
+  [ProposalType.PunishValidator]: "Punish Validator",
   confirmation: "Confirmation",
 };
 
@@ -153,6 +157,14 @@ export default function OcCreateProposalModal({
             />
           ) : proposalStep.type === ProposalType.WhitelistPair ? (
             <ProposalWhitelistPair
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.PunishValidator ? (
+            <ProposalPunishValidator
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
               isSubmitting={isSubmitting}
