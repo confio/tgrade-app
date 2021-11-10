@@ -92,7 +92,7 @@ prometheus-retention-time = 60
 # Example:
 # [["chain_id", "cosmoshub-1"]]
 global-labels = [
-  ["chain_id", "chain-LTJPI3"],
+  ["chain_id", "chain-JAynv8"],
 ]
 
 ###############################################################################

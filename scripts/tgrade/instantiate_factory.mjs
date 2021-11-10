@@ -34,9 +34,9 @@ const localConfig = {
   feeDenom: "utgd",
   gasPrice: GasPrice.fromString("0.025utgd"),
   gasLimitCreateFactory: 500_000,
-  cw20LiquidityCodeId: 6,
-  factoryCodeId: 8,
-  pairCodeId: 9,
+  cw20LiquidityCodeId: 7,
+  factoryCodeId: 9,
+  pairCodeId: 10,
 };
 
 const config = process.argv[2] === "network" ? networkConfig : localConfig;

@@ -119,7 +119,7 @@ export default function OcCreateProposalModal({
           <ModalHeader>
             <Typography>
               <Title>{getTitleFromStep(proposalStep)}</Title>
-              <Text>Oversight Committee</Text>
+              <Text>Oversight Community</Text>
             </Typography>
             <Steps size="small" current={getCurrentStepIndex(proposalStep)}>
               <Step />

@@ -113,7 +113,7 @@ export default function ProposalWhitelistPair({
       });
 
       setTxResult({
-        msg: `Created proposal for whitelisting pair to Oversight Committee (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for whitelisting pair to Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
       });
       gtagProposalAction("whitelist_success");
     } catch (error) {

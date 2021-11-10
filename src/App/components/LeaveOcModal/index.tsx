@@ -4,7 +4,7 @@ import Button from "App/components/Button";
 import Stack from "App/components/Stack/style";
 import { lazy, useState } from "react";
 import { useError, useSdk } from "service";
-import { closeLeaveOcModal, useOc } from "service/oversightCommittee";
+import { closeLeaveOcModal, useOc } from "service/oversightCommunity";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
@@ -42,7 +42,7 @@ export default function LeaveOcModal(): JSX.Element {
       const transactionHash = await dsoContract.leaveDso(address);
 
       setTxResult({
-        msg: `Left Oversight Committee (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Left Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -82,14 +82,14 @@ export default function LeaveOcModal(): JSX.Element {
             </Button>
           ) : null}
           <Button onClick={() => resetModal()}>
-            <span>Go to Oversight Committee details</span>
+            <span>Go to Oversight Community details</span>
           </Button>
         </ShowTxResult>
       ) : (
         <Stack gap="s1">
           <ModalHeader>
             <Stack gap="s1">
-              <Title>Do you really want to leave the Oversight Committee?</Title>
+              <Title>Do you really want to leave the Oversight Community?</Title>
               <Text>When you leave, you can only come return when invited by a voting participant.</Text>
             </Stack>
             {!isSubmitting ? (

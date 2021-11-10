@@ -60,7 +60,7 @@ export default function ProposalAddParticipants({
       );
 
       setTxResult({
-        msg: `Created proposal for adding participants to Oversight Committee (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for adding participants to Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

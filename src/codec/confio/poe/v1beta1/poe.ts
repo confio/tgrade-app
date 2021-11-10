@@ -13,7 +13,8 @@ export enum PoEContractType {
   ENGAGEMENT = 3,
   MIXER = 4,
   DISTRIBUTION = 5,
-  OVERSIGHT_COMMITTEE = 6,
+  OVERSIGHT_COMMUNITY = 6,
+  OVERSIGHT_COMMUNITY_PROPOSALS = 7,
   UNRECOGNIZED = -1,
 }
 
@@ -38,8 +39,11 @@ export function poEContractTypeFromJSON(object: any): PoEContractType {
     case "DISTRIBUTION":
       return PoEContractType.DISTRIBUTION;
     case 6:
-    case "OVERSIGHT_COMMITTEE":
-      return PoEContractType.OVERSIGHT_COMMITTEE;
+    case "OVERSIGHT_COMMUNITY":
+      return PoEContractType.OVERSIGHT_COMMUNITY;
+    case 7:
+    case "OVERSIGHT_COMMUNITY_PROPOSALS":
+      return PoEContractType.OVERSIGHT_COMMUNITY_PROPOSALS;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -61,8 +65,10 @@ export function poEContractTypeToJSON(object: PoEContractType): string {
       return "MIXER";
     case PoEContractType.DISTRIBUTION:
       return "DISTRIBUTION";
-    case PoEContractType.OVERSIGHT_COMMITTEE:
-      return "OVERSIGHT_COMMITTEE";
+    case PoEContractType.OVERSIGHT_COMMUNITY:
+      return "OVERSIGHT_COMMUNITY";
+    case PoEContractType.OVERSIGHT_COMMUNITY_PROPOSALS:
+      return "OVERSIGHT_COMMUNITY_PROPOSALS";
     default:
       return "UNKNOWN";
   }

@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 import PageLayout from "App/components/PageLayout";
 import { lazy } from "react";
-import { useOc } from "service/oversightCommittee";
+import { useOc } from "service/oversightCommunity";
 
 const OcDetail = lazy(() => import("App/components/OcDetail"));
 const { Text } = Typography;
@@ -17,7 +17,7 @@ export default function OcHome(): JSX.Element | null {
     </PageLayout>
   ) : (
     <PageLayout maxwidth="75rem">
-      <Text>Could not find Oversight Committee</Text>
+      <Text>Could not find Oversight Community</Text>
     </PageLayout>
   );
 }
