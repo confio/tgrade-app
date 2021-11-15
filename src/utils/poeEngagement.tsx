@@ -174,7 +174,7 @@ export class EngagementContractQuerier {
     return funds;
   }
 
-  async getDelegated(ownerAddress: string): Promise<string | undefined> {
+  async getDelegated(ownerAddress: string): Promise<string> {
     await this.initAddress();
     if (!this.egAddress) throw new Error(errorEgAddressNotSet);
 
@@ -209,6 +209,7 @@ export class EngagementContractQuerier {
 
 export class EngagementContract extends EngagementContractQuerier {
   static readonly GAS_WITHDRAW_FUNDS = 200_000;
+  static readonly GAS_DELEGATED_WITHDRAWAL = 200_000;
 
   readonly #signingClient: SigningCosmWasmClient;
 
@@ -231,6 +232,20 @@ export class EngagementContract extends EngagementContractQuerier {
       this.egAddress,
       msg,
       calculateFee(EngagementContract.GAS_WITHDRAW_FUNDS, this.config.gasPrice),
+    );
+    return transactionHash;
+  }
+
+  async delegateWithdrawal(senderAddress: string, delegatedAddress: string): Promise<string> {
+    await this.initAddress();
+    if (!this.egAddress) throw new Error(errorEgAddressNotSet);
+
+    const msg = { delegate_withdrawal: { delegated: delegatedAddress } };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.egAddress,
+      msg,
+      calculateFee(EngagementContract.GAS_DELEGATED_WITHDRAWAL, this.config.gasPrice),
     );
     return transactionHash;
   }
