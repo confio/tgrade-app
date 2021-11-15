@@ -1,3 +1,4 @@
+import { Radio } from "antd";
 import styled from "styled-components";
 
 export const Separator = styled.hr`
@@ -13,5 +14,19 @@ export const ButtonGroup = styled.div`
 
   button:first-child {
     margin-right: var(--s0);
+  }
+`;
+
+export const StyledRadioGroup = styled(Radio.Group)`
+  & .ant-radio:hover {
+    border-color: var(--color-primary);
+  }
+
+  & .ant-radio-checked .ant-radio-inner {
+    border-color: var(--color-primary);
+
+    &:after {
+      background-color: var(--color-primary);
+    }
   }
 `;
