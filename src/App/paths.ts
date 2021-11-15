@@ -29,6 +29,9 @@ export const paths = {
   oc: {
     prefix: "/oversightcommunity",
   },
+  engagement: {
+    prefix: "/engagement",
+  },
   tmarket: {
     prefix: "/tmarket",
     exchange: {

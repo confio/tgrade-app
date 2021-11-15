@@ -19,6 +19,7 @@ import PrivacyPolicy from "./pages/LandingPage/PrivacyPolicy";
 import { paths } from "./paths";
 
 const Dso = lazy(() => import("./routes/Dso"));
+const Engagement = lazy(() => import("./pages/Engagement"));
 const OcHome = lazy(() => import("./pages/OcHome"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
 
@@ -42,6 +43,9 @@ export default function App(): JSX.Element {
                             <DsoProvider>
                               <Dso />
                             </DsoProvider>
+                          </Route>
+                          <Route path={paths.engagement.prefix}>
+                            <Engagement />
                           </Route>
                           <Route path={paths.oc.prefix}>
                             <OcHome />
