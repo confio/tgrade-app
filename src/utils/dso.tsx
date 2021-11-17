@@ -60,7 +60,16 @@ export type ProposalContent = {
     /// If true, and absolute threshold and quorum are met, we can end before voting period finished
     readonly allow_end_early?: boolean | null;
   };
+} & {
+  readonly grant_engagement?: {
+    readonly member: string;
+    readonly points: number;
+  };
 };
+
+export function isOcProposal(proposal: ProposalContent): boolean {
+  return !!proposal.grant_engagement;
+}
 
 export type Expiration = {
   readonly at_height: number;
@@ -90,7 +99,7 @@ export interface ProposalResponse {
   readonly rules: VotingRules;
   readonly total_weight: number;
   /// This is a running tally of all votes cast on this proposal so far.
-  readonly votes: Votes;
+  readonly votes?: Votes;
 }
 
 export interface ProposalListResponse {
@@ -185,6 +194,8 @@ export async function getProposalTitle(
       return "Add voting participants";
     case "edit_trusted_circle":
       return "Edit Trusted Circle";
+    case "grant_engagement":
+      return "Grant engagement";
     default:
       throw new Error("Error: unhandled proposal type");
   }

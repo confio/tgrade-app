@@ -48,6 +48,11 @@ export const useOcAddress = (): [
   React.Dispatch<React.SetStateAction<string | undefined>>,
 ] => useLocalStorage<string | undefined>("oversight-community", "");
 
+export const useOcProposalsAddress = (): [
+  string | undefined,
+  React.Dispatch<React.SetStateAction<string | undefined>>,
+] => useLocalStorage<string | undefined>("oversight-community-proposals", "");
+
 export async function getFileImgType(file: File): Promise<"svg" | "png"> {
   const text = await file.text();
   const isSvg = text.trim().endsWith("</svg>");
