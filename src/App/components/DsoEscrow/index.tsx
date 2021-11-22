@@ -6,13 +6,13 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { nativeCoinToDisplay } from "utils/currency";
 import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
 
 import TooltipWrapper from "../TooltipWrapper";
 import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
 
 const DepositDsoEscrowModal = lazy(() => import("App/components/DepositDsoEscrowModal"));
+const ReturnDsoEscrowModal = lazy(() => import("App/components/ReturnDsoEscrowModal"));
 const { Title, Text } = Typography;
 
 export default function DsoEscrow(): JSX.Element {
@@ -23,10 +23,12 @@ export default function DsoEscrow(): JSX.Element {
   } = useSdk();
   const feeDenom = config.coinMap[config.feeToken].denom;
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [depositModalOpen, setDepositModalOpen] = useState(false);
+  const [returnModalOpen, setReturnModalOpen] = useState(false);
 
   const [userEscrow, setUserEscrow] = useState("0");
   const [requiredEscrow, setRequiredEscrow] = useState("0");
+  const [exceedingEscrow, setExceedingEscrow] = useState("0");
   const [totalRequiredEscrow, setTotalRequiredEscrow] = useState(0);
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
@@ -39,25 +41,30 @@ export default function DsoEscrow(): JSX.Element {
       try {
         const dsoContract = new DsoContractQuerier(dsoAddress, client);
 
-        // get user deposited escrow
-        if (address) {
-          const escrowResponse = await dsoContract.getEscrow(address);
-
-          if (escrowResponse) {
-            const userEscrow = nativeCoinToDisplay(
-              { denom: config.feeToken, amount: escrowResponse.paid },
-              config.coinMap,
-            ).amount;
-            setUserEscrow(userEscrow);
-          }
-        }
-
         // get minimum escrow required for this DSO
         const { escrow_amount, escrow_pending } = await dsoContract.getDso();
         const feeDecimals = config.coinMap[config.feeToken].fractionalDigits;
 
         const requiredEscrowDecimal = Decimal.fromAtomics(escrow_amount, feeDecimals);
         setRequiredEscrow(requiredEscrowDecimal.toString());
+
+        if (address) {
+          const escrowResponse = await dsoContract.getEscrow(address);
+
+          if (escrowResponse) {
+            const decimals = config.coinMap[config.feeToken].fractionalDigits;
+            // get user deposited escrow
+            const userEscrowDecimal = Decimal.fromAtomics(escrowResponse.paid, decimals);
+            setUserEscrow(userEscrowDecimal.toString());
+
+            // get user exceeding escrow
+            const hasExceedingEscrow = userEscrowDecimal.isGreaterThan(requiredEscrowDecimal);
+            const exceedingEscrowDecimal = hasExceedingEscrow
+              ? userEscrowDecimal.minus(requiredEscrowDecimal)
+              : Decimal.fromAtomics("0", decimals);
+            setExceedingEscrow(exceedingEscrowDecimal.toString());
+          }
+        }
 
         // get pending escrow and grace period if any
         if (escrow_pending) {
@@ -190,14 +197,29 @@ export default function DsoEscrow(): JSX.Element {
             <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
           )}
         </AmountStack>
-        <Button onClick={() => setModalOpen(true)}>Deposit escrow</Button>
+        <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
+        {exceedingEscrow !== "0" ? (
+          <Button type="ghost" onClick={() => setReturnModalOpen(true)}>
+            Claim escrow
+          </Button>
+        ) : null}
       </YourEscrowStack>
-      {modalOpen ? (
+      {depositModalOpen ? (
         <DepositDsoEscrowModal
-          isModalOpen={modalOpen}
-          closeModal={() => setModalOpen(false)}
+          isModalOpen={depositModalOpen}
+          closeModal={() => setDepositModalOpen(false)}
           requiredEscrow={requiredEscrow}
           userEscrow={userEscrow}
+          refreshEscrows={refreshEscrows}
+        />
+      ) : null}
+      {returnModalOpen ? (
+        <ReturnDsoEscrowModal
+          isModalOpen={returnModalOpen}
+          closeModal={() => setReturnModalOpen(false)}
+          requiredEscrow={requiredEscrow}
+          userEscrow={userEscrow}
+          exceedingEscrow={exceedingEscrow}
           refreshEscrows={refreshEscrows}
         />
       ) : null}
