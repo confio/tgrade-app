@@ -322,13 +322,13 @@ export default function DsoProposalDetailModal({
                     </b>
                   </Paragraph>
                   <Paragraph>
-                    Yes: <b>{proposal.votes.yes}</b>
+                    Yes: <b>{proposal.votes?.yes ?? 0}</b>
                   </Paragraph>
                   <Paragraph>
-                    No: <b>{proposal.votes.no}</b>
+                    No: <b>{proposal.votes?.no ?? 0}</b>
                   </Paragraph>
                   <Paragraph>
-                    Abstain: <b>{proposal.votes.abstain}</b>
+                    Abstain: <b>{proposal.votes?.abstain ?? 0}</b>
                   </Paragraph>
                 </SectionWrapper>
               </SectionWrapper>

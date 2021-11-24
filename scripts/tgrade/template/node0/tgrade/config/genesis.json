@@ -5,7 +5,7 @@
       "accounts": [
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "tgrade12g76yu4hh2vahak8f2wawf4zpafl73tt7lp6r8"
+          "address": "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
@@ -27,7 +27,7 @@
     "bank": {
       "balances": [
         {
-          "address": "tgrade12g76yu4hh2vahak8f2wawf4zpafl73tt7lp6r8",
+          "address": "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
           "coins": [
             {
               "amount": "100000000000",
@@ -97,10 +97,7 @@
         "clients": [],
         "clients_consensus": [],
         "params": {
-          "allowed_clients": [
-            "06-solomachine",
-            "07-tendermint"
-          ]
+          "allowed_clients": ["06-solomachine", "07-tendermint"]
         }
       },
       "connection_genesis": {
@@ -113,7 +110,7 @@
       "bond_denom": "utgd",
       "engagement": [
         {
-          "address": "tgrade12g76yu4hh2vahak8f2wawf4zpafl73tt7lp6r8",
+          "address": "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
           "weight": "2"
         },
         {
@@ -187,8 +184,8 @@
           "denom": "utgd"
         },
         "name": "Oversight Community",
-        "quorum": "50.000000000000000000",
-        "threshold": "66.000000000000000000",
+        "quorum": "51.000000000000000000",
+        "threshold": "55.000000000000000000",
         "voting_period": 1
       },
       "params": {
@@ -203,9 +200,10 @@
         "tokens_per_weight": "1",
         "unbonding_period": "1814400s"
       },
-      "system_admin_address": "tgrade12g76yu4hh2vahak8f2wawf4zpafl73tt7lp6r8",
+      "system_admin_address": "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
       "valset_contract_config": {
         "ValidatorsRewardRatio": 50,
+        "double_sign_slash_ratio": "50.000000000000000000",
         "epoch_length": "60s",
         "epoch_reward": {
           "amount": "100000",
@@ -243,7 +241,7 @@
   "consensus_params": {
     "block": {
       "max_bytes": "22020096",
-      "max_gas": "-1",
+      "max_gas": "100000000000",
       "time_iota_ms": "1000"
     },
     "evidence": {
@@ -252,9 +250,7 @@
       "max_bytes": "1048576"
     },
     "validator": {
-      "pub_key_types": [
-        "ed25519"
-      ]
+      "pub_key_types": ["ed25519"]
     },
     "version": {}
   },
