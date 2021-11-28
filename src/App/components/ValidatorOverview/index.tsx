@@ -88,5 +88,6 @@ export default function ValidatorOverview(): JSX.Element | null {
       }
     })();
   }, [client, validatorList, config, handleError]);
+
   return <Table style={{ margin: "25px" }} dataSource={validatorList} columns={columns} pagination={false} />;
 }
