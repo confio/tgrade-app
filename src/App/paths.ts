@@ -32,6 +32,9 @@ export const paths = {
   engagement: {
     prefix: "/engagement",
   },
+  validators: {
+    prefix: "/validators",
+  },
   tmarket: {
     prefix: "/tmarket",
     exchange: {
