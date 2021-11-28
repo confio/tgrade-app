@@ -1,8 +1,8 @@
 import { Table } from "antd";
-import { Typography } from "antd";
+// import { Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { ellipsifyAddress } from "utils/ui";
+// import { ellipsifyAddress } from "utils/ui";
 import { ValidatorContractQuerier } from "utils/validator";
 
 interface IValidator {
