@@ -55,6 +55,7 @@ export default function FormAddParticipants({
   const [membersArray, setMembersArray] = useState(validators);
   const [punishmentType, setPunishmentType] = useState<PunismentKind>("slash");
   const [isJailedForever, setJailedForever] = useState(false);
+  const [slashPortion, setSlashPortion] = useState("0.0");
 
   useEffect(() => {
     const membersArray = addressStringToArray(membersString);
@@ -110,9 +111,9 @@ export default function FormAddParticipants({
                   units="%"
                   label={slashLabel}
                   placeholder="Type"
-                  value={membersString}
+                  value={slashPortion}
                   onInputChange={({ target }) => {
-                    setMembersString(target.value);
+                    setSlashPortion(target.value);
                   }}
                 />
                 <p>Staked: </p>

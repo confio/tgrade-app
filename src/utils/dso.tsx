@@ -60,6 +60,11 @@ export type ProposalContent = {
     /// If true, and absolute threshold and quorum are met, we can end before voting period finished
     readonly allow_end_early?: boolean | null;
   };
+} & {
+  readonly slash?: {
+    readonly addr?: string | null;
+    readonly portion?: number | null;
+  };
 };
 
 export type Expiration = {

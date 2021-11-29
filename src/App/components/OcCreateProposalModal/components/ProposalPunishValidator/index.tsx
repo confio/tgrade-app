@@ -36,9 +36,9 @@ export default function ProposalPunishValidtor({
     try {
       const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.propose(signingClient, config.factoryAddress, address, "", {
-        add_remove_non_voting_members: {
-          remove: [],
-          add: [""],
+        slash: {
+          addr: address,
+          portion: 10.0,
         },
       });
 
