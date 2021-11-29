@@ -80,7 +80,7 @@ export function ValidatorDetail({ visible, validator, onCancel }: ModalProps): J
               height: "125px",
             }}
           >
-            <p>Engagement points</p>
+            <Title>Engagement points</Title>
             <p>{validator.engagementPoints}</p>
           </div>
           <div
@@ -94,7 +94,7 @@ export function ValidatorDetail({ visible, validator, onCancel }: ModalProps): J
               height: "125px",
             }}
           >
-            <p>Engagement rewards, TGD</p>
+            <Title>Engagement rewards, TGD</Title>
             <p>{validator.rewards}</p>
           </div>
           <div
@@ -108,8 +108,8 @@ export function ValidatorDetail({ visible, validator, onCancel }: ModalProps): J
               height: "125px",
             }}
           >
-            <p>Staked, TGD</p>
-            <p>{validator.staked}</p>
+            <Title>Staked, TGD</Title>
+            <p>{validator.staked || "-"}</p>
           </div>
           <div
             style={{
@@ -122,12 +122,12 @@ export function ValidatorDetail({ visible, validator, onCancel }: ModalProps): J
               height: "125px",
             }}
           >
-            <p>Potential voting power</p>
+            <Title>Potential voting power</Title>
             <p>{validator.power}</p>
           </div>
         </div>
-        <div>
-          <p>Slashing events</p>
+        <div style={{ marginTop: "25px", marginBottom: "10px" }}>
+          <Title>Slashing events</Title>
         </div>
         <StyledTable columns={columns} pagination={false} />
       </div>
