@@ -34,6 +34,21 @@ export interface DsoResponse {
   readonly rules: VotingRules;
 }
 
+export type Punishment = {
+  readonly DistributeEscrow?: {
+    readonly member: string;
+    readonly slashing_percentage: string;
+    readonly distribution_list: readonly string[];
+    readonly kick_out: boolean;
+  };
+} & {
+  readonly BurnEscrow?: {
+    readonly member: string;
+    readonly slashing_percentage: string;
+    readonly kick_out: boolean;
+  };
+};
+
 export type ProposalContent = {
   /// Apply a diff to the existing non-voting members.
   /// Remove is applied after add, so if an address is in both, it is removed
@@ -45,6 +60,8 @@ export type ProposalContent = {
   readonly add_voting_members?: {
     readonly voters: readonly string[];
   };
+} & {
+  readonly punish_members?: readonly Punishment[];
 } & {
   readonly edit_trusted_circle?: {
     /// Length of voting period in days
@@ -192,6 +209,8 @@ export async function getProposalTitle(
       return proposal.add_remove_non_voting_members?.add.length ? "Add participants" : "Remove participants";
     case "add_voting_members":
       return "Add voting participants";
+    case "punish_members":
+      return "Punish voting participant";
     case "edit_trusted_circle":
       return "Edit Trusted Circle";
     case "grant_engagement":
