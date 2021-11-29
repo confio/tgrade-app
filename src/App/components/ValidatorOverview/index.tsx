@@ -2,15 +2,19 @@ import { Table } from "antd";
 // import { Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-// import { ellipsifyAddress } from "utils/ui";
+import { ellipsifyAddress } from "utils/ui";
 import { ValidatorContractQuerier } from "utils/validator";
 
+import { ReactComponent as LinkIcon } from "../../assets/icons/link-icon.svg";
 interface IValidator {
-  moniker: string;
-  identity?: string;
-  website?: string;
-  security_contact?: string;
-  details?: string;
+  operator: string;
+  metadata: {
+    moniker: string;
+    identity?: string;
+    website?: string;
+    security_contact?: string;
+    details?: string;
+  };
 }
 
 const columns = [
@@ -19,7 +23,8 @@ const columns = [
     key: "moniker",
     render: (record: IValidator) => (
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <b>{record.moniker}</b>
+        <b>{record.metadata.moniker}</b>
+        <p>{ellipsifyAddress(record.operator)}</p>
       </div>
     ),
   },
@@ -63,7 +68,13 @@ const columns = [
   },
   {
     title: "Website",
-    dataIndex: "website",
+    key: "website",
+    render: (record: IValidator) =>
+      record.metadata.website ? (
+        <a href={record.metadata.website}>
+          <LinkIcon />
+        </a>
+      ) : null,
   },
 ];
 export default function ValidatorOverview(): JSX.Element | null {
@@ -87,7 +98,7 @@ export default function ValidatorOverview(): JSX.Element | null {
         handleError(error);
       }
     })();
-  }, [client, validatorList, config, handleError]);
+  }, [client, config, handleError]);
 
   return <Table style={{ margin: "25px" }} dataSource={validatorList} columns={columns} pagination={false} />;
 }

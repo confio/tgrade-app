@@ -25,7 +25,7 @@ export class ValidatorContractQuerier {
     await this.initAddress();
     if (!this.valAddress) throw new Error("no valAddress");
     const query = { list_validators: {} };
-    const { ValidatorsList }: any = await this.client.queryContractSmart(this.valAddress, query);
-    return ValidatorsList;
+    const { validators }: any = await this.client.queryContractSmart(this.valAddress, query);
+    return validators;
   }
 }
