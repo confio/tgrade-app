@@ -10,8 +10,9 @@ import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
 
 const ProposalAddParticipants = lazy(() => import("./components/ProposalAddParticipants"));
-const ProposalAddVotingParticipants = lazy(() => import("./components/ProposalAddVotingParticipants"));
 const ProposalRemoveParticipants = lazy(() => import("./components/ProposalRemoveParticipants"));
+const ProposalAddVotingParticipants = lazy(() => import("./components/ProposalAddVotingParticipants"));
+const ProposalPunishVotingParticipant = lazy(() => import("./components/ProposalPunishVotingParticipant"));
 const ProposalGrantEngagement = lazy(() => import("./components/ProposalGrantEngagement"));
 
 const { Title, Text } = Typography;
@@ -21,6 +22,7 @@ export enum ProposalType {
   AddParticipants = "add-participants",
   RemoveParticipants = "remove-participants",
   AddVotingParticipants = "add-voting-participants",
+  PunishVotingParticipant = "punish-voting-participants",
   GrantEngagement = "grant-engagement",
 }
 
@@ -28,6 +30,7 @@ export const proposalLabels = {
   [ProposalType.AddParticipants]: "Add non voting participants",
   [ProposalType.RemoveParticipants]: "Remove non voting participants",
   [ProposalType.AddVotingParticipants]: "Add voting participants",
+  [ProposalType.PunishVotingParticipant]: "Punish voting participant",
   [ProposalType.GrantEngagement]: "Grant engagement",
 };
 
@@ -36,6 +39,7 @@ export const proposalTitles = {
   [ProposalType.AddParticipants]: "Add participant(s)",
   [ProposalType.RemoveParticipants]: "Remove participant(s)",
   [ProposalType.AddVotingParticipants]: "Add voting participant(s)",
+  [ProposalType.PunishVotingParticipant]: "Punish voting participant",
   [ProposalType.GrantEngagement]: "Grant engagement",
   confirmation: "Confirmation",
 };
@@ -145,6 +149,14 @@ export default function OcCreateProposalModal({
             />
           ) : proposalStep.type === ProposalType.AddVotingParticipants ? (
             <ProposalAddVotingParticipants
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.PunishVotingParticipant ? (
+            <ProposalPunishVotingParticipant
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
               isSubmitting={isSubmitting}
