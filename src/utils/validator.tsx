@@ -28,4 +28,18 @@ export class ValidatorContractQuerier {
     const { validators }: any = await this.client.queryContractSmart(this.valAddress, query);
     return validators;
   }
+  async getActiveValidators(): Promise<string[]> {
+    await this.initAddress();
+    if (!this.valAddress) throw new Error("no valAddress");
+    const query = { list_active_validators: {} };
+    const { validators }: any = await this.client.queryContractSmart(this.valAddress, query);
+    return validators;
+  }
+  async getSlashingEvents(operator: string): Promise<string[]> {
+    await this.initAddress();
+    if (!this.valAddress) throw new Error("no valAddress");
+    const query = { list_validator_slashing: { operator } };
+    const { slashing }: any = await this.client.queryContractSmart(this.valAddress, query);
+    return slashing;
+  }
 }
