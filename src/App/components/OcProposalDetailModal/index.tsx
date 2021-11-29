@@ -20,6 +20,7 @@ import {
   AbstainedButton,
   AcceptButton,
   ButtonGroup,
+  ChangedField,
   ExecuteButton,
   FeeWrapper,
   ModalHeader,
@@ -29,6 +30,7 @@ import {
   Separator,
   StyledModal,
   Text,
+  TextLabel,
   TextValue,
   Title,
 } from "./style";
@@ -68,6 +70,7 @@ export default function OcProposalDetailModal({
   const proposalAddMembers = proposal?.proposal.add_remove_non_voting_members?.add;
   const proposalRemoveMembers = proposal?.proposal.add_remove_non_voting_members?.remove;
   const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
+  const proposalPunishVotingMember = proposal?.proposal.punish_members?.[0] ?? undefined;
   const proposalGrantEngagement = proposal?.proposal.grant_engagement;
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
@@ -277,15 +280,58 @@ export default function OcProposalDetailModal({
           {proposal ? (
             <>
               <Stack gap="s1">
-                <AddressList addresses={proposalAddMembers} short copyable />
-                <AddressList addresses={proposalRemoveMembers} short copyable />
-                <AddressList addresses={proposalAddVotingMembers} short copyable />
+                {proposalPunishVotingMember?.BurnEscrow?.member ||
+                proposalPunishVotingMember?.DistributeEscrow?.member ? (
+                  <ChangedField>
+                    <TextLabel>
+                      Member to punish:{" "}
+                      {proposalPunishVotingMember?.BurnEscrow?.member ||
+                        proposalPunishVotingMember?.DistributeEscrow?.member ||
+                        ""}
+                    </TextLabel>
+                  </ChangedField>
+                ) : null}
+                {proposalPunishVotingMember?.BurnEscrow?.kick_out !== undefined ||
+                proposalPunishVotingMember?.DistributeEscrow?.kick_out !== undefined ? (
+                  <ChangedField>
+                    <TextLabel>
+                      {proposalPunishVotingMember?.BurnEscrow?.kick_out ||
+                      proposalPunishVotingMember?.DistributeEscrow?.kick_out
+                        ? "The member WILL BE kicked out of the Trusted Circle"
+                        : "The member WILL NOT BE kicked out of the Trusted Circle"}
+                    </TextLabel>
+                  </ChangedField>
+                ) : null}
+                {(proposalPunishVotingMember?.BurnEscrow?.slashing_percentage &&
+                  proposalPunishVotingMember?.BurnEscrow?.slashing_percentage !== "0") ||
+                (proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage &&
+                  proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage !== "0") ? (
+                  <ChangedField>
+                    <TextLabel>
+                      {`${
+                        parseFloat(
+                          proposalPunishVotingMember?.BurnEscrow?.slashing_percentage ||
+                            proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage ||
+                            "",
+                        ) * 100
+                      }% will be slashed`}
+                    </TextLabel>
+                  </ChangedField>
+                ) : null}
                 {proposalGrantEngagement ? (
                   <TextValue>
                     Grant {proposalGrantEngagement.points} Engagement Points to{" "}
                     {proposalGrantEngagement.member}
                   </TextValue>
                 ) : null}
+                <AddressList addresses={proposalAddMembers} short copyable />
+                <AddressList addresses={proposalRemoveMembers} short copyable />
+                <AddressList addresses={proposalAddVotingMembers} short copyable />
+                <AddressList
+                  addresses={proposalPunishVotingMember?.DistributeEscrow?.distribution_list ?? []}
+                  short
+                  copyable
+                />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />

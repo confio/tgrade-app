@@ -71,6 +71,7 @@ export default function DsoProposalDetailModal({
   const proposalAddMembers = proposal?.proposal.add_remove_non_voting_members?.add;
   const proposalRemoveMembers = proposal?.proposal.add_remove_non_voting_members?.remove;
   const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
+  const proposalPunishVotingMember = proposal?.proposal.punish_members?.[0] ?? undefined;
   const proposalEditDso = proposal?.proposal.edit_trusted_circle;
 
   const [displayEscrow, setDisplayEscrow] = useState("0");
@@ -299,16 +300,60 @@ export default function DsoProposalDetailModal({
                       <TextValue>{displayEscrow}</TextValue>
                     </ChangedField>
                   ) : null}
-                  {proposalEditDso?.allow_end_early ? (
+                  {proposalEditDso?.allow_end_early !== undefined &&
+                  proposalEditDso?.allow_end_early !== null ? (
                     <ChangedField>
                       <TextLabel>Early pass</TextLabel>
                       <TextValue>{proposalEditDso.allow_end_early ? "Enabled" : "Disabled"}</TextValue>
                     </ChangedField>
                   ) : null}
                 </FieldGroup>
+                {proposalPunishVotingMember?.BurnEscrow?.member ||
+                proposalPunishVotingMember?.DistributeEscrow?.member ? (
+                  <ChangedField>
+                    <TextLabel>
+                      Member to punish:{" "}
+                      {proposalPunishVotingMember?.BurnEscrow?.member ||
+                        proposalPunishVotingMember?.DistributeEscrow?.member ||
+                        ""}
+                    </TextLabel>
+                  </ChangedField>
+                ) : null}
+                {proposalPunishVotingMember?.BurnEscrow?.kick_out !== undefined ||
+                proposalPunishVotingMember?.DistributeEscrow?.kick_out !== undefined ? (
+                  <ChangedField>
+                    <TextLabel>
+                      {proposalPunishVotingMember?.BurnEscrow?.kick_out ||
+                      proposalPunishVotingMember?.DistributeEscrow?.kick_out
+                        ? "The member WILL BE kicked out of the Trusted Circle"
+                        : "The member WILL NOT BE kicked out of the Trusted Circle"}
+                    </TextLabel>
+                  </ChangedField>
+                ) : null}
+                {(proposalPunishVotingMember?.BurnEscrow?.slashing_percentage &&
+                  proposalPunishVotingMember?.BurnEscrow?.slashing_percentage !== "0") ||
+                (proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage &&
+                  proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage !== "0") ? (
+                  <ChangedField>
+                    <TextLabel>
+                      {`${
+                        parseFloat(
+                          proposalPunishVotingMember?.BurnEscrow?.slashing_percentage ||
+                            proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage ||
+                            "",
+                        ) * 100
+                      }% will be slashed`}
+                    </TextLabel>
+                  </ChangedField>
+                ) : null}
                 <AddressList addresses={proposalAddMembers} short copyable />
                 <AddressList addresses={proposalRemoveMembers} short copyable />
                 <AddressList addresses={proposalAddVotingMembers} short copyable />
+                <AddressList
+                  addresses={proposalPunishVotingMember?.DistributeEscrow?.distribution_list ?? []}
+                  short
+                  copyable
+                />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />
