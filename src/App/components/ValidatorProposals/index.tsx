@@ -8,13 +8,10 @@ import { useError, useOc, useSdk } from "service";
 import { DsoContractQuerier, isOcProposal, ProposalResponse } from "utils/dso";
 
 import Stack from "../Stack/style";
-import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
+import { ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
 const OcCreateProposalModal = lazy(() => import("App/components/OcCreateProposalModal"));
 const OcProposalDetailModal = lazy(() => import("App/components/OcProposalDetailModal"));
-const OcIdActions = lazy(() => import("App/components/OcIdActions"));
-const OcEscrow = lazy(() => import("App/components/OcEscrow"));
-const OcEngagement = lazy(() => import("App/components/OcEngagement"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;

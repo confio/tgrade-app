@@ -50,7 +50,7 @@ export function ValidatorDetail({ visible, validator, onCancel }: ModalProps): J
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div style={{ display: "flex", flexDirection: "column", marginRight: "50px" }}>
             <Title> {validator.metadata.moniker}</Title>
-            <p> {ellipsifyAddress(validator.operator)}</p>
+            <p> {validator.operator}</p>
             <p> {validator.metadata.website}</p>
           </div>
           {validator.jailed_until ? (
@@ -129,7 +129,7 @@ export function ValidatorDetail({ visible, validator, onCancel }: ModalProps): J
         <div style={{ marginTop: "25px", marginBottom: "10px" }}>
           <Title>Slashing events</Title>
         </div>
-        <StyledTable columns={columns} pagination={false} />
+        <StyledTable dataSource={validator.slashEvents} columns={columns} pagination={false} />
       </div>
     </StyledModal>
   );
