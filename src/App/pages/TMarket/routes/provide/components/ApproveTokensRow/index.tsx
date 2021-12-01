@@ -22,7 +22,6 @@ const ApproveTokensRow = (): JSX.Element => {
         values.selectFrom.address,
         address,
         selectedPair.contract_addr,
-        sdkState.config.gasPrice,
       );
       setIsTokenApprovedA(provideDispatch, true);
       console.log(result);
@@ -40,7 +39,6 @@ const ApproveTokensRow = (): JSX.Element => {
         values.selectTo.address,
         address,
         selectedPair.contract_addr,
-        sdkState.config.gasPrice,
       );
       setIsTokenApprovedB(provideDispatch, true);
       console.log(result);
