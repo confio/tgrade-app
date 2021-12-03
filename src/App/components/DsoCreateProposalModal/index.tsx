@@ -13,10 +13,10 @@ import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
 
 const ProposalAddParticipants = lazy(() => import("./components/ProposalAddParticipants"));
+const ProposalRemoveParticipants = lazy(() => import("./components/ProposalRemoveParticipants"));
 const ProposalAddVotingParticipants = lazy(() => import("./components/ProposalAddVotingParticipants"));
 const ProposalPunishVotingParticipant = lazy(() => import("./components/ProposalPunishVotingParticipant"));
 const ProposalEditDso = lazy(() => import("./components/ProposalEditDso"));
-const ProposalRemoveParticipants = lazy(() => import("./components/ProposalRemoveParticipants"));
 const ProposalWhitelistPair = lazy(() => import("./components/ProposalWhitelistPair"));
 
 const { Title, Text } = Typography;

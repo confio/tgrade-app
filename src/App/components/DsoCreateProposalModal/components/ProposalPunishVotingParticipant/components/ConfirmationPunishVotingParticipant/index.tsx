@@ -1,6 +1,8 @@
+import { Decimal } from "@cosmjs/math";
 import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import AddressList from "App/components/AddressList";
+import AddressTag from "App/components/AddressTag";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import { lazy, useEffect, useState } from "react";
@@ -42,8 +44,28 @@ export default function ConfirmationPunishVotingParticipant({
   } = useSdk();
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [toSlash, setToSlash] = useState("0");
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
+
+  useEffect(() => {
+    if (!slashingPercentage || !signingClient) return;
+
+    try {
+      const slashingPercentageNumber = parseFloat(slashingPercentage) / 100;
+      const toSlash = (
+        Decimal.fromUserInput(
+          memberEscrow,
+          config.coinMap[config.feeToken].fractionalDigits,
+        ).toFloatApproximation() * slashingPercentageNumber
+      ).toString();
+
+      setToSlash(toSlash);
+    } catch (error) {
+      if (!(error instanceof Error)) return;
+      handleError(error);
+    }
+  }, [config.coinMap, config.feeToken, handleError, memberEscrow, signingClient, slashingPercentage]);
 
   useEffect(() => {
     if (!signingClient) return;
@@ -62,7 +84,7 @@ export default function ConfirmationPunishVotingParticipant({
     <>
       <ConfirmField>
         <Text>Member to punish: </Text>
-        <Text>{memberToPunish}</Text>
+        <AddressTag address={memberToPunish} />
       </ConfirmField>
       <ConfirmField>
         <Text>
@@ -73,16 +95,20 @@ export default function ConfirmationPunishVotingParticipant({
       </ConfirmField>
       {slashingPercentage && slashingPercentage !== "0" ? (
         <ConfirmField>
-          <Text>Slashing: </Text>
-          <Text>{`${slashingPercentage}% of ${memberEscrow} ${feeTokenDenom}`}</Text>
+          <Text>Escrow to be slashed: </Text>
+          <Text>{`${slashingPercentage}% of ${memberEscrow} ${feeTokenDenom} = ${toSlash} ${feeTokenDenom}`}</Text>
         </ConfirmField>
       ) : null}
       {distributionList.length ? (
         <AddressStack gap="s-3">
-          <Text>Addresses to distribute the slashed escrow to:</Text>
+          <Text>The slashed escrow will be distributed to:</Text>
           <AddressList short addresses={distributionList} addressPrefix={config.addressPrefix} />
         </AddressStack>
-      ) : null}
+      ) : (
+        <ConfirmField>
+          <Text>The slashed escrow will be burned</Text>
+        </ConfirmField>
+      )}
       <TextComment>{comment}</TextComment>
       <Separator />
       <ButtonGroup>
