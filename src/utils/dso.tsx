@@ -49,6 +49,26 @@ export type Punishment = {
   };
 };
 
+export interface TrustedCircleAdjustements {
+  /// Length of voting period in days
+  readonly name?: string | null;
+  /// Length of voting period in days
+  readonly escrow_amount?: string | null;
+  /// Length of voting period in days
+  readonly voting_period?: number | null;
+  /// quorum requirement (0.0-1.0)
+  readonly quorum?: string | null;
+  /// threshold requirement (0.5-1.0)
+  readonly threshold?: string | null;
+  /// If true, and absolute threshold and quorum are met, we can end before voting period finished
+  readonly allow_end_early?: boolean | null;
+}
+
+export interface Engagement {
+  readonly member: string;
+  readonly points: number;
+}
+
 export type ProposalContent = {
   /// Apply a diff to the existing non-voting members.
   /// Remove is applied after add, so if an address is in both, it is removed
@@ -63,25 +83,9 @@ export type ProposalContent = {
 } & {
   readonly punish_members?: readonly Punishment[];
 } & {
-  readonly edit_trusted_circle?: {
-    /// Length of voting period in days
-    readonly name?: string | null;
-    /// Length of voting period in days
-    readonly escrow_amount?: string | null;
-    /// Length of voting period in days
-    readonly voting_period?: number | null;
-    /// quorum requirement (0.0-1.0)
-    readonly quorum?: string | null;
-    /// threshold requirement (0.5-1.0)
-    readonly threshold?: string | null;
-    /// If true, and absolute threshold and quorum are met, we can end before voting period finished
-    readonly allow_end_early?: boolean | null;
-  };
+  readonly edit_trusted_circle?: TrustedCircleAdjustements;
 } & {
-  readonly grant_engagement?: {
-    readonly member: string;
-    readonly points: number;
-  };
+  readonly grant_engagement?: Engagement;
 };
 
 export function isOcProposal(proposal: ProposalContent): boolean {
