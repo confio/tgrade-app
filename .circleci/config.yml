@@ -6,7 +6,6 @@ jobs:
       - image: cimg/node:14.18.0
     environment:
       NODE_OPTIONS: --max-old-space-size=4096
-      GENERATE_SOURCEMAP: false
     steps:
       - checkout
       - restore_cache:
