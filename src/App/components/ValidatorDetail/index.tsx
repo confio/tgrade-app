@@ -27,7 +27,7 @@ const columns = [
     key: "reason",
   },
 ];
-export function ValidatorDetail({ visible, validator, onCancel, blockchainValues }: ModalProps): JSX.Element {
+export function ValidatorDetail({ visible, validator, blockchainValues, onCancel }: ModalProps): JSX.Element {
   return (
     <StyledModal footer={null} onCancel={onCancel} visible={visible} centered closable width="50%">
       <div style={{ display: "flex", flexDirection: "column", marginRight: "50px", height: "530px" }}>
