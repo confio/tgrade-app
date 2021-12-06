@@ -6,7 +6,7 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { paths } from "App/paths";
 import { lazy, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { getDsoName, removeDso, useDso, useError, useSdk } from "service";
+import { getDsoName, useDso, useError, useSdk } from "service";
 import { closeLeaveDsoModal } from "service/dsos";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
@@ -52,7 +52,6 @@ export default function LeaveDsoModal(): JSX.Element {
       setTxResult({
         msg: `Left ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
       });
-      removeDso(dsoDispatch, dsoAddress);
     } catch (error) {
       if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
