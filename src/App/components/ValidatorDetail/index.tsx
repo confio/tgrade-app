@@ -50,7 +50,6 @@ export function ValidatorDetail({ visible, validator, blockchainValues, onCancel
         borderRadius: "16px",
         backgroundColor: "transparent",
       }}
-      maskStyle={{ background: "rgba(4,119,120,0.9)" }}
     >
       <ModalHeader>
         <Stack gap="s1"></Stack>
