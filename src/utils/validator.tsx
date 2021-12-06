@@ -21,14 +21,14 @@ export class ValidatorContractQuerier {
     this.valAddress = address;
   }
 
-  async getValidators(): Promise<string[]> {
+  async getValidators(): Promise<Record<string, unknown>[]> {
     await this.initAddress();
     if (!this.valAddress) throw new Error("no valAddress");
     const query = { list_validators: {} };
     const { validators }: any = await this.client.queryContractSmart(this.valAddress, query);
     return validators;
   }
-  async getActiveValidators(): Promise<string[]> {
+  async getActiveValidators(): Promise<Record<string, unknown>[]> {
     await this.initAddress();
     if (!this.valAddress) throw new Error("no valAddress");
     const query = { list_active_validators: {} };

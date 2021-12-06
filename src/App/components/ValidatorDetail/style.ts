@@ -2,19 +2,9 @@ import { Modal, Table } from "antd";
 import styled from "styled-components";
 
 export const StyledModal = styled(Modal)`
-  border-radius: 16px;
   & .ant-modal-content {
     border-radius: 16px;
   }
-
-  ${({ bgTransparent }: { bgTransparent?: boolean }) =>
-    bgTransparent &&
-    `
-  & .ant-modal-content {
-    background: none;
-    box-shadow: none;
-  }
-  `};
 `;
 
 export const Title = styled.p`
@@ -52,4 +42,18 @@ export const StyledTable = styled(Table)`
     letter-spacing: 0em;
     text-align: left;
   }
+`;
+
+export const StyledCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: solid 1px #eceef2;
+  width: 400px;
+  height: 125px;
+`;
+
+export const StyledInfoRow = styled.span`
+  display: flex;
 `;

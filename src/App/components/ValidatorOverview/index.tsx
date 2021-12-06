@@ -9,6 +9,12 @@ import { ValidatorContractQuerier } from "utils/validator";
 import { ValidatorDetail } from "../ValidatorDetail";
 import { StyledTable } from "./style";
 
+interface BlockchainValues {
+  totalEgPoints: number;
+  totalEgRewards: number;
+  totalTGD: number;
+}
+
 type ValidatorType = {
   operator: string;
   engagementPoints?: number;
@@ -111,13 +117,18 @@ const columns = [
           <LinkIcon />
         </a>
       ) : (
-        <p>Not added</p>
+        <p>-</p>
       ),
     sorter: (a: any, b: any) => a.staked - b.staked,
   },
 ];
 export default function ValidatorOverview(): JSX.Element | null {
   const [validatorList, setValidatorList] = useState<any | null>(null);
+  const [blockchainValues, setBlockchainValues] = useState<BlockchainValues>({
+    totalEgPoints: 0,
+    totalEgRewards: 0,
+    totalTGD: 0,
+  });
   const [selectedValidator, setSelectedValidator] = useState<any | null>(initialValidator);
   const [toggleModal, setToggleModal] = useState(false);
   const { handleError } = useError();
@@ -137,21 +148,27 @@ export default function ValidatorOverview(): JSX.Element | null {
         const valContract = new ValidatorContractQuerier(config, client);
         const valList = await valContract.getValidators();
         const valActive = await valContract.getActiveValidators();
+        const egContract = new EngagementContractQuerier(config, client);
 
-        const epContract = new EngagementContractQuerier(config, client);
-        console.log("active validators: ", valActive);
+        const totalEgPoints = await egContract.getTotalEngagementPoints();
+        const EgRewards = await egContract.getDistributedFunds();
+        const totalEgRewards = parseFloat(EgRewards.amount);
+        const totalTGD = 100000000;
+        setBlockchainValues({ totalEgPoints, totalEgRewards, totalTGD });
 
+        /*TODO : Change to for loop*/
         valList.forEach(async (validator: any) => {
-          const ep = await epContract.getEngagementPoints(validator.operator);
-          const rewards = await epContract.getWithdrawableFunds(validator.operator);
+          const ep = await egContract.getEngagementPoints(validator.operator);
+          const rewards = await egContract.getWithdrawableFunds(validator.operator);
           const slashEvents = await valContract.getSlashingEvents(validator.operator);
+
           validator["engagementPoints"] = ep;
           validator["rewards"] = rewards.amount;
-          validator["status"] = "active";
-          validator["power"] = 10000;
+          validator["status"] = "active"; //Figure out how to get actual value
+          validator["power"] = valActive[0].power;
           validator["slashEvents"] = slashEvents;
         });
-        console.log(valList);
+
         setValidatorList(valList);
       } catch (error) {
         if (!(error instanceof Error)) return;
@@ -162,14 +179,18 @@ export default function ValidatorOverview(): JSX.Element | null {
 
   return (
     <div>
-      <ValidatorDetail validator={selectedValidator} visible={toggleModal} onCancel={handleToggle} />
+      <ValidatorDetail
+        validator={selectedValidator}
+        blockchainValues={blockchainValues}
+        visible={toggleModal}
+        onCancel={handleToggle}
+      />
       <StyledTable
         dataSource={validatorList}
         columns={columns}
         pagination={false}
-        onRow={(record, recordIndex) => ({
-          onClick: (event) => {
-            console.log(record);
+        onRow={(record) => ({
+          onClick: () => {
             setSelectedValidator(record);
             handleToggle();
           },
