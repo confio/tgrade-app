@@ -1,4 +1,8 @@
-import { StyledCard, StyledInfoRow, StyledModal, StyledTable, Title } from "./style";
+import closeIcon from "App/assets/icons/cross.svg";
+import Stack from "App/components/Stack/style";
+
+import { ModalHeader, StyledCard, StyledInfoRow, StyledModal, StyledTable, Title } from "./style";
+
 interface ModalProps {
   visible: boolean;
   validator: any;
@@ -29,7 +33,30 @@ const columns = [
 ];
 export function ValidatorDetail({ visible, validator, blockchainValues, onCancel }: ModalProps): JSX.Element {
   return (
-    <StyledModal footer={null} onCancel={onCancel} visible={visible} centered closable width="50%">
+    <StyledModal
+      centered
+      footer={null}
+      closable={false}
+      visible={visible}
+      width="100%"
+      style={{
+        right: "-40px",
+        maxWidth: "63.25rem",
+        paddingRight: "60px",
+      }}
+      bodyStyle={{
+        position: "relative",
+        padding: "var(--s1)",
+        borderRadius: "16px",
+        backgroundColor: "transparent",
+      }}
+      maskStyle={{ background: "rgba(4,119,120,0.9)" }}
+    >
+      <ModalHeader>
+        <Stack gap="s1"></Stack>
+
+        <img alt="Close button" src={closeIcon} onClick={onCancel} />
+      </ModalHeader>
       <div style={{ display: "flex", flexDirection: "column", marginRight: "50px", height: "530px" }}>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div style={{ display: "flex", flexDirection: "column", marginRight: "50px" }}>
