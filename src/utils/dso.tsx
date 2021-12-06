@@ -371,7 +371,7 @@ export class DsoContract extends DsoContractQuerier {
   }
 
   async leaveDso(memberAddress: string): Promise<string> {
-    const msg = { leave_dso: {} };
+    const msg = { leave_trusted_circle: {} };
     const { transactionHash } = await this.#signingClient.execute(
       memberAddress,
       this.address,
