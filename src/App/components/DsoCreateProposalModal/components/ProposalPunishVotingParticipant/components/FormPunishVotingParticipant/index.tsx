@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
 import AddressList from "App/components/AddressList";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
@@ -5,10 +6,13 @@ import Button from "App/components/Button";
 import Checkbox from "App/components/Checkbox";
 import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useSdk } from "service";
+import { DsoContractQuerier } from "utils/dso";
 import { addressStringToArray, getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
 
@@ -24,21 +28,20 @@ const commentLabel = "Comment";
 
 export interface FormPunishVotingParticipantValues {
   readonly memberToPunish: string;
+  readonly memberEscrow: string;
   readonly slashingPercentage: string;
   readonly kickOut: boolean;
   readonly distributionList: readonly string[];
   readonly comment: string;
 }
 
-interface FormPunishVotingParticipantProps extends FormPunishVotingParticipantValues {
-  readonly memberEscrow: string;
+interface FormPunishVotingParticipantProps extends Omit<FormPunishVotingParticipantValues, "memberEscrow"> {
   readonly goBack: () => void;
   readonly handleSubmit: (values: FormPunishVotingParticipantValues) => void;
 }
 
 export default function FormPunishVotingParticipant({
   memberToPunish,
-  memberEscrow,
   slashingPercentage,
   kickOut,
   distributionList,
@@ -46,20 +49,46 @@ export default function FormPunishVotingParticipant({
   goBack,
   handleSubmit,
 }: FormPunishVotingParticipantProps): JSX.Element {
+  const { dsoAddress }: DsoHomeParams = useParams();
   const {
-    sdkState: { config },
+    sdkState: { config, client },
   } = useSdk();
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
   // NOTE: Have local state for these because otherwise when entering
   //       the distribution list the form resets and wipes the fields
   const [memberToPunishInit, setMemberToPunishInit] = useState(memberToPunish);
+  const [memberEscrowInit, setMemberEscrowInit] = useState("0");
   const [slashingPercentageInit, setSlashingPercentageInit] = useState(slashingPercentage);
   const [kickOutInit, setKickOutInit] = useState(kickOut);
   const [commentInit, setCommentInit] = useState(comment);
 
   const [distributionListString, setDistributionListString] = useState(distributionList.join(","));
   const [distributionListArray, setDistributionListArray] = useState(distributionList);
+
+  useEffect(() => {
+    (async function updateMemberEscrow() {
+      if (!client || !memberToPunishInit) return;
+
+      if (!isValidAddress(memberToPunishInit, config.addressPrefix)) {
+        setMemberEscrowInit("0");
+        return;
+      }
+
+      const dsoContract = new DsoContractQuerier(dsoAddress, client);
+
+      try {
+        const escrowResponse = await dsoContract.getEscrow(memberToPunishInit);
+        if (!escrowResponse) throw new Error("No escrow found for user");
+
+        const decimals = config.coinMap[config.feeToken].fractionalDigits;
+        const userEscrowDecimal = Decimal.fromAtomics(escrowResponse.paid, decimals);
+        setMemberEscrowInit(userEscrowDecimal.toString());
+      } catch {
+        setMemberEscrowInit("0");
+      }
+    })();
+  }, [client, config.addressPrefix, config.coinMap, config.feeToken, dsoAddress, memberToPunishInit]);
 
   useEffect(() => {
     const distributionListArray = addressStringToArray(distributionListString);
@@ -107,6 +136,7 @@ export default function FormPunishVotingParticipant({
 
         handleSubmit({
           memberToPunish: values[getFormItemName(memberToPunishLabel)].toString(),
+          memberEscrow: memberEscrowInit,
           slashingPercentage,
           kickOut: !!values[getFormItemName(kickOutLabel)],
           distributionList,
@@ -151,7 +181,13 @@ export default function FormPunishVotingParticipant({
                 />
                 <MemberTexts>
                   <Text>Member's escrow</Text>
-                  <Text>{`${memberEscrow} ${feeTokenDenom}`}</Text>
+                  {memberEscrowInit === "0" ? (
+                    <Text
+                      style={{ color: "var(--color-error-form)" }}
+                    >{`${memberEscrowInit} ${feeTokenDenom} Cannot punish`}</Text>
+                  ) : (
+                    <Text>{`${memberEscrowInit} ${feeTokenDenom}`}</Text>
+                  )}
                 </MemberTexts>
               </PunishmentRow>
               <Field
@@ -185,6 +221,7 @@ export default function FormPunishVotingParticipant({
                 <Button
                   disabled={
                     !isValid ||
+                    memberEscrowInit === "0" ||
                     distributionListArray.some(
                       (memberAddress) => !isValidAddress(memberAddress, config.addressPrefix),
                     )

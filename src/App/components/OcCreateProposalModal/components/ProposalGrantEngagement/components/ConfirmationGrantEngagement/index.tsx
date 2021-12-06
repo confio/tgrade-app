@@ -1,5 +1,6 @@
 import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
+import AddressTag from "App/components/AddressTag";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import { lazy, useEffect, useState } from "react";
@@ -7,7 +8,7 @@ import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract } from "utils/dso";
 
-import { ButtonGroup, FeeGroup, Separator, TextComment } from "./style";
+import { ButtonGroup, ConfirmField, FeeGroup, Separator, TextComment } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Text, Paragraph } = Typography;
@@ -53,10 +54,14 @@ export default function ConfirmationGrantEngagement({
 
   return (
     <>
-      <TextComment>Member to be granted Engagement Points</TextComment>
-      <Text>{member}</Text>
-      <TextComment>Number of Engagement Points to be granted</TextComment>
-      <Text>{points}</Text>
+      <ConfirmField>
+        <Text>Member to be granted Engagement Points: </Text>
+        <AddressTag address={member} />
+      </ConfirmField>
+      <ConfirmField>
+        <Text>Number of Engagement Points to be granted: </Text>
+        <Text>{points}</Text>
+      </ConfirmField>
       <TextComment>{comment}</TextComment>
       <Separator />
       <ButtonGroup>

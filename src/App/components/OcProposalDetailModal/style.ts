@@ -30,6 +30,15 @@ export const TextValue = styled(Typography.Text)`
   }
 `;
 
+export const AddressField = styled(Typography)`
+  margin-top: var(--s-1);
+  display: flex;
+
+  & * + * {
+    margin-left: var(--s-2);
+  }
+`;
+
 export const ChangedField = styled(Typography)`
   margin-top: var(--s-1);
 

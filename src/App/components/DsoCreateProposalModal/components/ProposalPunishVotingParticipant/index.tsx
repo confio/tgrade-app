@@ -1,10 +1,9 @@
-import { Decimal } from "@cosmjs/math";
 import { TxResult } from "App/components/ShowTxResult";
 import { DsoHomeParams } from "App/pages/DsoHome";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
-import { DsoContract, DsoContractQuerier, Punishment } from "utils/dso";
+import { DsoContract, Punishment } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import { ProposalStep, ProposalType } from "../..";
@@ -31,7 +30,7 @@ export default function ProposalPunishVotingParticipant({
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { client, address, signingClient, config },
+    sdkState: { address, signingClient, config },
   } = useSdk();
   const {
     dsoState: { dsos },
@@ -44,35 +43,16 @@ export default function ProposalPunishVotingParticipant({
   const [distributionList, setDistributionList] = useState<readonly string[]>([]);
   const [comment, setComment] = useState("");
 
-  useEffect(() => {
-    (async function updateMemberEscrow() {
-      if (!client || !address) return;
-
-      const dsoContract = new DsoContractQuerier(dsoAddress, client);
-
-      try {
-        const escrowResponse = await dsoContract.getEscrow(address);
-
-        if (escrowResponse) {
-          const decimals = config.coinMap[config.feeToken].fractionalDigits;
-          const userEscrowDecimal = Decimal.fromAtomics(escrowResponse.paid, decimals);
-          setMemberEscrow(userEscrowDecimal.toString());
-        }
-      } catch (error) {
-        if (!(error instanceof Error)) return;
-        handleError(error);
-      }
-    })();
-  }, [address, client, config.coinMap, config.feeToken, dsoAddress, handleError]);
-
   async function submitPunishVotingParticipant({
     memberToPunish,
+    memberEscrow,
     slashingPercentage,
     kickOut,
     distributionList,
     comment,
   }: FormPunishVotingParticipantValues) {
     setMemberToPunish(memberToPunish);
+    setMemberEscrow(memberEscrow);
     setSlashingPercentage(slashingPercentage);
     setKickOut(kickOut);
     setDistributionList(distributionList);
@@ -143,7 +123,6 @@ export default function ProposalPunishVotingParticipant({
       ) : (
         <FormPunishVotingParticipant
           memberToPunish={memberToPunish}
-          memberEscrow={memberEscrow}
           slashingPercentage={slashingPercentage}
           kickOut={kickOut}
           distributionList={distributionList}

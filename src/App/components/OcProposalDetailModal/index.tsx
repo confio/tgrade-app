@@ -6,7 +6,6 @@ import { ReactComponent as StatusExecutedIcon } from "App/assets/icons/status-ex
 import { ReactComponent as StatusOpenIcon } from "App/assets/icons/status-open-icon.svg";
 import { ReactComponent as StatusPassedIcon } from "App/assets/icons/status-passed-icon.svg";
 import { ReactComponent as AcceptIcon } from "App/assets/icons/yes-icon.svg";
-import AddressList from "App/components/AddressList";
 import Button from "App/components/Button";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
@@ -16,11 +15,15 @@ import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract, DsoContractQuerier, ProposalResponse, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
+import ProposalAddMembers from "./components/ProposalAddMembers";
+import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
+import ProposalGrantEngagement from "./components/ProposalGrantEngagement";
+import ProposalPunishVotingMember from "./components/ProposalPunishVotingMember";
+import ProposalRemoveMembers from "./components/ProposalRemoveMembers";
 import {
   AbstainedButton,
   AcceptButton,
   ButtonGroup,
-  ChangedField,
   ExecuteButton,
   FeeWrapper,
   ModalHeader,
@@ -30,7 +33,6 @@ import {
   Separator,
   StyledModal,
   Text,
-  TextLabel,
   TextValue,
   Title,
 } from "./style";
@@ -280,58 +282,11 @@ export default function OcProposalDetailModal({
           {proposal ? (
             <>
               <Stack gap="s1">
-                {proposalPunishVotingMember?.BurnEscrow?.member ||
-                proposalPunishVotingMember?.DistributeEscrow?.member ? (
-                  <ChangedField>
-                    <TextLabel>
-                      Member to punish:{" "}
-                      {proposalPunishVotingMember?.BurnEscrow?.member ||
-                        proposalPunishVotingMember?.DistributeEscrow?.member ||
-                        ""}
-                    </TextLabel>
-                  </ChangedField>
-                ) : null}
-                {proposalPunishVotingMember?.BurnEscrow?.kick_out !== undefined ||
-                proposalPunishVotingMember?.DistributeEscrow?.kick_out !== undefined ? (
-                  <ChangedField>
-                    <TextLabel>
-                      {proposalPunishVotingMember?.BurnEscrow?.kick_out ||
-                      proposalPunishVotingMember?.DistributeEscrow?.kick_out
-                        ? "The member WILL BE kicked out of the Trusted Circle"
-                        : "The member WILL NOT BE kicked out of the Trusted Circle"}
-                    </TextLabel>
-                  </ChangedField>
-                ) : null}
-                {(proposalPunishVotingMember?.BurnEscrow?.slashing_percentage &&
-                  proposalPunishVotingMember?.BurnEscrow?.slashing_percentage !== "0") ||
-                (proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage &&
-                  proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage !== "0") ? (
-                  <ChangedField>
-                    <TextLabel>
-                      {`${
-                        parseFloat(
-                          proposalPunishVotingMember?.BurnEscrow?.slashing_percentage ||
-                            proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage ||
-                            "",
-                        ) * 100
-                      }% will be slashed`}
-                    </TextLabel>
-                  </ChangedField>
-                ) : null}
-                {proposalGrantEngagement ? (
-                  <TextValue>
-                    Grant {proposalGrantEngagement.points} Engagement Points to{" "}
-                    {proposalGrantEngagement.member}
-                  </TextValue>
-                ) : null}
-                <AddressList addresses={proposalAddMembers} short copyable />
-                <AddressList addresses={proposalRemoveMembers} short copyable />
-                <AddressList addresses={proposalAddVotingMembers} short copyable />
-                <AddressList
-                  addresses={proposalPunishVotingMember?.DistributeEscrow?.distribution_list ?? []}
-                  short
-                  copyable
-                />
+                <ProposalAddMembers proposalAddMembers={proposalAddMembers} />
+                <ProposalRemoveMembers proposalRemoveMembers={proposalRemoveMembers} />
+                <ProposalAddVotingMembers proposalAddVotingMembers={proposalAddVotingMembers} />
+                <ProposalPunishVotingMember proposalPunishVotingMember={proposalPunishVotingMember} />
+                <ProposalGrantEngagement proposalGrantEngagement={proposalGrantEngagement} />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />

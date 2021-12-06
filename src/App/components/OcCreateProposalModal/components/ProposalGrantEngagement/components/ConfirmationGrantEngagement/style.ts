@@ -3,6 +3,17 @@ import styled from "styled-components";
 
 const { Text } = Typography;
 
+export const ConfirmField = styled.div`
+  & span.ant-typography {
+    font-size: var(--s0);
+    color: var(--color-text-1ary);
+
+    &:first-child {
+      font-weight: 500;
+    }
+  }
+`;
+
 export const TextComment = styled(Text)`
   && {
     color: var(--color-text-1ary);
