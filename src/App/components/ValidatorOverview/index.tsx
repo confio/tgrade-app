@@ -117,7 +117,7 @@ const columns = [
           <LinkIcon />
         </a>
       ) : (
-        <p>-</p>
+        <p>{"—"}</p>
       ),
     sorter: (a: any, b: any) => a.staked - b.staked,
   },
