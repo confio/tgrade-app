@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: cimg/node:14.18.0
     environment:
-      NODE_OPTIONS: --max-old-space-size=4096
+      NODE_OPTIONS: --max-old-space-size=3072
     steps:
       - checkout
       - restore_cache:
