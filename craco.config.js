@@ -3,12 +3,9 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   plugins: [
-    {
-      plugin: new MiniCssExtractPlugin({
-        ignoreOrder: true,
-      }),
-    },
-    { plugin: require("craco-antd") },
+    new MiniCssExtractPlugin({
+      ignoreOrder: true,
+    }),
   ],
   module: {
     rules: [
