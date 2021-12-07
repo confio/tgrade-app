@@ -17,7 +17,6 @@ module.exports = {
       "warn",
       {
         allowArgumentsExplicitlyTypedAsAny: true,
-        threads: false,
       },
     ],
     "@typescript-eslint/no-empty-function": "off",
