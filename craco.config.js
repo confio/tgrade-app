@@ -8,7 +8,9 @@ module.exports = {
         ignoreOrder: true,
       }),
     },
+    { plugin: require("craco-antd") },
   ],
+
   module: {
     rules: [
       {
