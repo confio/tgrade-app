@@ -29,6 +29,7 @@ export default function DsoEscrow(): JSX.Element {
   const [userEscrow, setUserEscrow] = useState("0");
   const [requiredEscrow, setRequiredEscrow] = useState("0");
   const [exceedingEscrow, setExceedingEscrow] = useState("0");
+  const [frozenEscrowDate, setFrozenEscrowDate] = useState<Date>();
   const [totalRequiredEscrow, setTotalRequiredEscrow] = useState(0);
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
@@ -63,6 +64,10 @@ export default function DsoEscrow(): JSX.Element {
               ? userEscrowDecimal.minus(requiredEscrowDecimal)
               : Decimal.fromAtomics("0", decimals);
             setExceedingEscrow(exceedingEscrowDecimal.toString());
+
+            // get frozen escrow date
+            const frozenEscrowDate = escrowResponse.status.leaving?.claim_at;
+            if (frozenEscrowDate) setFrozenEscrowDate(new Date(frozenEscrowDate * 1000));
           }
         }
 
@@ -197,11 +202,20 @@ export default function DsoEscrow(): JSX.Element {
             <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
           )}
         </AmountStack>
-        <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
-        {exceedingEscrow !== "0" ? (
+        {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
+          <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
+        ) : null}
+        {(!frozenEscrowDate && exceedingEscrow !== "0") ||
+        (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
           <Button type="ghost" onClick={() => setReturnModalOpen(true)}>
             Claim escrow
           </Button>
+        ) : null}
+        {frozenEscrowDate && frozenEscrowDate > new Date() ? (
+          <Text>
+            Your escrow is frozen until {frozenEscrowDate.toLocaleDateString()} at{" "}
+            {frozenEscrowDate.toLocaleTimeString()}{" "}
+          </Text>
         ) : null}
       </YourEscrowStack>
       {depositModalOpen ? (

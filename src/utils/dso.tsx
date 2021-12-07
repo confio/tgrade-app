@@ -149,19 +149,19 @@ export interface MemberListResponse {
 
 export type MemberStatus = {
   /// Normal member, not allowed to vote
-  readonly non_voting: Record<string, unknown>;
+  readonly non_voting?: Record<string, unknown>;
 } & {
   /// Approved for voting, need to pay in
-  readonly pending: { readonly batch_id: number };
+  readonly pending?: { readonly batch_id: number };
 } & {
   /// Approved for voting, and paid in. Waiting for rest of batch
-  readonly pending_paid: { readonly batch_id: number };
+  readonly pending_paid?: { readonly batch_id: number };
 } & {
   /// Full-fledged voting member
-  readonly voting: Record<string, unknown>;
+  readonly voting?: Record<string, unknown>;
 } & {
   /// Marked as leaving. Escrow frozen until `claim_at`
-  readonly leaving: { readonly claim_at: number };
+  readonly leaving?: { readonly claim_at: number };
 };
 
 export interface EscrowStatus {
@@ -371,7 +371,7 @@ export class DsoContract extends DsoContractQuerier {
   }
 
   async leaveDso(memberAddress: string): Promise<string> {
-    const msg = { leave_dso: {} };
+    const msg = { leave_trusted_circle: {} };
     const { transactionHash } = await this.#signingClient.execute(
       memberAddress,
       this.address,
