@@ -48,6 +48,13 @@ export const NavSidebar: React.FC = () => {
             </TextCell>
           </Cell>
         </Link>
+        <Link to={paths.validators.prefix}>
+          <Cell>
+            <TextCell>
+              <StyledText style={{ marginLeft: "45px" }}>Validators</StyledText>
+            </TextCell>
+          </Cell>
+        </Link>
         <Link to={paths.engagement.prefix}>
           <Cell>
             <Icon.Flag />

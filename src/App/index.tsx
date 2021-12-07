@@ -16,6 +16,7 @@ import LandingPage from "./pages/LandingPage";
 import CookiePolicy from "./pages/LandingPage/CookiePolicy";
 import Impressum from "./pages/LandingPage/Impressum";
 import PrivacyPolicy from "./pages/LandingPage/PrivacyPolicy";
+import ValidatorsHome from "./pages/ValidatorsHome";
 import { paths } from "./paths";
 
 const Dso = lazy(() => import("./routes/Dso"));
@@ -46,6 +47,9 @@ export default function App(): JSX.Element {
                           </Route>
                           <Route path={paths.engagement.prefix}>
                             <Engagement />
+                          </Route>
+                          <Route path={paths.validators.prefix}>
+                            <ValidatorsHome />
                           </Route>
                           <Route path={paths.oc.prefix}>
                             <OcHome />
