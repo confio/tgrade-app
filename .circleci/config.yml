@@ -4,8 +4,8 @@ jobs:
   build:
     docker:
       - image: cimg/node:14.18.0
-    environment:
-      NODE_OPTIONS: --max-old-space-size=3072
+    parallelism: 3
+    resource_class: large
     steps:
       - checkout
       - restore_cache:
