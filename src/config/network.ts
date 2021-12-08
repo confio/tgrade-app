@@ -55,14 +55,14 @@ const local: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.025utgd"),
-  factoryAddress: "tgrade1gurgpv8savnfw66lckwzn4zk7fp394lp9sqaw4",
+  factoryAddress: "tgrade1fventeva948ue0fzhp6xselr522rnqwgp5c9qv",
   codeIds: {
-    // The first 6 codeIds are reserved by tgrade automatically when launched
+    // The first 8 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [2],
-    cw20Tokens: [7],
-    tgradeCw20: [8],
-    tgradeFactory: [9],
-    tgradePair: [10],
+    cw20Tokens: [9],
+    tgradeCw20: [10],
+    tgradeFactory: [11],
+    tgradePair: [12],
   },
 };
 
