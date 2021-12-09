@@ -86,6 +86,8 @@ export type ProposalContent = {
   readonly edit_trusted_circle?: TrustedCircleAdjustements;
 } & {
   readonly grant_engagement?: Engagement;
+} & {
+  readonly whitelist_contract?: string;
 };
 
 export function isOcProposal(proposal: ProposalContent): boolean {
