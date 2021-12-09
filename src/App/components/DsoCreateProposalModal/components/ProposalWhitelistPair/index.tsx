@@ -109,10 +109,7 @@ export default function ProposalWhitelistPair({
     try {
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.propose(client, config.factoryAddress, address, comment, {
-        add_remove_non_voting_members: {
-          remove: [],
-          add: [pairAddress],
-        },
+        whitelist_contract: pairAddress,
       });
 
       const dsoName = getDsoName(dsos, dsoAddress);
