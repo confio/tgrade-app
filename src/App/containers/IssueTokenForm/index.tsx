@@ -94,7 +94,6 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
         decimalsNumber,
         [{ address, amount }],
         minter,
-        config.gasPrice,
         marketing,
         values.dsoAddress,
       );

@@ -168,5 +168,6 @@ export async function createSigningClient(
 ): Promise<SigningCosmWasmClient> {
   return SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
     prefix: config.addressPrefix,
+    gasPrice: config.gasPrice,
   });
 }

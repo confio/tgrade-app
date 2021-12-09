@@ -35,7 +35,6 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
     tokenDecimals,
     [{ address, amount }],
     undefined,
-    config.gasPrice,
     undefined,
     undefined,
   );
@@ -79,7 +78,7 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
   const pair = pairs[`${tgradeToken.address}-${cw20tokenInfo.address}`];
   const pairAddress = pair.contract_addr;
 
-  await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress, config.gasPrice);
+  await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
   const provideStatus = await Pool.ProvideLiquidity(
     signingClient,
     pairAddress,
@@ -175,7 +174,6 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
     tokenDecimals,
     [{ address, amount }],
     undefined,
-    config.gasPrice,
     undefined,
     dsoAddress,
   );
@@ -232,7 +230,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
     selectTo: cw20tokenInfo,
   };
 
-  await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress, config.gasPrice);
+  await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
   const provideStatus = await Pool.ProvideLiquidity(
     signingClient,
     pairAddress,

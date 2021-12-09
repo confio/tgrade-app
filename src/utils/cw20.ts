@@ -1,6 +1,5 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
-import { calculateFee, GasPrice } from "@cosmjs/stargate";
 import tgradeLogo from "App/assets/icons/tgradeLogo.svg";
 import tempImgUrl from "App/assets/icons/token-placeholder.png";
 import { NetworkConfig } from "config/network";
@@ -53,9 +52,6 @@ export interface DownloadLogoResponse {
 }
 
 export class Contract20WS {
-  static readonly GAS_CREATE_TOKEN = 500_000;
-  static readonly GAS_AUTHORIZE = 500_000;
-
   readonly #signingClient: SigningCosmWasmClient;
 
   constructor(address: string, signingClient: SigningCosmWasmClient) {
@@ -71,7 +67,6 @@ export class Contract20WS {
     decimals: number,
     initial_balances: Array<InitialValuesInterface>,
     minter: MinterInterface | undefined,
-    gasPrice: GasPrice,
     marketingInfo?: InstantiateMarketingInfo,
     dsoAddress?: string,
   ): Promise<string> {
@@ -91,7 +86,7 @@ export class Contract20WS {
       codeId,
       initMsg,
       "CW20 instance",
-      calculateFee(Contract20WS.GAS_CREATE_TOKEN, gasPrice),
+      "auto",
     );
     return contractAddress;
   }
@@ -262,7 +257,6 @@ export class Contract20WS {
     contractAddress: string,
     address: string,
     pairAddress: string,
-    gasPrice: GasPrice,
   ): Promise<any> {
     const result = await signingClient.execute(
       address,
@@ -273,7 +267,7 @@ export class Contract20WS {
           amount: UINT128_MAX,
         },
       },
-      calculateFee(Contract20WS.GAS_AUTHORIZE, gasPrice),
+      "auto",
     );
 
     return result;
