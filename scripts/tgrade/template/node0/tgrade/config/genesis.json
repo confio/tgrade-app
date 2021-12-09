@@ -108,6 +108,14 @@
     "params": null,
     "poe": {
       "bond_denom": "utgd",
+      "community_pool_contract_config": {
+        "voting_rules": {
+          "allow_end_early": true,
+          "quorum": "10.000000000000000000",
+          "threshold": "60.000000000000000000",
+          "voting_period": 21
+        }
+      },
       "engagement": [
         {
           "address": "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
@@ -178,15 +186,17 @@
         }
       ],
       "oversight_committee_contract_config": {
-        "allow_end_early": true,
         "escrow_amount": {
           "amount": "1000000",
           "denom": "utgd"
         },
         "name": "Oversight Community",
-        "quorum": "51.000000000000000000",
-        "threshold": "55.000000000000000000",
-        "voting_period": 1
+        "voting_rules": {
+          "allow_end_early": true,
+          "quorum": "51.000000000000000000",
+          "threshold": "55.000000000000000000",
+          "voting_period": 1
+        }
       },
       "params": {
         "historical_entries": 10000,
@@ -201,9 +211,18 @@
         "unbonding_period": "1814400s"
       },
       "system_admin_address": "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
+      "validator_voting_contract_config": {
+        "voting_rules": {
+          "allow_end_early": true,
+          "quorum": "40.000000000000000000",
+          "threshold": "66.000000000000000000",
+          "voting_period": 14
+        }
+      },
       "valset_contract_config": {
-        "ValidatorsRewardRatio": 50,
-        "double_sign_slash_ratio": "50.000000000000000000",
+        "community_pool_reward_ratio": "5.000000000000000000",
+        "engagement_reward_ratio": "47.500000000000000000",
+        "validator_reward_ratio": "47.500000000000000000",
         "epoch_length": "60s",
         "epoch_reward": {
           "amount": "100000",
@@ -212,7 +231,8 @@
         "fee_percentage": "50.000000000000000000",
         "max_validators": 100,
         "min_weight": "1",
-        "scaling": 1
+        "scaling": 1,
+        "double_sign_slash_ratio": "50.000000000000000000"
       }
     },
     "transfer": {
