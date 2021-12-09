@@ -170,7 +170,7 @@ export default function DsoProposalDetailModal({
   }
 
   function calculateTotalVotes(): number {
-    return (proposal?.votes?.yes ?? 0) + (proposal?.votes?.no ?? 0) + (proposal?.votes?.abstain ?? 0);
+    return (proposal?.votes.yes ?? 0) + (proposal?.votes.no ?? 0) + (proposal?.votes.abstain ?? 0);
   }
 
   async function submitExecuteProposal() {
@@ -267,13 +267,13 @@ export default function DsoProposalDetailModal({
                     </b>
                   </Paragraph>
                   <Paragraph>
-                    Yes: <b>{proposal.votes?.yes ?? 0}</b>
+                    Yes: <b>{proposal.votes.yes ?? 0}</b>
                   </Paragraph>
                   <Paragraph>
-                    No: <b>{proposal.votes?.no ?? 0}</b>
+                    No: <b>{proposal.votes.no ?? 0}</b>
                   </Paragraph>
                   <Paragraph>
-                    Abstain: <b>{proposal.votes?.abstain ?? 0}</b>
+                    Abstain: <b>{proposal.votes.abstain ?? 0}</b>
                   </Paragraph>
                 </SectionWrapper>
               </SectionWrapper>

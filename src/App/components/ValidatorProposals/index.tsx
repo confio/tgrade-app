@@ -76,9 +76,9 @@ const columns = [
           <img alt="" {...getImgSrcFromStatus(record.status)} />
           {(record.status as string).charAt(0).toUpperCase() + (record.status as string).slice(1)}
         </StatusParagraph>
-        <Paragraph>Yes: {record.votes?.yes ?? 0}</Paragraph>
-        <Paragraph>No: {record.votes?.no ?? 0}</Paragraph>
-        <Paragraph>Abstained: {record.votes?.abstain ?? 0}</Paragraph>
+        <Paragraph>Yes: {record.votes.yes ?? 0}</Paragraph>
+        <Paragraph>No: {record.votes.no ?? 0}</Paragraph>
+        <Paragraph>Abstained: {record.votes.abstain ?? 0}</Paragraph>
       </StatusBlock>
     ),
     sorter: (a: any, b: any) => {

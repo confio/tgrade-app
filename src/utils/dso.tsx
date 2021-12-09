@@ -120,7 +120,7 @@ export interface ProposalResponse {
   readonly rules: VotingRules;
   readonly total_weight: number;
   /// This is a running tally of all votes cast on this proposal so far.
-  readonly votes?: Votes;
+  readonly votes: Votes;
 }
 
 export interface ProposalListResponse {
