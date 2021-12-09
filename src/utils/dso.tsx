@@ -1,8 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
 
-import { Factory } from "./factory";
-
 export type VoteOption = "yes" | "no" | "abstain";
 
 export interface PendingEscrow {
@@ -202,16 +200,6 @@ export async function getProposalTitle(
 
   switch (proposalProp) {
     case "add_remove_non_voting_members":
-      // Determine if it's whitelist
-      if (proposal.add_remove_non_voting_members?.add.length === 1) {
-        const address = proposal.add_remove_non_voting_members?.add[0];
-        const pairs = await Factory.getPairs(client, factoryAddress);
-        for (const pair in pairs) {
-          if (pairs[pair].contract_addr === address) return "Whitelist pair";
-        }
-      }
-
-      // Determine if it's add or remove
       return proposal.add_remove_non_voting_members?.add.length ? "Add participants" : "Remove participants";
     case "add_voting_members":
       return "Add voting participants";
@@ -219,6 +207,8 @@ export async function getProposalTitle(
       return "Punish voting participant";
     case "edit_trusted_circle":
       return "Edit Trusted Circle";
+    case "whitelist_contract":
+      return "Whitelist pair";
     case "grant_engagement":
       return "Grant engagement";
     default:
