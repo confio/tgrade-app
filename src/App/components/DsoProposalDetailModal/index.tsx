@@ -22,6 +22,7 @@ import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
 import ProposalEditDso from "./components/ProposalEditDso";
 import ProposalPunishVotingMember from "./components/ProposalPunishVotingMember";
 import ProposalRemoveMembers from "./components/ProposalRemoveMembers";
+import ProposalWhitelistPair from "./components/ProposalWhitelistPair";
 import {
   AbstainedButton,
   AcceptButton,
@@ -74,6 +75,7 @@ export default function DsoProposalDetailModal({
   const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
   const proposalPunishVotingMember = proposal?.proposal.punish_members?.[0] ?? undefined;
   const proposalEditDso = proposal?.proposal.edit_trusted_circle;
+  const proposalWhitelistPair = proposal?.proposal.whitelist_contract;
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
@@ -251,6 +253,7 @@ export default function DsoProposalDetailModal({
                 <ProposalAddVotingMembers proposalAddVotingMembers={proposalAddVotingMembers} />
                 <ProposalPunishVotingMember proposalPunishVotingMember={proposalPunishVotingMember} />
                 <ProposalEditDso proposalEditDso={proposalEditDso} />
+                <ProposalWhitelistPair pairAddress={proposalWhitelistPair} />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />
