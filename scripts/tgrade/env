@@ -1,5 +1,5 @@
 # Choose from https://hub.docker.com/r/confio/tgrade/tags
 REPOSITORY="confio/tgrade"
-VERSION="v0.5.0-beta7"
+VERSION="v0.5.0-rc1"
 
 CONTAINER_NAME="tgrade"
