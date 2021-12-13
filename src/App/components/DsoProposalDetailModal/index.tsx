@@ -6,7 +6,6 @@ import { ReactComponent as StatusExecutedIcon } from "App/assets/icons/status-ex
 import { ReactComponent as StatusOpenIcon } from "App/assets/icons/status-open-icon.svg";
 import { ReactComponent as StatusPassedIcon } from "App/assets/icons/status-passed-icon.svg";
 import { ReactComponent as AcceptIcon } from "App/assets/icons/yes-icon.svg";
-import AddressList from "App/components/AddressList";
 import Button from "App/components/Button";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
@@ -14,18 +13,22 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { getDisplayAmountFromFee, nativeCoinToDisplay } from "utils/currency";
+import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract, DsoContractQuerier, ProposalResponse, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
+import ProposalAddMembers from "./components/ProposalAddMembers";
+import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
+import ProposalEditDso from "./components/ProposalEditDso";
+import ProposalPunishVotingMember from "./components/ProposalPunishVotingMember";
+import ProposalRemoveMembers from "./components/ProposalRemoveMembers";
+import ProposalWhitelistPair from "./components/ProposalWhitelistPair";
 import {
   AbstainedButton,
   AcceptButton,
   ButtonGroup,
-  ChangedField,
   ExecuteButton,
   FeeWrapper,
-  FieldGroup,
   ModalHeader,
   Paragraph,
   RejectButton,
@@ -33,7 +36,6 @@ import {
   Separator,
   StyledModal,
   Text,
-  TextLabel,
   TextValue,
   Title,
 } from "./style";
@@ -71,9 +73,10 @@ export default function DsoProposalDetailModal({
   const proposalAddMembers = proposal?.proposal.add_remove_non_voting_members?.add;
   const proposalRemoveMembers = proposal?.proposal.add_remove_non_voting_members?.remove;
   const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
+  const proposalPunishVotingMember = proposal?.proposal.punish_members?.[0] ?? undefined;
   const proposalEditDso = proposal?.proposal.edit_trusted_circle;
+  const proposalWhitelistPair = proposal?.proposal.whitelist_contract;
 
-  const [displayEscrow, setDisplayEscrow] = useState("0");
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
   useEffect(() => {
@@ -103,25 +106,6 @@ export default function DsoProposalDetailModal({
       }
     })();
   }, [client, dsoAddress, handleError, proposalId]);
-
-  useEffect(() => {
-    (async function formatEscrow() {
-      const nativeEscrow = proposalEditDso?.escrow_amount;
-      if (!nativeEscrow) return;
-
-      try {
-        const { amount: displayEscrow } = nativeCoinToDisplay(
-          { denom: config.feeToken, amount: nativeEscrow },
-          config.coinMap,
-        );
-
-        setDisplayEscrow(displayEscrow);
-      } catch (error) {
-        if (!(error instanceof Error)) return;
-        handleError(error);
-      }
-    })();
-  }, [config.coinMap, config.feeToken, handleError, proposalEditDso?.escrow_amount]);
 
   useEffect(() => {
     (async function queryVoter() {
@@ -186,7 +170,7 @@ export default function DsoProposalDetailModal({
   }
 
   function calculateTotalVotes(): number {
-    return (proposal?.votes?.yes ?? 0) + (proposal?.votes?.no ?? 0) + (proposal?.votes?.abstain ?? 0);
+    return (proposal?.votes.yes ?? 0) + (proposal?.votes.no ?? 0) + (proposal?.votes.abstain ?? 0);
   }
 
   async function submitExecuteProposal() {
@@ -264,51 +248,12 @@ export default function DsoProposalDetailModal({
           {proposal ? (
             <>
               <Stack gap="s1">
-                <FieldGroup>
-                  {proposalEditDso?.name ? (
-                    <ChangedField>
-                      <TextLabel>Trusted Circle name</TextLabel>
-                      <TextValue>{proposalEditDso.name}</TextValue>
-                    </ChangedField>
-                  ) : null}
-                  {proposalEditDso?.quorum ? (
-                    <ChangedField>
-                      <TextLabel>Quorum</TextLabel>
-                      <TextValue>
-                        {(parseFloat(proposalEditDso.quorum) * 100).toFixed(2).toString()}%
-                      </TextValue>
-                    </ChangedField>
-                  ) : null}
-                  {proposalEditDso?.threshold ? (
-                    <ChangedField>
-                      <TextLabel>Threshold</TextLabel>
-                      <TextValue>
-                        {(parseFloat(proposalEditDso.threshold) * 100).toFixed(2).toString()}%
-                      </TextValue>
-                    </ChangedField>
-                  ) : null}
-                  {proposalEditDso?.voting_period ? (
-                    <ChangedField>
-                      <TextLabel>Voting duration</TextLabel>
-                      <TextValue>{proposalEditDso.voting_period}</TextValue>
-                    </ChangedField>
-                  ) : null}
-                  {proposalEditDso?.escrow_amount ? (
-                    <ChangedField>
-                      <TextLabel>Escrow amount</TextLabel>
-                      <TextValue>{displayEscrow}</TextValue>
-                    </ChangedField>
-                  ) : null}
-                  {proposalEditDso?.allow_end_early ? (
-                    <ChangedField>
-                      <TextLabel>Early pass</TextLabel>
-                      <TextValue>{proposalEditDso.allow_end_early ? "Enabled" : "Disabled"}</TextValue>
-                    </ChangedField>
-                  ) : null}
-                </FieldGroup>
-                <AddressList addresses={proposalAddMembers} short copyable />
-                <AddressList addresses={proposalRemoveMembers} short copyable />
-                <AddressList addresses={proposalAddVotingMembers} short copyable />
+                <ProposalAddMembers proposalAddMembers={proposalAddMembers} />
+                <ProposalRemoveMembers proposalRemoveMembers={proposalRemoveMembers} />
+                <ProposalAddVotingMembers proposalAddVotingMembers={proposalAddVotingMembers} />
+                <ProposalPunishVotingMember proposalPunishVotingMember={proposalPunishVotingMember} />
+                <ProposalEditDso proposalEditDso={proposalEditDso} />
+                <ProposalWhitelistPair pairAddress={proposalWhitelistPair} />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />
@@ -322,40 +267,17 @@ export default function DsoProposalDetailModal({
                     </b>
                   </Paragraph>
                   <Paragraph>
-                    Yes: <b>{proposal.votes.yes}</b>
+                    Yes: <b>{proposal.votes.yes ?? 0}</b>
                   </Paragraph>
                   <Paragraph>
-                    No: <b>{proposal.votes.no}</b>
+                    No: <b>{proposal.votes.no ?? 0}</b>
                   </Paragraph>
                   <Paragraph>
-                    Abstain: <b>{proposal.votes.abstain}</b>
+                    Abstain: <b>{proposal.votes.abstain ?? 0}</b>
                   </Paragraph>
                 </SectionWrapper>
               </SectionWrapper>
               <Separator />
-              <SectionWrapper>
-                <Text>Voting Rules</Text>
-                <SectionWrapper>
-                  {proposalEditDso?.quorum ? (
-                    <ChangedField>
-                      <Paragraph>
-                        Quorum: <b>{(parseFloat(proposalEditDso.quorum) * 100).toFixed(2).toString()}%</b>
-                      </Paragraph>
-                    </ChangedField>
-                  ) : null}
-                  {proposalEditDso?.threshold ? (
-                    <Paragraph>
-                      {`Threshold: > `}
-                      <b>{(parseFloat(proposalEditDso.threshold) * 100).toFixed(2).toString()}%</b>
-                    </Paragraph>
-                  ) : null}
-                  {proposalEditDso?.voting_period ? (
-                    <Paragraph>
-                      Voting period: <b>{proposalEditDso.voting_period} days</b>
-                    </Paragraph>
-                  ) : null}
-                </SectionWrapper>
-              </SectionWrapper>
               <SectionWrapper>
                 <SectionWrapper>
                   {proposal?.status === "passed" ? <StatusPassedIcon /> : null}

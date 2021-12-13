@@ -8,26 +8,28 @@ import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract } from "utils/dso";
 
-import { AddressStack, ButtonGroup, FeeGroup, FieldLabel, Separator, TextComment } from "./style";
+import { ButtonGroup, ConfirmField, FeeGroup, Separator, TextComment } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
-const { Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 
-interface ConfirmationWhitelistPairProps {
-  readonly pairAddress: string;
+interface ConfirmationGrantEngagementProps {
+  readonly member: string;
+  readonly points: string;
   readonly comment: string;
   readonly isSubmitting: boolean;
   readonly goBack: () => void;
   readonly submitForm: () => void;
 }
 
-export default function ConfirmationWhitelistPair({
-  pairAddress,
+export default function ConfirmationGrantEngagement({
+  member,
+  points,
   comment,
   isSubmitting,
   goBack,
   submitForm,
-}: ConfirmationWhitelistPairProps): JSX.Element {
+}: ConfirmationGrantEngagementProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, signer, signingClient },
@@ -52,10 +54,14 @@ export default function ConfirmationWhitelistPair({
 
   return (
     <>
-      <AddressStack gap="s-3">
-        <FieldLabel>Pair to be whitelisted</FieldLabel>
-        <AddressTag address={pairAddress} />
-      </AddressStack>
+      <ConfirmField>
+        <Text>Member to be granted Engagement Points: </Text>
+        <AddressTag address={member} />
+      </ConfirmField>
+      <ConfirmField>
+        <Text>Number of Engagement Points to be granted: </Text>
+        <Text>{points}</Text>
+      </ConfirmField>
       <TextComment>{comment}</TextComment>
       <Separator />
       <ButtonGroup>

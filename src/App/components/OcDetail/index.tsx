@@ -5,7 +5,7 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useOc, useSdk } from "service";
-import { DsoContractQuerier, ProposalResponse } from "utils/dso";
+import { DsoContractQuerier, isOcProposal, ProposalResponse } from "utils/dso";
 
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -34,9 +34,17 @@ function getImgSrcFromStatus(status: string) {
 const columns = [
   {
     title: "Nº",
-    dataIndex: "id",
     key: "id",
-    sorter: (a: any, b: any) => a.id - b.id,
+    render: (record: ProposalResponse) => {
+      const proposalId = isOcProposal(record.proposal) ? `oc${record.id}` : `tc${record.id}`;
+      return proposalId;
+    },
+    sorter: (a: ProposalResponse, b: ProposalResponse) => {
+      const proposalAId = isOcProposal(a.proposal) ? `oc${a.id}` : `tc${a.id}`;
+      const proposalBId = isOcProposal(b.proposal) ? `oc${b.id}` : `tc${b.id}`;
+
+      return proposalAId < proposalBId;
+    },
   },
   {
     title: "Type",
@@ -65,15 +73,15 @@ const columns = [
   {
     title: "Status",
     key: "status",
-    render: (record: any) => (
+    render: (record: ProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
           {(record.status as string).charAt(0).toUpperCase() + (record.status as string).slice(1)}
         </StatusParagraph>
-        <Paragraph>Yes: {record.votes.yes}</Paragraph>
-        <Paragraph>No: {record.votes.no}</Paragraph>
-        <Paragraph>Abstained: {record.votes.abstain}</Paragraph>
+        <Paragraph>Yes: {record.votes.yes ?? 0}</Paragraph>
+        <Paragraph>No: {record.votes.no ?? 0}</Paragraph>
+        <Paragraph>Abstained: {record.votes.abstain ?? 0}</Paragraph>
       </StatusBlock>
     ),
     sorter: (a: any, b: any) => {
@@ -103,29 +111,36 @@ const columns = [
 export default function OcDetail(): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { client },
+    sdkState: { client, address },
   } = useSdk();
   const {
-    ocState: { ocAddress },
+    ocState: { ocAddress, ocProposalsAddress },
   } = useOc();
 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
   const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
-  const [clickedProposal, setClickedProposal] = useState<number>();
+  const [clickedProposal, setClickedProposal] = useState<string>();
+  const [isVotingMember, setVotingMember] = useState(false);
 
   const refreshProposals = useCallback(async () => {
-    if (!ocAddress || !client) return;
+    if (!ocAddress || !ocProposalsAddress || !client) return;
 
     try {
       const dsoContract = new DsoContractQuerier(ocAddress, client);
-      const proposals = await dsoContract.getProposals();
-      setProposals(proposals);
+      const ocProposalsContract = new DsoContractQuerier(ocProposalsAddress, client);
+
+      const dsoProposals = await dsoContract.getProposals();
+      const ocProposals = await ocProposalsContract.getProposals();
+      setProposals([...dsoProposals, ...ocProposals]);
+
+      const isVotingMember = (await dsoContract.getVotingMembers()).some((member) => member.addr === address);
+      setVotingMember(isVotingMember);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
     }
-  }, [client, handleError, ocAddress]);
+  }, [address, client, handleError, ocAddress, ocProposalsAddress]);
 
   useEffect(() => {
     refreshProposals();
@@ -144,7 +159,9 @@ export default function OcDetail(): JSX.Element {
             <Title level={2} style={{ fontSize: "var(--s1)" }}>
               Proposals
             </Title>
-            <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
+            {isVotingMember && (
+              <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
+            )}
           </header>
           {proposals.length ? (
             <Table
@@ -152,7 +169,12 @@ export default function OcDetail(): JSX.Element {
               pagination={false}
               dataSource={proposals}
               onRow={(proposal: ProposalResponse) => ({
-                onClick: () => setClickedProposal(proposal.id),
+                onClick: () => {
+                  const proposalId = isOcProposal(proposal.proposal)
+                    ? `oc${proposal.id}`
+                    : `tc${proposal.id}`;
+                  setClickedProposal(proposalId);
+                },
               })}
             />
           ) : null}
@@ -166,7 +188,7 @@ export default function OcDetail(): JSX.Element {
       <OcProposalDetailModal
         isModalOpen={!!clickedProposal}
         closeModal={() => setClickedProposal(undefined)}
-        proposalId={clickedProposal ?? 0}
+        proposalId={clickedProposal}
         refreshProposals={refreshProposals}
       />
     </>

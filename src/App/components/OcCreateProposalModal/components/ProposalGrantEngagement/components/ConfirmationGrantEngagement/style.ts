@@ -1,18 +1,16 @@
 import { Typography } from "antd";
-import Stack from "App/components/Stack/style";
 import styled from "styled-components";
 
 const { Text } = Typography;
 
-export const AddressStack = styled(Stack)`
-  align-items: flex-start;
-`;
-
-export const FieldLabel = styled(Text)`
-  && {
+export const ConfirmField = styled.div`
+  & span.ant-typography {
     font-size: var(--s0);
     color: var(--color-text-1ary);
-    font-weight: 500;
+
+    &:first-child {
+      font-weight: 500;
+    }
   }
 `;
 

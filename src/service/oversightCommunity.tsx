@@ -5,7 +5,7 @@ import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
 import { useSdk } from "service";
-import { useOcAddress } from "utils/storage";
+import { useOcAddress, useOcProposalsAddress } from "utils/storage";
 
 type ModalState = "open" | "closed";
 
@@ -17,6 +17,7 @@ type OcAction = {
 type OcDispatch = (action: OcAction) => void;
 type OcState = {
   readonly ocAddress: string | undefined;
+  readonly ocProposalsAddress: string | undefined;
   readonly leaveOcModalState: ModalState;
 };
 
@@ -63,8 +64,10 @@ export default function OcProvider({ children }: HTMLAttributes<HTMLOrSVGElement
   } = useSdk();
 
   const [localOcAddress, setLocalOcAddress] = useOcAddress();
+  const [localOcProposalsAddress, setLocalOcProposalsAddress] = useOcProposalsAddress();
   const [ocState, ocDispatch] = useReducer(ocReducer, {
     ocAddress: localOcAddress,
+    ocProposalsAddress: localOcProposalsAddress,
     leaveOcModalState: "closed",
   });
 
@@ -74,13 +77,18 @@ export default function OcProvider({ children }: HTMLAttributes<HTMLOrSVGElement
       const queryClient = new QueryClient(tendermintClient);
       const rpcClient = createProtobufRpcClient(queryClient);
       const queryService = new QueryClientImpl(rpcClient);
+
       const { address: ocAddress } = await queryService.ContractAddress({
         contractType: PoEContractType.OVERSIGHT_COMMUNITY,
       });
+      const { address: ocProposalsAddress } = await queryService.ContractAddress({
+        contractType: PoEContractType.OVERSIGHT_COMMUNITY_PROPOSALS,
+      });
 
       setLocalOcAddress(ocAddress);
+      setLocalOcProposalsAddress(ocProposalsAddress);
     })();
-  }, [config.rpcUrl, setLocalOcAddress]);
+  }, [config.rpcUrl, setLocalOcAddress, setLocalOcProposalsAddress]);
 
   return (
     <OcContext.Provider value={{ ocState, ocDispatch }}>

@@ -34,7 +34,7 @@ interface FormDepositEscrowValues {
   readonly escrowAmount: string;
 }
 
-interface DepositEscrowModalProps {
+interface DepositDsoEscrowModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly requiredEscrow: string;
@@ -42,13 +42,13 @@ interface DepositEscrowModalProps {
   readonly refreshEscrows: () => Promise<void>;
 }
 
-export default function DepositEscrowModal({
+export default function DepositDsoEscrowModal({
   isModalOpen,
   closeModal,
   requiredEscrow,
   userEscrow,
   refreshEscrows,
-}: DepositEscrowModalProps): JSX.Element {
+}: DepositDsoEscrowModalProps): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {

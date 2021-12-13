@@ -16,9 +16,11 @@ import LandingPage from "./pages/LandingPage";
 import CookiePolicy from "./pages/LandingPage/CookiePolicy";
 import Impressum from "./pages/LandingPage/Impressum";
 import PrivacyPolicy from "./pages/LandingPage/PrivacyPolicy";
+import ValidatorsHome from "./pages/ValidatorsHome";
 import { paths } from "./paths";
 
 const Dso = lazy(() => import("./routes/Dso"));
+const Engagement = lazy(() => import("./pages/Engagement"));
 const OcHome = lazy(() => import("./pages/OcHome"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
 
@@ -42,6 +44,12 @@ export default function App(): JSX.Element {
                             <DsoProvider>
                               <Dso />
                             </DsoProvider>
+                          </Route>
+                          <Route path={paths.engagement.prefix}>
+                            <Engagement />
+                          </Route>
+                          <Route path={paths.validators.prefix}>
+                            <ValidatorsHome />
                           </Route>
                           <Route path={paths.oc.prefix}>
                             <OcHome />

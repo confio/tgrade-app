@@ -6,7 +6,6 @@ import { ReactComponent as StatusExecutedIcon } from "App/assets/icons/status-ex
 import { ReactComponent as StatusOpenIcon } from "App/assets/icons/status-open-icon.svg";
 import { ReactComponent as StatusPassedIcon } from "App/assets/icons/status-passed-icon.svg";
 import { ReactComponent as AcceptIcon } from "App/assets/icons/yes-icon.svg";
-import AddressList from "App/components/AddressList";
 import Button from "App/components/Button";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
@@ -16,6 +15,11 @@ import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract, DsoContractQuerier, ProposalResponse, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
+import ProposalAddMembers from "./components/ProposalAddMembers";
+import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
+import ProposalGrantEngagement from "./components/ProposalGrantEngagement";
+import ProposalPunishVotingMember from "./components/ProposalPunishVotingMember";
+import ProposalRemoveMembers from "./components/ProposalRemoveMembers";
 import {
   AbstainedButton,
   AcceptButton,
@@ -36,7 +40,7 @@ import {
 interface OcProposalDetailModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
-  readonly proposalId: number | undefined;
+  readonly proposalId: string | undefined;
   readonly refreshProposals: () => void;
 }
 
@@ -51,7 +55,7 @@ export default function OcProposalDetailModal({
     sdkState: { config, client, address, signingClient },
   } = useSdk();
   const {
-    ocState: { ocAddress },
+    ocState: { ocAddress, ocProposalsAddress },
   } = useOc();
 
   const [submitting, setSubmitting] = useState<VoteOption | "executing">();
@@ -68,6 +72,8 @@ export default function OcProposalDetailModal({
   const proposalAddMembers = proposal?.proposal.add_remove_non_voting_members?.add;
   const proposalRemoveMembers = proposal?.proposal.add_remove_non_voting_members?.remove;
   const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
+  const proposalPunishVotingMember = proposal?.proposal.punish_members?.[0] ?? undefined;
+  const proposalGrantEngagement = proposal?.proposal.grant_engagement;
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
@@ -86,33 +92,51 @@ export default function OcProposalDetailModal({
 
   useEffect(() => {
     (async function queryProposal() {
-      if (!ocAddress || !client || !proposalId) return;
+      if (!ocAddress || !ocProposalsAddress || !client || !proposalId) return;
 
       try {
         const dsoContract = new DsoContractQuerier(ocAddress, client);
-        const proposal = await dsoContract.getProposal(proposalId);
+        const ocProposalContract = new DsoContractQuerier(ocProposalsAddress, client);
+
+        const proposalIdType = proposalId.slice(0, 2);
+        const proposalIdNumber = parseInt(proposalId.slice(2), 10);
+        const getProposal =
+          proposalIdType === "tc"
+            ? () => dsoContract.getProposal(proposalIdNumber)
+            : () => ocProposalContract.getProposal(proposalIdNumber);
+
+        const proposal = await getProposal();
         setProposal(proposal);
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
-  }, [client, ocAddress, handleError, proposalId]);
+  }, [client, handleError, ocAddress, ocProposalsAddress, proposalId]);
 
   useEffect(() => {
     (async function queryVoter() {
-      if (!ocAddress || !address || !client || !proposalId) return;
+      if (!ocAddress || !ocProposalsAddress || !address || !client || !proposalId) return;
 
       try {
         const dsoContract = new DsoContractQuerier(ocAddress, client);
-        const voter = await dsoContract.getVote(proposalId, address);
+        const ocProposalContract = new DsoContractQuerier(ocProposalsAddress, client);
+
+        const proposalIdType = proposalId.slice(0, 2);
+        const proposalIdNumber = parseInt(proposalId.slice(2), 10);
+        const getVote =
+          proposalIdType === "tc"
+            ? () => dsoContract.getVote(proposalIdNumber, address)
+            : () => ocProposalContract.getVote(proposalIdNumber, address);
+
+        const voter = await getVote();
         setHasVoted(voter.vote?.voter === address);
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
-  }, [client, address, ocAddress, handleError, proposalId]);
+  }, [address, client, handleError, ocAddress, ocProposalsAddress, proposalId]);
 
   useEffect(() => {
     (async function queryMembership() {
@@ -133,7 +157,7 @@ export default function OcProposalDetailModal({
         handleError(error);
       }
     })();
-  }, [address, client, ocAddress, handleError]);
+  }, [address, client, handleError, ocAddress]);
 
   function resetModal() {
     closeModal();
@@ -142,12 +166,21 @@ export default function OcProposalDetailModal({
   }
 
   async function submitVoteProposal(chosenVote: VoteOption) {
-    if (!ocAddress || !signingClient || !address || !proposalId) return;
+    if (!ocAddress || !ocProposalsAddress || !signingClient || !address || !proposalId) return;
     setSubmitting(chosenVote);
 
     try {
       const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.voteProposal(address, proposalId, chosenVote);
+      const ocProposalContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
+
+      const proposalIdType = proposalId.slice(0, 2);
+      const proposalIdNumber = parseInt(proposalId.slice(2), 10);
+      const voteProposal =
+        proposalIdType === "tc"
+          ? () => dsoContract.voteProposal(address, proposalIdNumber, chosenVote)
+          : () => ocProposalContract.voteProposal(address, proposalIdNumber, chosenVote);
+
+      const transactionHash = await voteProposal();
 
       setTxResult({
         msg: `Voted proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
@@ -162,16 +195,25 @@ export default function OcProposalDetailModal({
   }
 
   function calculateTotalVotes(): number {
-    return (proposal?.votes?.yes ?? 0) + (proposal?.votes?.no ?? 0) + (proposal?.votes?.abstain ?? 0);
+    return (proposal?.votes.yes ?? 0) + (proposal?.votes.no ?? 0) + (proposal?.votes.abstain ?? 0);
   }
 
   async function submitExecuteProposal() {
-    if (!ocAddress || !signingClient || !address || !proposalId) return;
+    if (!ocAddress || !ocProposalsAddress || !signingClient || !address || !proposalId) return;
     setSubmitting("executing");
 
     try {
       const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.executeProposal(address, proposalId);
+      const ocProposalContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
+
+      const proposalIdType = proposalId.slice(0, 2);
+      const proposalIdNumber = parseInt(proposalId.slice(2), 10);
+      const executeProposal =
+        proposalIdType === "tc"
+          ? () => dsoContract.executeProposal(address, proposalIdNumber)
+          : () => ocProposalContract.executeProposal(address, proposalIdNumber);
+
+      const transactionHash = await executeProposal();
 
       setTxResult({
         msg: `Executed proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
@@ -240,9 +282,11 @@ export default function OcProposalDetailModal({
           {proposal ? (
             <>
               <Stack gap="s1">
-                <AddressList addresses={proposalAddMembers} short copyable />
-                <AddressList addresses={proposalRemoveMembers} short copyable />
-                <AddressList addresses={proposalAddVotingMembers} short copyable />
+                <ProposalAddMembers proposalAddMembers={proposalAddMembers} />
+                <ProposalRemoveMembers proposalRemoveMembers={proposalRemoveMembers} />
+                <ProposalAddVotingMembers proposalAddVotingMembers={proposalAddVotingMembers} />
+                <ProposalPunishVotingMember proposalPunishVotingMember={proposalPunishVotingMember} />
+                <ProposalGrantEngagement proposalGrantEngagement={proposalGrantEngagement} />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />
@@ -256,13 +300,13 @@ export default function OcProposalDetailModal({
                     </b>
                   </Paragraph>
                   <Paragraph>
-                    Yes: <b>{proposal.votes.yes}</b>
+                    Yes: <b>{proposal.votes.yes ?? 0}</b>
                   </Paragraph>
                   <Paragraph>
-                    No: <b>{proposal.votes.no}</b>
+                    No: <b>{proposal.votes.no ?? 0}</b>
                   </Paragraph>
                   <Paragraph>
-                    Abstain: <b>{proposal.votes.abstain}</b>
+                    Abstain: <b>{proposal.votes.abstain ?? 0}</b>
                   </Paragraph>
                 </SectionWrapper>
               </SectionWrapper>

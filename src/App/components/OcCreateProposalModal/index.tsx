@@ -10,10 +10,10 @@ import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
 
 const ProposalAddParticipants = lazy(() => import("./components/ProposalAddParticipants"));
-const ProposalAddVotingParticipants = lazy(() => import("./components/ProposalAddVotingParticipants"));
 const ProposalRemoveParticipants = lazy(() => import("./components/ProposalRemoveParticipants"));
-const ProposalWhitelistPair = lazy(() => import("./components/ProposalWhitelistPair"));
-const ProposalPunishValidator = lazy(() => import("./components/ProposalPunishValidator"));
+const ProposalAddVotingParticipants = lazy(() => import("./components/ProposalAddVotingParticipants"));
+const ProposalPunishVotingParticipant = lazy(() => import("./components/ProposalPunishVotingParticipant"));
+const ProposalGrantEngagement = lazy(() => import("./components/ProposalGrantEngagement"));
 
 const { Title, Text } = Typography;
 const { Step } = Steps;
@@ -22,16 +22,16 @@ export enum ProposalType {
   AddParticipants = "add-participants",
   RemoveParticipants = "remove-participants",
   AddVotingParticipants = "add-voting-participants",
-  WhitelistPair = "whitelist-pair",
-  PunishValidator = "punish-validator",
+  PunishVotingParticipant = "punish-voting-participants",
+  GrantEngagement = "grant-engagement",
 }
 
 export const proposalLabels = {
   [ProposalType.AddParticipants]: "Add non voting participants",
   [ProposalType.RemoveParticipants]: "Remove non voting participants",
   [ProposalType.AddVotingParticipants]: "Add voting participants",
-  [ProposalType.WhitelistPair]: "Whitelist Pair",
-  [ProposalType.PunishValidator]: "Punish Validator",
+  [ProposalType.PunishVotingParticipant]: "Punish voting participant",
+  [ProposalType.GrantEngagement]: "Grant engagement",
 };
 
 export const proposalTitles = {
@@ -39,8 +39,8 @@ export const proposalTitles = {
   [ProposalType.AddParticipants]: "Add participant(s)",
   [ProposalType.RemoveParticipants]: "Remove participant(s)",
   [ProposalType.AddVotingParticipants]: "Add voting participant(s)",
-  [ProposalType.WhitelistPair]: "Whitelist Pair",
-  [ProposalType.PunishValidator]: "Punish Validator",
+  [ProposalType.PunishVotingParticipant]: "Punish voting participant",
+  [ProposalType.GrantEngagement]: "Grant engagement",
   confirmation: "Confirmation",
 };
 
@@ -155,8 +155,16 @@ export default function OcCreateProposalModal({
               setSubmitting={setSubmitting}
               setTxResult={setTxResult}
             />
-          ) : proposalStep.type === ProposalType.WhitelistPair ? (
-            <ProposalWhitelistPair
+          ) : proposalStep.type === ProposalType.PunishVotingParticipant ? (
+            <ProposalPunishVotingParticipant
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.GrantEngagement ? (
+            <ProposalGrantEngagement
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
               isSubmitting={isSubmitting}

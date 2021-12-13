@@ -17,9 +17,33 @@ export const StyledModal = styled(Modal)`
   `};
 `;
 
+export const TextLabel = styled(Typography.Text)`
+  && {
+    color: var(--color-text-1ary);
+    font-weight: 500;
+  }
+`;
+
 export const TextValue = styled(Typography.Text)`
   && {
     color: var(--color-text-1ary);
+  }
+`;
+
+export const AddressField = styled(Typography)`
+  margin-top: var(--s-1);
+  display: flex;
+
+  & * + * {
+    margin-left: var(--s-2);
+  }
+`;
+
+export const ChangedField = styled(Typography)`
+  margin-top: var(--s-1);
+
+  & > * {
+    display: block;
   }
 `;
 

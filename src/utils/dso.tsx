@@ -1,8 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
 
-import { Factory } from "./factory";
-
 export type VoteOption = "yes" | "no" | "abstain";
 
 export interface PendingEscrow {
@@ -34,6 +32,41 @@ export interface DsoResponse {
   readonly rules: VotingRules;
 }
 
+export type Punishment = {
+  readonly DistributeEscrow?: {
+    readonly member: string;
+    readonly slashing_percentage: string;
+    readonly distribution_list: readonly string[];
+    readonly kick_out: boolean;
+  };
+} & {
+  readonly BurnEscrow?: {
+    readonly member: string;
+    readonly slashing_percentage: string;
+    readonly kick_out: boolean;
+  };
+};
+
+export interface TrustedCircleAdjustements {
+  /// Length of voting period in days
+  readonly name?: string | null;
+  /// Length of voting period in days
+  readonly escrow_amount?: string | null;
+  /// Length of voting period in days
+  readonly voting_period?: number | null;
+  /// quorum requirement (0.0-1.0)
+  readonly quorum?: string | null;
+  /// threshold requirement (0.5-1.0)
+  readonly threshold?: string | null;
+  /// If true, and absolute threshold and quorum are met, we can end before voting period finished
+  readonly allow_end_early?: boolean | null;
+}
+
+export interface Engagement {
+  readonly member: string;
+  readonly points: number;
+}
+
 export type ProposalContent = {
   /// Apply a diff to the existing non-voting members.
   /// Remove is applied after add, so if an address is in both, it is removed
@@ -46,26 +79,18 @@ export type ProposalContent = {
     readonly voters: readonly string[];
   };
 } & {
-  readonly edit_trusted_circle?: {
-    /// Length of voting period in days
-    readonly name?: string | null;
-    /// Length of voting period in days
-    readonly escrow_amount?: string | null;
-    /// Length of voting period in days
-    readonly voting_period?: number | null;
-    /// quorum requirement (0.0-1.0)
-    readonly quorum?: string | null;
-    /// threshold requirement (0.5-1.0)
-    readonly threshold?: string | null;
-    /// If true, and absolute threshold and quorum are met, we can end before voting period finished
-    readonly allow_end_early?: boolean | null;
-  };
+  readonly punish_members?: readonly Punishment[];
 } & {
-  readonly slash?: {
-    readonly addr?: string | null;
-    readonly portion?: number | null;
-  };
+  readonly edit_trusted_circle?: TrustedCircleAdjustements;
+} & {
+  readonly grant_engagement?: Engagement;
+} & {
+  readonly whitelist_contract?: string;
 };
+
+export function isOcProposal(proposal: ProposalContent): boolean {
+  return !!proposal.grant_engagement;
+}
 
 export type Expiration = {
   readonly at_height: number;
@@ -124,19 +149,19 @@ export interface MemberListResponse {
 
 export type MemberStatus = {
   /// Normal member, not allowed to vote
-  readonly non_voting: Record<string, unknown>;
+  readonly non_voting?: Record<string, unknown>;
 } & {
   /// Approved for voting, need to pay in
-  readonly pending: { readonly batch_id: number };
+  readonly pending?: { readonly batch_id: number };
 } & {
   /// Approved for voting, and paid in. Waiting for rest of batch
-  readonly pending_paid: { readonly batch_id: number };
+  readonly pending_paid?: { readonly batch_id: number };
 } & {
   /// Full-fledged voting member
-  readonly voting: Record<string, unknown>;
+  readonly voting?: Record<string, unknown>;
 } & {
   /// Marked as leaving. Escrow frozen until `claim_at`
-  readonly leaving: { readonly claim_at: number };
+  readonly leaving?: { readonly claim_at: number };
 };
 
 export interface EscrowStatus {
@@ -175,21 +200,17 @@ export async function getProposalTitle(
 
   switch (proposalProp) {
     case "add_remove_non_voting_members":
-      // Determine if it's whitelist
-      if (proposal.add_remove_non_voting_members?.add.length === 1) {
-        const address = proposal.add_remove_non_voting_members?.add[0];
-        const pairs = await Factory.getPairs(client, factoryAddress);
-        for (const pair in pairs) {
-          if (pairs[pair].contract_addr === address) return "Whitelist pair";
-        }
-      }
-
-      // Determine if it's add or remove
       return proposal.add_remove_non_voting_members?.add.length ? "Add participants" : "Remove participants";
     case "add_voting_members":
       return "Add voting participants";
+    case "punish_members":
+      return "Punish voting participant";
     case "edit_trusted_circle":
       return "Edit Trusted Circle";
+    case "whitelist_contract":
+      return "Whitelist pair";
+    case "grant_engagement":
+      return "Grant engagement";
     default:
       throw new Error("Error: unhandled proposal type");
   }
@@ -342,7 +363,7 @@ export class DsoContract extends DsoContractQuerier {
   }
 
   async leaveDso(memberAddress: string): Promise<string> {
-    const msg = { leave_dso: {} };
+    const msg = { leave_trusted_circle: {} };
     const { transactionHash } = await this.#signingClient.execute(
       memberAddress,
       this.address,
