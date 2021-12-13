@@ -29,50 +29,56 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(slashLabel)]: Yup.number().typeError("Comment must be numeric"),
 });
 
-export interface FormAddParticipantsValues {
-  readonly validators: readonly string[];
+export interface FormPunishValidatorValues {
+  readonly validatorsToPunish: string[];
+  readonly slashingPercentage: number;
   readonly comment: string;
 }
 
-interface FormAddParticipantsProps extends FormAddParticipantsValues {
+interface FormPunishValidatorProps extends FormPunishValidatorValues {
   readonly goBack: () => void;
-  readonly handleSubmit: (values: FormAddParticipantsValues) => void;
+  readonly handleSubmit: (values: FormPunishValidatorValues) => void;
 }
 
-export default function FormAddParticipants({
-  validators,
+export default function FormPunishValidator({
+  validatorsToPunish,
   comment,
   goBack,
   handleSubmit,
-}: FormAddParticipantsProps): JSX.Element {
+}: FormPunishValidatorProps): JSX.Element {
   const {
     sdkState: {
       config: { addressPrefix },
     },
   } = useSdk();
 
-  const [membersString, setMembersString] = useState(validators.join(","));
-  const [membersArray, setMembersArray] = useState(validators);
+  const [validatorsString, setValidatorsString] = useState(validatorsToPunish.join(","));
+  const [validatorsArray, setValidatorsArray] = useState(validatorsToPunish);
   const [punishmentType, setPunishmentType] = useState<PunismentKind>("slash");
   const [isJailedForever, setJailedForever] = useState(false);
   const [slashPortion, setSlashPortion] = useState("0.0");
 
   useEffect(() => {
-    const membersArray = addressStringToArray(membersString);
-    setMembersArray(membersArray);
-  }, [membersString]);
+    const validatorsArray = addressStringToArray(validatorsString) as string[];
+    setValidatorsArray(validatorsArray);
+  }, [validatorsString]);
 
   return (
     <Formik
       initialValues={{
-        [getFormItemName(validatorsLabel)]: membersString,
+        [getFormItemName(validatorsLabel)]: validatorsString,
         [getFormItemName(commentLabel)]: comment,
       }}
       enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) => {
         const comment = values[getFormItemName(commentLabel)];
-        handleSubmit({ validators: membersArray, comment });
+        const slashAmount = values[getFormItemName(slashPortion)];
+        handleSubmit({
+          validatorsToPunish: validatorsArray,
+          comment,
+          slashingPercentage: parseFloat(slashAmount),
+        });
       }}
     >
       {({ isValid, submitForm }) => (
@@ -82,17 +88,17 @@ export default function FormAddParticipants({
               <Field
                 label={validatorsLabel}
                 placeholder="Type or paste addresses here"
-                value={membersString}
+                value={validatorsString}
                 onInputChange={({ target }) => {
-                  setMembersString(target.value);
+                  setValidatorsString(target.value);
                 }}
               />
               <AddressList
                 short
-                addresses={membersArray}
+                addresses={validatorsArray}
                 addressPrefix={addressPrefix}
-                handleClose={(memberAddress) =>
-                  setMembersArray(membersArray.filter((member) => member !== memberAddress))
+                handleClose={(validatorAddress) =>
+                  setValidatorsArray(validatorsArray.filter((val) => val !== validatorAddress))
                 }
               />
 
@@ -137,7 +143,9 @@ export default function FormAddParticipants({
                 <Button
                   disabled={
                     !isValid ||
-                    membersArray.some((memberAddress) => !isValidAddress(memberAddress, addressPrefix))
+                    validatorsArray.some(
+                      (validatorAddress) => !isValidAddress(validatorAddress, addressPrefix),
+                    )
                   }
                   onClick={() => submitForm()}
                 >
