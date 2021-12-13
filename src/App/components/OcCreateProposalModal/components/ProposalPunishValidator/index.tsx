@@ -29,31 +29,6 @@ export default function ProposalPunishValidtor({
     ocState: { ocAddress },
   } = useOc();
 
-  async function submitCreateProposal() {
-    if (!ocAddress || !signingClient || !address) return;
-    setSubmitting(true);
-
-    try {
-      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(signingClient, config.factoryAddress, address, "", {
-        slash: {
-          addr: address,
-          portion: 10.0,
-        },
-      });
-
-      setTxResult({
-        msg: `Created proposal to punish validator in Oversight Committee (${ocAddress}). Transaction ID: ${transactionHash}`,
-      });
-    } catch (error) {
-      if (!(error instanceof Error)) return;
-      setTxResult({ error: getErrorFromStackTrace(error) });
-      handleError(error);
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
   return (
     <>
       {proposalStep.confirmation ? (

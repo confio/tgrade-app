@@ -26,7 +26,7 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(validatorsLabel)]: Yup.string()
     .typeError("Addresses must be alphanumeric")
     .required("Participants are required"),
-  [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
+  [getFormItemName(slashLabel)]: Yup.number().typeError("Comment must be numeric"),
 });
 
 export interface FormAddParticipantsValues {
