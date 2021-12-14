@@ -81,3 +81,8 @@ export const ModalHeader = styled.header`
     height: 1.25rem;
   }
 `;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  gap: var(--s-2);
+`;
