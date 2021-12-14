@@ -1,4 +1,5 @@
 import { ReactComponent as LinkIcon } from "App/assets/icons/link-icon.svg";
+import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { config } from "config/network";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
@@ -148,7 +149,7 @@ export default function ValidatorOverview(): JSX.Element | null {
         const valContract = new ValidatorContractQuerier(config, client);
         const valList = await valContract.getValidators();
         const valActive = await valContract.getActiveValidators();
-        const egContract = new EngagementContractQuerier(config, client);
+        const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
 
         const totalEgPoints = await egContract.getTotalEngagementPoints();
         const EgRewards = await egContract.getDistributedFunds();

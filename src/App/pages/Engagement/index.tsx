@@ -4,6 +4,7 @@ import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import DelegateContainer from "App/containers/DelegateContainer";
 import WithdrawRewardsContainer from "App/containers/WithdrawRewardsContainer";
+import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import { EngagementContract, EngagementContractQuerier } from "utils/poeEngagement";
@@ -22,12 +23,12 @@ export default function Engagement(): JSX.Element | null {
 
   useEffect(() => {
     if (signingClient) {
-      setEgContract(new EngagementContract(config, signingClient));
+      setEgContract(new EngagementContract(config, PoEContractType.ENGAGEMENT, signingClient));
       return;
     }
 
     if (client) {
-      setEgContract(new EngagementContractQuerier(config, client));
+      setEgContract(new EngagementContractQuerier(config, PoEContractType.ENGAGEMENT, client));
     }
   }, [client, config, signingClient]);
 
