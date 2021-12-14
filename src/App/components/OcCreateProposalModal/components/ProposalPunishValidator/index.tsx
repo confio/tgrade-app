@@ -16,7 +16,7 @@ interface ProposalPunishValidtorProps {
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
 }
 
-export default function ProposalPunishValidtor({
+export default function ProposalPunishValidator({
   proposalStep,
   setProposalStep,
   isSubmitting,
@@ -54,14 +54,20 @@ export default function ProposalPunishValidtor({
 
     try {
       const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const nativeSlashing = slashingPercentage ? (slashingPercentage / 100).toString() : "0";
+      //  const nativeSlashing = slashingPercentage ? (slashingPercentage / 100).toString() : "0";
 
       const transactionHash = await dsoContract.propose(
         signingClient,
         config.factoryAddress,
         address,
         comment,
-        { punish_members: [] },
+        {
+          punish_validator: {
+            validator: address,
+            jailTime: "12",
+            slashing_percentage: "100",
+          },
+        },
       );
 
       setTxResult({
@@ -83,6 +89,7 @@ export default function ProposalPunishValidtor({
           validatorToPunish={validatorsToPunish}
           slashingPercentage="20"
           jail={false}
+          jailedUntil={new Date()}
           comment={comment}
           isSubmitting={isSubmitting}
           goBack={() => setProposalStep({ type: ProposalType.PunishValidator })}

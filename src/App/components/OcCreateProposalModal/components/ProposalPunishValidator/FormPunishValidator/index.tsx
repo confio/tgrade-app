@@ -9,6 +9,7 @@ import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import { addressStringToArray, getFormItemName, isValidAddress } from "utils/forms";
@@ -56,13 +57,18 @@ export default function FormPunishValidator({
   const [validatorsArray, setValidatorsArray] = useState(validatorsToPunish);
   const [punishmentType, setPunishmentType] = useState<PunismentKind>("slash");
   const [isJailedForever, setJailedForever] = useState(false);
+  const [jailedUntil, setJailedUntil] = useState("");
   const [slashPortion, setSlashPortion] = useState("0.0");
 
   useEffect(() => {
     const validatorsArray = addressStringToArray(validatorsString) as string[];
     setValidatorsArray(validatorsArray);
   }, [validatorsString]);
-
+  const handleDateChange = (d: Date): void => {
+    if (!d) return;
+    const date = new Date(d).toLocaleDateString();
+    setJailedUntil(date);
+  };
   return (
     <Formik
       initialValues={{
@@ -127,7 +133,7 @@ export default function FormPunishValidator({
               </div>
               <Typography>Jailed until:</Typography>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <DatePicker disabled={isJailedForever} />
+                <DatePicker onChange={(d) => handleDateChange(d)} disabled={isJailedForever} />
                 <Checkbox
                   onChange={() => setJailedForever((isJailedForever) => !isJailedForever)}
                   style={{ marginLeft: "20px" }}

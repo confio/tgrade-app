@@ -55,3 +55,13 @@ export const FeeGroup = styled.div`
     margin-right: var(--s0);
   }
 `;
+
+export const Heading = styled.h2`
+  font-family: Quicksand;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0em;
+  text-align: left;
+`;

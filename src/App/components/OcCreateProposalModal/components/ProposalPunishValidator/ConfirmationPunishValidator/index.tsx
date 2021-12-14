@@ -9,7 +9,7 @@ import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
 import { DsoContract } from "utils/dso";
 
-import { ButtonGroup, ConfirmField, FeeGroup, Separator, TextComment } from "./style";
+import { ButtonGroup, ConfirmField, FeeGroup, Heading, Separator, TextComment } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Text, Paragraph } = Typography;
@@ -18,6 +18,7 @@ interface ConfirmationPunishValidatorProps {
   readonly validatorToPunish: string[];
   readonly slashingPercentage: string;
   readonly jail: boolean;
+  readonly jailedUntil: Date;
   readonly comment: string;
   readonly isSubmitting: boolean;
   readonly goBack: () => void;
@@ -27,6 +28,7 @@ interface ConfirmationPunishValidatorProps {
 export default function ConfirmationPunishValidator({
   validatorToPunish,
   jail,
+  jailedUntil,
   slashingPercentage,
   comment,
   isSubmitting,
@@ -77,14 +79,24 @@ export default function ConfirmationPunishValidator({
     <>
       <ConfirmField>
         <Text>Validator(s) to be punished: </Text>
-        <Text>{jail ? "Jailed until 10-02-2049" : "No Jail proposed"}</Text>
+        <b style={{ color: "red" }}>
+          {jail ? `Jailed until ${jailedUntil.toLocaleDateString()}` : "No Jail proposed"}
+        </b>
 
         <AddressList short addresses={validatorToPunish} addressPrefix={config.addressPrefix} />
       </ConfirmField>
       <TextComment>{comment}</TextComment>
+      <ConfirmField>
+        <Heading>Distribute to: </Heading>
+        <Text>None</Text>
+      </ConfirmField>
+      <ConfirmField>
+        <Heading>Returned to User: </Heading>
+        <Text>{`${feeTokenDenom}`}</Text>
+      </ConfirmField>
       {slashingPercentage && slashingPercentage !== "0" ? (
         <ConfirmField>
-          <Text>Amount to be destroyed: </Text>
+          <Heading>Amount to be destroyed: </Heading>
           <Text>{`${slashingPercentage}% of ${""} ${feeTokenDenom} = ${toSlash} ${feeTokenDenom}`}</Text>
         </ConfirmField>
       ) : null}
