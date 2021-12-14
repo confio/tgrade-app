@@ -4,6 +4,7 @@ import Stack from "App/components/Stack/style";
 import { useState } from "react";
 import { useSdk } from "service";
 
+import DistributionModal from "../DistributionModal";
 import StakeModal, { StakeModalState } from "../StakeModal";
 import {
   ButtonGroup,
@@ -48,6 +49,7 @@ export function ValidatorDetail({ visible, validator, blockchainValues, onCancel
     sdkState: { address },
   } = useSdk();
   const [stakeModalState, setStakeModalState] = useState<StakeModalState>({ open: false });
+  const [isDistributionModalOpen, setDistributionModalOpen] = useState(false);
 
   return (
     <StyledModal
@@ -107,6 +109,9 @@ export function ValidatorDetail({ visible, validator, blockchainValues, onCancel
             <StyledInfoRow>
               <b>{validator.rewards} /</b> <p> {blockchainValues.totalEgRewards}</p>
             </StyledInfoRow>
+            <Button type="ghost" onClick={() => setDistributionModalOpen(true)}>
+              Claim rewards
+            </Button>
           </StyledCard>
           <StyledCard>
             <Title>Staked, TGD</Title>
@@ -133,6 +138,7 @@ export function ValidatorDetail({ visible, validator, blockchainValues, onCancel
         <StyledTable dataSource={validator.slashEvents} columns={columns} pagination={false} />
       </div>
       <StakeModal modalState={stakeModalState} setModalState={setStakeModalState} />
+      <DistributionModal isModalOpen={isDistributionModalOpen} setModalOpen={setDistributionModalOpen} />
     </StyledModal>
   );
 }
