@@ -1,4 +1,5 @@
 import { Typography } from "antd";
+import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { EngagementContractQuerier, FormattedHalflifeInfo } from "utils/poeEngagement";
@@ -21,7 +22,7 @@ export default function OcEngagement(): JSX.Element {
       if (!client) return;
 
       try {
-        const egContract = new EngagementContractQuerier(config, client);
+        const egContract = new EngagementContractQuerier(config, PoEContractType.ENGAGEMENT, client);
 
         const egPoints = await egContract.getTotalEngagementPoints();
         setEgPoints(egPoints);
