@@ -74,6 +74,7 @@ export default function OcProposalDetailModal({
   const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
   const proposalPunishVotingMember = proposal?.proposal.punish_members?.[0] ?? undefined;
   const proposalGrantEngagement = proposal?.proposal.grant_engagement;
+  const proposalPunishValidator = proposal?.proposal.punish;
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
@@ -287,6 +288,7 @@ export default function OcProposalDetailModal({
                 <ProposalAddVotingMembers proposalAddVotingMembers={proposalAddVotingMembers} />
                 <ProposalPunishVotingMember proposalPunishVotingMember={proposalPunishVotingMember} />
                 <ProposalGrantEngagement proposalGrantEngagement={proposalGrantEngagement} />
+                <div>{JSON.stringify(proposalPunishValidator, null, 2)}</div>
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />

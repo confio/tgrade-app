@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import { Radio } from "antd";
 import { TxResult } from "App/components/ShowTxResult";
 import { useState } from "react";
@@ -28,7 +29,7 @@ export default function ProposalPunishValidator({
     sdkState: { address, signingClient, config },
   } = useSdk();
   const {
-    ocState: { ocAddress },
+    ocState: { ocProposalsAddress },
   } = useOc();
   const [validatorsToPunish, setValidatorsToPunish] = useState([""]);
   const [slashingPercentage, setSlashingPercentage] = useState(0);
@@ -45,16 +46,16 @@ export default function ProposalPunishValidator({
     setProposalStep({ type: ProposalType.PunishValidator, confirmation: true });
   }
   async function submitCreateProposal() {
-    if (!ocAddress || !signingClient || !address) return;
+    if (!ocProposalsAddress || !signingClient || !address) return;
     setSubmitting(true);
-    console.log("submitCreateProposal fired");
+    /*    console.log("submitCreateProposal fired");
     console.log("Validators to punish", validatorsToPunish);
     console.log("slashing percentage", slashingPercentage);
-    console.log("comment", comment);
+    console.log("comment", comment); */
 
     try {
-      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      //  const nativeSlashing = slashingPercentage ? (slashingPercentage / 100).toString() : "0";
+      const dsoContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
+      const nativePortion = slashingPercentage ? (slashingPercentage / 100).toString() : "0";
 
       const transactionHash = await dsoContract.propose(
         signingClient,
@@ -62,16 +63,16 @@ export default function ProposalPunishValidator({
         address,
         comment,
         {
-          punish_validator: {
-            validator: address,
-            jailTime: "12",
-            slashing_percentage: "100",
+          punish: {
+            member: address,
+            portion: "50.25",
+            jailing_duration: { duration: 0 },
           },
         },
       );
 
       setTxResult({
-        msg: `Created proposal for punishing validator to Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for punishing validator to Oversight Community (${ocProposalsAddress}). Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
