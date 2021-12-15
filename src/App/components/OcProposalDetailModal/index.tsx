@@ -18,6 +18,7 @@ import { getErrorFromStackTrace } from "utils/errors";
 import ProposalAddMembers from "./components/ProposalAddMembers";
 import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
 import ProposalGrantEngagement from "./components/ProposalGrantEngagement";
+import ProposalPunishValidator from "./components/ProposalPunishValidator";
 import ProposalPunishVotingMember from "./components/ProposalPunishVotingMember";
 import ProposalRemoveMembers from "./components/ProposalRemoveMembers";
 import {
@@ -288,7 +289,7 @@ export default function OcProposalDetailModal({
                 <ProposalAddVotingMembers proposalAddVotingMembers={proposalAddVotingMembers} />
                 <ProposalPunishVotingMember proposalPunishVotingMember={proposalPunishVotingMember} />
                 <ProposalGrantEngagement proposalGrantEngagement={proposalGrantEngagement} />
-                <div>{JSON.stringify(proposalPunishValidator, null, 2)}</div>
+                <ProposalPunishValidator proposalPunishValidator={proposalPunishValidator} />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />
