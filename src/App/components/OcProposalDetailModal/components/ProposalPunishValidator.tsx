@@ -27,10 +27,10 @@ export default function ProposalPunishValidator({
           <b style={{ color: "red" }}>Forever</b>
         ) : (
           <b>
-            {" "}
-            {proposalPunishValidator?.jailing_duration?.duration
+            {/*           {" "}
+            {proposalPunishValidator?.jailing_duration?.duration?
               ? moment.unix(proposalPunishValidator.jailing_duration?.duration).format("DD/MM/YYYY")
-              : null}
+              : null} */}
           </b>
         )}
       </TextLabel>

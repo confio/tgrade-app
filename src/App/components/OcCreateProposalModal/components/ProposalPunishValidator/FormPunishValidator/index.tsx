@@ -100,9 +100,9 @@ export default function FormPunishValidator({
                 }}
                 value={punishmentType}
               >
-                <Radio value="slash">Slash</Radio>
+                {/*             <Radio value="slash">Slash</Radio>
                 <Radio value="jail">Jail</Radio>
-                <Radio value="both">Both</Radio>
+                <Radio value="both">Both</Radio> */}
               </StyledRadioGroup>
               <div style={{ width: "40%" }}>
                 <Field
