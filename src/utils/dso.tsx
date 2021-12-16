@@ -1,4 +1,5 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { Decimal } from "@cosmjs/math";
 import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
 
 export type VoteOption = "yes" | "no" | "abstain";
@@ -71,7 +72,7 @@ export interface ValidatorPunishment {
   readonly member: string;
   readonly portion: string;
   readonly jailing_duration: {
-    readonly duration: number;
+    readonly duration?: number;
   };
 }
 

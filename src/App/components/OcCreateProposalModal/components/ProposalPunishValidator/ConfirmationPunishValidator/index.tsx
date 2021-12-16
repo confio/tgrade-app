@@ -1,7 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
-import AddressList from "App/components/AddressList";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import { lazy, useEffect, useState } from "react";
@@ -15,10 +14,10 @@ const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"
 const { Text, Paragraph } = Typography;
 
 interface ConfirmationPunishValidatorProps {
-  readonly validatorToPunish: string[];
+  readonly validatorToPunish: string;
   readonly slashingPercentage: string;
-  readonly jail: boolean;
-  readonly jailedUntil: Date;
+  readonly jail: string;
+  readonly jailedUntil: string;
   readonly comment: string;
   readonly isSubmitting: boolean;
   readonly goBack: () => void;
@@ -79,11 +78,9 @@ export default function ConfirmationPunishValidator({
     <>
       <ConfirmField>
         <Text>Validator(s) to be punished: </Text>
-        <b style={{ color: "red" }}>
-          {jail ? `Jailed until ${jailedUntil.toLocaleDateString()}` : "No Jail proposed"}
-        </b>
-
-        <AddressList short addresses={validatorToPunish} addressPrefix={config.addressPrefix} />
+        <b style={{ color: "red" }}>{jail ? "Jailed Forever" : `Jailed until ${jailedUntil}`}</b>
+        <br />
+        <TextComment>{validatorToPunish}</TextComment>
       </ConfirmField>
       <TextComment>{comment}</TextComment>
       <ConfirmField>

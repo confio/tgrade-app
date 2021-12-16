@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
-import { Radio } from "antd";
 import { TxResult } from "App/components/ShowTxResult";
+import moment from "moment";
 import { useState } from "react";
 import { useError, useOc, useSdk } from "service";
 import { DsoContract } from "utils/dso";
@@ -31,31 +31,44 @@ export default function ProposalPunishValidator({
   const {
     ocState: { ocProposalsAddress },
   } = useOc();
-  const [validatorsToPunish, setValidatorsToPunish] = useState([""]);
-  const [slashingPercentage, setSlashingPercentage] = useState(0);
+  const [validators, setValidators] = useState("");
+  const [slashPortion, setSlashPortion] = useState("");
   const [comment, setComment] = useState("");
+  const [jailedForever, setJailedForever] = useState("");
+  const [jailedUntil, setJailedUntil] = useState("");
+  const [punishment, setPunishment] = useState("");
 
   async function submitPunishValidator({
-    validatorsToPunish,
+    validators,
     comment,
-    slashingPercentage,
+    slashPortion,
+    jailedUntil,
+    jailedForever,
+    punishment,
   }: FormPunishValidatorValues) {
-    setValidatorsToPunish(validatorsToPunish);
-    setSlashingPercentage(slashingPercentage);
+    setValidators(validators);
+    setSlashPortion(slashPortion);
     setComment(comment);
+    setJailedUntil(jailedUntil);
+    setJailedForever(jailedForever);
+    setPunishment(punishment);
     setProposalStep({ type: ProposalType.PunishValidator, confirmation: true });
   }
   async function submitCreateProposal() {
     if (!ocProposalsAddress || !signingClient || !address) return;
     setSubmitting(true);
-    /*    console.log("submitCreateProposal fired");
-    console.log("Validators to punish", validatorsToPunish);
-    console.log("slashing percentage", slashingPercentage);
-    console.log("comment", comment); */
-
+    console.log("submitCreateProposal fired");
+    console.log("Validators to punish", validators);
+    console.log("slash portion", slashPortion);
+    console.log("jailForever", jailedForever);
+    console.log("jailUntil", jailedUntil);
+    console.log("punishment", punishment);
+    console.log("comment", comment);
     try {
       const dsoContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
-      const nativePortion = slashingPercentage ? (slashingPercentage / 100).toString() : "0";
+      const nativePortion = slashPortion ? (parseFloat(slashPortion) / 100).toString() : "0";
+      const decimalPortion = Decimal.fromUserInput(nativePortion, 2);
+      const jailTime = jailedForever ? {} : { duration: moment(jailedUntil, "DD.MM.YYYY").unix() };
 
       const transactionHash = await dsoContract.propose(
         signingClient,
@@ -64,9 +77,9 @@ export default function ProposalPunishValidator({
         comment,
         {
           punish: {
-            member: address,
-            portion: "50.25",
-            jailing_duration: { duration: 0 },
+            member: validators,
+            portion: slashPortion,
+            jailing_duration: { duration: 4 },
           },
         },
       );
@@ -87,10 +100,10 @@ export default function ProposalPunishValidator({
     <>
       {proposalStep.confirmation ? (
         <ConfirmationPunishValidator
-          validatorToPunish={validatorsToPunish}
-          slashingPercentage="20"
-          jail={false}
-          jailedUntil={new Date()}
+          validatorToPunish={validators}
+          slashingPercentage={slashPortion}
+          jail={jailedForever}
+          jailedUntil={jailedUntil}
           comment={comment}
           isSubmitting={isSubmitting}
           goBack={() => setProposalStep({ type: ProposalType.PunishValidator })}
@@ -98,9 +111,12 @@ export default function ProposalPunishValidator({
         />
       ) : (
         <FormPunishValidator
-          validatorsToPunish={validatorsToPunish}
-          slashingPercentage={slashingPercentage}
+          validators={validators}
+          slashPortion={slashPortion}
           comment={comment}
+          jailedForever={jailedForever}
+          jailedUntil={jailedUntil}
+          punishment={punishment}
           goBack={() => setProposalStep(undefined)}
           handleSubmit={submitPunishValidator}
         />

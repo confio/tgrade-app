@@ -1,3 +1,4 @@
+import moment from "moment";
 import { ValidatorPunishment } from "utils/dso";
 
 import { TextLabel } from "../style";
@@ -15,7 +16,7 @@ export default function ProposalPunishValidator({
   }
   return proposalPunishValidator ? (
     <div
-      style={{ height: "100px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
+      style={{ height: "125px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
     >
       <TextLabel>
         Validator To be Punished: <b>{proposalPunishValidator.member}</b>
@@ -25,12 +26,19 @@ export default function ProposalPunishValidator({
         {jailForever ? (
           <b style={{ color: "red" }}>Forever</b>
         ) : (
-          <b> {proposalPunishValidator.jailing_duration.duration}</b>
+          <b>
+            {" "}
+            {proposalPunishValidator.jailing_duration.duration
+              ? moment.unix(proposalPunishValidator.jailing_duration.duration).format("DD/MM/YYYY")
+              : null}
+          </b>
         )}
       </TextLabel>
+
       <TextLabel>
-        Slash Validator Percentage <b>{proposalPunishValidator.portion}%</b>
+        Slash Validator Percentage of Funds: <b>{proposalPunishValidator.portion}%</b>
       </TextLabel>
+      <TextLabel>Comment:</TextLabel>
     </div>
   ) : null;
 }

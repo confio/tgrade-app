@@ -19,21 +19,28 @@ import { ButtonGroup, Separator, StyledRadioGroup } from "./style";
 
 const validatorsLabel = "Addresses of validators you want to punish";
 const commentLabel = "Comments (these comments are visible on the proposal once people vote on it)";
-const slashLabel = "% of stake and engagement points to slash";
-const jailForever = "Jail validator forever";
+const slashPortionLabel = "% of stake and engagement points to slash";
+const jailForeverLabel = "Jail validator forever";
+const jailedUntilLabel = "Jailed until date";
+const punishmentLabel = "Type of punisment";
+
 export type PunismentKind = "slash" | "jail" | "both";
 
 const validationSchema = Yup.object().shape({
+  [getFormItemName(commentLabel)]: Yup.string().typeError("comment should be text").required(),
   [getFormItemName(validatorsLabel)]: Yup.string()
     .typeError("Addresses must be alphanumeric")
     .required("Participants are required"),
-  [getFormItemName(slashLabel)]: Yup.number().typeError("Comment must be numeric"),
+  [getFormItemName(slashPortionLabel)]: Yup.number().typeError("Comment must be numeric"),
 });
 
 export interface FormPunishValidatorValues {
-  readonly validatorsToPunish: string[];
-  readonly slashingPercentage: number;
+  readonly validators: string;
+  readonly slashPortion: string;
   readonly comment: string;
+  readonly jailedUntil: string;
+  readonly jailedForever: string;
+  readonly punishment: string;
 }
 
 interface FormPunishValidatorProps extends FormPunishValidatorValues {
@@ -42,48 +49,41 @@ interface FormPunishValidatorProps extends FormPunishValidatorValues {
 }
 
 export default function FormPunishValidator({
-  validatorsToPunish,
   comment,
+  validators,
   goBack,
   handleSubmit,
 }: FormPunishValidatorProps): JSX.Element {
-  const {
-    sdkState: {
-      config: { addressPrefix },
-    },
-  } = useSdk();
-
-  const [validatorsString, setValidatorsString] = useState(validatorsToPunish.join(","));
-  const [validatorsArray, setValidatorsArray] = useState(validatorsToPunish);
   const [punishmentType, setPunishmentType] = useState<PunismentKind>("slash");
   const [isJailedForever, setJailedForever] = useState(false);
   const [jailedUntil, setJailedUntil] = useState("");
   const [slashPortion, setSlashPortion] = useState("0.0");
 
-  useEffect(() => {
-    const validatorsArray = addressStringToArray(validatorsString) as string[];
-    setValidatorsArray(validatorsArray);
-  }, [validatorsString]);
   const handleDateChange = (d: Date): void => {
     if (!d) return;
     const date = new Date(d).toLocaleDateString();
     setJailedUntil(date);
   };
+  const validatorsLabel = "Addresses of validators you want to punish";
+  const commentLabel = "Comments (these comments are visible on the proposal once people vote on it)";
+  const slashPortionLabel = "% of stake and engagement points to slash";
+  const jailForeverLabel = "Jail validator forever";
   return (
     <Formik
       initialValues={{
-        [getFormItemName(validatorsLabel)]: validatorsString,
+        [getFormItemName(validatorsLabel)]: validators,
         [getFormItemName(commentLabel)]: comment,
       }}
       enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        const comment = values[getFormItemName(commentLabel)];
-        const slashAmount = values[getFormItemName(slashPortion)];
         handleSubmit({
-          validatorsToPunish: validatorsArray,
-          comment,
-          slashingPercentage: parseFloat(slashAmount),
+          validators: values[getFormItemName(validatorsLabel)],
+          slashPortion: values[getFormItemName(slashPortionLabel)],
+          comment: values[getFormItemName(commentLabel)],
+          jailedUntil,
+          jailedForever: values[getFormItemName(jailForeverLabel)],
+          punishment: punishmentType,
         });
       }}
     >
@@ -91,22 +91,7 @@ export default function FormPunishValidator({
         <>
           <Form>
             <Stack gap="s1">
-              <Field
-                label={validatorsLabel}
-                placeholder="Type or paste addresses here"
-                value={validatorsString}
-                onInputChange={({ target }) => {
-                  setValidatorsString(target.value);
-                }}
-              />
-              <AddressList
-                short
-                addresses={validatorsArray}
-                addressPrefix={addressPrefix}
-                handleClose={(validatorAddress) =>
-                  setValidatorsArray(validatorsArray.filter((val) => val !== validatorAddress))
-                }
-              />
+              <Field label={validatorsLabel} placeholder="Enter address" />
 
               <StyledRadioGroup
                 onChange={({ target }) => {
@@ -121,7 +106,7 @@ export default function FormPunishValidator({
               <div style={{ width: "40%" }}>
                 <Field
                   units="%"
-                  label={slashLabel}
+                  label={slashPortionLabel}
                   placeholder="Type"
                   value={slashPortion}
                   onInputChange={({ target }) => {
@@ -137,24 +122,16 @@ export default function FormPunishValidator({
                 <Checkbox
                   onChange={() => setJailedForever((isJailedForever) => !isJailedForever)}
                   style={{ marginLeft: "20px" }}
-                  name={getFormItemName(jailForever)}
+                  name={getFormItemName(jailForeverLabel)}
                 >
-                  {jailForever}
+                  {isJailedForever}
                 </Checkbox>
               </div>
               <Field label={commentLabel} placeholder="Enter comment" />
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />
-                <Button
-                  disabled={
-                    !isValid ||
-                    validatorsArray.some(
-                      (validatorAddress) => !isValidAddress(validatorAddress, addressPrefix),
-                    )
-                  }
-                  onClick={() => submitForm()}
-                >
+                <Button disabled={!isValid} onClick={() => submitForm()}>
                   <div>Create proposal</div>
                 </Button>
               </ButtonGroup>
