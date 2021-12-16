@@ -57,7 +57,7 @@ export default function FormPunishValidator({
   const [punishmentType, setPunishmentType] = useState<PunismentKind>("slash");
   const [isJailedForever, setJailedForever] = useState(false);
   const [jailedUntil, setJailedUntil] = useState("");
-  const [slashPortion, setSlashPortion] = useState("0.0");
+  const [slashPortion, setSlashPortion] = useState("0");
 
   const handleDateChange = (d: Date): void => {
     if (!d) return;
@@ -125,7 +125,7 @@ export default function FormPunishValidator({
                   style={{ marginLeft: "20px" }}
                   name={getFormItemName(jailForeverLabel)}
                 >
-                  {isJailedForever}
+                  <Typography>Jail Forever</Typography>
                 </Checkbox>
               </div>
               <Field label={commentLabel} placeholder="Enter comment" />
