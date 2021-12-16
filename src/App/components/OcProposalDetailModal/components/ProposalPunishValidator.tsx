@@ -11,7 +11,7 @@ export default function ProposalPunishValidator({
   proposalPunishValidator,
 }: ProposalPunishValidatorProps): JSX.Element | null {
   let jailForever = false;
-  if (proposalPunishValidator?.jailing_duration.duration === 0) {
+  if (!proposalPunishValidator?.jailing_duration) {
     jailForever = true;
   }
   return proposalPunishValidator ? (
@@ -28,8 +28,8 @@ export default function ProposalPunishValidator({
         ) : (
           <b>
             {" "}
-            {proposalPunishValidator.jailing_duration.duration
-              ? moment.unix(proposalPunishValidator.jailing_duration.duration).format("DD/MM/YYYY")
+            {proposalPunishValidator?.jailing_duration?.duration
+              ? moment.unix(proposalPunishValidator.jailing_duration?.duration).format("DD/MM/YYYY")
               : null}
           </b>
         )}

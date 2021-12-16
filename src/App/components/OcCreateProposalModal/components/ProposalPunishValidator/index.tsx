@@ -67,8 +67,7 @@ export default function ProposalPunishValidator({
     try {
       const dsoContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
       const nativePortion = slashPortion ? (parseFloat(slashPortion) / 100).toString() : "0";
-      const decimalPortion = Decimal.fromUserInput(nativePortion, 2);
-      const jailTime = jailedForever ? {} : { duration: moment(jailedUntil, "DD.MM.YYYY").unix() };
+      const jailTime = jailedForever ? "forever" : { duration: moment(jailedUntil, "DD.MM.YYYY").unix() };
 
       const transactionHash = await dsoContract.propose(
         signingClient,
@@ -78,8 +77,8 @@ export default function ProposalPunishValidator({
         {
           punish: {
             member: validators,
-            portion: slashPortion,
-            jailing_duration: { duration: 4 },
+            portion: nativePortion,
+            jailing_duration: jailTime,
           },
         },
       );
