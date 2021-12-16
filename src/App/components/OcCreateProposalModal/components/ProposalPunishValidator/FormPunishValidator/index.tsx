@@ -93,7 +93,8 @@ export default function FormPunishValidator({
                 }}
                 value={punishmentType}
               >
-                {/*             <Radio value="slash">Slash</Radio>
+                {/*TODO: figure out of these are actually needed as it is the same call
+                <Radio value="slash">Slash</Radio>
                 <Radio value="jail">Jail</Radio>
                 <Radio value="both">Both</Radio> */}
               </StyledRadioGroup>
