@@ -1,11 +1,9 @@
-import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { calculateFee, createProtobufRpcClient, GasPrice, QueryClient } from "@cosmjs/stargate";
+import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { NetworkConfig } from "config/network";
-
-import { getProposalTitle, ProposalContent } from "./dso";
 
 export class ValidatorContractQuerier {
   valAddress?: string;
@@ -43,12 +41,5 @@ export class ValidatorContractQuerier {
     const query = { list_validator_slashing: { operator } };
     const { slashing }: any = await this.client.queryContractSmart(this.valAddress, query);
     return slashing;
-  }
-  async slashValidator(validatorAddress: string): Promise<string[]> {
-    if (!validatorAddress) throw new Error("no operator");
-    const query = { slash: { validatorAddress } };
-    const { slash }: any = await this.client.queryContractSmart(validatorAddress, query);
-    console.log(slash);
-    return slash;
   }
 }
