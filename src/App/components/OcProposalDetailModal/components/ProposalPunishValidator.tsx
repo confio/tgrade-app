@@ -1,4 +1,3 @@
-import moment from "moment";
 import { ValidatorPunishment } from "utils/dso";
 
 import { TextLabel } from "../style";

@@ -1,4 +1,3 @@
-import { Decimal } from "@cosmjs/math";
 import { TxResult } from "App/components/ShowTxResult";
 import moment from "moment";
 import { useState } from "react";
