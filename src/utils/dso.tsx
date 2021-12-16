@@ -71,7 +71,7 @@ export interface Engagement {
 export interface ValidatorPunishment {
   readonly member: string;
   readonly portion: string;
-  readonly jailing_duration: { duration: number } | "forever" | { duration: undefined };
+  readonly jailing_duration?: { duration: number } | "forever";
 }
 
 export type ProposalContent = {

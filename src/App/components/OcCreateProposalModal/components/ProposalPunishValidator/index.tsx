@@ -67,9 +67,9 @@ export default function ProposalPunishValidator({
     try {
       const dsoContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
       const nativePortion = slashPortion ? (parseFloat(slashPortion) / 100).toString() : "0";
-      console.log({ jailedUntil });
-      const jailTime = jailedForever ? "forever" : { duration: moment(jailedUntil, "DD/MM/YYYY").unix() };
-      console.log({ jailTime });
+      const jailedTo = jailedUntil ? jailedUntil : "10/10/2022";
+      const jailTime = jailedForever ? "forever" : { duration: moment(jailedTo, "DD/MM/YYYY").unix() };
+
       const transactionHash = await dsoContract.propose(
         signingClient,
         config.factoryAddress,
