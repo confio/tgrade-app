@@ -1,7 +1,20 @@
 import closeIcon from "App/assets/icons/cross.svg";
+import Button from "App/components/Button";
 import Stack from "App/components/Stack/style";
+import { useState } from "react";
+import { useSdk } from "service";
 
-import { ModalHeader, StyledCard, StyledInfoRow, StyledModal, StyledTable, Title } from "./style";
+import DistributionModal from "../DistributionModal";
+import StakeModal, { StakeModalState } from "../StakeModal";
+import {
+  ButtonGroup,
+  ModalHeader,
+  StyledCard,
+  StyledInfoRow,
+  StyledModal,
+  StyledTable,
+  Title,
+} from "./style";
 
 interface ModalProps {
   visible: boolean;
@@ -32,6 +45,12 @@ const columns = [
   },
 ];
 export function ValidatorDetail({ visible, validator, blockchainValues, onCancel }: ModalProps): JSX.Element {
+  const {
+    sdkState: { address },
+  } = useSdk();
+  const [stakeModalState, setStakeModalState] = useState<StakeModalState>({ open: false });
+  const [isDistributionModalOpen, setDistributionModalOpen] = useState(false);
+
   return (
     <StyledModal
       centered
@@ -90,12 +109,23 @@ export function ValidatorDetail({ visible, validator, blockchainValues, onCancel
             <StyledInfoRow>
               <b>{validator.rewards} /</b> <p> {blockchainValues.totalEgRewards}</p>
             </StyledInfoRow>
+            <Button type="ghost" onClick={() => setDistributionModalOpen(true)}>
+              Claim rewards
+            </Button>
           </StyledCard>
           <StyledCard>
             <Title>Staked, TGD</Title>
             <StyledInfoRow>
               <b>{validator.staked || "-"} /</b> <p> {blockchainValues.totalTGD}</p>
             </StyledInfoRow>
+            {validator.operator === address ? (
+              <ButtonGroup>
+                <Button type="ghost" onClick={() => setStakeModalState({ open: true, operation: "unstake" })}>
+                  Unstake
+                </Button>
+                <Button onClick={() => setStakeModalState({ open: true, operation: "stake" })}>Stake</Button>
+              </ButtonGroup>
+            ) : null}
           </StyledCard>
           <StyledCard>
             <Title>Potential voting power</Title>
@@ -107,6 +137,8 @@ export function ValidatorDetail({ visible, validator, blockchainValues, onCancel
         </div>
         <StyledTable dataSource={validator.slashEvents} columns={columns} pagination={false} />
       </div>
+      <StakeModal modalState={stakeModalState} setModalState={setStakeModalState} />
+      <DistributionModal isModalOpen={isDistributionModalOpen} setModalOpen={setDistributionModalOpen} />
     </StyledModal>
   );
 }

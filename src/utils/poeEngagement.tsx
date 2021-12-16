@@ -63,14 +63,13 @@ interface HalflifeResponse {
 const errorEgAddressNotSet = "Engagement contract address not set. Need to run 'await this.initAddress()'";
 
 export class EngagementContractQuerier {
-  readonly config: NetworkConfig;
-  protected readonly client: CosmWasmClient;
   egAddress?: string;
 
-  constructor(config: NetworkConfig, client: CosmWasmClient) {
-    this.config = config;
-    this.client = client;
-  }
+  constructor(
+    readonly config: NetworkConfig,
+    readonly contractType: PoEContractType,
+    protected readonly client: CosmWasmClient,
+  ) {}
 
   protected async initAddress(): Promise<void> {
     if (this.egAddress) return;
@@ -80,7 +79,7 @@ export class EngagementContractQuerier {
     const rpcClient = createProtobufRpcClient(queryClient);
     const queryService = new QueryClientImpl(rpcClient);
 
-    const { address } = await queryService.ContractAddress({ contractType: PoEContractType.ENGAGEMENT });
+    const { address } = await queryService.ContractAddress({ contractType: this.contractType });
     this.egAddress = address;
   }
 
@@ -213,8 +212,8 @@ export class EngagementContract extends EngagementContractQuerier {
 
   readonly #signingClient: SigningCosmWasmClient;
 
-  constructor(config: NetworkConfig, signingClient: SigningCosmWasmClient) {
-    super(config, signingClient);
+  constructor(config: NetworkConfig, contractType: PoEContractType, signingClient: SigningCosmWasmClient) {
+    super(config, contractType, signingClient);
     this.#signingClient = signingClient;
   }
 
