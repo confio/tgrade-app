@@ -1,6 +1,4 @@
-import { Radio, Typography } from "antd";
-import Paragraph from "antd/lib/skeleton/Paragraph";
-import AddressList from "App/components/AddressList";
+import { Typography } from "antd";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import Checkbox from "App/components/Checkbox";
@@ -9,10 +7,8 @@ import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import moment from "moment";
-import { useEffect, useState } from "react";
-import { useSdk } from "service";
-import { addressStringToArray, getFormItemName, isValidAddress } from "utils/forms";
+import { useState } from "react";
+import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 
 import { ButtonGroup, Separator, StyledRadioGroup } from "./style";
@@ -20,9 +16,6 @@ import { ButtonGroup, Separator, StyledRadioGroup } from "./style";
 const validatorsLabel = "Addresses of validators you want to punish";
 const commentLabel = "Comments (these comments are visible on the proposal once people vote on it)";
 const slashPortionLabel = "% of stake and engagement points to slash";
-const jailForeverLabel = "Jail validator forever";
-const jailedUntilLabel = "Jailed until date";
-const punishmentLabel = "Type of punisment";
 
 export type PunismentKind = "slash" | "jail" | "both";
 
