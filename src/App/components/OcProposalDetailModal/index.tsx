@@ -18,6 +18,7 @@ import { getErrorFromStackTrace } from "utils/errors";
 import ProposalAddMembers from "./components/ProposalAddMembers";
 import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
 import ProposalGrantEngagement from "./components/ProposalGrantEngagement";
+import ProposalPunishValidator from "./components/ProposalPunishValidator";
 import ProposalPunishVotingMember from "./components/ProposalPunishVotingMember";
 import ProposalRemoveMembers from "./components/ProposalRemoveMembers";
 import {
@@ -74,6 +75,7 @@ export default function OcProposalDetailModal({
   const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
   const proposalPunishVotingMember = proposal?.proposal.punish_members?.[0] ?? undefined;
   const proposalGrantEngagement = proposal?.proposal.grant_engagement;
+  const proposalPunishValidator = proposal?.proposal.punish;
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
@@ -287,6 +289,7 @@ export default function OcProposalDetailModal({
                 <ProposalAddVotingMembers proposalAddVotingMembers={proposalAddVotingMembers} />
                 <ProposalPunishVotingMember proposalPunishVotingMember={proposalPunishVotingMember} />
                 <ProposalGrantEngagement proposalGrantEngagement={proposalGrantEngagement} />
+                <ProposalPunishValidator proposalPunishValidator={proposalPunishValidator} />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />

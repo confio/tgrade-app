@@ -67,9 +67,16 @@ export interface Engagement {
   readonly points: number;
 }
 
+export interface ValidatorPunishment {
+  readonly member: string;
+  readonly portion: string;
+  readonly jailing_duration?: { duration: number } | "forever";
+}
+
 export type ProposalContent = {
   /// Apply a diff to the existing non-voting members.
   /// Remove is applied after add, so if an address is in both, it is removed
+
   readonly add_remove_non_voting_members?: {
     readonly remove: readonly string[];
     readonly add: readonly string[];
@@ -86,10 +93,12 @@ export type ProposalContent = {
   readonly grant_engagement?: Engagement;
 } & {
   readonly whitelist_contract?: string;
+} & {
+  readonly punish?: ValidatorPunishment;
 };
 
 export function isOcProposal(proposal: ProposalContent): boolean {
-  return !!proposal.grant_engagement;
+  return !!proposal.grant_engagement || !!proposal.punish;
 }
 
 export type Expiration = {
@@ -211,6 +220,8 @@ export async function getProposalTitle(
       return "Whitelist pair";
     case "grant_engagement":
       return "Grant engagement";
+    case "punish":
+      return "Punish Validator";
     default:
       throw new Error("Error: unhandled proposal type");
   }

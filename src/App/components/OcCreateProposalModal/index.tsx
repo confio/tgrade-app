@@ -14,7 +14,7 @@ const ProposalRemoveParticipants = lazy(() => import("./components/ProposalRemov
 const ProposalAddVotingParticipants = lazy(() => import("./components/ProposalAddVotingParticipants"));
 const ProposalPunishVotingParticipant = lazy(() => import("./components/ProposalPunishVotingParticipant"));
 const ProposalGrantEngagement = lazy(() => import("./components/ProposalGrantEngagement"));
-
+const ProposalPunishValidator = lazy(() => import("./components/ProposalPunishValidator"));
 const { Title, Text } = Typography;
 const { Step } = Steps;
 
@@ -24,6 +24,7 @@ export enum ProposalType {
   AddVotingParticipants = "add-voting-participants",
   PunishVotingParticipant = "punish-voting-participants",
   GrantEngagement = "grant-engagement",
+  PunishValidator = "punish-validator",
 }
 
 export const proposalLabels = {
@@ -32,6 +33,7 @@ export const proposalLabels = {
   [ProposalType.AddVotingParticipants]: "Add voting participants",
   [ProposalType.PunishVotingParticipant]: "Punish voting participant",
   [ProposalType.GrantEngagement]: "Grant engagement",
+  [ProposalType.PunishValidator]: "Punish Validator",
 };
 
 export const proposalTitles = {
@@ -41,6 +43,7 @@ export const proposalTitles = {
   [ProposalType.AddVotingParticipants]: "Add voting participant(s)",
   [ProposalType.PunishVotingParticipant]: "Punish voting participant",
   [ProposalType.GrantEngagement]: "Grant engagement",
+  [ProposalType.PunishValidator]: "Punish Validator",
   confirmation: "Confirmation",
 };
 
@@ -165,6 +168,14 @@ export default function OcCreateProposalModal({
             />
           ) : proposalStep.type === ProposalType.GrantEngagement ? (
             <ProposalGrantEngagement
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.PunishValidator ? (
+            <ProposalPunishValidator
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
               isSubmitting={isSubmitting}
