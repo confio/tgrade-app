@@ -104,7 +104,7 @@ const tgradeTestnet: NetworkConfig = {
   coinMap: {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
-  gasPrice: GasPrice.fromString("0.025utgd"),
+  gasPrice: GasPrice.fromString("0.05utgd"),
   factoryAddress: "tgrade1fventeva948ue0fzhp6xselr522rnqwgp5c9qv",
   codeIds: {
     // The first 8 codeIds are reserved by tgrade automatically when launched
