@@ -21,7 +21,7 @@
       function gtag() {}
     </script>
     <!-- Google Analytics for try.tgrade.finance only -->
-    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet2") { %>
+    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet") { %>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CL60E9X5BW"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -77,7 +77,7 @@
       onload="this.media='all'"
     />
     <!-- Start cookieyes banner -->
-    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet2") { %>
+    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet") { %>
     <script
       id="cookieyes"
       type="text/javascript"
