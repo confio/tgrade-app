@@ -1,5 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
+import { calculateFee, GasPrice } from "@cosmjs/stargate";
 import tgradeLogo from "App/assets/icons/tgradeLogo.svg";
 import tempImgUrl from "App/assets/icons/token-placeholder.png";
 import { NetworkConfig } from "config/network";
@@ -86,7 +87,7 @@ export class Contract20WS {
       codeId,
       initMsg,
       "CW20 instance",
-      "auto",
+      calculateFee(500_000, GasPrice.fromString("0.05utgd")),
     );
     return contractAddress;
   }
@@ -267,7 +268,7 @@ export class Contract20WS {
           amount: UINT128_MAX,
         },
       },
-      "auto",
+      calculateFee(500_000, GasPrice.fromString("0.05utgd")),
     );
 
     return result;
