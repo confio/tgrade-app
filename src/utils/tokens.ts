@@ -67,9 +67,9 @@ export interface MinterInterface {
   cap: number;
 }
 export class Token {
-  static readonly GAS_SWAP = 500_000;
-  static readonly GAS_PROVIDE_LIQUIDITY = 500_000;
-  static readonly GAS_WITHDRAW_LIQUIDITY = 500_000;
+  static readonly GAS_SWAP = 800_000;
+  static readonly GAS_PROVIDE_LIQUIDITY = 800_000;
+  static readonly GAS_WITHDRAW_LIQUIDITY = 800_000;
 
   readonly #signingClient: SigningCosmWasmClient;
 
