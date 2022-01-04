@@ -1,3 +1,4 @@
+import { calculateFee } from "@cosmjs/stargate";
 import { Divider } from "antd";
 import {
   EstimatedMessage,
@@ -26,7 +27,14 @@ import {
   useProvide,
 } from "service/provide";
 import { updatePairs, updateToken, useTMarket } from "service/tmarket";
-import { DetailProvide, PairProps, ProvideFormValues, SimulationProvide, TokenProps } from "utils/tokens";
+import {
+  DetailProvide,
+  PairProps,
+  ProvideFormValues,
+  SimulationProvide,
+  Token,
+  TokenProps,
+} from "utils/tokens";
 
 import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, ToToken } from "./components";
 import ProvideResultModal from "./components/ProvideResultModal";
@@ -131,7 +139,7 @@ export default function Provide(): JSX.Element {
             <ToToken />
             <Divider />
             <EmptyPoolTip />
-            <ExtraInfo />
+            <ExtraInfo fee={calculateFee(Token.GAS_PROVIDE_LIQUIDITY, config.gasPrice)} />
             <ApproveTokensRow />
             <EstimatedMessage />
             <SubmitButton
