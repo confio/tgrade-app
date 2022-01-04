@@ -1,20 +1,23 @@
+import { StdFee } from "@cosmjs/stargate";
 import { Col } from "antd";
 import InfoRow from "App/components/InfoRow";
 import { useFormikContext } from "formik";
-import { useSdk } from "service";
 import { useWithdraw } from "service/withdraw";
 import { SwapFormValues } from "utils/tokens";
 
+import { formatTgdFee } from "../../../exchange/utils/fees";
 import Divider from "./style";
 
-const ExtraInfo = (): JSX.Element | null => {
+interface ExtraInfoProps {
+  readonly fee: StdFee;
+}
+
+const ExtraInfo = ({ fee }: ExtraInfoProps): JSX.Element | null => {
   const { withdrawState } = useWithdraw();
-  const { sdkState } = useSdk();
   const { values } = useFormikContext<SwapFormValues>();
   const { detail } = withdrawState;
 
   if (!detail || !values.From || !values.selectFrom) return null;
-  const fee = PrettyNumber(Number(sdkState.config.gasPrice.amount) / 2);
 
   const tooltips = {
     poolAfter: "Contribution percentage to the pool",
@@ -27,7 +30,7 @@ const ExtraInfo = (): JSX.Element | null => {
         <InfoRow label="Price Impact" value={`${detail.priceImpact} %`} />
         <InfoRow label="LP after Tx" value={`${detail.lpAfter}`} />
         <InfoRow label="Pool Share after Tx" value={`${detail.sharePool}`} tooltip={tooltips.poolAfter} />
-        <InfoRow label="Tx Fee" value={`${fee}`} tooltip={tooltips.txFee} />
+        <InfoRow label="Tx Fee" value={formatTgdFee(fee)} tooltip={tooltips.txFee} />
       </Col>
       <Divider />
     </>
@@ -35,10 +38,3 @@ const ExtraInfo = (): JSX.Element | null => {
 };
 
 export default ExtraInfo;
-
-//Makes a large number with to many decimals shorter
-//Ex 0.0238454945350234 => 0.0238
-const PrettyNumber = (largeNumber: string | number): number => {
-  const number = Number(largeNumber);
-  return number <= 0 ? 0 : parseFloat(number.toFixed(4));
-};

@@ -1,15 +1,19 @@
+import { StdFee } from "@cosmjs/stargate";
 import { Col } from "antd";
 import InfoRow from "App/components/InfoRow";
 import { useFormikContext } from "formik";
-import { useSdk } from "service";
 import { useExchange } from "service/exchange";
 import { SwapFormValues } from "utils/tokens";
 
+import { formatTgdFee } from "../../utils/fees";
 import Divider from "./style";
 
-const ExtraInfo = (): JSX.Element | null => {
+interface ExtraInfoProps {
+  readonly fee: StdFee;
+}
+
+const ExtraInfo = ({ fee }: ExtraInfoProps): JSX.Element | null => {
   const { exchangeState } = useExchange();
-  const { sdkState } = useSdk();
   const { values } = useFormikContext<SwapFormValues>();
   const { simulatedSwap } = exchangeState;
 
@@ -20,7 +24,6 @@ const ExtraInfo = (): JSX.Element | null => {
   const LiquidityProviderFee = PrettyNumber(
     (Number(values.From) / Number(values.To)) * Number(simulatedSwap.commission_amount),
   );
-  const fee = PrettyNumber(Number(sdkState.config.gasPrice.amount) / 2);
 
   //Tootips:
   const tooltips = {
@@ -47,7 +50,7 @@ const ExtraInfo = (): JSX.Element | null => {
           value={`${LiquidityProviderFee} ${values.selectFrom?.symbol}`}
           tooltip={tooltips.liquidityProviderFee}
         />
-        <InfoRow label="Tx Fee" value={`${fee} TGD`} tooltip={tooltips.txFee} />
+        <InfoRow label="Tx Fee" value={formatTgdFee(fee)} tooltip={tooltips.txFee} />
       </Col>
       <Divider />
     </>
