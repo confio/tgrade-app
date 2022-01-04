@@ -1,4 +1,5 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { toBase64, toUtf8 } from "@cosmjs/encoding";
 import { Decimal } from "@cosmjs/math";
 import { calculateFee, GasPrice } from "@cosmjs/stargate";
 import { MouseEventHandler } from "react";
@@ -250,7 +251,7 @@ export class Token {
             contract: pair.contract_addr,
             amount: amount,
             //TODO make spread dynamic
-            msg: "eyJzd2FwIjp7Im1heF9zcHJlYWQiOiIwLjI1In19Cg",
+            msg: toBase64(toUtf8('{"swap":{"max_spread":"0.25"}}')),
           },
         },
         calculateFee(Token.GAS_SWAP, gasPrice),
