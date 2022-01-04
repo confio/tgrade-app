@@ -5,14 +5,14 @@
   "targets": {
     "tgrade-487d8": {
       "hosting": {
-        "internal": [
-          "tgrade-internal"
+        "dev.tgrade.finance": [
+          "tgrade-dev"
         ],
-        "staging": [
+        "staging.tgrade.finance": [
           "tgrade-staging"
         ],
-        "public": [
-          "tgrade-public"
+        "try.tgrade.finance": [
+          "tgrade-try"
         ]
       }
     }

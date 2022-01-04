@@ -1,7 +1,7 @@
 {
   "hosting": [
     {
-      "target": "internal",
+      "target": "dev.tgrade.finance",
       "public": "build",
       "ignore": [
         "firebase.json",
@@ -26,7 +26,7 @@
       ]
     },
     {
-      "target": "staging",
+      "target": "staging.tgrade.finance",
       "public": "build",
       "ignore": [
         "firebase.json",
@@ -51,7 +51,7 @@
       ]
     },
     {
-      "target": "public",
+      "target": "try.tgrade.finance",
       "public": "build",
       "ignore": [
         "firebase.json",
