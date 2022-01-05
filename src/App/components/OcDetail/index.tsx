@@ -5,7 +5,7 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useOc, useSdk } from "service";
-import { DsoContractQuerier, isOcProposal, ProposalResponse } from "utils/dso";
+import { DsoContractQuerier, DsoProposalResponse, isOcProposal } from "utils/dso";
 
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -35,11 +35,11 @@ const columns = [
   {
     title: "Nº",
     key: "id",
-    render: (record: ProposalResponse) => {
+    render: (record: DsoProposalResponse) => {
       const proposalId = isOcProposal(record.proposal) ? `oc${record.id}` : `tc${record.id}`;
       return proposalId;
     },
-    sorter: (a: ProposalResponse, b: ProposalResponse) => {
+    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => {
       const proposalAId = isOcProposal(a.proposal) ? `oc${a.id}` : `tc${a.id}`;
       const proposalBId = isOcProposal(b.proposal) ? `oc${b.id}` : `tc${b.id}`;
 
@@ -54,9 +54,9 @@ const columns = [
   {
     title: "Due date",
     key: "expires",
-    render: (record: any) => {
-      const formatedDate = new Date(record.expires.at_time / 1000000).toLocaleDateString();
-      const formatedTime = new Date(record.expires.at_time / 1000000).toLocaleTimeString();
+    render: (record: DsoProposalResponse) => {
+      const formatedDate = new Date(Number(record.expires.at_time) / 1000000).toLocaleDateString();
+      const formatedTime = new Date(Number(record.expires.at_time) / 1000000).toLocaleTimeString();
       return (
         <>
           <div>{formatedDate}</div>
@@ -73,7 +73,7 @@ const columns = [
   {
     title: "Status",
     key: "status",
-    render: (record: ProposalResponse) => (
+    render: (record: DsoProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
@@ -119,7 +119,7 @@ export default function OcDetail(): JSX.Element {
 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
-  const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
+  const [proposals, setProposals] = useState<readonly DsoProposalResponse[]>([]);
   const [clickedProposal, setClickedProposal] = useState<string>();
   const [isVotingMember, setVotingMember] = useState(false);
 
@@ -168,7 +168,7 @@ export default function OcDetail(): JSX.Element {
               columns={columns}
               pagination={false}
               dataSource={proposals}
-              onRow={(proposal: ProposalResponse) => ({
+              onRow={(proposal: DsoProposalResponse) => ({
                 onClick: () => {
                   const proposalId = isOcProposal(proposal.proposal)
                     ? `oc${proposal.id}`

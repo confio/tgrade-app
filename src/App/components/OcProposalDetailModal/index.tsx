@@ -12,7 +12,7 @@ import Stack from "App/components/Stack/style";
 import { useEffect, useState } from "react";
 import { useError, useOc, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
-import { DsoContract, DsoContractQuerier, ProposalResponse, VoteOption } from "utils/dso";
+import { DsoContract, DsoContractQuerier, DsoProposalResponse, VoteOption } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import ProposalAddMembers from "./components/ProposalAddMembers";
@@ -66,7 +66,7 @@ export default function OcProposalDetailModal({
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
-  const [proposal, setProposal] = useState<ProposalResponse>();
+  const [proposal, setProposal] = useState<DsoProposalResponse>();
   const isProposalNotExpired = proposal
     ? new Date(parseInt(proposal.expires.at_time, 10) / 1000000) > new Date()
     : false;

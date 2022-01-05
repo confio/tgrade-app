@@ -5,7 +5,7 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { DsoContractQuerier, ProposalResponse } from "utils/dso";
+import { Cw3Status, DsoContractQuerier, DsoProposalResponse } from "utils/dso";
 
 import Stack from "../Stack/style";
 import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -36,7 +36,7 @@ const columns = [
     title: "Nº",
     dataIndex: "id",
     key: "id",
-    sorter: (a: any, b: any) => a.id - b.id,
+    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => a.id - b.id,
   },
   {
     title: "Type",
@@ -46,9 +46,9 @@ const columns = [
   {
     title: "Due date",
     key: "expires",
-    render: (record: any) => {
-      const formatedDate = new Date(record.expires.at_time / 1000000).toLocaleDateString();
-      const formatedTime = new Date(record.expires.at_time / 1000000).toLocaleTimeString();
+    render: (record: DsoProposalResponse) => {
+      const formatedDate = new Date(Number(record.expires.at_time) / 1000000).toLocaleDateString();
+      const formatedTime = new Date(Number(record.expires.at_time) / 1000000).toLocaleTimeString();
       return (
         <>
           <div>{formatedDate}</div>
@@ -56,28 +56,28 @@ const columns = [
         </>
       );
     },
-    sorter: (a: any, b: any) => {
-      const aDate = new Date(a.expires.at_time / 1000000);
-      const bDate = new Date(b.expires.at_time / 1000000);
+    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => {
+      const aDate = new Date(Number(a.expires.at_time) / 1000000);
+      const bDate = new Date(Number(b.expires.at_time) / 1000000);
       return bDate.getTime() - aDate.getTime();
     },
   },
   {
     title: "Status",
     key: "status",
-    render: (record: any) => (
+    render: (record: DsoProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
-          {(record.status as string).charAt(0).toUpperCase() + (record.status as string).slice(1)}
+          {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
         </StatusParagraph>
         <Paragraph>Yes: {record.votes.yes}</Paragraph>
         <Paragraph>No: {record.votes.no}</Paragraph>
         <Paragraph>Abstained: {record.votes.abstain}</Paragraph>
       </StatusBlock>
     ),
-    sorter: (a: any, b: any) => {
-      function getSortNumFromStatus(status: string): number {
+    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => {
+      function getSortNumFromStatus(status: Cw3Status): number {
         switch (status) {
           case "executed":
             return 1;
@@ -96,7 +96,9 @@ const columns = [
   {
     title: "Description",
     key: "description",
-    render: (record: any) => <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>,
+    render: (record: DsoProposalResponse) => (
+      <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>
+    ),
   },
 ];
 
@@ -111,7 +113,7 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
   } = useSdk();
 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
-  const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
+  const [proposals, setProposals] = useState<readonly DsoProposalResponse[]>([]);
   const [clickedProposal, setClickedProposal] = useState<number>();
   const [isVotingMember, setVotingMember] = useState(false);
 
@@ -156,7 +158,7 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
               columns={columns}
               pagination={false}
               dataSource={proposals}
-              onRow={(proposal: ProposalResponse) => ({
+              onRow={(proposal: DsoProposalResponse) => ({
                 onClick: () => setClickedProposal(proposal.id),
               })}
             />
