@@ -6,6 +6,7 @@ import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useOc, useSdk } from "service";
 import { DsoContractQuerier, DsoProposalResponse, isOcProposal } from "utils/dso";
+import { OcProposalResponse } from "utils/oc";
 
 import Stack from "../Stack/style";
 import { ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -32,13 +33,13 @@ const columns = [
   {
     title: "Nº",
     key: "id",
-    render: (record: DsoProposalResponse) => {
-      const proposalId = isOcProposal(record.proposal) ? `oc${record.id}` : `tc${record.id}`;
+    render: (record: DsoProposalResponse | OcProposalResponse) => {
+      const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
       return proposalId;
     },
-    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => {
-      const proposalAId = isOcProposal(a.proposal) ? `oc${a.id}` : `tc${a.id}`;
-      const proposalBId = isOcProposal(b.proposal) ? `oc${b.id}` : `tc${b.id}`;
+    sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
+      const proposalAId = isOcProposal(a) ? `oc${a.id}` : `tc${a.id}`;
+      const proposalBId = isOcProposal(b) ? `oc${b.id}` : `tc${b.id}`;
 
       return proposalAId < proposalBId;
     },
@@ -158,9 +159,9 @@ export default function ValidatorProposals(): JSX.Element {
             columns={columns}
             pagination={false}
             dataSource={proposals}
-            onRow={(proposal: DsoProposalResponse) => ({
+            onRow={(record: DsoProposalResponse | OcProposalResponse) => ({
               onClick: () => {
-                const proposalId = isOcProposal(proposal.proposal) ? `oc${proposal.id}` : `tc${proposal.id}`;
+                const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
                 setClickedProposal(proposalId);
               },
             })}

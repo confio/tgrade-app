@@ -1,6 +1,8 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
 
+import { OcProposalResponse } from "./oc";
+
 export type VoteOption = "yes" | "no" | "abstain";
 
 export interface PendingEscrow {
@@ -97,8 +99,17 @@ export type ProposalContent = {
   readonly punish?: ValidatorPunishment;
 };
 
-export function isOcProposal(proposal: ProposalContent): boolean {
+export function isOcProposal(
+  response: DsoProposalResponse | OcProposalResponse,
+): response is OcProposalResponse {
+  const proposal: any = response.proposal;
   return !!proposal.grant_engagement || !!proposal.punish;
+}
+
+export function isDsoProposal(
+  response: DsoProposalResponse | OcProposalResponse,
+): response is DsoProposalResponse {
+  return !isOcProposal(response);
 }
 
 export type Expiration =
