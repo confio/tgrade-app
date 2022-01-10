@@ -72,6 +72,7 @@ const columns = [
       const bExpiryTime = Number(typeof b.expires === "string" ? b.expires : b.expires.at_time) / 1000000;
       return bExpiryTime - aExpiryTime;
     },
+    defaultSortOrder: "ascend",
   },
   {
     title: "Status",
@@ -171,9 +172,12 @@ export default function OcDetail(): JSX.Element {
           </header>
           {proposals.length ? (
             <Table
+              pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
               columns={columns}
-              pagination={false}
               dataSource={proposals}
+              rowKey={(record: DsoProposalResponse | OcProposalResponse) =>
+                isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`
+              }
               onRow={(record: DsoProposalResponse | OcProposalResponse) => ({
                 onClick: () => {
                   const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
