@@ -1,7 +1,7 @@
-import { Table } from "antd";
+import Table from "App/components/Table";
 import styled from "styled-components";
 export const StyledTable = styled(Table)`
-  margin: 25px;
+  margin-top: 25px;
   .ant-table-column-title {
     position: relative;
     z-index: 1;
