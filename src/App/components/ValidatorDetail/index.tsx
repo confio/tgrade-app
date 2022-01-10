@@ -6,6 +6,7 @@ import { useSdk } from "service";
 
 import DistributionModal from "../DistributionModal";
 import StakeModal, { StakeModalState } from "../StakeModal";
+import { ValidatorType } from "../ValidatorOverview";
 import {
   ButtonGroup,
   ModalHeader,
@@ -18,7 +19,7 @@ import {
 
 interface ModalProps {
   visible: boolean;
-  validator: any;
+  validator?: ValidatorType;
   onCancel: () => void;
   blockchainValues: any;
 }
@@ -44,13 +45,19 @@ const columns = [
     key: "reason",
   },
 ];
-export function ValidatorDetail({ visible, validator, blockchainValues, onCancel }: ModalProps): JSX.Element {
+export function ValidatorDetail({
+  visible,
+  validator,
+  blockchainValues,
+  onCancel,
+}: ModalProps): JSX.Element | null {
   const {
     sdkState: { address },
   } = useSdk();
   const [stakeModalState, setStakeModalState] = useState<StakeModalState>({ open: false });
   const [isDistributionModalOpen, setDistributionModalOpen] = useState(false);
 
+  if (!validator) return null;
   return (
     <StyledModal
       centered
@@ -78,9 +85,9 @@ export function ValidatorDetail({ visible, validator, blockchainValues, onCancel
       <div style={{ display: "flex", flexDirection: "column", marginRight: "50px", height: "530px" }}>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <div style={{ display: "flex", flexDirection: "column", marginRight: "50px" }}>
-            <Title> {validator.metadata.moniker}</Title>
+            <Title> {validator.metadata?.moniker ?? ""}</Title>
             <p> {validator.operator}</p>
-            <p> {validator.metadata.website}</p>
+            <p> {validator.metadata?.website ?? ""}</p>
           </div>
           {validator.jailed_until ? (
             <div style={{ display: "flex", flexDirection: "column", marginRight: "50px" }}>
@@ -135,7 +142,11 @@ export function ValidatorDetail({ visible, validator, blockchainValues, onCancel
         <div style={{ marginTop: "25px", marginBottom: "10px" }}>
           <Title>Slashing events</Title>
         </div>
-        <StyledTable dataSource={validator.slashEvents} columns={columns} pagination={false} />
+        <StyledTable
+          pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
+          dataSource={validator.slashEvents}
+          columns={columns}
+        />
       </div>
       <StakeModal modalState={stakeModalState} setModalState={setStakeModalState} />
       <DistributionModal isModalOpen={isDistributionModalOpen} setModalOpen={setDistributionModalOpen} />
