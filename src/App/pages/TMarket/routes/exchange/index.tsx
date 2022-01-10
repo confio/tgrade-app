@@ -1,3 +1,4 @@
+import { calculateFee } from "@cosmjs/stargate";
 import { Divider } from "antd";
 import {
   EstimatedMessage,
@@ -24,6 +25,7 @@ import {
   useExchange,
 } from "service/exchange";
 import { updateToken, useTMarket } from "service/tmarket";
+import { Token } from "utils/tokens";
 import { DetailSwap, PairProps, SimulatedSwap, SwapFormValues, TokenProps } from "utils/tokens";
 
 import { ExtraInfo, FromToken, ToToken } from "./components";
@@ -105,7 +107,7 @@ export default function Exchange(): JSX.Element {
             </MiddleRow>
             <ToToken />
             <Divider />
-            <ExtraInfo />
+            <ExtraInfo fee={calculateFee(Token.GAS_SWAP, sdkState.config.gasPrice)} />
             <EstimatedMessage />
             <SubmitButton
               disabled={

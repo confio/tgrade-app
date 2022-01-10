@@ -1,3 +1,4 @@
+import { StdFee } from "@cosmjs/stargate";
 import { Col } from "antd";
 import InfoRow from "App/components/InfoRow";
 import { useFormikContext } from "formik";
@@ -5,12 +6,17 @@ import { useSdk } from "service";
 import { useProvide } from "service/provide";
 import { ProvideFormValues } from "utils/tokens";
 
+import { formatTgdFee } from "../../../exchange/utils/fees";
 import Divider from "./style";
 
-const ExtraInfo = (): JSX.Element | null => {
+interface ExtraInfoProps {
+  readonly fee: StdFee;
+}
+
+const ExtraInfo = ({ fee }: ExtraInfoProps): JSX.Element | null => {
   const { provideState } = useProvide();
   const { sdkState } = useSdk();
-  const { client, config } = sdkState;
+  const { client } = sdkState;
   const { values } = useFormikContext<ProvideFormValues>();
   const { extraInfo } = provideState;
 
@@ -76,7 +82,7 @@ const ExtraInfo = (): JSX.Element | null => {
         />
         <InfoRow
           label={`Tx fee`}
-          value={`${config.gasPrice.amount} ${config.gasPrice.denom}`}
+          value={formatTgdFee(fee)}
           tooltip={"The Tx fee is an amount charged by miners for processing your transactions."}
         />
       </Col>

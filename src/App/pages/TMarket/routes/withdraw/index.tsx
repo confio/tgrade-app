@@ -1,3 +1,4 @@
+import { calculateFee } from "@cosmjs/stargate";
 import { Divider } from "antd";
 import {
   ArrowIcon,
@@ -14,7 +15,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
 import { updateLPToken, useTMarket } from "service/tmarket";
 import { setDetailWithdraw, setLoading, setWithdrawButtonState, useWithdraw } from "service/withdraw";
-import { DetailWithdraw, LPToken, WithdrawFormValues } from "utils/tokens";
+import { DetailWithdraw, LPToken, Token, WithdrawFormValues } from "utils/tokens";
 
 import { FromToken, ToToken } from "./components";
 import ExtraInfo from "./components/ExtraInfo";
@@ -82,7 +83,7 @@ export default function Withdraw(): JSX.Element {
             </MiddleRow>
             <ToToken />
             <Divider />
-            <ExtraInfo />
+            <ExtraInfo fee={calculateFee(Token.GAS_WITHDRAW_LIQUIDITY, config.gasPrice)} />
             <EstimatedMessage />
             <SubmitButton
               disabled={errors.to !== undefined || errors.from !== undefined}
