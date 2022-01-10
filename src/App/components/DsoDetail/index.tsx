@@ -61,6 +61,7 @@ const columns = [
       const bDate = new Date(Number(b.expires.at_time) / 1000000);
       return bDate.getTime() - aDate.getTime();
     },
+    defaultSortOrder: "ascend",
   },
   {
     title: "Status",
@@ -155,9 +156,10 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
           </header>
           {proposals.length ? (
             <Table
+              pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
               columns={columns}
-              pagination={false}
               dataSource={proposals}
+              rowKey={(proposal: DsoProposalResponse) => proposal.id}
               onRow={(proposal: DsoProposalResponse) => ({
                 onClick: () => setClickedProposal(proposal.id),
               })}
