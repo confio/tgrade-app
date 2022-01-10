@@ -1,19 +1,22 @@
 import { Typography } from "antd";
+import PageLayout from "App/components/PageLayout";
 import { lazy } from "react";
 
-import { TextStack, Wrapper } from "./style";
+import { TextStack } from "./style";
+
 const ValidatorOverview = lazy(() => import("App/components/ValidatorOverview"));
-const ValidatorProposals = lazy(() => import("App/components/ValidatorProposals"));
-const { Title, Text } = Typography;
+/* const ValidatorProposals = lazy(() => import("App/components/ValidatorProposals")); */
+const { Title } = Typography;
+
 export default function ValidatorsHome(): JSX.Element | null {
   return (
-    <Wrapper>
+    <PageLayout maxwidth="100%" centered="false">
       <TextStack>
         <Title>Validators</Title>
-        <Text>Lorem ipsum dolor sita amet lorem ipsum. Text about what Validators are.</Text>
       </TextStack>
-      <ValidatorProposals />
+      {/* TODO readd in validator voting PR:
+       <ValidatorProposals /> */}
       <ValidatorOverview />
-    </Wrapper>
+    </PageLayout>
   );
 }
