@@ -5,6 +5,17 @@ import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { NetworkConfig } from "config/network";
 
+export interface OperatorResponse {
+  readonly operator: string;
+  readonly pubkey: any;
+  readonly metadata: any;
+  readonly jailed_until?: any;
+}
+
+interface ListValidatorResponse {
+  readonly validators: readonly OperatorResponse[];
+}
+
 export class ValidatorContractQuerier {
   valAddress?: string;
 
@@ -21,11 +32,14 @@ export class ValidatorContractQuerier {
     this.valAddress = address;
   }
 
-  async getValidators(): Promise<Record<string, unknown>[]> {
+  async getValidators(): Promise<readonly OperatorResponse[]> {
     await this.initAddress();
     if (!this.valAddress) throw new Error("no valAddress");
     const query = { list_validators: {} };
-    const { validators }: any = await this.client.queryContractSmart(this.valAddress, query);
+    const { validators }: ListValidatorResponse = await this.client.queryContractSmart(
+      this.valAddress,
+      query,
+    );
     return validators;
   }
   async getActiveValidators(): Promise<Record<string, unknown>[]> {

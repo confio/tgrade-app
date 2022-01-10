@@ -11,4 +11,28 @@ export default styled(Table)`
   & .ant-typography-expand:hover {
     color: var(--color-primary);
   }
+
+  & :not(.ant-pagination-disabled) > .ant-pagination-item-link:hover {
+    border-color: var(--color-primary);
+  }
+
+  & .ant-pagination-item-active,
+  & .ant-pagination-item:hover {
+    border-color: var(--color-primary);
+
+    & a {
+      color: var(--color-primary);
+    }
+  }
+
+  & .ant-pagination-options-size-changer:hover {
+    & .ant-select-selector {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    & .ant-select-arrow {
+      color: var(--color-primary);
+    }
+  }
 `;
