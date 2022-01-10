@@ -76,7 +76,7 @@
     "start:tgradeInternal": "REACT_APP_NETWORK=tgradeInternal yarn start:base",
     "start:tgradeTestnet": "REACT_APP_NETWORK=tgradeTestnet yarn start:base",
     "start:android": "npx cap open android",
-    "build:base": "craco build",
+    "build:base": "REACT_APP_GIT_SHA=`git rev-parse --short HEAD` craco build",
     "build:local": "REACT_APP_NETWORK=local yarn build:base",
     "build:tgradeInternal": "REACT_APP_NETWORK=tgradeInternal yarn build:base",
     "build:tgradeTestnet": "REACT_APP_NETWORK=tgradeTestnet yarn build:base",
