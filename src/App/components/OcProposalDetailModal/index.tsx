@@ -12,8 +12,16 @@ import Stack from "App/components/Stack/style";
 import { useEffect, useState } from "react";
 import { useError, useOc, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
-import { DsoContract, DsoContractQuerier, ProposalResponse, VoteOption } from "utils/dso";
+import {
+  DsoContract,
+  DsoContractQuerier,
+  DsoProposalResponse,
+  isDsoProposal,
+  isOcProposal,
+  VoteOption,
+} from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import { OcProposalResponse } from "utils/oc";
 
 import ProposalAddMembers from "./components/ProposalAddMembers";
 import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
@@ -66,16 +74,25 @@ export default function OcProposalDetailModal({
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
-  const [proposal, setProposal] = useState<ProposalResponse>();
-  const isProposalNotExpired = proposal
-    ? new Date(parseInt(proposal.expires.at_time, 10) / 1000000) > new Date()
-    : false;
-  const proposalAddMembers = proposal?.proposal.add_remove_non_voting_members?.add;
-  const proposalRemoveMembers = proposal?.proposal.add_remove_non_voting_members?.remove;
-  const proposalAddVotingMembers = proposal?.proposal.add_voting_members?.voters;
-  const proposalPunishVotingMember = proposal?.proposal.punish_members?.[0] ?? undefined;
-  const proposalGrantEngagement = proposal?.proposal.grant_engagement;
-  const proposalPunishValidator = proposal?.proposal.punish;
+  const [proposal, setProposal] = useState<DsoProposalResponse | OcProposalResponse>();
+  const expiryTime = proposal
+    ? Number(typeof proposal.expires === "string" ? proposal.expires : proposal.expires.at_time) / 1000000
+    : 0;
+  const isProposalNotExpired = expiryTime > Date.now();
+
+  // DSO proposals
+  const proposalAddMembers =
+    proposal && isDsoProposal(proposal) ? proposal.proposal.add_remove_non_voting_members?.add : undefined;
+  const proposalRemoveMembers =
+    proposal && isDsoProposal(proposal) ? proposal.proposal.add_remove_non_voting_members?.remove : undefined;
+  const proposalAddVotingMembers =
+    proposal && isDsoProposal(proposal) ? proposal.proposal.add_voting_members?.voters : undefined;
+  const proposalPunishVotingMember =
+    proposal && isDsoProposal(proposal) ? proposal.proposal.punish_members?.[0] : undefined;
+  // OC proposals
+  const proposalGrantEngagement =
+    proposal && isOcProposal(proposal) ? proposal.proposal.grant_engagement : undefined;
+  const proposalPunishValidator = proposal && isOcProposal(proposal) ? proposal.proposal.punish : undefined;
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 

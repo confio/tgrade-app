@@ -1,6 +1,8 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
 
+import { OcProposalResponse } from "./oc";
+
 export type VoteOption = "yes" | "no" | "abstain";
 
 export interface PendingEscrow {
@@ -97,17 +99,29 @@ export type ProposalContent = {
   readonly punish?: ValidatorPunishment;
 };
 
-export function isOcProposal(proposal: ProposalContent): boolean {
+export function isOcProposal(
+  response: DsoProposalResponse | OcProposalResponse,
+): response is OcProposalResponse {
+  const proposal: any = response.proposal;
   return !!proposal.grant_engagement || !!proposal.punish;
 }
 
-export type Expiration = {
-  readonly at_height: number;
-} & {
-  readonly at_time: string;
-} & {
-  readonly never: Record<string, unknown>;
-};
+export function isDsoProposal(
+  response: DsoProposalResponse | OcProposalResponse,
+): response is DsoProposalResponse {
+  return !isOcProposal(response);
+}
+
+export type Expiration =
+  | {
+      readonly at_height: number;
+    }
+  | {
+      readonly at_time: string;
+    }
+  | {
+      readonly never: Record<string, unknown>;
+    };
 
 export interface Votes {
   readonly yes: number;
@@ -116,13 +130,32 @@ export interface Votes {
   readonly veto: number;
 }
 
-export interface ProposalResponse {
+/**
+ * https://github.com/CosmWasm/cw-plus/blob/v0.11.1/packages/cw3/src/query.rs#L72-L86
+ */
+export type Cw3Status = "pending" | "open" | "rejected" | "passed" | "executed";
+
+/**
+ * A point in time in nanosecond precision (uint64).
+ */
+export type CosmWasmTimestamp = string;
+
+/**
+ * See https://github.com/confio/tgrade-contracts/blob/v0.5.2/contracts/tgrade-trusted-circle/src/msg.rs#L139-L154
+ */
+export interface DsoProposalResponse {
   readonly id: number;
   readonly title: string;
   readonly description: string;
   readonly proposal: ProposalContent;
-  readonly status: "pending" | "open" | "rejected" | "passed" | "executed";
-  readonly expires: Expiration;
+  readonly status: Cw3Status;
+  /**
+   * An Expiration from cw_utils but we only implement the at_time case here 🤞.
+   * https://github.com/CosmWasm/cw-plus/blob/main/packages/utils/src/expiration.rs
+   */
+  readonly expires: {
+    readonly at_time: CosmWasmTimestamp;
+  };
   /// This is the threshold that is applied to this proposal. Both the rules of the voting contract,
   /// as well as the total_weight of the voting group may have changed since this time. That means
   /// that the generic `Threshold{}` query does not provide valid information for existing proposals.
@@ -133,7 +166,7 @@ export interface ProposalResponse {
 }
 
 export interface ProposalListResponse {
-  readonly proposals: readonly ProposalResponse[];
+  readonly proposals: readonly DsoProposalResponse[];
 }
 
 export interface VoteInfo {
@@ -260,15 +293,15 @@ export class DsoContractQuerier {
     return response;
   }
 
-  async getProposals(): Promise<readonly ProposalResponse[]> {
+  async getProposals(): Promise<readonly DsoProposalResponse[]> {
     const query = { list_proposals: {} };
     const { proposals }: ProposalListResponse = await this.client.queryContractSmart(this.address, query);
     return proposals;
   }
 
-  async getProposal(proposalId: number): Promise<ProposalResponse> {
+  async getProposal(proposalId: number): Promise<DsoProposalResponse> {
     const query = { proposal: { proposal_id: proposalId } };
-    const proposalResponse: ProposalResponse = await this.client.queryContractSmart(this.address, query);
+    const proposalResponse: DsoProposalResponse = await this.client.queryContractSmart(this.address, query);
     return proposalResponse;
   }
 

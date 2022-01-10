@@ -5,7 +5,8 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useOc, useSdk } from "service";
-import { DsoContractQuerier, isOcProposal, ProposalResponse } from "utils/dso";
+import { Cw3Status, DsoContractQuerier, DsoProposalResponse, isOcProposal } from "utils/dso";
+import { OcProposalResponse } from "utils/oc";
 
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -19,7 +20,7 @@ const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
 
-function getImgSrcFromStatus(status: string) {
+function getImgSrcFromStatus(status: Cw3Status) {
   switch (status) {
     case "executed":
     case "passed":
@@ -35,13 +36,13 @@ const columns = [
   {
     title: "Nº",
     key: "id",
-    render: (record: ProposalResponse) => {
-      const proposalId = isOcProposal(record.proposal) ? `oc${record.id}` : `tc${record.id}`;
+    render: (record: DsoProposalResponse | OcProposalResponse) => {
+      const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
       return proposalId;
     },
-    sorter: (a: ProposalResponse, b: ProposalResponse) => {
-      const proposalAId = isOcProposal(a.proposal) ? `oc${a.id}` : `tc${a.id}`;
-      const proposalBId = isOcProposal(b.proposal) ? `oc${b.id}` : `tc${b.id}`;
+    sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
+      const proposalAId = isOcProposal(a) ? `oc${a.id}` : `tc${a.id}`;
+      const proposalBId = isOcProposal(b) ? `oc${b.id}` : `tc${b.id}`;
 
       return proposalAId < proposalBId;
     },
@@ -54,9 +55,11 @@ const columns = [
   {
     title: "Due date",
     key: "expires",
-    render: (record: any) => {
-      const formatedDate = new Date(record.expires.at_time / 1000000).toLocaleDateString();
-      const formatedTime = new Date(record.expires.at_time / 1000000).toLocaleTimeString();
+    render: (record: DsoProposalResponse | OcProposalResponse) => {
+      const expiryTime =
+        Number(typeof record.expires === "string" ? record.expires : record.expires.at_time) / 1000000;
+      const formatedDate = new Date(expiryTime).toLocaleDateString();
+      const formatedTime = new Date(expiryTime).toLocaleTimeString();
       return (
         <>
           <div>{formatedDate}</div>
@@ -64,28 +67,28 @@ const columns = [
         </>
       );
     },
-    sorter: (a: any, b: any) => {
-      const aDate = new Date(a.expires.at_time / 1000000);
-      const bDate = new Date(b.expires.at_time / 1000000);
-      return bDate.getTime() - aDate.getTime();
+    sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
+      const aExpiryTime = Number(typeof a.expires === "string" ? a.expires : a.expires.at_time) / 1000000;
+      const bExpiryTime = Number(typeof b.expires === "string" ? b.expires : b.expires.at_time) / 1000000;
+      return bExpiryTime - aExpiryTime;
     },
   },
   {
     title: "Status",
     key: "status",
-    render: (record: ProposalResponse) => (
+    render: (record: DsoProposalResponse | OcProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
-          {(record.status as string).charAt(0).toUpperCase() + (record.status as string).slice(1)}
+          {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
         </StatusParagraph>
         <Paragraph>Yes: {record.votes.yes ?? 0}</Paragraph>
         <Paragraph>No: {record.votes.no ?? 0}</Paragraph>
         <Paragraph>Abstained: {record.votes.abstain ?? 0}</Paragraph>
       </StatusBlock>
     ),
-    sorter: (a: any, b: any) => {
-      function getSortNumFromStatus(status: string): number {
+    sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
+      function getSortNumFromStatus(status: Cw3Status): number {
         switch (status) {
           case "executed":
             return 1;
@@ -104,7 +107,9 @@ const columns = [
   {
     title: "Description",
     key: "description",
-    render: (record: any) => <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>,
+    render: (record: DsoProposalResponse | OcProposalResponse) => (
+      <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>
+    ),
   },
 ];
 
@@ -119,7 +124,7 @@ export default function OcDetail(): JSX.Element {
 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
-  const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
+  const [proposals, setProposals] = useState<ReadonlyArray<DsoProposalResponse | OcProposalResponse>>([]);
   const [clickedProposal, setClickedProposal] = useState<string>();
   const [isVotingMember, setVotingMember] = useState(false);
 
@@ -131,6 +136,7 @@ export default function OcDetail(): JSX.Element {
       const ocProposalsContract = new DsoContractQuerier(ocProposalsAddress, client);
 
       const dsoProposals = await dsoContract.getProposals();
+      // FIXME: the OC contract needs its own queries class with different types
       const ocProposals = await ocProposalsContract.getProposals();
       setProposals([...dsoProposals, ...ocProposals]);
 
@@ -168,11 +174,9 @@ export default function OcDetail(): JSX.Element {
               columns={columns}
               pagination={false}
               dataSource={proposals}
-              onRow={(proposal: ProposalResponse) => ({
+              onRow={(record: DsoProposalResponse | OcProposalResponse) => ({
                 onClick: () => {
-                  const proposalId = isOcProposal(proposal.proposal)
-                    ? `oc${proposal.id}`
-                    : `tc${proposal.id}`;
+                  const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
                   setClickedProposal(proposalId);
                 },
               })}

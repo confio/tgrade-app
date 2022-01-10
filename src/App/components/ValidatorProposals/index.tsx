@@ -5,7 +5,8 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useOc, useSdk } from "service";
-import { DsoContractQuerier, isOcProposal, ProposalResponse } from "utils/dso";
+import { DsoContractQuerier, DsoProposalResponse, isOcProposal } from "utils/dso";
+import { OcProposalResponse } from "utils/oc";
 
 import Stack from "../Stack/style";
 import { ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -32,13 +33,13 @@ const columns = [
   {
     title: "Nº",
     key: "id",
-    render: (record: ProposalResponse) => {
-      const proposalId = isOcProposal(record.proposal) ? `oc${record.id}` : `tc${record.id}`;
+    render: (record: DsoProposalResponse | OcProposalResponse) => {
+      const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
       return proposalId;
     },
-    sorter: (a: ProposalResponse, b: ProposalResponse) => {
-      const proposalAId = isOcProposal(a.proposal) ? `oc${a.id}` : `tc${a.id}`;
-      const proposalBId = isOcProposal(b.proposal) ? `oc${b.id}` : `tc${b.id}`;
+    sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
+      const proposalAId = isOcProposal(a) ? `oc${a.id}` : `tc${a.id}`;
+      const proposalBId = isOcProposal(b) ? `oc${b.id}` : `tc${b.id}`;
 
       return proposalAId < proposalBId;
     },
@@ -51,9 +52,9 @@ const columns = [
   {
     title: "Due date",
     key: "expires",
-    render: (record: any) => {
-      const formatedDate = new Date(record.expires.at_time / 1000000).toLocaleDateString();
-      const formatedTime = new Date(record.expires.at_time / 1000000).toLocaleTimeString();
+    render: (record: DsoProposalResponse) => {
+      const formatedDate = new Date(Number(record.expires.at_time) / 1000000).toLocaleDateString();
+      const formatedTime = new Date(Number(record.expires.at_time) / 1000000).toLocaleTimeString();
       return (
         <>
           <div>{formatedDate}</div>
@@ -61,16 +62,16 @@ const columns = [
         </>
       );
     },
-    sorter: (a: any, b: any) => {
-      const aDate = new Date(a.expires.at_time / 1000000);
-      const bDate = new Date(b.expires.at_time / 1000000);
+    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => {
+      const aDate = new Date(Number(a.expires.at_time) / 1000000);
+      const bDate = new Date(Number(b.expires.at_time) / 1000000);
       return bDate.getTime() - aDate.getTime();
     },
   },
   {
     title: "Status",
     key: "status",
-    render: (record: ProposalResponse) => (
+    render: (record: DsoProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
@@ -116,7 +117,7 @@ export default function ValidatorProposals(): JSX.Element {
 
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
-  const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
+  const [proposals, setProposals] = useState<readonly DsoProposalResponse[]>([]);
   const [clickedProposal, setClickedProposal] = useState<string>();
   const [isVotingMember, setVotingMember] = useState(false);
 
@@ -158,9 +159,9 @@ export default function ValidatorProposals(): JSX.Element {
             columns={columns}
             pagination={false}
             dataSource={proposals}
-            onRow={(proposal: ProposalResponse) => ({
+            onRow={(record: DsoProposalResponse | OcProposalResponse) => ({
               onClick: () => {
-                const proposalId = isOcProposal(proposal.proposal) ? `oc${proposal.id}` : `tc${proposal.id}`;
+                const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
                 setClickedProposal(proposalId);
               },
             })}
