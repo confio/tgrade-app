@@ -294,22 +294,20 @@ export class DsoContractQuerier {
   }
 
   async getProposals(startAfter?: number): Promise<readonly DsoProposalResponse[]> {
-    const query = { list_proposals: { reverse: true, start_after: startAfter } };
+    const query = { list_proposals: { start_after: startAfter } };
     const { proposals }: ProposalListResponse = await this.client.queryContractSmart(this.address, query);
     return proposals;
   }
 
   async getAllProposals(): Promise<readonly DsoProposalResponse[]> {
-    let proposals: DsoProposalResponse[] = [];
-    let oldestProposal = 0;
+    let proposals: readonly DsoProposalResponse[] = [];
+    let nextProposals: readonly DsoProposalResponse[] = [];
 
-    while (oldestProposal !== 1) {
-      const proposalIds = proposals.map((proposal) => proposal.id);
-      oldestProposal = Math.min(...proposalIds);
-
-      const nextProposals = await this.getProposals(oldestProposal);
+    do {
+      const lastProposalId = proposals[proposals.length - 1]?.id;
+      nextProposals = await this.getProposals(lastProposalId);
       proposals = [...proposals, ...nextProposals];
-    }
+    } while (nextProposals.length);
 
     return proposals;
   }
