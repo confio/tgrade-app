@@ -32,16 +32,30 @@ export class ValidatorContractQuerier {
     this.valAddress = address;
   }
 
-  async getValidators(): Promise<readonly OperatorResponse[]> {
+  async getValidators(startAfter?: string): Promise<readonly OperatorResponse[]> {
     await this.initAddress();
     if (!this.valAddress) throw new Error("no valAddress");
-    const query = { list_validators: {} };
+    const query = { list_validators: { start_after: startAfter } };
     const { validators }: ListValidatorResponse = await this.client.queryContractSmart(
       this.valAddress,
       query,
     );
     return validators;
   }
+
+  async getAllValidators(): Promise<readonly OperatorResponse[]> {
+    let validators: readonly OperatorResponse[] = [];
+    let nextValidators: readonly OperatorResponse[] = [];
+
+    do {
+      const lastOperatorAddress = validators[validators.length - 1]?.operator;
+      nextValidators = await this.getValidators(lastOperatorAddress);
+      validators = [...validators, ...nextValidators];
+    } while (nextValidators.length);
+
+    return validators;
+  }
+
   async getActiveValidators(): Promise<Record<string, unknown>[]> {
     await this.initAddress();
     if (!this.valAddress) throw new Error("no valAddress");

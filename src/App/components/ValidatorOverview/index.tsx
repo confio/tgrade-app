@@ -141,7 +141,7 @@ export default function ValidatorOverview(): JSX.Element | null {
 
       try {
         const valContract = new ValidatorContractQuerier(config, client);
-        const validators = await valContract.getValidators();
+        const validators = await valContract.getAllValidators();
         const valActive = await valContract.getActiveValidators();
         const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
 
