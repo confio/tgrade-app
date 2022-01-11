@@ -128,7 +128,7 @@ export default function ValidatorProposals(): JSX.Element {
       const dsoContract = new DsoContractQuerier(ocAddress, client);
       const ocProposalsContract = new DsoContractQuerier(ocProposalsAddress, client);
 
-      const ocProposals = await ocProposalsContract.getProposals();
+      const ocProposals = await ocProposalsContract.getAllProposals();
       setProposals([...ocProposals]);
 
       const isVotingMember = (await dsoContract.getVotingMembers()).some((member) => member.addr === address);

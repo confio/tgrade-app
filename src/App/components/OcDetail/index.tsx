@@ -136,9 +136,9 @@ export default function OcDetail(): JSX.Element {
       const dsoContract = new DsoContractQuerier(ocAddress, client);
       const ocProposalsContract = new DsoContractQuerier(ocProposalsAddress, client);
 
-      const dsoProposals = await dsoContract.getProposals();
+      const dsoProposals = await dsoContract.getAllProposals();
       // FIXME: the OC contract needs its own queries class with different types
-      const ocProposals = await ocProposalsContract.getProposals();
+      const ocProposals = await ocProposalsContract.getAllProposals();
       setProposals([...dsoProposals, ...ocProposals]);
 
       const isVotingMember = (await dsoContract.getVotingMembers()).some((member) => member.addr === address);
