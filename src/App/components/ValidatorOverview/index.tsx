@@ -45,8 +45,16 @@ const columns: ColumnProps<ValidatorType>[] = [
       </div>
     ),
     sorter: (a: ValidatorType, b: ValidatorType) => {
-      if ((a.metadata?.moniker ?? "") < (b.metadata?.moniker ?? "")) return -1;
-      if ((a.metadata?.moniker ?? "") > (b.metadata?.moniker ?? "")) return 1;
+      if (
+        (a.metadata?.moniker ? a.metadata?.moniker.toLowerCase() : "") <
+        (b.metadata?.moniker ? b.metadata?.moniker.toLowerCase() : "")
+      )
+        return -1;
+      if (
+        (a.metadata?.moniker ? a.metadata?.moniker.toLowerCase() : "") >
+        (b.metadata?.moniker ? b.metadata?.moniker.toLowerCase() : "")
+      )
+        return 1;
 
       return 0;
     },
@@ -86,6 +94,7 @@ const columns: ColumnProps<ValidatorType>[] = [
     key: "engagementPoints",
     render: (record: ValidatorType) => <p>{record.engagementPoints}</p>,
     sorter: (a: ValidatorType, b: ValidatorType) => (a.engagementPoints ?? 0) - (b.engagementPoints ?? 0),
+    defaultSortOrder: "descend",
   },
   {
     title: "Rewards",
@@ -123,6 +132,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   },
 ];
 export default function ValidatorOverview(): JSX.Element | null {
+  const [isTableLoading, setTableLoading] = useState(true);
   const [validatorList, setValidatorList] = useState<readonly ValidatorType[]>([]);
   const [blockchainValues, setBlockchainValues] = useState<BlockchainValues>({
     totalEgPoints: 0,
@@ -141,7 +151,7 @@ export default function ValidatorOverview(): JSX.Element | null {
 
       try {
         const valContract = new ValidatorContractQuerier(config, client);
-        const validators = await valContract.getValidators();
+        const validators = await valContract.getAllValidators();
         const valActive = await valContract.getActiveValidators();
         const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
 
@@ -174,6 +184,8 @@ export default function ValidatorOverview(): JSX.Element | null {
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
+      } finally {
+        setTableLoading(false);
       }
     })();
   }, [client, config, handleError]);
@@ -189,6 +201,7 @@ export default function ValidatorOverview(): JSX.Element | null {
         }}
       />
       <StyledTable
+        loading={isTableLoading}
         pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
         dataSource={validatorList}
         columns={columns as any}
