@@ -113,6 +113,7 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
     sdkState: { client, address },
   } = useSdk();
 
+  const [isTableLoading, setTableLoading] = useState(true);
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
   const [proposals, setProposals] = useState<readonly DsoProposalResponse[]>([]);
   const [clickedProposal, setClickedProposal] = useState<number>();
@@ -130,8 +131,10 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
+    } finally {
+      setTableLoading(false);
     }
-  }, [client, dsoAddress, address, handleError]);
+  }, [address, client, dsoAddress, handleError]);
 
   useEffect(() => {
     refreshProposals();
@@ -154,17 +157,16 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
               <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
             )}
           </header>
-          {proposals.length ? (
-            <Table
-              pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
-              columns={columns}
-              dataSource={proposals}
-              rowKey={(proposal: DsoProposalResponse) => proposal.id}
-              onRow={(proposal: DsoProposalResponse) => ({
-                onClick: () => setClickedProposal(proposal.id),
-              })}
-            />
-          ) : null}
+          <Table
+            loading={isTableLoading}
+            pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
+            columns={columns}
+            dataSource={proposals}
+            rowKey={(proposal: DsoProposalResponse) => proposal.id}
+            onRow={(proposal: DsoProposalResponse) => ({
+              onClick: () => setClickedProposal(proposal.id),
+            })}
+          />
         </ProposalsContainer>
       </Stack>
       <DsoCreateProposalModal

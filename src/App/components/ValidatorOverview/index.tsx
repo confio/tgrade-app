@@ -132,6 +132,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   },
 ];
 export default function ValidatorOverview(): JSX.Element | null {
+  const [isTableLoading, setTableLoading] = useState(true);
   const [validatorList, setValidatorList] = useState<readonly ValidatorType[]>([]);
   const [blockchainValues, setBlockchainValues] = useState<BlockchainValues>({
     totalEgPoints: 0,
@@ -183,6 +184,8 @@ export default function ValidatorOverview(): JSX.Element | null {
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
+      } finally {
+        setTableLoading(false);
       }
     })();
   }, [client, config, handleError]);
@@ -198,6 +201,7 @@ export default function ValidatorOverview(): JSX.Element | null {
         }}
       />
       <StyledTable
+        loading={isTableLoading}
         pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
         dataSource={validatorList}
         columns={columns as any}

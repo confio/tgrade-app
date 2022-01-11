@@ -5,7 +5,7 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useOc, useSdk } from "service";
-import { Cw3Status, DsoContractQuerier, DsoProposalResponse, isOcProposal } from "utils/dso";
+import { Cw3Status, DsoContractQuerier, DsoProposalResponse, isDsoProposal, isOcProposal } from "utils/dso";
 import { OcProposalResponse } from "utils/oc";
 
 import Stack from "../Stack/style";
@@ -128,6 +128,7 @@ export default function OcDetail(): JSX.Element {
     ocState: { ocAddress, ocProposalsAddress },
   } = useOc();
 
+  const [isTableLoading, setTableLoading] = useState(true);
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
   const [proposals, setProposals] = useState<ReadonlyArray<DsoProposalResponse | OcProposalResponse>>([]);
@@ -151,6 +152,8 @@ export default function OcDetail(): JSX.Element {
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
+    } finally {
+      setTableLoading(false);
     }
   }, [address, client, handleError, ocAddress, ocProposalsAddress]);
 
@@ -175,22 +178,21 @@ export default function OcDetail(): JSX.Element {
               <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
             )}
           </header>
-          {proposals.length ? (
-            <Table
-              pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
-              columns={columns}
-              dataSource={proposals}
-              rowKey={(record: DsoProposalResponse | OcProposalResponse) =>
-                isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`
-              }
-              onRow={(record: DsoProposalResponse | OcProposalResponse) => ({
-                onClick: () => {
-                  const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
-                  setClickedProposal(proposalId);
-                },
-              })}
-            />
-          ) : null}
+          <Table
+            loading={isTableLoading}
+            pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
+            columns={columns}
+            dataSource={proposals}
+            rowKey={(record: DsoProposalResponse | OcProposalResponse) =>
+              isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`
+            }
+            onRow={(record: DsoProposalResponse | OcProposalResponse) => ({
+              onClick: () => {
+                const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
+                setClickedProposal(proposalId);
+              },
+            })}
+          />
         </ProposalsContainer>
       </Stack>
       <OcCreateProposalModal
