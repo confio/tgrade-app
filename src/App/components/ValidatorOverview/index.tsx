@@ -45,8 +45,16 @@ const columns: ColumnProps<ValidatorType>[] = [
       </div>
     ),
     sorter: (a: ValidatorType, b: ValidatorType) => {
-      if ((a.metadata?.moniker ?? "") < (b.metadata?.moniker ?? "")) return -1;
-      if ((a.metadata?.moniker ?? "") > (b.metadata?.moniker ?? "")) return 1;
+      if (
+        (a.metadata?.moniker ? a.metadata?.moniker.toLowerCase() : "") <
+        (b.metadata?.moniker ? b.metadata?.moniker.toLowerCase() : "")
+      )
+        return -1;
+      if (
+        (a.metadata?.moniker ? a.metadata?.moniker.toLowerCase() : "") >
+        (b.metadata?.moniker ? b.metadata?.moniker.toLowerCase() : "")
+      )
+        return 1;
 
       return 0;
     },
@@ -86,6 +94,7 @@ const columns: ColumnProps<ValidatorType>[] = [
     key: "engagementPoints",
     render: (record: ValidatorType) => <p>{record.engagementPoints}</p>,
     sorter: (a: ValidatorType, b: ValidatorType) => (a.engagementPoints ?? 0) - (b.engagementPoints ?? 0),
+    defaultSortOrder: "descend",
   },
   {
     title: "Rewards",

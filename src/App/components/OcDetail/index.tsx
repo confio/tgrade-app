@@ -41,10 +41,15 @@ const columns = [
       return proposalId;
     },
     sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
+      if ((isDsoProposal(a) && isDsoProposal(b)) || (isOcProposal(a) && isOcProposal(b))) return a.id - b.id;
+
       const proposalAId = isOcProposal(a) ? `oc${a.id}` : `tc${a.id}`;
       const proposalBId = isOcProposal(b) ? `oc${b.id}` : `tc${b.id}`;
 
-      return proposalAId < proposalBId;
+      if (proposalAId < proposalBId) return -1;
+      if (proposalAId > proposalBId) return 1;
+
+      return 0;
     },
   },
   {
