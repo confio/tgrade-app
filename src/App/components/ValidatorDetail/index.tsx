@@ -92,7 +92,7 @@ export function ValidatorDetail({
           {validator.jailed_until ? (
             <div style={{ display: "flex", flexDirection: "column", marginRight: "50px" }}>
               <p>Jailed</p>
-              <p>{validator.jailed_until}</p>
+              <p>{JSON.stringify(validator.jailed_until, null, 2)}</p>
             </div>
           ) : null}
         </div>
