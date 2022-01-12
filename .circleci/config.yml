@@ -54,9 +54,7 @@ jobs:
       - run: # start early for less wait time below
           name: Start tgrade and faucet
           command: |
-            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             ./scripts/start_all_ci.sh
-            docker logout
           background: true
       - run:
           # The images comes with preinstalled nvm, which does not work well with non-login shells
@@ -106,7 +104,6 @@ jobs:
       - run:
           name: Stop chains
           command: |
-            docker logout
             ./scripts/stop_all.sh
 
 workflows:
