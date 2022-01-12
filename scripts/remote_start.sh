@@ -21,7 +21,7 @@ echo "Updating packages …"
 ssh -t "$REMOTE" "apt update -y && apt upgrade -y"
 
 echo "Installing packages …"
-ssh -t "$REMOTE" "apt install -y git docker.io cowsay"
+ssh -t "$REMOTE" "apt install -y net-tools git docker.io cowsay"
 
 echo "Installing node.js …"
 ssh -t "$REMOTE" "curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh && bash nodesource_setup.sh"
