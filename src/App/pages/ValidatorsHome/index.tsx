@@ -5,7 +5,7 @@ import { lazy } from "react";
 import { TextStack } from "./style";
 
 const ValidatorOverview = lazy(() => import("App/components/ValidatorOverview"));
-/* const ValidatorProposals = lazy(() => import("App/components/ValidatorProposals")); */
+const ValidatorProposals = lazy(() => import("App/components/ValidatorProposals"));
 const { Title } = Typography;
 
 export default function ValidatorsHome(): JSX.Element | null {
@@ -14,8 +14,7 @@ export default function ValidatorsHome(): JSX.Element | null {
       <TextStack>
         <Title>Validators</Title>
       </TextStack>
-      {/* TODO readd in validator voting PR:
-       <ValidatorProposals /> */}
+      <ValidatorProposals />
       <ValidatorOverview />
     </PageLayout>
   );
