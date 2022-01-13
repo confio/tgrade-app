@@ -15,6 +15,8 @@ export enum PoEContractType {
   DISTRIBUTION = 5,
   OVERSIGHT_COMMUNITY = 6,
   OVERSIGHT_COMMUNITY_PROPOSALS = 7,
+  COMMUNITY_POOL = 8,
+  VALIDATOR_VOTING = 9,
   UNRECOGNIZED = -1,
 }
 
@@ -44,6 +46,12 @@ export function poEContractTypeFromJSON(object: any): PoEContractType {
     case 7:
     case "OVERSIGHT_COMMUNITY_PROPOSALS":
       return PoEContractType.OVERSIGHT_COMMUNITY_PROPOSALS;
+    case 8:
+    case "COMMUNITY_POOL":
+      return PoEContractType.COMMUNITY_POOL;
+    case 9:
+    case "VALIDATOR_VOTING":
+      return PoEContractType.VALIDATOR_VOTING;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -69,6 +77,10 @@ export function poEContractTypeToJSON(object: PoEContractType): string {
       return "OVERSIGHT_COMMUNITY";
     case PoEContractType.OVERSIGHT_COMMUNITY_PROPOSALS:
       return "OVERSIGHT_COMMUNITY_PROPOSALS";
+    case PoEContractType.COMMUNITY_POOL:
+      return "COMMUNITY_POOL";
+    case PoEContractType.VALIDATOR_VOTING:
+      return "VALIDATOR_VOTING";
     default:
       return "UNKNOWN";
   }
