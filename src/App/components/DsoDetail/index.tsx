@@ -47,18 +47,17 @@ const columns = [
     title: "Due date",
     key: "expires",
     render: (record: DsoProposalResponse) => {
-      const formatedDate = new Date(Number(record.expires.at_time) / 1000000).toLocaleDateString();
-      const formatedTime = new Date(Number(record.expires.at_time) / 1000000).toLocaleTimeString();
+      const dateObj = new Date(parseInt(record.expires.at_time, 10) / 1000000);
       return (
         <>
-          <div>{formatedDate}</div>
-          <div>{formatedTime}</div>
+          <div>{dateObj.toLocaleDateString()}</div>
+          <div>{dateObj.toLocaleTimeString()}</div>
         </>
       );
     },
     sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => {
-      const aDate = new Date(Number(a.expires.at_time) / 1000000);
-      const bDate = new Date(Number(b.expires.at_time) / 1000000);
+      const aDate = new Date(parseInt(a.expires.at_time, 10) / 1000000);
+      const bDate = new Date(parseInt(b.expires.at_time, 10) / 1000000);
       return bDate.getTime() - aDate.getTime();
     },
     defaultSortOrder: "ascend",
