@@ -33,14 +33,6 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn deploy`
-
-This command needs a [Netlify](https://www.netlify.com/) account to log into.
-
-It runs `yarn build`, and deploys the `build` folder to a netlify site of your choice.
-
-The site will be deployed as a ["branch deploy"](https://docs.netlify.com/site-deploys/overview/#definitions) with the name of the current branch as a domain prefix.
-
 ### `yarn eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
