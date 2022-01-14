@@ -203,7 +203,7 @@ export class ValidatorVotingContractQuerier {
     return voteResponse;
   }
 
-  async getVoters(): Promise<readonly VoterDetail[]> {
+  async getVoters(startAfter?: string): Promise<readonly VoterDetail[]> {
     await this.initAddress();
     if (!this.validatorVotingAddress) throw new Error("validatorVotingAddress was not set");
 
@@ -212,6 +212,19 @@ export class ValidatorVotingContractQuerier {
       this.validatorVotingAddress,
       query,
     );
+    return voters;
+  }
+
+  async getAllVoters(): Promise<readonly VoterDetail[]> {
+    let voters: readonly VoterDetail[] = [];
+    let nextVoters: readonly VoterDetail[] = [];
+
+    do {
+      const lastVoterAddress = voters[voters.length - 1]?.addr;
+      nextVoters = await this.getVoters(lastVoterAddress);
+      voters = [...voters, ...nextVoters];
+    } while (nextVoters.length);
+
     return voters;
   }
 }
