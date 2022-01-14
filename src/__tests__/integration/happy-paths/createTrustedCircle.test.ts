@@ -72,11 +72,8 @@ it("creates a Trusted Circle and adds a member with a proposal", async () => {
   const memberToAdd = "tgrade1uuy629yfuw2mf383t33x0jk2qwtf6rvv4dhmxs";
 
   const dsoContract = new DsoContract(contractAddress, signingClient, config.gasPrice);
-  await dsoContract.propose(signingClient, config.factoryAddress, address, comment, {
-    add_remove_non_voting_members: {
-      remove: [],
-      add: [memberToAdd],
-    },
+  await dsoContract.propose(address, comment, {
+    add_remove_non_voting_members: { remove: [], add: [memberToAdd] },
   });
 
   const txHash = await dsoContract.executeProposal(address, 1);

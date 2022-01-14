@@ -14,7 +14,13 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
-import { DsoContract, DsoContractQuerier, DsoProposalResponse, VoteOption } from "utils/dso";
+import {
+  DsoContract,
+  DsoContractQuerier,
+  DsoProposalResponse,
+  getProposalTitle,
+  VoteOption,
+} from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import ProposalAddMembers from "./components/ProposalAddMembers";
@@ -238,7 +244,7 @@ export default function DsoProposalDetailModal({
             {proposal ? (
               <Stack gap="s1">
                 <Title>
-                  Nº {proposal.id} "{proposal.title}"
+                  Nº {proposal.id} "{getProposalTitle(proposal.proposal)}"
                 </Title>
               </Stack>
             ) : null}

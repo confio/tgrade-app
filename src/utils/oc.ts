@@ -1,4 +1,4 @@
-import { CosmWasmTimestamp, Cw3Status, Votes, VotingRules } from "./dso";
+import { CosmWasmTimestamp, Cw3Status, ProposalContent, Votes, VotingRules } from "./dso";
 
 /**
  * See https://github.com/confio/tgrade-contracts/blob/v0.5.2/packages/utils/src/time.rs#L29-L30
@@ -43,4 +43,27 @@ export interface OcProposalResponse {
   readonly total_weight: number;
   /// This is a running tally of all votes cast on this proposal so far.
   readonly votes: Votes;
+}
+
+export function getProposalTitle(proposal: ProposalContent): string {
+  const proposalProp = Object.keys(proposal)[0];
+
+  switch (proposalProp) {
+    case "add_remove_non_voting_members":
+      return proposal.add_remove_non_voting_members?.add.length ? "Add participants" : "Remove participants";
+    case "add_voting_members":
+      return "Add Oversight Community members";
+    case "punish_members":
+      return "Punish Oversight Community member";
+    case "edit_trusted_circle":
+      return "Edit Trusted Circle";
+    case "whitelist_contract":
+      return "Whitelist pair";
+    case "grant_engagement":
+      return "Grant Engagement Points";
+    case "punish":
+      return "Punish Validator";
+    default:
+      throw new Error("Error: unhandled proposal type");
+  }
 }

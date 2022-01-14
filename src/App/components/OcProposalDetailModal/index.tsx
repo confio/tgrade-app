@@ -21,14 +21,12 @@ import {
   VoteOption,
 } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { OcProposalResponse } from "utils/oc";
+import { getProposalTitle, OcProposalResponse } from "utils/oc";
 
-import ProposalAddMembers from "./components/ProposalAddMembers";
-import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
-import ProposalGrantEngagement from "./components/ProposalGrantEngagement";
+import ProposalAddOCMembers from "./components/ProposalAddOCMembers";
+import ProposalGrantEngagementPoints from "./components/ProposalGrantEngagementPoints";
+import ProposalPunishOCMember from "./components/ProposalPunishOCMember";
 import ProposalPunishValidator from "./components/ProposalPunishValidator";
-import ProposalPunishVotingMember from "./components/ProposalPunishVotingMember";
-import ProposalRemoveMembers from "./components/ProposalRemoveMembers";
 import {
   AbstainedButton,
   AcceptButton,
@@ -81,16 +79,12 @@ export default function OcProposalDetailModal({
   const isProposalNotExpired = expiryTime > Date.now();
 
   // DSO proposals
-  const proposalAddMembers =
-    proposal && isDsoProposal(proposal) ? proposal.proposal.add_remove_non_voting_members?.add : undefined;
-  const proposalRemoveMembers =
-    proposal && isDsoProposal(proposal) ? proposal.proposal.add_remove_non_voting_members?.remove : undefined;
-  const proposalAddVotingMembers =
+  const proposalAddOCMembers =
     proposal && isDsoProposal(proposal) ? proposal.proposal.add_voting_members?.voters : undefined;
-  const proposalPunishVotingMember =
+  const proposalPunishOCMember =
     proposal && isDsoProposal(proposal) ? proposal.proposal.punish_members?.[0] : undefined;
   // OC proposals
-  const proposalGrantEngagement =
+  const proposalGrantEngagementPoints =
     proposal && isOcProposal(proposal) ? proposal.proposal.grant_engagement : undefined;
   const proposalPunishValidator = proposal && isOcProposal(proposal) ? proposal.proposal.punish : undefined;
 
@@ -291,7 +285,7 @@ export default function OcProposalDetailModal({
             {proposal ? (
               <Stack gap="s1">
                 <Title>
-                  Nº {proposal.id} "{proposal.title}"
+                  Nº {proposal.id} "{getProposalTitle(proposal.proposal)}"
                 </Title>
               </Stack>
             ) : null}
@@ -301,11 +295,9 @@ export default function OcProposalDetailModal({
           {proposal ? (
             <>
               <Stack gap="s1">
-                <ProposalAddMembers proposalAddMembers={proposalAddMembers} />
-                <ProposalRemoveMembers proposalRemoveMembers={proposalRemoveMembers} />
-                <ProposalAddVotingMembers proposalAddVotingMembers={proposalAddVotingMembers} />
-                <ProposalPunishVotingMember proposalPunishVotingMember={proposalPunishVotingMember} />
-                <ProposalGrantEngagement proposalGrantEngagement={proposalGrantEngagement} />
+                <ProposalAddOCMembers proposalAddVotingMembers={proposalAddOCMembers} />
+                <ProposalPunishOCMember proposalPunishVotingMember={proposalPunishOCMember} />
+                <ProposalGrantEngagementPoints proposalGrantEngagement={proposalGrantEngagementPoints} />
                 <ProposalPunishValidator proposalPunishValidator={proposalPunishValidator} />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>

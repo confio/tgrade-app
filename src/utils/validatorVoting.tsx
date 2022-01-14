@@ -104,7 +104,7 @@ export interface VoteResponse {
   readonly vote: VoteInfo | null;
 }
 
-export async function getProposalTitle(proposal: ProposalContent): Promise<string> {
+export function getProposalTitle(proposal: ProposalContent): string {
   const proposalProp = Object.keys(proposal)[0];
 
   switch (proposalProp) {
@@ -248,7 +248,7 @@ export class ValidatorVotingContract extends ValidatorVotingContractQuerier {
 
     const msg = {
       propose: {
-        title: await getProposalTitle(proposal),
+        title: getProposalTitle(proposal),
         description,
         proposal,
       },

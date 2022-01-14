@@ -108,7 +108,7 @@ export default function ProposalWhitelistPair({
 
     try {
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(client, config.factoryAddress, address, comment, {
+      const transactionHash = await dsoContract.propose(address, comment, {
         whitelist_contract: pairAddress,
       });
 

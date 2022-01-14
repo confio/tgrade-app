@@ -1,16 +1,16 @@
 import { TxResult } from "App/components/ShowTxResult";
-import { DsoHomeParams } from "App/pages/DsoHome";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { getDsoName, useDso, useError, useSdk } from "service";
+import { useError, useOc, useSdk } from "service";
 import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import { ProposalStep, ProposalType } from "../..";
-import ConfirmationRemoveParticipants from "./components/ConfirmationRemoveParticipants";
-import FormRemoveParticipants, { FormRemoveParticipantsValues } from "./components/FormRemoveParticipants";
+import ConfirmationGrantEngagementPoints from "./components/ConfirmationGrantEngagementPoints";
+import FormGrantEngagementPoints, {
+  FormGrantEngagementPointsValues,
+} from "./components/FormGrantEngagementPoints";
 
-interface ProposalRemoveParticipantsProps {
+interface ProposalGrantEngagementPointsProps {
   readonly proposalStep: ProposalStep;
   readonly setProposalStep: React.Dispatch<React.SetStateAction<ProposalStep | undefined>>;
   readonly isSubmitting: boolean;
@@ -18,47 +18,47 @@ interface ProposalRemoveParticipantsProps {
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
 }
 
-export default function ProposalRemoveParticipants({
+export default function ProposalGrantEngagementPoints({
   proposalStep,
   setProposalStep,
   isSubmitting,
   setSubmitting,
   setTxResult,
-}: ProposalRemoveParticipantsProps): JSX.Element {
-  const { dsoAddress }: DsoHomeParams = useParams();
+}: ProposalGrantEngagementPointsProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { address, signingClient, config },
   } = useSdk();
   const {
-    dsoState: { dsos },
-  } = useDso();
+    ocState: { ocProposalsAddress },
+  } = useOc();
 
-  const [members, setMembers] = useState<readonly string[]>([]);
+  const [member, setMember] = useState("");
+  const [points, setPoints] = useState("");
   const [comment, setComment] = useState("");
 
-  async function submitRemoveParticipants({ members, comment }: FormRemoveParticipantsValues) {
-    setMembers(members);
+  async function submitGrantEngagementPoints({ member, points, comment }: FormGrantEngagementPointsValues) {
+    setMember(member);
+    setPoints(points);
     setComment(comment);
-    setProposalStep({ type: ProposalType.RemoveParticipants, confirmation: true });
+    setProposalStep({ type: ProposalType.GrantEngagementPoints, confirmation: true });
   }
 
   async function submitCreateProposal() {
-    if (!signingClient || !address) return;
+    if (!ocProposalsAddress || !signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.propose(address, comment, {
-        add_remove_non_voting_members: {
-          remove: members,
-          add: [],
+        grant_engagement: {
+          member,
+          points: parseInt(points, 10),
         },
       });
 
-      const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({
-        msg: `Created proposal for removing participants from ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for granting Engagement Points from Oversight Community Proposals (${ocProposalsAddress}). Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -72,19 +72,21 @@ export default function ProposalRemoveParticipants({
   return (
     <>
       {proposalStep.confirmation ? (
-        <ConfirmationRemoveParticipants
-          members={members}
+        <ConfirmationGrantEngagementPoints
+          member={member}
+          points={points}
           comment={comment}
           isSubmitting={isSubmitting}
-          goBack={() => setProposalStep({ type: ProposalType.RemoveParticipants })}
+          goBack={() => setProposalStep({ type: ProposalType.GrantEngagementPoints })}
           submitForm={submitCreateProposal}
         />
       ) : (
-        <FormRemoveParticipants
-          members={members}
+        <FormGrantEngagementPoints
+          member={member}
+          points={points}
           comment={comment}
           goBack={() => setProposalStep(undefined)}
-          handleSubmit={submitRemoveParticipants}
+          handleSubmit={submitGrantEngagementPoints}
         />
       )}
     </>

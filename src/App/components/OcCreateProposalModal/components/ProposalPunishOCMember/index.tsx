@@ -1,18 +1,14 @@
 import { TxResult } from "App/components/ShowTxResult";
-import { DsoHomeParams } from "App/pages/DsoHome";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { getDsoName, useDso, useError, useSdk } from "service";
+import { useError, useOc, useSdk } from "service";
 import { DsoContract, Punishment } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import { ProposalStep, ProposalType } from "../..";
-import ConfirmationPunishVotingParticipant from "./components/ConfirmationPunishVotingParticipant";
-import FormPunishVotingParticipant, {
-  FormPunishVotingParticipantValues,
-} from "./components/FormPunishVotingParticipant";
+import ConfirmationPunishOCMember from "./components/ConfirmationPunishOCMember";
+import FormPunishOCMember, { FormPunishOCMemberValues } from "./components/FormPunishOCMember";
 
-interface ProposalPunishVotingParticipantProps {
+interface ProposalPunishOCMemberProps {
   readonly proposalStep: ProposalStep;
   readonly setProposalStep: React.Dispatch<React.SetStateAction<ProposalStep | undefined>>;
   readonly isSubmitting: boolean;
@@ -20,21 +16,20 @@ interface ProposalPunishVotingParticipantProps {
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
 }
 
-export default function ProposalPunishVotingParticipant({
+export default function ProposalPunishOCMember({
   proposalStep,
   setProposalStep,
   isSubmitting,
   setSubmitting,
   setTxResult,
-}: ProposalPunishVotingParticipantProps): JSX.Element {
-  const { dsoAddress }: DsoHomeParams = useParams();
+}: ProposalPunishOCMemberProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { address, signingClient, config },
   } = useSdk();
   const {
-    dsoState: { dsos },
-  } = useDso();
+    ocState: { ocAddress },
+  } = useOc();
 
   const [memberToPunish, setMemberToPunish] = useState("");
   const [memberEscrow, setMemberEscrow] = useState("0");
@@ -43,29 +38,29 @@ export default function ProposalPunishVotingParticipant({
   const [distributionList, setDistributionList] = useState<readonly string[]>([]);
   const [comment, setComment] = useState("");
 
-  async function submitPunishVotingParticipant({
+  async function submitPunishOCMember({
     memberToPunish,
     memberEscrow,
     slashingPercentage,
     kickOut,
     distributionList,
     comment,
-  }: FormPunishVotingParticipantValues) {
+  }: FormPunishOCMemberValues) {
     setMemberToPunish(memberToPunish);
     setMemberEscrow(memberEscrow);
     setSlashingPercentage(slashingPercentage);
     setKickOut(kickOut);
     setDistributionList(distributionList);
     setComment(comment);
-    setProposalStep({ type: ProposalType.PunishVotingParticipant, confirmation: true });
+    setProposalStep({ type: ProposalType.PunishOCMember, confirmation: true });
   }
 
   async function submitCreateProposal() {
-    if (!signingClient || !address) return;
+    if (!ocAddress || !signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
       const nativeSlashing = slashingPercentage ? (parseFloat(slashingPercentage) / 100).toString() : "0";
 
       const punishment: Punishment = distributionList.length
@@ -87,9 +82,8 @@ export default function ProposalPunishVotingParticipant({
 
       const transactionHash = await dsoContract.propose(address, comment, { punish_members: [punishment] });
 
-      const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({
-        msg: `Created proposal for punishing voting member to ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for punishing member to Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -103,7 +97,7 @@ export default function ProposalPunishVotingParticipant({
   return (
     <>
       {proposalStep.confirmation ? (
-        <ConfirmationPunishVotingParticipant
+        <ConfirmationPunishOCMember
           memberToPunish={memberToPunish}
           memberEscrow={memberEscrow}
           slashingPercentage={slashingPercentage}
@@ -111,18 +105,18 @@ export default function ProposalPunishVotingParticipant({
           distributionList={distributionList}
           comment={comment}
           isSubmitting={isSubmitting}
-          goBack={() => setProposalStep({ type: ProposalType.PunishVotingParticipant })}
+          goBack={() => setProposalStep({ type: ProposalType.PunishOCMember })}
           submitForm={submitCreateProposal}
         />
       ) : (
-        <FormPunishVotingParticipant
+        <FormPunishOCMember
           memberToPunish={memberToPunish}
           slashingPercentage={slashingPercentage}
           kickOut={kickOut}
           distributionList={distributionList}
           comment={comment}
           goBack={() => setProposalStep(undefined)}
-          handleSubmit={submitPunishVotingParticipant}
+          handleSubmit={submitPunishOCMember}
         />
       )}
     </>
