@@ -5,10 +5,12 @@ import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import { ProposalStep, ProposalType } from "../..";
-import ConfirmationGrantEngagement from "./components/ConfirmationGrantEngagement";
-import FormGrantEngagement, { FormGrantEngagementValues } from "./components/FormGrantEngagement";
+import ConfirmationGrantEngagementPoints from "./components/ConfirmationGrantEngagementPoints";
+import FormGrantEngagementPoints, {
+  FormGrantEngagementPointsValues,
+} from "./components/FormGrantEngagementPoints";
 
-interface ProposalGrantEngagementProps {
+interface ProposalGrantEngagementPointsProps {
   readonly proposalStep: ProposalStep;
   readonly setProposalStep: React.Dispatch<React.SetStateAction<ProposalStep | undefined>>;
   readonly isSubmitting: boolean;
@@ -16,13 +18,13 @@ interface ProposalGrantEngagementProps {
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
 }
 
-export default function ProposalGrantEngagement({
+export default function ProposalGrantEngagementPoints({
   proposalStep,
   setProposalStep,
   isSubmitting,
   setSubmitting,
   setTxResult,
-}: ProposalGrantEngagementProps): JSX.Element {
+}: ProposalGrantEngagementPointsProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { address, signingClient, config },
@@ -35,11 +37,11 @@ export default function ProposalGrantEngagement({
   const [points, setPoints] = useState("");
   const [comment, setComment] = useState("");
 
-  async function submitGrantEngagement({ member, points, comment }: FormGrantEngagementValues) {
+  async function submitGrantEngagementPoints({ member, points, comment }: FormGrantEngagementPointsValues) {
     setMember(member);
     setPoints(points);
     setComment(comment);
-    setProposalStep({ type: ProposalType.GrantEngagement, confirmation: true });
+    setProposalStep({ type: ProposalType.GrantEngagementPoints, confirmation: true });
   }
 
   async function submitCreateProposal() {
@@ -48,18 +50,12 @@ export default function ProposalGrantEngagement({
 
     try {
       const dsoContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(
-        signingClient,
-        config.factoryAddress,
-        address,
-        comment,
-        {
-          grant_engagement: {
-            member,
-            points: parseInt(points, 10),
-          },
+      const transactionHash = await dsoContract.propose(address, comment, {
+        grant_engagement: {
+          member,
+          points: parseInt(points, 10),
         },
-      );
+      });
 
       setTxResult({
         msg: `Created proposal for granting Engagement Points from Oversight Community Proposals (${ocProposalsAddress}). Transaction ID: ${transactionHash}`,
@@ -76,21 +72,21 @@ export default function ProposalGrantEngagement({
   return (
     <>
       {proposalStep.confirmation ? (
-        <ConfirmationGrantEngagement
+        <ConfirmationGrantEngagementPoints
           member={member}
           points={points}
           comment={comment}
           isSubmitting={isSubmitting}
-          goBack={() => setProposalStep({ type: ProposalType.GrantEngagement })}
+          goBack={() => setProposalStep({ type: ProposalType.GrantEngagementPoints })}
           submitForm={submitCreateProposal}
         />
       ) : (
-        <FormGrantEngagement
+        <FormGrantEngagementPoints
           member={member}
           points={points}
           comment={comment}
           goBack={() => setProposalStep(undefined)}
-          handleSubmit={submitGrantEngagement}
+          handleSubmit={submitGrantEngagementPoints}
         />
       )}
     </>

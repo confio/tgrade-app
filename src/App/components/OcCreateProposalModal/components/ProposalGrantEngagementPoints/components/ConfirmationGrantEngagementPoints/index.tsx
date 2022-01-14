@@ -13,7 +13,7 @@ import { ButtonGroup, ConfirmField, FeeGroup, Separator, TextComment } from "./s
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Text, Paragraph } = Typography;
 
-interface ConfirmationGrantEngagementProps {
+interface ConfirmationGrantEngagementPointsProps {
   readonly member: string;
   readonly points: string;
   readonly comment: string;
@@ -22,14 +22,14 @@ interface ConfirmationGrantEngagementProps {
   readonly submitForm: () => void;
 }
 
-export default function ConfirmationGrantEngagement({
+export default function ConfirmationGrantEngagementPoints({
   member,
   points,
   comment,
   isSubmitting,
   goBack,
   submitForm,
-}: ConfirmationGrantEngagementProps): JSX.Element {
+}: ConfirmationGrantEngagementPointsProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, signer, signingClient },

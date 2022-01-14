@@ -23,23 +23,23 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
 });
 
-export interface FormGrantEngagementValues {
+export interface FormGrantEngagementPointsValues {
   readonly member: string;
   readonly points: string;
   readonly comment: string;
 }
 
-interface FormGrantEngagementProps extends FormGrantEngagementValues {
+interface FormGrantEngagementPointsProps extends FormGrantEngagementPointsValues {
   readonly goBack: () => void;
-  readonly handleSubmit: (values: FormGrantEngagementValues) => void;
+  readonly handleSubmit: (values: FormGrantEngagementPointsValues) => void;
 }
 
-export default function FormGrantEngagement({
+export default function FormGrantEngagementPoints({
   member,
   comment,
   goBack,
   handleSubmit,
-}: FormGrantEngagementProps): JSX.Element {
+}: FormGrantEngagementPointsProps): JSX.Element {
   return (
     <Formik
       initialValues={{
