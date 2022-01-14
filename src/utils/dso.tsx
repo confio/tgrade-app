@@ -452,20 +452,9 @@ export class DsoContract extends DsoContractQuerier {
     return transactionHash;
   }
 
-  async propose(
-    client: CosmWasmClient,
-    factoryAddress: string,
-    senderAddress: string,
-    description: string,
-    proposal: ProposalContent,
-  ): Promise<string> {
-    const msg = {
-      propose: {
-        title: await getProposalTitle(client, factoryAddress, proposal),
-        description,
-        proposal,
-      },
-    };
+  async propose(senderAddress: string, description: string, proposal: ProposalContent): Promise<string> {
+    const title = getProposalTitle(proposal);
+    const msg = { propose: { title, description, proposal } };
 
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
