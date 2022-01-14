@@ -2,16 +2,16 @@ import AddressList from "App/components/AddressList";
 
 import { TextValue } from "../style";
 
-interface ProposalVotingMembersProps {
+interface ProposalAddOCMembersProps {
   readonly proposalAddVotingMembers: readonly string[] | undefined;
 }
 
-export default function ProposalAddVotingMembers({
+export default function ProposalAddOCMembers({
   proposalAddVotingMembers,
-}: ProposalVotingMembersProps): JSX.Element | null {
+}: ProposalAddOCMembersProps): JSX.Element | null {
   return proposalAddVotingMembers?.length ? (
     <>
-      <TextValue>Voting members to be added:</TextValue>
+      <TextValue>Members to be added:</TextValue>
       <AddressList addresses={proposalAddVotingMembers} short copyable />
     </>
   ) : null;
