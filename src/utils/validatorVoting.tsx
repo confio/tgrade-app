@@ -207,7 +207,7 @@ export class ValidatorVotingContractQuerier {
     await this.initAddress();
     if (!this.validatorVotingAddress) throw new Error("validatorVotingAddress was not set");
 
-    const query = { list_voters: {} };
+    const query = { list_voters: { start_after: startAfter } };
     const { voters }: VoterListResponse = await this.client.queryContractSmart(
       this.validatorVotingAddress,
       query,
