@@ -12,7 +12,7 @@ import * as Yup from "yup";
 
 import { ButtonGroup, Separator } from "./style";
 
-const membersLabel = "Voting participants to be added";
+const membersLabel = "Members to be added";
 const commentLabel = "Comment";
 
 const validationSchema = Yup.object().shape({
@@ -22,22 +22,22 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
 });
 
-export interface FormAddVotingParticipantsValues {
+export interface FormAddOCMembersValues {
   readonly members: readonly string[];
   readonly comment: string;
 }
 
-interface FormAddVotingParticipantsProps extends FormAddVotingParticipantsValues {
+interface FormAddOCMembersProps extends FormAddOCMembersValues {
   readonly goBack: () => void;
-  readonly handleSubmit: (values: FormAddVotingParticipantsValues) => void;
+  readonly handleSubmit: (values: FormAddOCMembersValues) => void;
 }
 
-export default function FormAddVotingParticipants({
+export default function FormAddOCMembers({
   members,
   comment,
   goBack,
   handleSubmit,
-}: FormAddVotingParticipantsProps): JSX.Element {
+}: FormAddOCMembersProps): JSX.Element {
   const {
     sdkState: {
       config: { addressPrefix },

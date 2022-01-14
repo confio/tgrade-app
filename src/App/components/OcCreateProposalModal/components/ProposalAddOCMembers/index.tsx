@@ -5,12 +5,10 @@ import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import { ProposalStep, ProposalType } from "../..";
-import ConfirmationAddVotingParticipants from "./components/ConfirmationAddVotingParticipants";
-import FormAddVotingParticipants, {
-  FormAddVotingParticipantsValues,
-} from "./components/FormAddVotingParticipants";
+import ConfirmationAddOCMembers from "./components/ConfirmationAddOCMembers";
+import FormAddOCMembers, { FormAddOCMembersValues } from "./components/FormAddOCMembers";
 
-interface ProposalAddVotingParticipantsProps {
+interface ProposalAddOCMembersProps {
   readonly proposalStep: ProposalStep;
   readonly setProposalStep: React.Dispatch<React.SetStateAction<ProposalStep | undefined>>;
   readonly isSubmitting: boolean;
@@ -18,13 +16,13 @@ interface ProposalAddVotingParticipantsProps {
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
 }
 
-export default function ProposalAddVotingParticipants({
+export default function ProposalAddOCMembers({
   proposalStep,
   setProposalStep,
   isSubmitting,
   setSubmitting,
   setTxResult,
-}: ProposalAddVotingParticipantsProps): JSX.Element {
+}: ProposalAddOCMembersProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { address, signingClient, config },
@@ -36,10 +34,10 @@ export default function ProposalAddVotingParticipants({
   const [members, setMembers] = useState<readonly string[]>([]);
   const [comment, setComment] = useState("");
 
-  async function submitAddVotingParticipants({ members, comment }: FormAddVotingParticipantsValues) {
+  async function submitAddOCMembers({ members, comment }: FormAddOCMembersValues) {
     setMembers(members);
     setComment(comment);
-    setProposalStep({ type: ProposalType.AddVotingParticipants, confirmation: true });
+    setProposalStep({ type: ProposalType.AddOCMembers, confirmation: true });
   }
 
   async function submitCreateProposal() {
@@ -48,20 +46,14 @@ export default function ProposalAddVotingParticipants({
 
     try {
       const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(
-        signingClient,
-        config.factoryAddress,
-        address,
-        comment,
-        {
-          add_voting_members: {
-            voters: members,
-          },
+      const transactionHash = await dsoContract.propose(address, comment, {
+        add_voting_members: {
+          voters: members,
         },
-      );
+      });
 
       setTxResult({
-        msg: `Created proposal for adding voting participants to Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for adding members to Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -75,19 +67,19 @@ export default function ProposalAddVotingParticipants({
   return (
     <>
       {proposalStep.confirmation ? (
-        <ConfirmationAddVotingParticipants
+        <ConfirmationAddOCMembers
           members={members}
           comment={comment}
           isSubmitting={isSubmitting}
-          goBack={() => setProposalStep({ type: ProposalType.AddVotingParticipants })}
+          goBack={() => setProposalStep({ type: ProposalType.AddOCMembers })}
           submitForm={submitCreateProposal}
         />
       ) : (
-        <FormAddVotingParticipants
+        <FormAddOCMembers
           members={members}
           comment={comment}
           goBack={() => setProposalStep(undefined)}
-          handleSubmit={submitAddVotingParticipants}
+          handleSubmit={submitAddOCMembers}
         />
       )}
     </>

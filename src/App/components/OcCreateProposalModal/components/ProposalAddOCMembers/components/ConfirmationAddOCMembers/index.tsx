@@ -13,7 +13,7 @@ import { AddressStack, ButtonGroup, FeeGroup, Separator, TextComment } from "./s
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Text, Paragraph } = Typography;
 
-interface ConfirmationAddVotingParticipantsProps {
+interface ConfirmationAddOCMembersProps {
   readonly members: readonly string[];
   readonly comment: string;
   readonly isSubmitting: boolean;
@@ -21,13 +21,13 @@ interface ConfirmationAddVotingParticipantsProps {
   readonly submitForm: () => void;
 }
 
-export default function ConfirmationAddVotingParticipants({
+export default function ConfirmationAddOCMembers({
   members,
   comment,
   isSubmitting,
   goBack,
   submitForm,
-}: ConfirmationAddVotingParticipantsProps): JSX.Element {
+}: ConfirmationAddOCMembersProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, signer, signingClient },
@@ -53,7 +53,7 @@ export default function ConfirmationAddVotingParticipants({
   return (
     <>
       <AddressStack gap="s-3">
-        <Text>Voting participant(s) to be added</Text>
+        <Text>Members to be added</Text>
         <AddressList short addresses={members} addressPrefix={config.addressPrefix} />
       </AddressStack>
       <TextComment>{comment}</TextComment>
