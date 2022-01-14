@@ -64,19 +64,13 @@ export default function ProposalPunishValidator({
       const dateToSeconds = Math.round(moment(jailedTo, "DD/MM/YYYY").unix() - new Date().getTime() / 1000);
       const jailTime = jailedForever ? "forever" : { duration: dateToSeconds };
 
-      const transactionHash = await dsoContract.propose(
-        signingClient,
-        config.factoryAddress,
-        address,
-        comment,
-        {
-          punish: {
-            member: validators,
-            portion: nativePortion,
-            jailing_duration: jailTime,
-          },
+      const transactionHash = await dsoContract.propose(address, comment, {
+        punish: {
+          member: validators,
+          portion: nativePortion,
+          jailing_duration: jailTime,
         },
-      );
+      });
 
       setTxResult({
         msg: `Created proposal for punishing validator to Oversight Community (${ocProposalsAddress}). Transaction ID: ${transactionHash}`,
