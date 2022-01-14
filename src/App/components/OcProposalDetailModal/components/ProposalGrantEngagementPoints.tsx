@@ -3,13 +3,13 @@ import { Engagement } from "utils/dso";
 
 import { AddressField, TextLabel } from "../style";
 
-interface ProposalGrantEngagementProps {
+interface ProposalGrantEngagementPointsProps {
   readonly proposalGrantEngagement: Engagement | undefined;
 }
 
-export default function ProposalGrantEngagement({
+export default function ProposalGrantEngagementPoints({
   proposalGrantEngagement,
-}: ProposalGrantEngagementProps): JSX.Element | null {
+}: ProposalGrantEngagementPointsProps): JSX.Element | null {
   return proposalGrantEngagement ? (
     <AddressField>
       <TextLabel>Grant {proposalGrantEngagement.points} Engagement Points to:</TextLabel>
