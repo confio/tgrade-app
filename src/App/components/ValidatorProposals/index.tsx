@@ -4,15 +4,14 @@ import rejectedIcon from "App/assets/icons/cross.svg";
 import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
-import { useError, useOc, useSdk } from "service";
-import { DsoContractQuerier, DsoProposalResponse, isOcProposal } from "utils/dso";
-import { OcProposalResponse } from "utils/oc";
+import { useError, useSdk } from "service";
+import { ProposalResponse, ValidatorVotingContractQuerier } from "utils/validatorVoting";
 
 import Stack from "../Stack/style";
 import { ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
-const OcCreateProposalModal = lazy(() => import("App/components/OcCreateProposalModal"));
-const OcProposalDetailModal = lazy(() => import("App/components/OcProposalDetailModal"));
+const ValidatorCreateProposalModal = lazy(() => import("App/components/ValidatorCreateProposalModal"));
+const ValidatorProposalDetailModal = lazy(() => import("App/components/ValidatorProposalDetailModal"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
@@ -32,17 +31,9 @@ function getImgSrcFromStatus(status: string) {
 const columns = [
   {
     title: "Nº",
+    dataIndex: "id",
     key: "id",
-    render: (record: DsoProposalResponse | OcProposalResponse) => {
-      const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
-      return proposalId;
-    },
-    sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
-      const proposalAId = isOcProposal(a) ? `oc${a.id}` : `tc${a.id}`;
-      const proposalBId = isOcProposal(b) ? `oc${b.id}` : `tc${b.id}`;
-
-      return proposalAId < proposalBId;
-    },
+    sorter: (a: ProposalResponse, b: ProposalResponse) => a.id - b.id,
   },
   {
     title: "Type",
@@ -52,26 +43,25 @@ const columns = [
   {
     title: "Due date",
     key: "expires",
-    render: (record: DsoProposalResponse) => {
-      const formatedDate = new Date(Number(record.expires.at_time) / 1000000).toLocaleDateString();
-      const formatedTime = new Date(Number(record.expires.at_time) / 1000000).toLocaleTimeString();
+    render: (record: ProposalResponse) => {
+      const dateObj = new Date(parseInt(record.expires, 10) / 1000000);
       return (
         <>
-          <div>{formatedDate}</div>
-          <div>{formatedTime}</div>
+          <div>{dateObj.toLocaleDateString()}</div>
+          <div>{dateObj.toLocaleTimeString()}</div>
         </>
       );
     },
-    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => {
-      const aDate = new Date(Number(a.expires.at_time) / 1000000);
-      const bDate = new Date(Number(b.expires.at_time) / 1000000);
+    sorter: (a: ProposalResponse, b: ProposalResponse) => {
+      const aDate = new Date(parseInt(a.expires, 10) / 1000000);
+      const bDate = new Date(parseInt(b.expires, 10) / 1000000);
       return bDate.getTime() - aDate.getTime();
     },
   },
   {
     title: "Status",
     key: "status",
-    render: (record: DsoProposalResponse) => (
+    render: (record: ProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
@@ -109,35 +99,36 @@ const columns = [
 export default function ValidatorProposals(): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { client, address },
+    sdkState: { config, client, address },
   } = useSdk();
-  const {
-    ocState: { ocAddress, ocProposalsAddress },
-  } = useOc();
 
+  const [isTableLoading, setTableLoading] = useState(true);
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
-  const [proposals, setProposals] = useState<readonly DsoProposalResponse[]>([]);
-  const [clickedProposal, setClickedProposal] = useState<string>();
+  const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
+  const [clickedProposal, setClickedProposal] = useState<number>();
   const [isVotingMember, setVotingMember] = useState(false);
 
   const refreshProposals = useCallback(async () => {
-    if (!ocAddress || !ocProposalsAddress || !client) return;
+    if (!client) return;
 
     try {
-      const dsoContract = new DsoContractQuerier(ocAddress, client);
-      const ocProposalsContract = new DsoContractQuerier(ocProposalsAddress, client);
+      const validatorVotingContract = new ValidatorVotingContractQuerier(config, client);
 
-      const ocProposals = await ocProposalsContract.getAllProposals();
-      setProposals([...ocProposals]);
+      const proposals = await validatorVotingContract.getAllProposals();
+      setProposals(proposals);
 
-      const isVotingMember = (await dsoContract.getVotingMembers()).some((member) => member.addr === address);
+      const isVotingMember = (await validatorVotingContract.getVoters()).some(
+        (voter) => voter.addr === address,
+      );
       setVotingMember(isVotingMember);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
+    } finally {
+      setTableLoading(false);
     }
-  }, [address, client, handleError, ocAddress, ocProposalsAddress]);
+  }, [address, client, config, handleError]);
 
   useEffect(() => {
     refreshProposals();
@@ -145,7 +136,7 @@ export default function ValidatorProposals(): JSX.Element {
 
   return (
     <>
-      <Stack style={{ width: "100%" }}>
+      <Stack style={{ width: "100%", marginTop: "var(--s2)" }}>
         <ProposalsContainer>
           <header>
             <Title level={2} style={{ fontSize: "var(--s1)" }}>
@@ -156,24 +147,21 @@ export default function ValidatorProposals(): JSX.Element {
             )}
           </header>
           <Table
+            loading={isTableLoading}
+            pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
             columns={columns}
-            pagination={false}
             dataSource={proposals}
-            onRow={(record: DsoProposalResponse | OcProposalResponse) => ({
-              onClick: () => {
-                const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
-                setClickedProposal(proposalId);
-              },
-            })}
+            rowKey={(record: ProposalResponse) => record.id}
+            onRow={(record: ProposalResponse) => ({ onClick: () => setClickedProposal(record.id) })}
           />
         </ProposalsContainer>
       </Stack>
-      <OcCreateProposalModal
+      <ValidatorCreateProposalModal
         isModalOpen={isCreateProposalModalOpen}
         closeModal={() => setCreateProposalModalOpen(false)}
         refreshProposals={refreshProposals}
       />
-      <OcProposalDetailModal
+      <ValidatorProposalDetailModal
         isModalOpen={!!clickedProposal}
         closeModal={() => setClickedProposal(undefined)}
         proposalId={clickedProposal}

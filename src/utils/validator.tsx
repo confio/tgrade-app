@@ -5,10 +5,23 @@ import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { NetworkConfig } from "config/network";
 
+export interface ValidatorMetadata {
+  /// The validator's name (required)
+  readonly moniker: string;
+  /// The optional identity signature (ex. UPort or Keybase)
+  readonly identity?: string;
+  /// The validator's (optional) website
+  readonly website?: string;
+  /// The validator's (optional) security contact email
+  readonly security_contact?: string;
+  /// The validator's (optional) details
+  readonly details?: string;
+}
+
 export interface OperatorResponse {
   readonly operator: string;
   readonly pubkey: any;
-  readonly metadata: any;
+  readonly metadata: ValidatorMetadata;
   readonly jailed_until?: any;
 }
 
