@@ -118,7 +118,7 @@ export default function ValidatorProposals(): JSX.Element {
       const proposals = await validatorVotingContract.getAllProposals();
       setProposals(proposals);
 
-      const isVotingMember = (await validatorVotingContract.getVoters()).some(
+      const isVotingMember = (await validatorVotingContract.getAllVoters()).some(
         (voter) => voter.addr === address,
       );
       setVotingMember(isVotingMember);

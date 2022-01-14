@@ -110,21 +110,25 @@ export class EngagementContractQuerier {
     return weight ?? 0;
   }
 
-  async getListMembers(startAfter?: string, limit?: number): Promise<readonly Member[]> {
+  async getMembers(startAfter?: string): Promise<readonly Member[]> {
     await this.initAddress();
     if (!this.egAddress) throw new Error(errorEgAddressNotSet);
 
-    const query = { list_members: { start_after: startAfter, limit } };
+    const query = { list_members: { start_after: startAfter } };
     const { members }: MemberListResponse = await this.client.queryContractSmart(this.egAddress, query);
     return members;
   }
 
-  async getListMembersByWeight(startAfter?: Member, limit?: number): Promise<readonly Member[]> {
-    await this.initAddress();
-    if (!this.egAddress) throw new Error(errorEgAddressNotSet);
+  async getAllMembers(): Promise<readonly Member[]> {
+    let members: readonly Member[] = [];
+    let nextMembers: readonly Member[] = [];
 
-    const query = { list_members_by_weight: { start_after: startAfter, limit } };
-    const { members }: MemberListResponse = await this.client.queryContractSmart(this.egAddress, query);
+    do {
+      const lastMemberAddress = members[members.length - 1]?.addr;
+      nextMembers = await this.getMembers(lastMemberAddress);
+      members = [...members, ...nextMembers];
+    } while (nextMembers.length);
+
     return members;
   }
 

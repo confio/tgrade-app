@@ -124,7 +124,9 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
     try {
       const dsoContract = new DsoContractQuerier(dsoAddress, client);
       const proposals = await dsoContract.getAllProposals();
-      const isVotingMember = (await dsoContract.getVotingMembers()).some((member) => member.addr === address);
+      const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
+        (member) => member.addr === address,
+      );
       setVotingMember(isVotingMember);
       setProposals(proposals);
     } catch (error) {

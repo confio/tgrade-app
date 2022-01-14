@@ -96,12 +96,25 @@ export class StakingContractQuerier {
     return totalWeight;
   }
 
-  async getMembers(): Promise<readonly Member[]> {
+  async getMembers(startAfter?: string): Promise<readonly Member[]> {
     await this.initAddress();
     if (!this.stakingAddress) throw new Error("stakingAddress was not set");
 
-    const query = { list_members: {} };
+    const query = { list_members: { start_after: startAfter } };
     const { members }: MemberListResponse = await this.client.queryContractSmart(this.stakingAddress, query);
+    return members;
+  }
+
+  async getAllMembers(): Promise<readonly Member[]> {
+    let members: readonly Member[] = [];
+    let nextMembers: readonly Member[] = [];
+
+    do {
+      const lastMemberAddress = members[members.length - 1]?.addr;
+      nextMembers = await this.getMembers(lastMemberAddress);
+      members = [...members, ...nextMembers];
+    } while (nextMembers.length);
+
     return members;
   }
 

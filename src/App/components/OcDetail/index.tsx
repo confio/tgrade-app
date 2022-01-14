@@ -147,7 +147,9 @@ export default function OcDetail(): JSX.Element {
       const ocProposals = await ocProposalsContract.getAllProposals();
       setProposals([...dsoProposals, ...ocProposals]);
 
-      const isVotingMember = (await dsoContract.getVotingMembers()).some((member) => member.addr === address);
+      const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
+        (member) => member.addr === address,
+      );
       setVotingMember(isVotingMember);
     } catch (error) {
       if (!(error instanceof Error)) return;

@@ -131,7 +131,7 @@ export default function ValidatorProposalDetailModal({
 
       try {
         const validatorVotingContract = new ValidatorVotingContractQuerier(config, client);
-        const isVotingMember = (await validatorVotingContract.getVoters()).some(
+        const isVotingMember = (await validatorVotingContract.getAllVoters()).some(
           (voter) => voter.addr === address,
         );
         setVotingMember(isVotingMember);

@@ -275,16 +275,42 @@ export class DsoContractQuerier {
     return response;
   }
 
-  async getAllMembers(): Promise<readonly Member[]> {
-    const query = { list_members: {} };
+  async getMembers(startAfter?: string): Promise<readonly Member[]> {
+    const query = { list_members: { start_after: startAfter } };
     const { members }: MemberListResponse = await this.client.queryContractSmart(this.address, query);
     return members;
   }
 
-  async getVotingMembers(): Promise<readonly Member[]> {
-    const query = { list_voting_members: {} };
+  async getAllMembers(): Promise<readonly Member[]> {
+    let members: readonly Member[] = [];
+    let nextMembers: readonly Member[] = [];
+
+    do {
+      const lastMemberAddress = members[members.length - 1]?.addr;
+      nextMembers = await this.getMembers(lastMemberAddress);
+      members = [...members, ...nextMembers];
+    } while (nextMembers.length);
+
+    return members;
+  }
+
+  async getVotingMembers(startAfter?: string): Promise<readonly Member[]> {
+    const query = { list_voting_members: { start_after: startAfter } };
     const { members }: MemberListResponse = await this.client.queryContractSmart(this.address, query);
     return members;
+  }
+
+  async getAllVotingMembers(): Promise<readonly Member[]> {
+    let votingMembers: readonly Member[] = [];
+    let nextVotingMembers: readonly Member[] = [];
+
+    do {
+      const lastVotingMemberAddress = votingMembers[votingMembers.length - 1]?.addr;
+      nextVotingMembers = await this.getVotingMembers(lastVotingMemberAddress);
+      votingMembers = [...votingMembers, ...nextVotingMembers];
+    } while (nextVotingMembers.length);
+
+    return votingMembers;
   }
 
   async getEscrow(memberAddress: string): Promise<EscrowResponse> {
