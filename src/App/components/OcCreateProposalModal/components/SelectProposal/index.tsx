@@ -17,7 +17,7 @@ interface SelectProposalProps {
 }
 
 export default function SelectProposal({ setProposalStep }: SelectProposalProps): JSX.Element {
-  const [selectedProposal, setSelectedProposal] = useState(ProposalType.AddParticipants);
+  const [selectedProposal, setSelectedProposal] = useState(ProposalType.AddOCMembers);
 
   return (
     <>
