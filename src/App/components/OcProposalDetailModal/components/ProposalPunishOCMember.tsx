@@ -8,13 +8,13 @@ import { isValidAddress } from "utils/forms";
 
 import { AddressField, ChangedField, TextLabel, TextValue } from "../style";
 
-interface ProposalPunishVotingMemberProps {
+interface ProposalPunishOCMemberProps {
   readonly proposalPunishVotingMember: Punishment | undefined;
 }
 
-export default function ProposalPunishVotingMember({
+export default function ProposalPunishOCMember({
   proposalPunishVotingMember,
-}: ProposalPunishVotingMemberProps): JSX.Element | null {
+}: ProposalPunishOCMemberProps): JSX.Element | null {
   const memberToPunish =
     proposalPunishVotingMember?.BurnEscrow?.member || proposalPunishVotingMember?.DistributeEscrow?.member;
 
