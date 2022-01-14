@@ -56,18 +56,13 @@ export default function ProposalPunishValidator({
   async function submitCreateProposal() {
     if (!ocProposalsAddress || !signingClient || !address) return;
     setSubmitting(true);
-    console.log("submitCreateProposal fired");
-    console.log("Validators to punish", validators);
-    console.log("slash portion", slashPortion);
-    console.log("jailForever", jailedForever);
-    console.log("jailUntil", jailedUntil);
-    console.log("punishment", punishment);
-    console.log("comment", comment);
+
     try {
       const dsoContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
       const nativePortion = slashPortion ? (parseFloat(slashPortion) / 100).toString() : "0";
-      const jailedTo = jailedUntil ? jailedUntil : "10/10/2022";
-      const jailTime = jailedForever ? "forever" : { duration: moment(jailedTo, "DD/MM/YYYY").unix() };
+      const jailedTo = jailedUntil ? jailedUntil : 0;
+      const dateToSeconds = Math.round(moment(jailedTo, "DD/MM/YYYY").unix() - new Date().getTime() / 1000);
+      const jailTime = jailedForever ? "forever" : { duration: dateToSeconds };
 
       const transactionHash = await dsoContract.propose(
         signingClient,
