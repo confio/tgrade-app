@@ -233,11 +233,7 @@ export interface InstantiateMsg {
   readonly initial_members: readonly string[];
 }
 
-export async function getProposalTitle(
-  client: CosmWasmClient,
-  factoryAddress: string,
-  proposal: ProposalContent,
-): Promise<string> {
+export function getProposalTitle(proposal: ProposalContent): string {
   const proposalProp = Object.keys(proposal)[0];
 
   switch (proposalProp) {
