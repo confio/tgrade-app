@@ -5,7 +5,7 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { Cw3Status, DsoContractQuerier, DsoProposalResponse } from "utils/dso";
+import { Cw3Status, DsoContractQuerier, DsoProposalResponse, getProposalTitle } from "utils/dso";
 
 import Stack from "../Stack/style";
 import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -40,8 +40,8 @@ const columns = [
   },
   {
     title: "Type",
-    dataIndex: "title",
     key: "title",
+    render: (record: DsoProposalResponse) => getProposalTitle(record.proposal),
   },
   {
     title: "Due date",

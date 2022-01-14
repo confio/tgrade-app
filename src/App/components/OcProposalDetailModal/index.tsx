@@ -21,7 +21,7 @@ import {
   VoteOption,
 } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { OcProposalResponse } from "utils/oc";
+import { getProposalTitle, OcProposalResponse } from "utils/oc";
 
 import ProposalAddMembers from "./components/ProposalAddMembers";
 import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
@@ -291,7 +291,7 @@ export default function OcProposalDetailModal({
             {proposal ? (
               <Stack gap="s1">
                 <Title>
-                  Nº {proposal.id} "{proposal.title}"
+                  Nº {proposal.id} "{getProposalTitle(proposal.proposal)}"
                 </Title>
               </Stack>
             ) : null}

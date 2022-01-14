@@ -6,7 +6,7 @@ import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useOc, useSdk } from "service";
 import { Cw3Status, DsoContractQuerier, DsoProposalResponse, isDsoProposal, isOcProposal } from "utils/dso";
-import { OcProposalResponse } from "utils/oc";
+import { getProposalTitle, OcProposalResponse } from "utils/oc";
 
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -54,8 +54,8 @@ const columns = [
   },
   {
     title: "Type",
-    dataIndex: "title",
     key: "title",
+    render: (record: DsoProposalResponse | OcProposalResponse) => getProposalTitle(record.proposal),
   },
   {
     title: "Due date",
