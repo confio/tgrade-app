@@ -15,7 +15,7 @@ import { AddressStack, ButtonGroup, ConfirmField, FeeGroup, Separator, TextComme
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Text, Paragraph } = Typography;
 
-interface ConfirmationPunishVotingParticipantProps {
+interface ConfirmationPunishOCMemberProps {
   readonly memberToPunish: string;
   readonly slashingPercentage: string;
   readonly memberEscrow: string;
@@ -27,7 +27,7 @@ interface ConfirmationPunishVotingParticipantProps {
   readonly submitForm: () => void;
 }
 
-export default function ConfirmationPunishVotingParticipant({
+export default function ConfirmationPunishOCMember({
   memberToPunish,
   slashingPercentage,
   memberEscrow,
@@ -37,7 +37,7 @@ export default function ConfirmationPunishVotingParticipant({
   isSubmitting,
   goBack,
   submitForm,
-}: ConfirmationPunishVotingParticipantProps): JSX.Element {
+}: ConfirmationPunishOCMemberProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, signer, signingClient },

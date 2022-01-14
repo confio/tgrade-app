@@ -24,7 +24,7 @@ const kickOutLabel = "Kick out from Trusted Circle";
 const distributionListLabel = "Distribution list for slashed escrow";
 const commentLabel = "Comment";
 
-export interface FormPunishVotingParticipantValues {
+export interface FormPunishOCMemberValues {
   readonly memberToPunish: string;
   readonly memberEscrow: string;
   readonly slashingPercentage: string;
@@ -33,12 +33,12 @@ export interface FormPunishVotingParticipantValues {
   readonly comment: string;
 }
 
-interface FormPunishVotingParticipantProps extends Omit<FormPunishVotingParticipantValues, "memberEscrow"> {
+interface FormPunishOCMemberProps extends Omit<FormPunishOCMemberValues, "memberEscrow"> {
   readonly goBack: () => void;
-  readonly handleSubmit: (values: FormPunishVotingParticipantValues) => void;
+  readonly handleSubmit: (values: FormPunishOCMemberValues) => void;
 }
 
-export default function FormPunishVotingParticipant({
+export default function FormPunishOCMember({
   memberToPunish,
   slashingPercentage,
   kickOut,
@@ -46,7 +46,7 @@ export default function FormPunishVotingParticipant({
   comment,
   goBack,
   handleSubmit,
-}: FormPunishVotingParticipantProps): JSX.Element {
+}: FormPunishOCMemberProps): JSX.Element {
   const {
     sdkState: { config, client },
   } = useSdk();
