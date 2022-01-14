@@ -51,17 +51,9 @@ export default function ProposalAddVotingParticipants({
 
     try {
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(
-        signingClient,
-        config.factoryAddress,
-        address,
-        comment,
-        {
-          add_voting_members: {
-            voters: members,
-          },
-        },
-      );
+      const transactionHash = await dsoContract.propose(address, comment, {
+        add_voting_members: { voters: members },
+      });
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({

@@ -85,13 +85,7 @@ export default function ProposalPunishVotingParticipant({
             },
           };
 
-      const transactionHash = await dsoContract.propose(
-        signingClient,
-        config.factoryAddress,
-        address,
-        comment,
-        { punish_members: [punishment] },
-      );
+      const transactionHash = await dsoContract.propose(address, comment, { punish_members: [punishment] });
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({

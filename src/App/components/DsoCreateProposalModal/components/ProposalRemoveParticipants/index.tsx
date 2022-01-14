@@ -49,18 +49,12 @@ export default function ProposalRemoveParticipants({
 
     try {
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(
-        signingClient,
-        config.factoryAddress,
-        address,
-        comment,
-        {
-          add_remove_non_voting_members: {
-            remove: members,
-            add: [],
-          },
+      const transactionHash = await dsoContract.propose(address, comment, {
+        add_remove_non_voting_members: {
+          remove: members,
+          add: [],
         },
-      );
+      });
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({

@@ -114,7 +114,7 @@ export default function ProposalEditDso({
       const nativethreshold = threshold ? (parseFloat(threshold) / 100).toString() : undefined;
 
       const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(client, config.factoryAddress, address, comment, {
+      const transactionHash = await dsoContract.propose(address, comment, {
         edit_trusted_circle: {
           name: dsoName === currentDsoValues.dsoName ? undefined : dsoName,
           escrow_amount: nativeEscrowAmount,

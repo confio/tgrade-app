@@ -212,9 +212,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
   const pairAddress = pair.contract_addr;
 
   const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-  await dsoContract.propose(signingClient, config.factoryAddress, address, comment, {
-    whitelist_contract: pairAddress,
-  });
+  await dsoContract.propose(address, comment, { whitelist_contract: pairAddress });
 
   const txHash = await dsoContract.executeProposal(address, 1);
   expect(txHash).toBeTruthy();
