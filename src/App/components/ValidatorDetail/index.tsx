@@ -1,6 +1,7 @@
 import closeIcon from "App/assets/icons/cross.svg";
 import Button from "App/components/Button";
 import Stack from "App/components/Stack/style";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import { ValidatorContractQuerier, ValidatorSlashing } from "utils/validator";
