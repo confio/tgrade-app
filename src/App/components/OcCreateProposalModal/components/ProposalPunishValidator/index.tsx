@@ -62,7 +62,9 @@ export default function ProposalPunishValidator({
       const nativePortion = slashPortion ? (parseFloat(slashPortion) / 100).toString() : "0";
       const jailedTo = jailedUntil ? jailedUntil : 0;
       const dateToSeconds = Math.round(moment(jailedTo, "DD/MM/YYYY").unix() - new Date().getTime() / 1000);
-      const jailTime = jailedForever ? "forever" : { duration: dateToSeconds };
+      const jailTime = jailedForever
+        ? "forever"
+        : { duration: Number.isNaN(dateToSeconds) ? 0 : dateToSeconds };
 
       const transactionHash = await dsoContract.propose(address, comment, {
         punish: {
