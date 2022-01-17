@@ -1,8 +1,9 @@
 import closeIcon from "App/assets/icons/cross.svg";
 import Button from "App/components/Button";
 import Stack from "App/components/Stack/style";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSdk } from "service";
+import { ValidatorContractQuerier, ValidatorSlashing } from "utils/validator";
 
 import DistributionModal from "../DistributionModal";
 import StakeModal, { StakeModalState } from "../StakeModal";
@@ -52,10 +53,25 @@ export function ValidatorDetail({
   onCancel,
 }: ModalProps): JSX.Element | null {
   const {
-    sdkState: { address },
+    sdkState: { config, client, address },
   } = useSdk();
   const [stakeModalState, setStakeModalState] = useState<StakeModalState>({ open: false });
   const [isDistributionModalOpen, setDistributionModalOpen] = useState(false);
+  const [slashingEvents, setSlashingEvents] = useState<readonly ValidatorSlashing[]>([]);
+
+  useEffect(() => {
+    (async function getSlashingEvents() {
+      if (!validator || !client) return;
+
+      try {
+        const validatorContract = new ValidatorContractQuerier(config, client);
+        const slashingEvents = await validatorContract.getSlashingEvents(validator.operator);
+        setSlashingEvents(slashingEvents);
+      } catch {
+        console.log(`${validator.operator} does not have slashing events`);
+      }
+    })();
+  }, [client, config, validator]);
 
   if (!validator) return null;
   return (
@@ -144,7 +160,7 @@ export function ValidatorDetail({
         </div>
         <StyledTable
           pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
-          dataSource={validator.slashEvents}
+          dataSource={slashingEvents}
           columns={columns}
         />
       </div>

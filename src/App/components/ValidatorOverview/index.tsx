@@ -24,7 +24,6 @@ export interface ValidatorType extends OperatorResponse {
   power?: number;
   staked?: string;
   status?: string;
-  slashEvents: any;
   metadata: {
     moniker: string;
     identity?: string;
@@ -165,7 +164,6 @@ export default function ValidatorOverview(): JSX.Element | null {
           validators.map(async (operatorResponse) => {
             const ep = await egContract.getEngagementPoints(operatorResponse.operator);
             const rewards = await egContract.getWithdrawableFunds(operatorResponse.operator);
-            const slashEvents = await valContract.getSlashingEvents(operatorResponse.operator);
 
             const validatorItem: ValidatorType = {
               ...operatorResponse,
@@ -173,7 +171,6 @@ export default function ValidatorOverview(): JSX.Element | null {
               rewards: Number(rewards.amount),
               status: "active",
               power: Number(valActive[0].power),
-              slashEvents: slashEvents,
             };
 
             return validatorItem;
