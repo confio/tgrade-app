@@ -29,6 +29,25 @@ interface ListValidatorResponse {
   readonly validators: readonly OperatorResponse[];
 }
 
+export interface ValidatorSlashing {
+  readonly slash_height: number;
+  readonly portion: string;
+}
+
+interface ListValidatorSlashingResponse {
+  /// Operator address
+  readonly addr: string;
+  /// Block height of first validator addition to validators set
+  readonly start_height: number;
+  /// Slashing events, if any
+  readonly slashing: readonly ValidatorSlashing[];
+  /// Whether or not a validator has been tombstoned (killed out of
+  /// validator set)
+  readonly tombstoned: boolean;
+  /// If validator is jailed, it will show expiration time
+  readonly jailed_until: any;
+}
+
 export class ValidatorContractQuerier {
   valAddress?: string;
 
@@ -76,11 +95,14 @@ export class ValidatorContractQuerier {
     const { validators }: any = await this.client.queryContractSmart(this.valAddress, query);
     return validators;
   }
-  async getSlashingEvents(operator: string): Promise<string[]> {
+  async getSlashingEvents(operator: string): Promise<readonly ValidatorSlashing[]> {
     await this.initAddress();
     if (!this.valAddress) throw new Error("no valAddress");
     const query = { list_validator_slashing: { operator } };
-    const { slashing }: any = await this.client.queryContractSmart(this.valAddress, query);
+    const { slashing }: ListValidatorSlashingResponse = await this.client.queryContractSmart(
+      this.valAddress,
+      query,
+    );
     return slashing;
   }
 }
