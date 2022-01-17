@@ -7,12 +7,12 @@ interface ProposalPunishValidatorProps {
   readonly proposalPunishValidator: ValidatorPunishment | undefined;
 }
 
+const todayDate = Math.round(new Date().getTime() / 1000);
+const dateOffset = 43200;
 export default function ProposalPunishValidator({
   proposalPunishValidator,
 }: ProposalPunishValidatorProps): JSX.Element | null {
-  const dateInSeconds = Math.round(
-    (proposalPunishValidator?.jailing_duration as any).duration + new Date().getTime(),
-  );
+  const dateInSeconds = todayDate + (proposalPunishValidator?.jailing_duration as any).duration + dateOffset;
 
   return proposalPunishValidator ? (
     <div
@@ -26,7 +26,7 @@ export default function ProposalPunishValidator({
         {proposalPunishValidator.jailing_duration === "forever" ? (
           <b style={{ color: "red" }}>Forever</b>
         ) : (
-          <b>{moment(dateInSeconds).format("DD/MM/YYYY")}</b>
+          <b>{moment.unix(dateInSeconds).local().format("DD/MM/YYYY")}</b>
         )}
       </TextLabel>
       <TextLabel>
