@@ -65,9 +65,6 @@ export default function ProposalPunishValidator({
       const jailTime = jailedForever
         ? "forever"
         : { duration: Number.isNaN(dateToSeconds) ? 0 : dateToSeconds };
-      console.log({ jailTime });
-      console.log({ jailedTo });
-      console.log({ nativePortion });
 
       const transactionHash = await dsoContract.propose(address, comment, {
         punish: {
