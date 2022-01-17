@@ -14,7 +14,6 @@ export default function ProposalPunishValidator({
     (proposalPunishValidator?.jailing_duration as any).duration + new Date().getTime(),
   );
 
-  console.log(dateInSeconds);
   return proposalPunishValidator ? (
     <div
       style={{ height: "125px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
