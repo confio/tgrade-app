@@ -8,7 +8,9 @@ interface ProposalPunishValidatorProps {
 }
 
 const todayDate = Math.round(new Date().getTime() / 1000);
+// dateOffset required due to inacuraccy in actual release time
 const dateOffset = 43200;
+
 export default function ProposalPunishValidator({
   proposalPunishValidator,
 }: ProposalPunishValidatorProps): JSX.Element | null {
