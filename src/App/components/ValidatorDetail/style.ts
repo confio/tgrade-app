@@ -1,4 +1,5 @@
-import { Modal, Table } from "antd";
+import { Modal } from "antd";
+import Table from "App/components/Table";
 import styled from "styled-components";
 
 export const StyledModal = styled(Modal)`

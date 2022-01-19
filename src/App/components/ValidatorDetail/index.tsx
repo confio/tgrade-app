@@ -88,15 +88,15 @@ export function ValidatorDetail({
 
         <img alt="Close button" src={closeIcon} onClick={onCancel} />
       </ModalHeader>
-      <div style={{ display: "flex", flexDirection: "column", marginRight: "50px", height: "530px" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "530px" }}>
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <div style={{ display: "flex", flexDirection: "column", marginRight: "50px" }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             <Title> {validator.metadata?.moniker ?? ""}</Title>
             <p> {validator.operator}</p>
             <p> {validator.metadata?.website ?? ""}</p>
           </div>
           {validator.jailed_until ? (
-            <div style={{ display: "flex", flexDirection: "column", marginRight: "50px" }}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <p>Jailed</p>
               <p>{JSON.stringify(validator.jailed_until, null, 2)}</p>
             </div>
