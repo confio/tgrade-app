@@ -26,24 +26,14 @@ interface ModalProps {
 }
 const columns = [
   {
-    title: "Execution date",
-    key: "date",
+    title: "Slashed at height",
+    dataIndex: "slash_height",
+    key: "slash_height",
   },
   {
-    title: "Jailing",
-    key: "jailing",
-  },
-  {
-    title: "Slashing",
-    key: "slashing",
-  },
-  {
-    title: "Tx Hash",
-    key: "txhash",
-  },
-  {
-    title: "Reason",
-    key: "reason",
+    title: "Slashed portion",
+    dataIndex: "portion",
+    key: "portion",
   },
 ];
 export function ValidatorDetail({
