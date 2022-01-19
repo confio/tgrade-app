@@ -33,7 +33,7 @@ function TokenRow({
 }: TokenRowProps): JSX.Element {
   const { tMarketDispatch } = useTMarket();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const balance = token?.humanBalance ? token?.humanBalance : "0";
+  const balance = token ? tokens.find((t) => t.address === token.address)?.humanBalance : "0";
 
   return (
     <div>
