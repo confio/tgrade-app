@@ -1,6 +1,7 @@
 import closeIcon from "App/assets/icons/cross.svg";
 import Button from "App/components/Button";
 import Stack from "App/components/Stack/style";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import { ValidatorContractQuerier, ValidatorSlashing } from "utils/validator";
@@ -98,7 +99,7 @@ export function ValidatorDetail({
           {validator.jailed_until ? (
             <div style={{ display: "flex", flexDirection: "column" }}>
               <p>Jailed</p>
-              <p>{JSON.stringify(validator.jailed_until, null, 2)}</p>
+              <p>{moment.unix(validator.jailed_until).format("DD/MM/YYYY")}</p>
             </div>
           ) : null}
         </div>
