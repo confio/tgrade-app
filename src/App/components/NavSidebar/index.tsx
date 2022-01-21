@@ -76,6 +76,21 @@ export const NavSidebar: React.FC = () => {
             </TextCell>
           </Cell>
         </Link>
+        <a
+          href="https://confio.github.io/tgrade-address-generator/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Cell>
+            <Icon.CodeIcon />
+            <TextCell>
+              <div>
+                <StyledText>Address Generator</StyledText>
+                <Icon.ArrowTopRight style={{ height: "10px" }} />
+              </div>
+            </TextCell>
+          </Cell>
+        </a>
         {/* <Link to="#">
           <Cell>
             <Icon.Oversight />
