@@ -80,6 +80,7 @@ export const NavSidebar: React.FC = () => {
           href="https://confio.github.io/tgrade-address-generator/"
           target="_blank"
           rel="noopener noreferrer"
+          style={{ textDecoration: "none" }}
         >
           <Cell>
             <Icon.CodeIcon />
