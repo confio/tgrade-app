@@ -35,6 +35,7 @@ export default function OcEscrow(): JSX.Element {
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
   const [gracePeriod, setGracePeriod] = useState<string>();
+  const [isVotingMember, setVotingMemeber] = useState(false);
 
   const refreshEscrows = useCallback(
     async function () {
@@ -90,6 +91,12 @@ export default function OcEscrow(): JSX.Element {
           .filter((res): res is PromiseFulfilledResult<EscrowResponse> => res.status === "fulfilled")
           .filter((res): res is PromiseFulfilledResult<EscrowStatus> => res.value !== null)
           .map((res) => res.value);
+
+        //check if votingmember
+        const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
+          (member) => member.addr === address,
+        );
+        setVotingMemeber(isVotingMember);
 
         // get total required
         let numMembersExpectedToDeposit = 0;
@@ -186,13 +193,14 @@ export default function OcEscrow(): JSX.Element {
         <Pie {...pieConfig} />
       </TotalEscrowStack>
       <YourEscrowStack gap="s1">
-        <Title level={2}>Your escrow</Title>
+        {<Title level={2}>Your escrow</Title>}
         <AmountStack gap="s-4">
-          <Text>Current paid in:</Text>
-          <Text>{`${userEscrow} ${feeDenom}`}</Text>
+          {isVotingMember ? <Text>Current paid in:</Text> : <Text>No escrow required</Text>}
+          {isVotingMember && <Text>{`${userEscrow} ${feeDenom}`}</Text>}
         </AmountStack>
         <AmountStack gap="s-4">
-          <Text>Needed to get voting rights:</Text>
+          {isVotingMember && <Text>Needed to get voting rights:</Text>}
+
           {pendingEscrow ? (
             <TooltipWrapper
               title={`The current minimum escrow is ${requiredEscrow} ${feeDenom}, but ${pendingEscrow} ${feeDenom} will be needed after ${gracePeriod} in order to have voting rights`}
@@ -200,11 +208,13 @@ export default function OcEscrow(): JSX.Element {
               <Text>{`${pendingEscrow} ${feeDenom}`}</Text>
             </TooltipWrapper>
           ) : (
-            <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
+            <Text>{isVotingMember && `${requiredEscrow} ${feeDenom}`}</Text>
           )}
         </AmountStack>
         {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
+          <Button disabled={!isVotingMember} onClick={() => setDepositModalOpen(true)}>
+            Deposit escrow
+          </Button>
         ) : null}
         {(!frozenEscrowDate && exceedingEscrow !== "0") ||
         (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
