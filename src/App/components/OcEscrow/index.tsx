@@ -194,13 +194,14 @@ export default function OcEscrow(): JSX.Element {
         <Pie {...pieConfig} />
       </TotalEscrowStack>
       <YourEscrowStack gap="s1">
-        <Title level={2}>Your escrow</Title>
+        {<Title level={2}>Your escrow</Title>}
         <AmountStack gap="s-4">
-          <Text>Current paid in:</Text>
-          <Text>{`${userEscrow} ${feeDenom}`}</Text>
+          {isVotingMember ? <Text>Current paid in:</Text> : <Text>No escrow required</Text>}
+          {isVotingMember && <Text>{`${userEscrow} ${feeDenom}`}</Text>}
         </AmountStack>
         <AmountStack gap="s-4">
-          <Text>Needed to get voting rights:</Text>
+          {isVotingMember && <Text>Needed to get voting rights:</Text>}
+
           {pendingEscrow ? (
             <TooltipWrapper
               title={`The current minimum escrow is ${requiredEscrow} ${feeDenom}, but ${pendingEscrow} ${feeDenom} will be needed after ${gracePeriod} in order to have voting rights`}
@@ -208,7 +209,7 @@ export default function OcEscrow(): JSX.Element {
               <Text>{`${pendingEscrow} ${feeDenom}`}</Text>
             </TooltipWrapper>
           ) : (
-            <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
+            <Text>{isVotingMember && `${requiredEscrow} ${feeDenom}`}</Text>
           )}
         </AmountStack>
         {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
