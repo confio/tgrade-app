@@ -23,9 +23,10 @@ const potentialVotingPowerLabel = "Potential voting power";
 
 interface StakeFormProps {
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
+  readonly reloadValidator: () => Promise<void>;
 }
 
-export default function StakeForm({ setTxResult }: StakeFormProps): JSX.Element {
+export default function StakeForm({ setTxResult, reloadValidator }: StakeFormProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, address, signingClient },
@@ -66,6 +67,7 @@ export default function StakeForm({ setTxResult }: StakeFormProps): JSX.Element 
       setTxResult({
         msg: `Successfully staked ${tokensAdd}. Transaction ID: ${txHash}`,
       });
+      await reloadValidator();
     } catch (error) {
       if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });

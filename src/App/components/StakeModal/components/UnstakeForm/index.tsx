@@ -24,9 +24,10 @@ const potentialVotingPowerLabel = "Potential voting power";
 
 interface UnstakeFormProps {
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
+  readonly reloadValidator: () => Promise<void>;
 }
 
-export default function UnstakeForm({ setTxResult }: UnstakeFormProps): JSX.Element {
+export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFormProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, address, signingClient },
@@ -75,6 +76,7 @@ export default function UnstakeForm({ setTxResult }: UnstakeFormProps): JSX.Elem
       setTxResult({
         msg: `Successfully unstaked ${tokensRemove}. Transaction ID: ${txHash}`,
       });
+      await reloadValidator();
     } catch (error) {
       if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
