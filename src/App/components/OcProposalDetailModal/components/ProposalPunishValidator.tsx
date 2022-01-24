@@ -14,9 +14,10 @@ const dateOffset = 43200;
 export default function ProposalPunishValidator({
   proposalPunishValidator,
 }: ProposalPunishValidatorProps): JSX.Element | null {
+  if (!proposalPunishValidator) return null;
   const dateInSeconds = todayDate + (proposalPunishValidator?.jailing_duration as any).duration + dateOffset;
 
-  return proposalPunishValidator ? (
+  return (
     <div
       style={{ height: "125px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
     >
@@ -36,5 +37,5 @@ export default function ProposalPunishValidator({
       </TextLabel>
       <TextLabel>Comment:</TextLabel>
     </div>
-  ) : null;
+  );
 }
