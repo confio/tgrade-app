@@ -35,6 +35,7 @@ export default function OcEscrow(): JSX.Element {
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
   const [gracePeriod, setGracePeriod] = useState<string>();
+  const [isVotingMember, setVotingMemeber] = useState(false);
 
   const refreshEscrows = useCallback(
     async function () {
@@ -90,6 +91,12 @@ export default function OcEscrow(): JSX.Element {
           .filter((res): res is PromiseFulfilledResult<EscrowResponse> => res.status === "fulfilled")
           .filter((res): res is PromiseFulfilledResult<EscrowStatus> => res.value !== null)
           .map((res) => res.value);
+
+        //check if votingmember
+        const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
+          (member) => member.addr === address,
+        );
+        setVotingMemeber(isVotingMember);
 
         // get total required
         let numMembersExpectedToDeposit = 0;
@@ -178,6 +185,7 @@ export default function OcEscrow(): JSX.Element {
       },
     },
   };
+  console.log("is voting mem", isVotingMember);
 
   return (
     <StyledEscrow>
@@ -204,7 +212,9 @@ export default function OcEscrow(): JSX.Element {
           )}
         </AmountStack>
         {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
+          <Button disabled={!isVotingMember} onClick={() => setDepositModalOpen(true)}>
+            Deposit escrow
+          </Button>
         ) : null}
         {(!frozenEscrowDate && exceedingEscrow !== "0") ||
         (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
