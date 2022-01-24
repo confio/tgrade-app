@@ -1,5 +1,5 @@
-import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { calculateFee, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
@@ -23,6 +23,11 @@ export interface OperatorResponse {
   readonly pubkey: any;
   readonly metadata: ValidatorMetadata;
   readonly jailed_until?: any;
+}
+
+interface ValidatorResponse {
+  /// This is unset if no validator registered
+  readonly validator?: OperatorResponse | null;
 }
 
 interface ListValidatorResponse {
@@ -62,6 +67,15 @@ export class ValidatorContractQuerier {
 
     const { address } = await queryService.ContractAddress({ contractType: PoEContractType.VALSET });
     this.valAddress = address;
+  }
+
+  async getValidator(operatorAddress: string): Promise<OperatorResponse | undefined> {
+    await this.initAddress();
+    if (!this.valAddress) throw new Error("no valAddress");
+    const query = { validator: { operator: operatorAddress } };
+    const { validator }: ValidatorResponse = await this.client.queryContractSmart(this.valAddress, query);
+
+    return validator ?? undefined;
   }
 
   async getValidators(startAfter?: string): Promise<readonly OperatorResponse[]> {
@@ -104,5 +118,31 @@ export class ValidatorContractQuerier {
       query,
     );
     return slashing;
+  }
+}
+
+export class ValidatorContract extends ValidatorContractQuerier {
+  static readonly GAS_UNJAIL = 500_000;
+
+  readonly #signingClient: SigningCosmWasmClient;
+
+  constructor(config: NetworkConfig, signingClient: SigningCosmWasmClient) {
+    super(config, signingClient);
+    this.#signingClient = signingClient;
+  }
+
+  async unjailSelf(validatorAddress: string): Promise<string> {
+    await this.initAddress();
+    if (!this.valAddress) throw new Error("no valAddress");
+
+    const msg = { unjail: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      validatorAddress,
+      this.valAddress,
+      msg,
+      calculateFee(ValidatorContract.GAS_UNJAIL, this.config.gasPrice),
+    );
+
+    return transactionHash;
   }
 }
