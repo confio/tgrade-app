@@ -185,7 +185,6 @@ export default function OcEscrow(): JSX.Element {
       },
     },
   };
-  console.log("is voting mem", isVotingMember);
 
   return (
     <StyledEscrow>
