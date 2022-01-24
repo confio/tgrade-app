@@ -14,11 +14,13 @@ const { Text } = Typography;
 interface DelegateContainerProps {
   readonly egContract: EngagementContractQuerier | undefined;
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
+  readonly reloadValidator: () => Promise<void>;
 }
 
 export default function DelegateContainer({
   egContract,
   setTxResult,
+  reloadValidator,
 }: DelegateContainerProps): JSX.Element | null {
   const {
     sdkState: { config, address },
@@ -52,6 +54,7 @@ export default function DelegateContainer({
     try {
       const txHash = await egContract.delegateWithdrawal(address, delegatedAddress);
       setTxResult({ msg: `Set ${delegatedAddress} as delegated address. Transaction ID: ${txHash}` });
+      await reloadValidator();
     } catch (error) {
       if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });

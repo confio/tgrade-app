@@ -6,6 +6,15 @@ export const StyledModal = styled(Modal)`
   & .ant-modal-content {
     border-radius: 16px;
   }
+
+  ${({ bgTransparent }: { bgTransparent?: boolean }) =>
+    bgTransparent &&
+    `
+  & .ant-modal-content {
+    background: none;
+    box-shadow: none;
+  }
+  `};
 `;
 
 export const Title = styled.p`

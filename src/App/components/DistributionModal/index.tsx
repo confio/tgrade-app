@@ -17,11 +17,13 @@ const { Title, Text } = Typography;
 interface DistributionModalProps {
   readonly isModalOpen: boolean;
   readonly setModalOpen: (open: boolean) => void;
+  readonly reloadValidator: () => Promise<void>;
 }
 
 export default function DistributionModal({
   isModalOpen,
   setModalOpen,
+  reloadValidator,
 }: DistributionModalProps): JSX.Element {
   const {
     sdkState: { config, client, signingClient },
@@ -93,8 +95,16 @@ export default function DistributionModal({
                 Another address can be set as receiver of the withdrawal.
               </Text>
             </TextStack>
-            <DelegateContainer egContract={egContract} setTxResult={setTxResult} />
-            <WithdrawRewardsContainer egContract={egContract} setTxResult={setTxResult} />
+            <DelegateContainer
+              egContract={egContract}
+              setTxResult={setTxResult}
+              reloadValidator={reloadValidator}
+            />
+            <WithdrawRewardsContainer
+              egContract={egContract}
+              setTxResult={setTxResult}
+              reloadValidator={reloadValidator}
+            />
           </Stack>
         </>
       )}

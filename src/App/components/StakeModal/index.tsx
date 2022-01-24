@@ -22,9 +22,14 @@ export type StakeModalState =
 interface StakeModalProps {
   readonly modalState: StakeModalState;
   readonly setModalState: (state: StakeModalState) => void;
+  readonly reloadValidator: () => Promise<void>;
 }
 
-export default function StakeModal({ modalState, setModalState }: StakeModalProps): JSX.Element {
+export default function StakeModal({
+  modalState,
+  setModalState,
+  reloadValidator,
+}: StakeModalProps): JSX.Element {
   const [isConnectWalletModalOpen, setConnectWalletModalOpen] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
 
@@ -82,9 +87,9 @@ export default function StakeModal({ modalState, setModalState }: StakeModalProp
             <StakeMenu.Item key="unstake">Unstake tokens</StakeMenu.Item>
           </StakeMenu>
           {modalState.operation === "stake" ? (
-            <StakeForm setTxResult={setTxResult} />
+            <StakeForm setTxResult={setTxResult} reloadValidator={reloadValidator} />
           ) : (
-            <UnstakeForm setTxResult={setTxResult} />
+            <UnstakeForm setTxResult={setTxResult} reloadValidator={reloadValidator} />
           )}
         </>
       )}
