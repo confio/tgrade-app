@@ -87,7 +87,9 @@ export default function ListTokens({ tokens, setToken, closeModal }: ListTokensP
             }}
           >
             <ContainerLogoNames>
-              <img src={token.img} alt={token.img} onError={loadDefaultImg} />
+              {!token.symbol.startsWith("LP-") ? (
+                <img src={token.img} alt={token.img} onError={loadDefaultImg} />
+              ) : null}
               <ContainerNames>
                 <Paragraph>{token.symbol}</Paragraph>
                 <Paragraph>{token.name}</Paragraph>
