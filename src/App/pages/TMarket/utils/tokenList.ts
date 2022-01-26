@@ -17,6 +17,8 @@ export const getTokensList = (
           t.address.toLowerCase().search(searchText.toLowerCase()) !== -1,
       );
   }
+
+  result = result.filter((t) => t.symbol !== "uLP" && t.name !== "tfi liquidity token");
   return result;
 };
 export const getLPTokensList = (

@@ -220,8 +220,9 @@ export class Contract20WS {
         const tokenA = tokens[identifierA];
         const tokenB = tokens[identifierB];
         if (!tokenA || !tokenB) return;
-        const name = `${tokenA.symbol}-${tokenB.symbol}`;
-        tokensMap[`${pair.liquidity_token}`] = { token: { ...token_info, name: name }, pair: pair };
+        const symbol = `LP-${tokenA.symbol}-${tokenB.symbol}`;
+        const name = `${tokenA.symbol}(${tokenA.address})-${tokenB.symbol}(${tokenB.address})`;
+        tokensMap[`${pair.liquidity_token}`] = { token: { ...token_info, symbol, name }, pair: pair };
         return;
       } else {
         tokensMap[`${pair.liquidity_token}`] = { token: token_info, pair: pair };
