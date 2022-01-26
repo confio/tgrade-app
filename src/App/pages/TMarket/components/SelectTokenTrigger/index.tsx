@@ -22,7 +22,7 @@ const SelectTokenTrigger = ({
       ) : (
         <>
           <Image src={Token.img} alt={Token.name} />
-          <Paragraph>{Token.name}</Paragraph>
+          <Paragraph>{Token.symbol}</Paragraph>
         </>
       )}
     </StyledSelectTokenButton>
