@@ -3,7 +3,6 @@ import pinDarkIcon from "App/assets/icons/pin-dark.svg";
 import pinLightIcon from "App/assets/icons/pin-light.svg";
 import tempImgUrl from "App/assets/icons/token-placeholder.png";
 import LoadingSpinner from "App/components/LoadingSpinner";
-import { getTokensList } from "App/pages/TMarket/utils";
 import { useCallback, useEffect, useState } from "react";
 import { useSdk } from "service";
 import { useTMarket } from "service/tmarket";
@@ -26,18 +25,19 @@ function loadDefaultImg(event: React.SyntheticEvent<HTMLImageElement, Event>): v
 }
 
 interface ListTokensProps {
-  setToken: (t: TokenProps) => void;
-  closeModal: () => void;
+  readonly tokens: readonly TokenProps[];
+  readonly setToken: (t: TokenProps) => void;
+  readonly closeModal: () => void;
 }
 
-export default function ListTokens({ setToken, closeModal }: ListTokensProps): JSX.Element {
+export default function ListTokens({ tokens, setToken, closeModal }: ListTokensProps): JSX.Element {
   const {
     sdkState: { config },
   } = useSdk();
   const {
-    tMarketState: { tokens, tokensFilter, searchText },
+    tMarketState: { tokensFilter },
   } = useTMarket();
-  const [tokensList, setTokensList] = useState<TokenProps[]>([]);
+  const [tokensList, setTokensList] = useState<readonly TokenProps[]>([]);
   const [pinnedTokens, setPinnedTokens] = usePinnedTokens();
 
   const compareTokensWithPinned = useCallback(
@@ -57,18 +57,14 @@ export default function ListTokens({ setToken, closeModal }: ListTokensProps): J
   );
 
   useEffect(() => {
-    const tokensList = getTokensList(tokens, searchText);
     const filteredTokensList =
       tokensFilter === "whitelist"
-        ? tokensList.filter((token) => pinnedTokens.includes(token.address) || token.balance !== "0")
-        : tokensList;
+        ? tokens.filter((token) => pinnedTokens.includes(token.address) || token.balance !== "0")
+        : tokens;
 
-    // TODO: Always remove liquidity tokens, but this also removes them from Withdraw
-    //const nonLiquidityTokensList = filteredTokensList.filter((token) => token.symbol !== "uLP");
-
-    const sortedTokensList = filteredTokensList.sort(compareTokensWithPinned);
+    const sortedTokensList = filteredTokensList.slice().sort(compareTokensWithPinned);
     setTokensList(sortedTokensList);
-  }, [compareTokensWithPinned, pinnedTokens, searchText, tokens, tokensFilter]);
+  }, [compareTokensWithPinned, pinnedTokens, tokens, tokensFilter]);
 
   function pinUnpin(address: string) {
     if (pinnedTokens.includes(address)) {
