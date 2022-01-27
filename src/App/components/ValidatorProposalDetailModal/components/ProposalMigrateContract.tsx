@@ -19,7 +19,9 @@ export default function ProposalMigrateContract({
       <TextValue>Code ID to migrate to: {proposalMigrateContract.code_id}</TextValue>
       <TextValue>Migrate message:</TextValue>
       <pre style={{ display: "block" }}>
-        {JSON.stringify(JSON.parse(proposalMigrateContract.migrate_msg), null, 2)}
+        {proposalMigrateContract.migrate_msg
+          ? JSON.stringify(JSON.parse(proposalMigrateContract.migrate_msg), null, 2)
+          : "none"}
       </pre>
     </>
   ) : null;
