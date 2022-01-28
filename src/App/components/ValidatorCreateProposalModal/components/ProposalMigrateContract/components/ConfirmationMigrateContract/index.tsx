@@ -65,7 +65,7 @@ export default function ConfirmationMigrateContract({
       </ConfirmField>
       <ConfirmField>
         <Text>Migrate message: </Text>
-        <pre style={{ display: "block" }}>{JSON.stringify(JSON.parse(migrateMsg), null, 2)}</pre>
+        <pre style={{ display: "block" }}>{JSON.stringify(JSON.parse(migrateMsg || "{}"), null, 2)}</pre>
       </ConfirmField>
       <TextComment>{comment}</TextComment>
       <Separator />
