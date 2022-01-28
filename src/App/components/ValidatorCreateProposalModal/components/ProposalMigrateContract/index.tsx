@@ -52,7 +52,7 @@ export default function ProposalMigrateContract({
         migrate_contract: {
           contract,
           code_id: parseInt(codeId, 10),
-          migrate_msg: toBase64(toUtf8(migrateMsg)),
+          migrate_msg: toBase64(toUtf8(migrateMsg || "{}")),
         },
       });
 
