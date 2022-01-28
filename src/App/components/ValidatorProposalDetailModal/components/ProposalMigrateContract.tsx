@@ -1,4 +1,6 @@
+import { fromBase64, fromUtf8 } from "@cosmjs/encoding";
 import AddressTag from "App/components/AddressTag";
+import { useEffect, useState } from "react";
 import { MigrateContract } from "utils/validatorVoting";
 
 import { AddressField, TextLabel, TextValue } from "../style";
@@ -10,6 +12,24 @@ interface ProposalMigrateContractProps {
 export default function ProposalMigrateContract({
   proposalMigrateContract,
 }: ProposalMigrateContractProps): JSX.Element | null {
+  const [migrateMsgString, setMigrateMsgString] = useState("{}");
+
+  useEffect(() => {
+    if (!proposalMigrateContract?.migrate_msg) return;
+    try {
+      const migrateMsgJsonString = fromUtf8(fromBase64(proposalMigrateContract.migrate_msg));
+
+      try {
+        const migrateMsgString = JSON.stringify(JSON.parse(migrateMsgJsonString), null, 2);
+        setMigrateMsgString(migrateMsgString);
+      } catch {
+        setMigrateMsgString(migrateMsgJsonString);
+      }
+    } catch {
+      setMigrateMsgString(proposalMigrateContract.migrate_msg);
+    }
+  }, [proposalMigrateContract?.migrate_msg]);
+
   return proposalMigrateContract ? (
     <>
       <AddressField>
@@ -18,11 +38,7 @@ export default function ProposalMigrateContract({
       </AddressField>
       <TextValue>Code ID to migrate to: {proposalMigrateContract.code_id}</TextValue>
       <TextValue>Migrate message:</TextValue>
-      <pre style={{ display: "block" }}>
-        {proposalMigrateContract.migrate_msg
-          ? JSON.stringify(JSON.parse(proposalMigrateContract.migrate_msg), null, 2)
-          : "none"}
-      </pre>
+      <pre style={{ display: "block" }}>{migrateMsgString}</pre>
     </>
   ) : null;
 }
