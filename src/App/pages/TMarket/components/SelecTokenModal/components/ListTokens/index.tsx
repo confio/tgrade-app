@@ -98,7 +98,14 @@ export default function ListTokens({ tokens, setToken, closeModal }: ListTokensP
             <ContainerNumbersPin>
               <ContainerNumbers>
                 <Paragraph>{token.humanBalance}</Paragraph>
-                <Paragraph>{token.address === config.feeToken ? "native" : token.address}</Paragraph>
+                <Paragraph
+                  onClick={(event) => {
+                    event?.stopPropagation();
+                  }}
+                  copyable={{ tooltips: "Copy token address" }}
+                >
+                  {token.address === config.feeToken ? "native" : token.address}
+                </Paragraph>
               </ContainerNumbers>
               <img
                 src={pinnedTokens.includes(token.address) ? pinDarkIcon : pinLightIcon}
