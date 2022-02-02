@@ -3,8 +3,9 @@ import { Decimal, Uint64 } from "@cosmjs/math";
 import { Typography } from "antd";
 import Button from "App/components/Button";
 import { lazy, useCallback, useEffect, useState } from "react";
-import { useError, useOc, useSdk } from "service";
-import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
+import { useError, useSdk } from "service";
+import { OcContractQuerier } from "utils/oversightCommunity";
+import { EscrowResponse, EscrowStatus } from "utils/trustedCircle";
 
 import TooltipWrapper from "../TooltipWrapper";
 import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
@@ -18,9 +19,6 @@ export default function OcEscrow(): JSX.Element {
   const {
     sdkState: { config, client, address },
   } = useSdk();
-  const {
-    ocState: { ocAddress },
-  } = useOc();
 
   const feeDenom = config.coinMap[config.feeToken].denom;
 
@@ -39,20 +37,20 @@ export default function OcEscrow(): JSX.Element {
 
   const refreshEscrows = useCallback(
     async function () {
-      if (!ocAddress || !client) return;
+      if (!client) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(ocAddress, client);
+        const ocContract = new OcContractQuerier(config, client);
 
         // get minimum escrow required for this DSO
-        const { escrow_amount, escrow_pending } = await dsoContract.getDso();
+        const { escrow_amount, escrow_pending } = await ocContract.getOc();
         const feeDecimals = config.coinMap[config.feeToken].fractionalDigits;
 
         const requiredEscrowDecimal = Decimal.fromAtomics(escrow_amount, feeDecimals);
         setRequiredEscrow(requiredEscrowDecimal.toString());
 
         if (address) {
-          const escrowResponse = await dsoContract.getEscrow(address);
+          const escrowResponse = await ocContract.getEscrow(address);
 
           if (escrowResponse) {
             const decimals = config.coinMap[config.feeToken].fractionalDigits;
@@ -83,9 +81,9 @@ export default function OcEscrow(): JSX.Element {
         }
 
         // get member escrows to calculate total required and total paid
-        const members = await dsoContract.getAllMembers();
+        const members = await ocContract.getAllMembers();
 
-        const memberEscrowPromises = members.map(({ addr }) => dsoContract.getEscrow(addr));
+        const memberEscrowPromises = members.map(({ addr }) => ocContract.getEscrow(addr));
         const memberEscrowResults = await Promise.allSettled(memberEscrowPromises);
         const memberEscrowStatuses = memberEscrowResults
           .filter((res): res is PromiseFulfilledResult<EscrowResponse> => res.status === "fulfilled")
@@ -93,7 +91,7 @@ export default function OcEscrow(): JSX.Element {
           .map((res) => res.value);
 
         //check if votingmember
-        const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
+        const isVotingMember = (await ocContract.getAllVotingMembers()).some(
           (member) => member.addr === address,
         );
         setVotingMemeber(isVotingMember);
@@ -122,7 +120,7 @@ export default function OcEscrow(): JSX.Element {
         handleError(error);
       }
     },
-    [address, client, config.coinMap, config.feeToken, ocAddress, handleError],
+    [address, client, config, handleError],
   );
 
   useEffect(() => {

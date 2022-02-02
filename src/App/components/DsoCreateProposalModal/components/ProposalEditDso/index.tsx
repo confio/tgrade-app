@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
-import { DsoContract, DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import { TcContract, TcContractQuerier } from "utils/trustedCircle";
 
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationEditDso from "./components/ConfirmationEditDso";
@@ -54,8 +54,8 @@ export default function ProposalEditDso({
       if (!client) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
-        const dsoResponse = await dsoContract.getDso();
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
+        const dsoResponse = await dsoContract.getTc();
         const quorum = (parseFloat(dsoResponse.rules.quorum) * 100).toFixed(2).toString();
         const threshold = (parseFloat(dsoResponse.rules.threshold) * 100).toFixed(2).toString();
         const escrowAmount = nativeCoinToDisplay(
@@ -113,7 +113,7 @@ export default function ProposalEditDso({
       const nativeQuorum = quorum ? (parseFloat(quorum) / 100).toString() : undefined;
       const nativethreshold = threshold ? (parseFloat(threshold) / 100).toString() : undefined;
 
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.propose(address, comment, {
         edit_trusted_circle: {
           name: dsoName === currentDsoValues.dsoName ? undefined : dsoName,

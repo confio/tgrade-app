@@ -1,9 +1,7 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
 
-import { OcProposalResponse } from "./oc";
-
-export type VoteOption = "yes" | "no" | "abstain";
+import { isOcProposal, isOcProposalResponse, OcProposal, OcProposalResponse } from "./oversightCommunity";
 
 export interface PendingEscrow {
   /// Associated proposal_id
@@ -25,8 +23,8 @@ export interface VotingRules {
   readonly allow_end_early: boolean;
 }
 
-export interface DsoResponse {
-  /// DSO Name
+export interface TcResponse {
+  /// Trusted Circle Name
   readonly name: string;
   /// The required escrow amount, in the default denom (utgd)
   readonly escrow_amount: string;
@@ -75,7 +73,7 @@ export interface ValidatorPunishment {
   readonly jailing_duration?: { duration: number } | "forever";
 }
 
-export type ProposalContent = {
+export type TcProposal = {
   /// Apply a diff to the existing non-voting members.
   /// Remove is applied after add, so if an address is in both, it is removed
 
@@ -99,19 +97,6 @@ export type ProposalContent = {
   readonly punish?: ValidatorPunishment;
 };
 
-export function isOcProposal(
-  response: DsoProposalResponse | OcProposalResponse,
-): response is OcProposalResponse {
-  const proposal: any = response.proposal;
-  return !!proposal.grant_engagement || !!proposal.punish;
-}
-
-export function isDsoProposal(
-  response: DsoProposalResponse | OcProposalResponse,
-): response is DsoProposalResponse {
-  return !isOcProposal(response);
-}
-
 export type Expiration =
   | {
       readonly at_height: number;
@@ -123,13 +108,6 @@ export type Expiration =
       readonly never: Record<string, unknown>;
     };
 
-export interface Votes {
-  readonly yes: number;
-  readonly no: number;
-  readonly abstain: number;
-  readonly veto: number;
-}
-
 /**
  * https://github.com/CosmWasm/cw-plus/blob/v0.11.1/packages/cw3/src/query.rs#L72-L86
  */
@@ -140,14 +118,21 @@ export type Cw3Status = "pending" | "open" | "rejected" | "passed" | "executed";
  */
 export type CosmWasmTimestamp = string;
 
+export interface Votes {
+  readonly yes: number;
+  readonly no: number;
+  readonly abstain: number;
+  readonly veto: number;
+}
+
 /**
  * See https://github.com/confio/tgrade-contracts/blob/v0.5.2/contracts/tgrade-trusted-circle/src/msg.rs#L139-L154
  */
-export interface DsoProposalResponse {
+export interface TcProposalResponse {
   readonly id: number;
   readonly title: string;
   readonly description: string;
-  readonly proposal: ProposalContent;
+  readonly proposal: TcProposal;
   readonly status: Cw3Status;
   /**
    * An Expiration from cw_utils but we only implement the at_time case here 🤞.
@@ -165,9 +150,21 @@ export interface DsoProposalResponse {
   readonly votes: Votes;
 }
 
-export interface ProposalListResponse {
-  readonly proposals: readonly DsoProposalResponse[];
+export function isTcProposalResponse(
+  response: TcProposalResponse | OcProposalResponse,
+): response is TcProposalResponse {
+  return !isOcProposalResponse(response);
 }
+
+export function isTcProposal(proposal: TcProposal | OcProposal): proposal is TcProposal {
+  return !isOcProposal(proposal);
+}
+
+export interface ProposalListResponse {
+  readonly proposals: readonly TcProposalResponse[];
+}
+
+export type VoteOption = "yes" | "no" | "abstain";
 
 export interface VoteInfo {
   readonly voter: string;
@@ -216,7 +213,7 @@ export interface EscrowStatus {
 export type EscrowResponse = EscrowStatus | null;
 
 export interface InstantiateMsg {
-  /// DSO Name
+  /// Trusted Circle Name
   readonly name: string;
   /// The required escrow amount, in the default denom (utgd)
   readonly escrow_amount: string;
@@ -229,11 +226,11 @@ export interface InstantiateMsg {
   /// If true, and absolute threshold and quorum are met, we can end before voting period finished.
   /// (Recommended value: true, unless you have special needs)
   readonly allow_end_early: boolean;
-  /// List of non-voting members to be added to the DSO upon creation
+  /// List of non-voting members to be added to the Trusted Circle upon creation
   readonly initial_members: readonly string[];
 }
 
-export function getProposalTitle(proposal: ProposalContent): string {
+export function getProposalTitle(proposal: TcProposal): string {
   const proposalProp = Object.keys(proposal)[0];
 
   switch (proposalProp) {
@@ -247,16 +244,12 @@ export function getProposalTitle(proposal: ProposalContent): string {
       return "Edit Trusted Circle";
     case "whitelist_contract":
       return "Whitelist pair";
-    case "grant_engagement":
-      return "Grant engagement";
-    case "punish":
-      return "Punish Validator";
     default:
-      throw new Error("Error: unhandled proposal type");
+      return "Uknown proposal type";
   }
 }
 
-export class DsoContractQuerier {
+export class TcContractQuerier {
   readonly address: string;
   protected readonly client: CosmWasmClient;
 
@@ -265,9 +258,9 @@ export class DsoContractQuerier {
     this.client = client;
   }
 
-  async getDso(): Promise<DsoResponse> {
+  async getTc(): Promise<TcResponse> {
     const query = { trusted_circle: {} };
-    const response: DsoResponse = await this.client.queryContractSmart(this.address, query);
+    const response: TcResponse = await this.client.queryContractSmart(this.address, query);
     return response;
   }
 
@@ -315,15 +308,15 @@ export class DsoContractQuerier {
     return response;
   }
 
-  async getProposals(startAfter?: number): Promise<readonly DsoProposalResponse[]> {
+  async getProposals(startAfter?: number): Promise<readonly TcProposalResponse[]> {
     const query = { list_proposals: { start_after: startAfter } };
     const { proposals }: ProposalListResponse = await this.client.queryContractSmart(this.address, query);
     return proposals;
   }
 
-  async getAllProposals(): Promise<readonly DsoProposalResponse[]> {
-    let proposals: readonly DsoProposalResponse[] = [];
-    let nextProposals: readonly DsoProposalResponse[] = [];
+  async getAllProposals(): Promise<readonly TcProposalResponse[]> {
+    let proposals: readonly TcProposalResponse[] = [];
+    let nextProposals: readonly TcProposalResponse[] = [];
 
     do {
       const lastProposalId = proposals[proposals.length - 1]?.id;
@@ -334,9 +327,9 @@ export class DsoContractQuerier {
     return proposals;
   }
 
-  async getProposal(proposalId: number): Promise<DsoProposalResponse> {
+  async getProposal(proposalId: number): Promise<TcProposalResponse> {
     const query = { proposal: { proposal_id: proposalId } };
-    const proposalResponse: DsoProposalResponse = await this.client.queryContractSmart(this.address, query);
+    const proposalResponse: TcProposalResponse = await this.client.queryContractSmart(this.address, query);
     return proposalResponse;
   }
 
@@ -347,12 +340,12 @@ export class DsoContractQuerier {
   }
 }
 
-export class DsoContract extends DsoContractQuerier {
-  static readonly GAS_CREATE_DSO = 500_000;
+export class TcContract extends TcContractQuerier {
+  static readonly GAS_CREATE_TC = 500_000;
   static readonly GAS_DEPOSIT_ESCROW = 200_000;
   static readonly GAS_RETURN_ESCROW = 200_000;
   static readonly GAS_CHECK_PENDING = 500_000;
-  static readonly GAS_LEAVE_DSO = 200_000;
+  static readonly GAS_LEAVE_TC = 200_000;
   static readonly GAS_PROPOSE = 200_000;
   static readonly GAS_VOTE = 200_000;
   static readonly GAS_EXECUTE = 500_000;
@@ -366,11 +359,11 @@ export class DsoContract extends DsoContractQuerier {
     this.#gasPrice = gasPrice;
   }
 
-  static async createDso(
+  static async createTc(
     signingClient: SigningCosmWasmClient,
     codeId: number,
     creatorAddress: string,
-    dsoName: string,
+    tcName: string,
     escrowAmount: string,
     votingDuration: string,
     quorum: string,
@@ -381,7 +374,7 @@ export class DsoContract extends DsoContractQuerier {
     gasPrice: GasPrice,
   ): Promise<string> {
     const msg: Record<string, unknown> = {
-      name: dsoName,
+      name: tcName,
       escrow_amount: escrowAmount,
       voting_period: parseInt(votingDuration, 10),
       quorum: (parseFloat(quorum) / 100).toString(),
@@ -395,8 +388,8 @@ export class DsoContract extends DsoContractQuerier {
       creatorAddress,
       codeId,
       msg,
-      dsoName,
-      calculateFee(DsoContract.GAS_CREATE_DSO, gasPrice),
+      tcName,
+      calculateFee(TcContract.GAS_CREATE_TC, gasPrice),
       {
         admin: creatorAddress,
         funds: funds,
@@ -412,7 +405,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_DEPOSIT_ESCROW, this.#gasPrice),
+      calculateFee(TcContract.GAS_DEPOSIT_ESCROW, this.#gasPrice),
       undefined,
       funds,
     );
@@ -425,7 +418,7 @@ export class DsoContract extends DsoContractQuerier {
       memberAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_RETURN_ESCROW, this.#gasPrice),
+      calculateFee(TcContract.GAS_RETURN_ESCROW, this.#gasPrice),
     );
     return transactionHash;
   }
@@ -436,23 +429,23 @@ export class DsoContract extends DsoContractQuerier {
       memberAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_CHECK_PENDING, this.#gasPrice),
+      calculateFee(TcContract.GAS_CHECK_PENDING, this.#gasPrice),
     );
     return transactionHash;
   }
 
-  async leaveDso(memberAddress: string): Promise<string> {
+  async leaveTc(memberAddress: string): Promise<string> {
     const msg = { leave_trusted_circle: {} };
     const { transactionHash } = await this.#signingClient.execute(
       memberAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_LEAVE_DSO, this.#gasPrice),
+      calculateFee(TcContract.GAS_LEAVE_TC, this.#gasPrice),
     );
     return transactionHash;
   }
 
-  async propose(senderAddress: string, description: string, proposal: ProposalContent): Promise<string> {
+  async propose(senderAddress: string, description: string, proposal: TcProposal): Promise<string> {
     const title = getProposalTitle(proposal);
     const msg = { propose: { title, description, proposal } };
 
@@ -460,7 +453,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_PROPOSE, this.#gasPrice),
+      calculateFee(TcContract.GAS_PROPOSE, this.#gasPrice),
     );
     return transactionHash;
   }
@@ -471,7 +464,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_VOTE, this.#gasPrice),
+      calculateFee(TcContract.GAS_VOTE, this.#gasPrice),
     );
     return transactionHash;
   }
@@ -482,7 +475,7 @@ export class DsoContract extends DsoContractQuerier {
       senderAddress,
       this.address,
       msg,
-      calculateFee(DsoContract.GAS_EXECUTE, this.#gasPrice),
+      calculateFee(TcContract.GAS_EXECUTE, this.#gasPrice),
     );
     return transactionHash;
   }

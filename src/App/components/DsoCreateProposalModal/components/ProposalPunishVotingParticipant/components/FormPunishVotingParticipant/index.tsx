@@ -12,8 +12,8 @@ import { Form } from "formik-antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSdk } from "service";
-import { DsoContractQuerier } from "utils/dso";
 import { addressStringToArray, getFormItemName, isValidAddress } from "utils/forms";
+import { TcContractQuerier } from "utils/trustedCircle";
 import * as Yup from "yup";
 
 import { ButtonGroup, MemberTexts, PunishmentRow, Separator } from "./style";
@@ -75,7 +75,7 @@ export default function FormPunishVotingParticipant({
         return;
       }
 
-      const dsoContract = new DsoContractQuerier(dsoAddress, client);
+      const dsoContract = new TcContractQuerier(dsoAddress, client);
 
       try {
         const escrowResponse = await dsoContract.getEscrow(memberToPunishInit);

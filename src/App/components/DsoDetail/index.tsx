@@ -5,7 +5,7 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { Cw3Status, DsoContractQuerier, DsoProposalResponse, getProposalTitle } from "utils/dso";
+import { Cw3Status, getProposalTitle, TcContractQuerier, TcProposalResponse } from "utils/trustedCircle";
 
 import Stack from "../Stack/style";
 import { EscrowMembersContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -36,17 +36,17 @@ const columns = [
     title: "Nº",
     dataIndex: "id",
     key: "id",
-    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => a.id - b.id,
+    sorter: (a: TcProposalResponse, b: TcProposalResponse) => a.id - b.id,
   },
   {
     title: "Type",
     key: "title",
-    render: (record: DsoProposalResponse) => getProposalTitle(record.proposal),
+    render: (record: TcProposalResponse) => getProposalTitle(record.proposal),
   },
   {
     title: "Due date",
     key: "expires",
-    render: (record: DsoProposalResponse) => {
+    render: (record: TcProposalResponse) => {
       const dateObj = new Date(parseInt(record.expires.at_time, 10) / 1000000);
       return (
         <>
@@ -55,7 +55,7 @@ const columns = [
         </>
       );
     },
-    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => {
+    sorter: (a: TcProposalResponse, b: TcProposalResponse) => {
       const aDate = new Date(parseInt(a.expires.at_time, 10) / 1000000);
       const bDate = new Date(parseInt(b.expires.at_time, 10) / 1000000);
       return bDate.getTime() - aDate.getTime();
@@ -65,7 +65,7 @@ const columns = [
   {
     title: "Status",
     key: "status",
-    render: (record: DsoProposalResponse) => (
+    render: (record: TcProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
@@ -76,7 +76,7 @@ const columns = [
         <Paragraph>Abstained: {record.votes.abstain}</Paragraph>
       </StatusBlock>
     ),
-    sorter: (a: DsoProposalResponse, b: DsoProposalResponse) => {
+    sorter: (a: TcProposalResponse, b: TcProposalResponse) => {
       function getSortNumFromStatus(status: Cw3Status): number {
         switch (status) {
           case "executed":
@@ -96,7 +96,7 @@ const columns = [
   {
     title: "Description",
     key: "description",
-    render: (record: DsoProposalResponse) => (
+    render: (record: TcProposalResponse) => (
       <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>
     ),
   },
@@ -114,7 +114,7 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
 
   const [isTableLoading, setTableLoading] = useState(true);
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
-  const [proposals, setProposals] = useState<readonly DsoProposalResponse[]>([]);
+  const [proposals, setProposals] = useState<readonly TcProposalResponse[]>([]);
   const [clickedProposal, setClickedProposal] = useState<number>();
   const [isVotingMember, setVotingMember] = useState(false);
 
@@ -122,7 +122,7 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
     if (!client) return;
 
     try {
-      const dsoContract = new DsoContractQuerier(dsoAddress, client);
+      const dsoContract = new TcContractQuerier(dsoAddress, client);
       const proposals = await dsoContract.getAllProposals();
       const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
         (member) => member.addr === address,
@@ -163,8 +163,8 @@ export default function DsoDetail({ dsoAddress }: DsoDetailParams): JSX.Element 
             pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
             columns={columns}
             dataSource={proposals}
-            rowKey={(proposal: DsoProposalResponse) => proposal.id}
-            onRow={(proposal: DsoProposalResponse) => ({
+            rowKey={(proposal: TcProposalResponse) => proposal.id}
+            onRow={(proposal: TcProposalResponse) => ({
               onClick: () => setClickedProposal(proposal.id),
             })}
           />

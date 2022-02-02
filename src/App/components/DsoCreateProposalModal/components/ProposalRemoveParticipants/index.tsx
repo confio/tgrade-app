@@ -3,8 +3,8 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
-import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import { TcContract } from "utils/trustedCircle";
 
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationRemoveParticipants from "./components/ConfirmationRemoveParticipants";
@@ -48,7 +48,7 @@ export default function ProposalRemoveParticipants({
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.propose(address, comment, {
         add_remove_non_voting_members: {
           remove: members,

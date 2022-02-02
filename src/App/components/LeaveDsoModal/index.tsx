@@ -8,8 +8,8 @@ import { lazy, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
 import { closeLeaveDsoModal } from "service/dsos";
-import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import { TcContract } from "utils/trustedCircle";
 
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./style";
@@ -46,8 +46,8 @@ export default function LeaveDsoModal(): JSX.Element {
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.leaveDso(address);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
+      const transactionHash = await dsoContract.leaveTc(address);
 
       setTxResult({
         msg: `Left ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,

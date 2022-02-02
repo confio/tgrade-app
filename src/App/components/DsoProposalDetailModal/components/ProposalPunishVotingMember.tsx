@@ -5,8 +5,8 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useError, useSdk } from "service";
-import { DsoContractQuerier, Punishment } from "utils/dso";
 import { isValidAddress } from "utils/forms";
+import { Punishment, TcContractQuerier } from "utils/trustedCircle";
 
 import { AddressField, ChangedField, TextLabel, TextValue } from "../style";
 
@@ -49,7 +49,7 @@ export default function ProposalPunishVotingMember({
         return;
       }
 
-      const dsoContract = new DsoContractQuerier(dsoAddress, client);
+      const dsoContract = new TcContractQuerier(dsoAddress, client);
 
       try {
         const escrowResponse = await dsoContract.getEscrow(memberToPunish);

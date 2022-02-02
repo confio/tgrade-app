@@ -2,10 +2,10 @@ import { FaucetClient } from "@cosmjs/faucet-client";
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
-import { DsoContract } from "utils/dso";
 import { Factory } from "utils/factory";
 import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
 import { Pool, ProvideFormValues, SwapFormValues, Token, WithdrawFormValues } from "utils/tokens";
+import { TcContract } from "utils/trustedCircle";
 
 it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
   const signer = await loadOrCreateWallet(config);
@@ -137,7 +137,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
   const members: readonly string[] = ["tgrade1uuy629yfuw2mf383t33x0jk2qwtf6rvv4dhmxs"];
   const allowEndEarly = true;
 
-  const dsoAddress = await DsoContract.createDso(
+  const dsoAddress = await TcContract.createTc(
     signingClient,
     config.codeIds?.tgradeDso?.[0] ?? 0,
     address,
@@ -211,7 +211,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
   const pair = pairs[`${tgradeToken.address}-${cw20tokenInfo.address}`];
   const pairAddress = pair.contract_addr;
 
-  const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+  const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
   await dsoContract.propose(address, comment, { whitelist_contract: pairAddress });
 
   const txHash = await dsoContract.executeProposal(address, 1);

@@ -1,8 +1,8 @@
 import { TxResult } from "App/components/ShowTxResult";
 import { useState } from "react";
-import { useError, useOc, useSdk } from "service";
-import { DsoContract } from "utils/dso";
+import { useError, useSdk } from "service";
 import { getErrorFromStackTrace } from "utils/errors";
+import { OcContract } from "utils/oversightCommunity";
 
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationAddOCMembers from "./components/ConfirmationAddOCMembers";
@@ -27,9 +27,6 @@ export default function ProposalAddOCMembers({
   const {
     sdkState: { address, signingClient, config },
   } = useSdk();
-  const {
-    ocState: { ocAddress },
-  } = useOc();
 
   const [members, setMembers] = useState<readonly string[]>([]);
   const [comment, setComment] = useState("");
@@ -41,19 +38,19 @@ export default function ProposalAddOCMembers({
   }
 
   async function submitCreateProposal() {
-    if (!ocAddress || !signingClient || !address) return;
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
+      const ocContract = new OcContract(config, signingClient);
+      const transactionHash = await ocContract.propose(address, comment, {
         add_voting_members: {
           voters: members,
         },
       });
 
       setTxResult({
-        msg: `Created proposal for adding members to Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for adding members to Oversight Community. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

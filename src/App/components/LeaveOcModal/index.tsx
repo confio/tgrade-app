@@ -5,8 +5,8 @@ import Stack from "App/components/Stack/style";
 import { lazy, useState } from "react";
 import { useError, useSdk } from "service";
 import { closeLeaveOcModal, useOc } from "service/oversightCommunity";
-import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import { OcContract } from "utils/oversightCommunity";
 
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StyledLeaveOcModal, { ButtonGroup, ModalHeader, Separator } from "./style";
@@ -20,7 +20,7 @@ export default function LeaveOcModal(): JSX.Element {
     sdkState: { config, signer, address, signingClient },
   } = useSdk();
   const {
-    ocState: { ocAddress, leaveOcModalState },
+    ocState: { leaveOcModalState },
     ocDispatch,
   } = useOc();
 
@@ -34,15 +34,15 @@ export default function LeaveOcModal(): JSX.Element {
   }
 
   async function submitLeaveOc() {
-    if (!signingClient || !ocAddress || !address) return;
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.leaveDso(address);
+      const ocContract = new OcContract(config, signingClient);
+      const transactionHash = await ocContract.leaveOc(address);
 
       setTxResult({
-        msg: `Left Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Left Oversight Community. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

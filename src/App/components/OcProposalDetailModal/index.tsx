@@ -10,18 +10,18 @@ import Button from "App/components/Button";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import { useEffect, useState } from "react";
-import { useError, useOc, useSdk } from "service";
+import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
-import {
-  DsoContract,
-  DsoContractQuerier,
-  DsoProposalResponse,
-  isDsoProposal,
-  isOcProposal,
-  VoteOption,
-} from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
-import { getProposalTitle, OcProposalResponse } from "utils/oc";
+import {
+  getProposalTitle,
+  isOcProposalResponse,
+  MixedProposalResponse,
+  MixedProposalResponseId,
+  OcContract,
+  OcContractQuerier,
+} from "utils/oversightCommunity";
+import { isTcProposalResponse, VoteOption } from "utils/trustedCircle";
 
 import ProposalAddOCMembers from "./components/ProposalAddOCMembers";
 import ProposalGrantEngagementPoints from "./components/ProposalGrantEngagementPoints";
@@ -47,23 +47,20 @@ import {
 interface OcProposalDetailModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
-  readonly proposalId: string | undefined;
+  readonly mixedProposalId?: MixedProposalResponseId;
   readonly refreshProposals: () => void;
 }
 
 export default function OcProposalDetailModal({
   isModalOpen,
   closeModal,
-  proposalId,
+  mixedProposalId,
   refreshProposals,
 }: OcProposalDetailModalProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, client, address, signingClient },
   } = useSdk();
-  const {
-    ocState: { ocAddress, ocProposalsAddress },
-  } = useOc();
 
   const [submitting, setSubmitting] = useState<VoteOption | "executing">();
   const [txResult, setTxResult] = useState<TxResult>();
@@ -72,7 +69,7 @@ export default function OcProposalDetailModal({
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
-  const [proposal, setProposal] = useState<DsoProposalResponse | OcProposalResponse>();
+  const [proposal, setProposal] = useState<MixedProposalResponse>();
   const expiryTime = proposal
     ? Number(typeof proposal.expires === "string" ? proposal.expires : proposal.expires.at_time) / 1000000
     : 0;
@@ -80,13 +77,14 @@ export default function OcProposalDetailModal({
 
   // DSO proposals
   const proposalAddOCMembers =
-    proposal && isDsoProposal(proposal) ? proposal.proposal.add_voting_members?.voters : undefined;
+    proposal && isTcProposalResponse(proposal) ? proposal.proposal.add_voting_members?.voters : undefined;
   const proposalPunishOCMember =
-    proposal && isDsoProposal(proposal) ? proposal.proposal.punish_members?.[0] : undefined;
+    proposal && isTcProposalResponse(proposal) ? proposal.proposal.punish_members?.[0] : undefined;
   // OC proposals
   const proposalGrantEngagementPoints =
-    proposal && isOcProposal(proposal) ? proposal.proposal.grant_engagement : undefined;
-  const proposalPunishValidator = proposal && isOcProposal(proposal) ? proposal.proposal.punish : undefined;
+    proposal && isOcProposalResponse(proposal) ? proposal.proposal.grant_engagement : undefined;
+  const proposalPunishValidator =
+    proposal && isOcProposalResponse(proposal) ? proposal.proposal.punish : undefined;
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
@@ -94,7 +92,7 @@ export default function OcProposalDetailModal({
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(DsoContract.GAS_VOTE, config.gasPrice);
+      const fee = calculateFee(OcContract.GAS_VOTE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
@@ -105,59 +103,41 @@ export default function OcProposalDetailModal({
 
   useEffect(() => {
     (async function queryProposal() {
-      if (!ocAddress || !ocProposalsAddress || !client || !proposalId) return;
+      if (!client || !mixedProposalId) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(ocAddress, client);
-        const ocProposalContract = new DsoContractQuerier(ocProposalsAddress, client);
-
-        const proposalIdType = proposalId.slice(0, 2);
-        const proposalIdNumber = parseInt(proposalId.slice(2), 10);
-        const getProposal =
-          proposalIdType === "tc"
-            ? () => dsoContract.getProposal(proposalIdNumber)
-            : () => ocProposalContract.getProposal(proposalIdNumber);
-
-        const proposal = await getProposal();
+        const ocContract = new OcContractQuerier(config, client);
+        const proposal = await ocContract.getMixedProposal(mixedProposalId);
         setProposal(proposal);
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
-  }, [client, handleError, ocAddress, ocProposalsAddress, proposalId]);
+  }, [client, config, handleError, mixedProposalId]);
 
   useEffect(() => {
     (async function queryVoter() {
-      if (!ocAddress || !ocProposalsAddress || !address || !client || !proposalId) return;
+      if (!client || !mixedProposalId || !address) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(ocAddress, client);
-        const ocProposalContract = new DsoContractQuerier(ocProposalsAddress, client);
-
-        const proposalIdType = proposalId.slice(0, 2);
-        const proposalIdNumber = parseInt(proposalId.slice(2), 10);
-        const getVote =
-          proposalIdType === "tc"
-            ? () => dsoContract.getVote(proposalIdNumber, address)
-            : () => ocProposalContract.getVote(proposalIdNumber, address);
-
-        const voter = await getVote();
-        setHasVoted(voter.vote?.voter === address);
+        const ocContract = new OcContractQuerier(config, client);
+        const voteResponse = await ocContract.getMixedVote(mixedProposalId, address);
+        setHasVoted(voteResponse.vote?.voter === address);
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
-  }, [address, client, handleError, ocAddress, ocProposalsAddress, proposalId]);
+  }, [address, client, config, handleError, mixedProposalId]);
 
   useEffect(() => {
     (async function queryMembership() {
-      if (!ocAddress || !client || !address) return;
+      if (!client || !address) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(ocAddress, client);
-        const escrowResponse = await dsoContract.getEscrow(address);
+        const ocContract = new OcContractQuerier(config, client);
+        const escrowResponse = await ocContract.getEscrow(address);
 
         if (escrowResponse) {
           const membership = escrowResponse.status.voting ? "voting" : "pending";
@@ -170,7 +150,7 @@ export default function OcProposalDetailModal({
         handleError(error);
       }
     })();
-  }, [address, client, handleError, ocAddress]);
+  }, [address, client, config, handleError]);
 
   function resetModal() {
     closeModal();
@@ -179,24 +159,15 @@ export default function OcProposalDetailModal({
   }
 
   async function submitVoteProposal(chosenVote: VoteOption) {
-    if (!ocAddress || !ocProposalsAddress || !signingClient || !address || !proposalId) return;
+    if (!signingClient || !address || !mixedProposalId) return;
     setSubmitting(chosenVote);
 
     try {
-      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const ocProposalContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
-
-      const proposalIdType = proposalId.slice(0, 2);
-      const proposalIdNumber = parseInt(proposalId.slice(2), 10);
-      const voteProposal =
-        proposalIdType === "tc"
-          ? () => dsoContract.voteProposal(address, proposalIdNumber, chosenVote)
-          : () => ocProposalContract.voteProposal(address, proposalIdNumber, chosenVote);
-
-      const transactionHash = await voteProposal();
+      const ocContract = new OcContract(config, signingClient);
+      const transactionHash = await ocContract.voteProposal(address, mixedProposalId, chosenVote);
 
       setTxResult({
-        msg: `Voted proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
+        msg: `Voted proposal with ID ${mixedProposalId}. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -212,24 +183,15 @@ export default function OcProposalDetailModal({
   }
 
   async function submitExecuteProposal() {
-    if (!ocAddress || !ocProposalsAddress || !signingClient || !address || !proposalId) return;
+    if (!signingClient || !address || !mixedProposalId) return;
     setSubmitting("executing");
 
     try {
-      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const ocProposalContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
-
-      const proposalIdType = proposalId.slice(0, 2);
-      const proposalIdNumber = parseInt(proposalId.slice(2), 10);
-      const executeProposal =
-        proposalIdType === "tc"
-          ? () => dsoContract.executeProposal(address, proposalIdNumber)
-          : () => ocProposalContract.executeProposal(address, proposalIdNumber);
-
-      const transactionHash = await executeProposal();
+      const ocContract = new OcContract(config, signingClient);
+      const transactionHash = await ocContract.executeProposal(address, mixedProposalId);
 
       setTxResult({
-        msg: `Executed proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
+        msg: `Executed proposal with ID ${mixedProposalId}. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -285,7 +247,7 @@ export default function OcProposalDetailModal({
             {proposal ? (
               <Stack gap="s1">
                 <Title>
-                  Nº {proposal.id} "{getProposalTitle(proposal.proposal)}"
+                  ID {proposal.mixedId} "{getProposalTitle(proposal.proposal)}"
                 </Title>
               </Stack>
             ) : null}

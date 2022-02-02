@@ -1,7 +1,8 @@
 import { Typography } from "antd";
 import { useEffect, useState } from "react";
-import { useError, useOc, useSdk } from "service";
-import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
+import { useError, useSdk } from "service";
+import { OcContractQuerier } from "utils/oversightCommunity";
+import { EscrowResponse, EscrowStatus } from "utils/trustedCircle";
 
 import { MemberCount, MemberCounts, MembersStack } from "./style";
 
@@ -10,11 +11,8 @@ const { Title, Text } = Typography;
 export default function OcMembers(): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { client, address },
+    sdkState: { config, client, address },
   } = useSdk();
-  const {
-    ocState: { ocAddress },
-  } = useOc();
 
   const [numVoters, setNumVoters] = useState(0);
   const [numNonVoters, setNumNonVoters] = useState(0);
@@ -22,13 +20,13 @@ export default function OcMembers(): JSX.Element {
 
   useEffect(() => {
     (async function updateNumMembers() {
-      if (!ocAddress || !client) return;
+      if (!client) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(ocAddress, client);
-        const members = await dsoContract.getAllMembers();
+        const ocContract = new OcContractQuerier(config, client);
+        const members = await ocContract.getAllMembers();
 
-        const memberEscrowPromises = members.map(({ addr }) => dsoContract.getEscrow(addr));
+        const memberEscrowPromises = members.map(({ addr }) => ocContract.getEscrow(addr));
         const memberEscrowResults = await Promise.allSettled(memberEscrowPromises);
         const memberEscrowStatuses = memberEscrowResults
           .filter((res): res is PromiseFulfilledResult<EscrowResponse> => res.status === "fulfilled")
@@ -50,15 +48,15 @@ export default function OcMembers(): JSX.Element {
         handleError(error);
       }
     })();
-  }, [client, ocAddress, handleError]);
+  }, [client, config, handleError]);
 
   useEffect(() => {
     (async function queryMembership() {
-      if (!ocAddress || !client || !address) return;
+      if (!client || !address) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(ocAddress, client);
-        const escrowResponse = await dsoContract.getEscrow(address);
+        const ocContract = new OcContractQuerier(config, client);
+        const escrowResponse = await ocContract.getEscrow(address);
 
         if (escrowResponse) {
           const membership = escrowResponse.status.voting ? "voting" : "nonVoting";
@@ -71,7 +69,7 @@ export default function OcMembers(): JSX.Element {
         handleError(error);
       }
     })();
-  }, [address, client, ocAddress, handleError]);
+  }, [address, client, config, handleError]);
 
   return (
     <MembersStack>

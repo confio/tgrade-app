@@ -14,14 +14,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
-import {
-  DsoContract,
-  DsoContractQuerier,
-  DsoProposalResponse,
-  getProposalTitle,
-  VoteOption,
-} from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import {
+  getProposalTitle,
+  TcContract,
+  TcContractQuerier,
+  TcProposalResponse,
+  VoteOption,
+} from "utils/trustedCircle";
 
 import ProposalAddMembers from "./components/ProposalAddMembers";
 import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
@@ -72,7 +72,7 @@ export default function DsoProposalDetailModal({
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
-  const [proposal, setProposal] = useState<DsoProposalResponse>();
+  const [proposal, setProposal] = useState<TcProposalResponse>();
   const isProposalNotExpired = proposal
     ? new Date(parseInt(proposal.expires.at_time, 10) / 1000000) > new Date()
     : false;
@@ -89,7 +89,7 @@ export default function DsoProposalDetailModal({
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(DsoContract.GAS_VOTE, config.gasPrice);
+      const fee = calculateFee(TcContract.GAS_VOTE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
@@ -103,7 +103,7 @@ export default function DsoProposalDetailModal({
       if (!client || !proposalId) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
         const proposal = await dsoContract.getProposal(proposalId);
         setProposal(proposal);
       } catch (error) {
@@ -118,7 +118,7 @@ export default function DsoProposalDetailModal({
       if (!address || !client || !proposalId) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
         const voter = await dsoContract.getVote(proposalId, address);
         setHasVoted(voter.vote?.voter === address);
       } catch (error) {
@@ -133,7 +133,7 @@ export default function DsoProposalDetailModal({
       if (!client || !address) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
         const escrowResponse = await dsoContract.getEscrow(address);
 
         if (escrowResponse) {
@@ -160,7 +160,7 @@ export default function DsoProposalDetailModal({
     setSubmitting(chosenVote);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.voteProposal(address, proposalId, chosenVote);
 
       setTxResult({
@@ -184,7 +184,7 @@ export default function DsoProposalDetailModal({
     setSubmitting("executing");
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.executeProposal(address, proposalId);
 
       setTxResult({
