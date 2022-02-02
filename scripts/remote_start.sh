@@ -29,7 +29,7 @@ ssh -t "$REMOTE" "apt install nodejs"
 ssh -t "$REMOTE" "node --version"
 
 echo "Copying scripts folder …"
-ssh -t "$REMOTE" "mkdir ~/scripts"
+ssh -t "$REMOTE" "mkdir -p ~/scripts"
 scp -r ./scripts/* "$REMOTE:~/scripts"
 # ssh "$REMOTE" "ls -lA ~/scripts"
 
