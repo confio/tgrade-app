@@ -7,11 +7,11 @@ import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import { lazy, useState } from "react";
-import { useError, useOc, useSdk } from "service";
+import { useError, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
-import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getFormItemName } from "utils/forms";
+import { OcContract } from "utils/oversightCommunity";
 import * as Yup from "yup";
 
 import BackButtonOrLink from "../BackButtonOrLink";
@@ -52,9 +52,6 @@ export default function DepositOcEscrowModal({
     sdkState: { config, signer, address, signingClient },
   } = useSdk();
   const feeDenom = config.coinMap[config.feeToken].denom;
-  const {
-    ocState: { ocAddress },
-  } = useOc();
 
   const [isConnectWalletModalOpen, setConnectWalletModalOpen] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
@@ -67,19 +64,19 @@ export default function DepositOcEscrowModal({
   }
 
   async function submitDepositEscrow({ escrowAmount }: FormDepositEscrowValues) {
-    if (!ocAddress || !signingClient || !address) return;
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     const nativeEscrow = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
 
     try {
-      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.depositEscrow(address, [
+      const ocContract = new OcContract(config, signingClient);
+      const transactionHash = await ocContract.depositEscrow(address, [
         { denom: config.feeToken, amount: nativeEscrow },
       ]);
 
       setTxResult({
-        msg: `Deposited escrow ${escrowAmount}${config.feeToken} in the Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Deposited escrow ${escrowAmount}${config.feeToken} in the Oversight Community          . Transaction ID: ${transactionHash}`,
       });
       refreshEscrows();
     } catch (error) {

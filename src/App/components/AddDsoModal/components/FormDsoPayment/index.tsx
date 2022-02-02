@@ -9,8 +9,8 @@ import { Form } from "formik-antd";
 import { lazy, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
-import { DsoContract } from "utils/dso";
 import { getFormItemName } from "utils/forms";
+import { TcContract } from "utils/trustedCircle";
 import * as Yup from "yup";
 
 import { ButtonGroup, FeeField, FeeGroup, FormStack, Separator } from "./style";
@@ -57,7 +57,7 @@ export default function FormDsoPayment({ handleSubmit, goBack }: FormDsoPaymentP
       return;
     }
 
-    const initFee = calculateFee(DsoContract.GAS_CREATE_DSO, config.gasPrice);
+    const initFee = calculateFee(TcContract.GAS_CREATE_TC, config.gasPrice);
     const initFeeCoin = initFee.amount[0];
 
     try {

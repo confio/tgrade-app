@@ -4,7 +4,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
+import { EscrowResponse, EscrowStatus, TcContractQuerier } from "utils/trustedCircle";
 
 import { MemberCount, MemberCounts, MembersStack } from "./style";
 
@@ -25,7 +25,7 @@ export default function DsoMembers(): JSX.Element {
       if (!client) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
         const members = await dsoContract.getAllMembers();
 
         const memberEscrowPromises = members.map(({ addr }) => dsoContract.getEscrow(addr));
@@ -57,7 +57,7 @@ export default function DsoMembers(): JSX.Element {
       if (!client || !address) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
         const escrowResponse = await dsoContract.getEscrow(address);
 
         if (escrowResponse) {

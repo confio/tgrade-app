@@ -4,9 +4,9 @@ import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
-import { DsoContractQuerier } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { useOcAddress } from "utils/storage";
+import { TcContractQuerier } from "utils/trustedCircle";
 
 import { ModalHeader, Separator } from "../style";
 import FormDsoAddExisting from "./FormDsoAddExisting";
@@ -41,8 +41,8 @@ export default function AddExistingDso({ setTxResult, goToCreateDso }: AddExisti
         throw new Error("Cannot add Oversight Community as Trusted Circle");
       }
 
-      const dsoContract = new DsoContractQuerier(dsoAddress, client);
-      const { name: dsoName } = await dsoContract.getDso();
+      const dsoContract = new TcContractQuerier(dsoAddress, client);
+      const { name: dsoName } = await dsoContract.getTc();
       addDso(dsoDispatch, dsoAddress);
 
       setTxResult({ contractAddress: dsoAddress, msg: `Added Trusted Circle: ${dsoName} (${dsoAddress}).` });

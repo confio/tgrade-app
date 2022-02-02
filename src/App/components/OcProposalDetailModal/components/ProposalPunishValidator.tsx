@@ -1,5 +1,5 @@
 import moment from "moment";
-import { ValidatorPunishment } from "utils/dso";
+import { ValidatorPunishment } from "utils/trustedCircle";
 
 import { TextLabel } from "../style";
 

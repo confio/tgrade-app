@@ -2,9 +2,10 @@ import { Decimal } from "@cosmjs/math";
 import AddressList from "App/components/AddressList";
 import AddressTag from "App/components/AddressTag";
 import { useEffect, useState } from "react";
-import { useError, useOc, useSdk } from "service";
-import { DsoContractQuerier, Punishment } from "utils/dso";
+import { useError, useSdk } from "service";
 import { isValidAddress } from "utils/forms";
+import { OcContractQuerier } from "utils/oversightCommunity";
+import { Punishment } from "utils/trustedCircle";
 
 import { AddressField, ChangedField, TextLabel, TextValue } from "../style";
 
@@ -28,9 +29,6 @@ export default function ProposalPunishOCMember({
 
   const distributionList = proposalPunishVotingMember?.DistributeEscrow?.distribution_list ?? [];
 
-  const {
-    ocState: { ocAddress },
-  } = useOc();
   const { handleError } = useError();
   const {
     sdkState: { config, client },
@@ -42,31 +40,28 @@ export default function ProposalPunishOCMember({
 
   useEffect(() => {
     (async function updateMemberEscrow() {
-      if (!ocAddress || !client || !memberToPunish) return;
+      if (!client || !memberToPunish) return;
 
       if (!isValidAddress(memberToPunish, config.addressPrefix)) {
         setMemberEscrow("0");
-        console.log({ hi: 0 });
         return;
       }
 
-      const dsoContract = new DsoContractQuerier(ocAddress, client);
+      const ocContract = new OcContractQuerier(config, client);
 
       try {
-        const escrowResponse = await dsoContract.getEscrow(memberToPunish);
+        const escrowResponse = await ocContract.getEscrow(memberToPunish);
         if (!escrowResponse) throw new Error("No escrow found for user");
 
         const decimals = config.coinMap[config.feeToken].fractionalDigits;
         const userEscrowDecimal = Decimal.fromAtomics(escrowResponse.paid, decimals);
         setMemberEscrow(userEscrowDecimal.toString());
-        console.log({ hi: 1 });
       } catch (error) {
         console.error(error);
         setMemberEscrow("0");
-        console.log({ hi: 2 });
       }
     })();
-  }, [client, config.addressPrefix, config.coinMap, config.feeToken, memberToPunish, ocAddress]);
+  }, [client, config, memberToPunish]);
 
   useEffect(() => {
     if (!slashingPercentage) return;

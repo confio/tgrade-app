@@ -1,7 +1,7 @@
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { config } from "config/network";
-import { DsoContract } from "utils/dso";
 import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
+import { TcContract } from "utils/trustedCircle";
 
 it("creates a Trusted Circle with a member", async () => {
   const signer = await loadOrCreateWallet(config);
@@ -19,7 +19,7 @@ it("creates a Trusted Circle with a member", async () => {
   const members: readonly string[] = ["tgrade1uuy629yfuw2mf383t33x0jk2qwtf6rvv4dhmxs"];
   const allowEndEarly = true;
 
-  const contractAddress = await DsoContract.createDso(
+  const contractAddress = await TcContract.createTc(
     signingClient,
     config.codeIds?.tgradeDso?.[0] ?? 0,
     address,
@@ -53,7 +53,7 @@ it("creates a Trusted Circle and adds a member with a proposal", async () => {
   const members: readonly string[] = [];
   const allowEndEarly = true;
 
-  const contractAddress = await DsoContract.createDso(
+  const contractAddress = await TcContract.createTc(
     signingClient,
     config.codeIds?.tgradeDso?.[0] ?? 0,
     address,
@@ -71,7 +71,7 @@ it("creates a Trusted Circle and adds a member with a proposal", async () => {
   const comment = "Add new member";
   const memberToAdd = "tgrade1uuy629yfuw2mf383t33x0jk2qwtf6rvv4dhmxs";
 
-  const dsoContract = new DsoContract(contractAddress, signingClient, config.gasPrice);
+  const dsoContract = new TcContract(contractAddress, signingClient, config.gasPrice);
   await dsoContract.propose(address, comment, {
     add_remove_non_voting_members: { remove: [], add: [memberToAdd] },
   });

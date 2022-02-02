@@ -5,10 +5,10 @@ import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
 import { gtagProposalAction } from "utils/analytics";
 import { Contract20WS } from "utils/cw20";
-import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getPairsEager } from "utils/factory";
 import { tokenObj } from "utils/tokens";
+import { TcContract } from "utils/trustedCircle";
 
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationWhitelistPair from "./components/ConfirmationWhitelistPair";
@@ -107,7 +107,7 @@ export default function ProposalWhitelistPair({
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.propose(address, comment, {
         whitelist_contract: pairAddress,
       });

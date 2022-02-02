@@ -1,8 +1,8 @@
 import { TxResult } from "App/components/ShowTxResult";
 import { useState } from "react";
-import { useError, useOc, useSdk } from "service";
-import { DsoContract } from "utils/dso";
+import { useError, useSdk } from "service";
 import { getErrorFromStackTrace } from "utils/errors";
+import { OcContract } from "utils/oversightCommunity";
 
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationGrantEngagementPoints from "./components/ConfirmationGrantEngagementPoints";
@@ -29,9 +29,6 @@ export default function ProposalGrantEngagementPoints({
   const {
     sdkState: { address, signingClient, config },
   } = useSdk();
-  const {
-    ocState: { ocProposalsAddress },
-  } = useOc();
 
   const [member, setMember] = useState("");
   const [points, setPoints] = useState("");
@@ -45,12 +42,12 @@ export default function ProposalGrantEngagementPoints({
   }
 
   async function submitCreateProposal() {
-    if (!ocProposalsAddress || !signingClient || !address) return;
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(ocProposalsAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
+      const ocContract = new OcContract(config, signingClient);
+      const transactionHash = await ocContract.propose(address, comment, {
         grant_engagement: {
           member,
           points: parseInt(points, 10),
@@ -58,7 +55,7 @@ export default function ProposalGrantEngagementPoints({
       });
 
       setTxResult({
-        msg: `Created proposal for granting Engagement Points from Oversight Community Proposals (${ocProposalsAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for granting Engagement Points from Oversight Community Proposals. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

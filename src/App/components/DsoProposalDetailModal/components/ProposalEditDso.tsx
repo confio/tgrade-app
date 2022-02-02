@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
-import { TrustedCircleAdjustements } from "utils/dso";
+import { TrustedCircleAdjustements } from "utils/trustedCircle";
 
 import { ChangedField, FieldGroup, TextLabel, TextValue } from "../style";
 

@@ -11,9 +11,9 @@ import { lazy, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
 import { displayAmountToNative } from "utils/currency";
-import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getFormItemName } from "utils/forms";
+import { TcContract } from "utils/trustedCircle";
 import * as Yup from "yup";
 
 import BackButtonOrLink from "../BackButtonOrLink";
@@ -78,7 +78,7 @@ export default function DepositDsoEscrowModal({
     const nativeEscrow = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.depositEscrow(address, [
         { denom: config.feeToken, amount: nativeEscrow },
       ]);
