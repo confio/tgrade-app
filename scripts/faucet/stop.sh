@@ -8,4 +8,4 @@ SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 source "$SCRIPT_DIR"/env
 
 echo "Killing faucet container..."
-docker container kill "$CONTAINER_NAME"
+docker container kill "$CONTAINER_NAME" || true
