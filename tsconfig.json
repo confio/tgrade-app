@@ -20,7 +20,8 @@
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
-    "target": "ES2017"
+    "target": "ES2017",
+    "types": ["cypress", "@testing-library/cypress"]
   },
   "include": ["src"]
 }
