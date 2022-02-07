@@ -11,6 +11,7 @@ import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, Th
 import TMarketProvider from "service/tmarket";
 
 import LoadingSpinner from "./components/LoadingSpinner";
+import CPoolHome from "./pages/CPoolHome";
 import DocumentationPage from "./pages/DocumentationPage";
 import LandingPage from "./pages/LandingPage";
 import CookiePolicy from "./pages/LandingPage/CookiePolicy";
@@ -53,6 +54,9 @@ export default function App(): JSX.Element {
                           </Route>
                           <Route path={paths.oc.prefix}>
                             <OcHome />
+                          </Route>
+                          <Route path={paths.cpool.prefix}>
+                            <CPoolHome />
                           </Route>
                           <Route path={`${paths.tmarket.prefix}`}>
                             <TMarketProvider>

@@ -29,6 +29,9 @@ export const paths = {
   oc: {
     prefix: "/oversightcommunity",
   },
+  cpool: {
+    prefix: "/communitypool",
+  },
   engagement: {
     prefix: "/engagement",
   },
