@@ -17,6 +17,19 @@ interface BlockchainValues {
   totalTGD: number;
 }
 
+function validateURL(url: string) {
+  const pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i",
+  ); // fragment locator
+  return !!pattern.test(url);
+}
+
 export interface ValidatorType extends OperatorResponse {
   operator: string;
   engagementPoints?: number;
@@ -115,7 +128,7 @@ const columns: ColumnProps<ValidatorType>[] = [
     title: "Website",
     key: "website",
     render: (record: ValidatorType) =>
-      record.metadata?.website ? (
+      validateURL(record.metadata?.website || "") ? (
         <a href={record.metadata?.website}>
           <LinkIcon />
         </a>
