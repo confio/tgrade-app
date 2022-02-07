@@ -99,7 +99,7 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
       const stakingContract = new StakingContract(config, signingClient);
       const potentialVotingPower = await stakingContract.getPotentialVotingPower(address, nativeTokensAdd);
 
-      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${potentialVotingPower}%`);
+      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${potentialVotingPower.toFixed(3)}%`);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
@@ -126,7 +126,7 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
                     You have staked <BoldText>{`${stakedTokens.amount} ${stakedTokens.denom}`}</BoldText>
                   </Text>
                   <Text>
-                    Your voting power is <BoldText>{votingPower}%</BoldText>
+                    Your voting power is <BoldText>{votingPower.toFixed(3)}%</BoldText>
                   </Text>
                 </CurrentData>
                 <UnstakeFields>
