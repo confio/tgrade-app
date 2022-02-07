@@ -4,8 +4,8 @@ jobs:
   build:
     docker:
       - image: cimg/node:14.18.0
-    parallelism: 3
-    resource_class: large
+    # resource_class: Medium / 4 GB / 2 vCPUs
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -110,6 +110,11 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
       - lint
-      - test
+      - test:
+          requires:
+            - lint
+      - build:
+          requires:
+            - lint
+            - test
