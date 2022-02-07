@@ -4,8 +4,8 @@ jobs:
   build:
     docker:
       - image: cimg/node:14.18.0
-    # resource_class: Medium / 4 GB / 2 vCPUs
-    resource_class: medium
+    # resource_class: Medium / 6 GB / 3 vCPUs
+    resource_class: medium+
     steps:
       - checkout
       - restore_cache:
