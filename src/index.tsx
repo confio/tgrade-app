@@ -3,7 +3,6 @@ import "./index.css";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { credentials } from "config/credentials";
-import { StrictMode } from "react";
 import ReactDOM from "react-dom";
 
 import App from "./App";
@@ -12,18 +11,15 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 Sentry.init({
   dsn: credentials.sentry.dsn,
-  integrations: [new Integrations.BrowserTracing()],
-  // Sample rate to determine trace sampling (percentage of traces sent)
+  integrations: [new Integrations.BrowserTracing()], // Sample rate to determine trace sampling (percentage of traces sent)
   // 0.0 = send no traces 1.0 = send all traces
   tracesSampleRate: 1.0,
 });
 
 ReactDOM.render(
-  <StrictMode>
-    <Sentry.ErrorBoundary fallback={<div>An error has occurred</div>}>
-      <App />
-    </Sentry.ErrorBoundary>
-  </StrictMode>,
+  <Sentry.ErrorBoundary fallback={<div>An error has occurred</div>}>
+    <App />
+  </Sentry.ErrorBoundary>,
   document.getElementById("root"),
 );
 
