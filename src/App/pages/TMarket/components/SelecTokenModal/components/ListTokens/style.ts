@@ -5,7 +5,7 @@ export const TokenListItem = styled(List.Item)`
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: var(--s-4);
 
   &.ant-list-item {
     margin: 0 -20px;
@@ -18,9 +18,10 @@ export const TokenListItem = styled(List.Item)`
 `;
 
 export const ContainerLogoNames = styled.div`
+  flex-basis: 50%;
   display: flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: var(--s-4);
   flex-shrink: 0;
 
   & img {
@@ -43,7 +44,7 @@ export const ContainerNames = styled.div`
 export const ContainerNumbersPin = styled.div`
   display: flex;
   align-items: center;
-  gap: var(--s-2);
+  gap: var(--s-4);
 
   img {
     cursor: pointer;

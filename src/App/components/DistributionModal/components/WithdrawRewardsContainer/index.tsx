@@ -21,11 +21,13 @@ const { Text } = Typography;
 interface WithdrawRewardsContainerProps {
   readonly egContract: EngagementContractQuerier | undefined;
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
+  readonly reloadValidator: () => Promise<void>;
 }
 
 export default function WithdrawRewardsContainer({
   egContract,
   setTxResult,
+  reloadValidator,
 }: WithdrawRewardsContainerProps): JSX.Element | null {
   const {
     sdkState: { config, address },
@@ -104,6 +106,7 @@ export default function WithdrawRewardsContainer({
           receiverAddress || address
         }. Transaction ID: ${txHash}`,
       });
+      await reloadValidator();
     } catch (error) {
       if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });

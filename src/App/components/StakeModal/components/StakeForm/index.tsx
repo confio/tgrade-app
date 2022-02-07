@@ -23,9 +23,10 @@ const potentialVotingPowerLabel = "Potential voting power";
 
 interface StakeFormProps {
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
+  readonly reloadValidator: () => Promise<void>;
 }
 
-export default function StakeForm({ setTxResult }: StakeFormProps): JSX.Element {
+export default function StakeForm({ setTxResult, reloadValidator }: StakeFormProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, address, signingClient },
@@ -66,6 +67,7 @@ export default function StakeForm({ setTxResult }: StakeFormProps): JSX.Element 
       setTxResult({
         msg: `Successfully staked ${tokensAdd}. Transaction ID: ${txHash}`,
       });
+      await reloadValidator();
     } catch (error) {
       if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
@@ -97,7 +99,7 @@ export default function StakeForm({ setTxResult }: StakeFormProps): JSX.Element 
       const stakingContract = new StakingContract(config, signingClient);
       const potentialVotingPower = await stakingContract.getPotentialVotingPower(address, nativeTokensAdd);
 
-      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${potentialVotingPower}%`);
+      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${potentialVotingPower.toFixed(3)}%`);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
@@ -124,7 +126,7 @@ export default function StakeForm({ setTxResult }: StakeFormProps): JSX.Element 
                     You have staked <BoldText>{`${stakedTokens.amount} ${stakedTokens.denom}`}</BoldText>
                   </Text>
                   <Text>
-                    Your voting power is <BoldText>{votingPower}%</BoldText>
+                    Your voting power is <BoldText>{votingPower.toFixed(3)}%</BoldText>
                   </Text>
                 </CurrentData>
                 <UnstakeFields>

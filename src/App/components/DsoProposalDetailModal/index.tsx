@@ -1,4 +1,5 @@
 import { calculateFee } from "@cosmjs/stargate";
+import { Collapse } from "antd";
 import { ReactComponent as AbstainIcon } from "App/assets/icons/abstain-icon.svg";
 import closeIcon from "App/assets/icons/cross.svg";
 import { ReactComponent as RejectIcon } from "App/assets/icons/no-icon.svg";
@@ -14,15 +15,17 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
-import {
-  DsoContract,
-  DsoContractQuerier,
-  DsoProposalResponse,
-  getProposalTitle,
-  VoteOption,
-} from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import {
+  getProposalTitle,
+  TcContract,
+  TcContractQuerier,
+  TcProposalResponse,
+  VoteInfo,
+  VoteOption,
+} from "utils/trustedCircle";
 
+import VotesTable from "../VotesTable";
 import ProposalAddMembers from "./components/ProposalAddMembers";
 import ProposalAddVotingMembers from "./components/ProposalAddVotingMembers";
 import ProposalEditDso from "./components/ProposalEditDso";
@@ -40,6 +43,7 @@ import {
   RejectButton,
   SectionWrapper,
   Separator,
+  StyledCollapse,
   StyledModal,
   Text,
   TextValue,
@@ -72,7 +76,7 @@ export default function DsoProposalDetailModal({
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
-  const [proposal, setProposal] = useState<DsoProposalResponse>();
+  const [proposal, setProposal] = useState<TcProposalResponse>();
   const isProposalNotExpired = proposal
     ? new Date(parseInt(proposal.expires.at_time, 10) / 1000000) > new Date()
     : false;
@@ -85,11 +89,31 @@ export default function DsoProposalDetailModal({
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
+  const [isTableLoading, setTableLoading] = useState(false);
+  const [votes, setVotes] = useState<readonly VoteInfo[]>([]);
+  useEffect(() => {
+    (async function queryVotes() {
+      if (!client || !proposalId) return;
+
+      try {
+        const tcContract = new TcContractQuerier(dsoAddress, client);
+        setTableLoading(true);
+        const votes = await tcContract.getAllVotes(proposalId);
+        setVotes(votes);
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      } finally {
+        setTableLoading(false);
+      }
+    })();
+  }, [client, dsoAddress, handleError, proposalId]);
+
   useEffect(() => {
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(DsoContract.GAS_VOTE, config.gasPrice);
+      const fee = calculateFee(TcContract.GAS_VOTE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
@@ -103,7 +127,7 @@ export default function DsoProposalDetailModal({
       if (!client || !proposalId) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
         const proposal = await dsoContract.getProposal(proposalId);
         setProposal(proposal);
       } catch (error) {
@@ -118,7 +142,7 @@ export default function DsoProposalDetailModal({
       if (!address || !client || !proposalId) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
         const voter = await dsoContract.getVote(proposalId, address);
         setHasVoted(voter.vote?.voter === address);
       } catch (error) {
@@ -133,7 +157,7 @@ export default function DsoProposalDetailModal({
       if (!client || !address) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
         const escrowResponse = await dsoContract.getEscrow(address);
 
         if (escrowResponse) {
@@ -160,7 +184,7 @@ export default function DsoProposalDetailModal({
     setSubmitting(chosenVote);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.voteProposal(address, proposalId, chosenVote);
 
       setTxResult({
@@ -184,7 +208,7 @@ export default function DsoProposalDetailModal({
     setSubmitting("executing");
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
       const transactionHash = await dsoContract.executeProposal(address, proposalId);
 
       setTxResult({
@@ -264,24 +288,35 @@ export default function DsoProposalDetailModal({
               </Stack>
               <Separator />
               <SectionWrapper>
-                <Text>Progress And results</Text>
-                <SectionWrapper>
-                  <Paragraph>
-                    Total voted:
-                    <b>
-                      {calculateTotalVotes()} of {proposal.total_weight}
-                    </b>
-                  </Paragraph>
-                  <Paragraph>
-                    Yes: <b>{proposal.votes.yes ?? 0}</b>
-                  </Paragraph>
-                  <Paragraph>
-                    No: <b>{proposal.votes.no ?? 0}</b>
-                  </Paragraph>
-                  <Paragraph>
-                    Abstain: <b>{proposal.votes.abstain ?? 0}</b>
-                  </Paragraph>
-                </SectionWrapper>
+                <StyledCollapse ghost>
+                  <Collapse.Panel
+                    key="1"
+                    header={
+                      <SectionWrapper>
+                        <Text>Progress and results</Text>
+                        <SectionWrapper>
+                          <Paragraph>
+                            Total voted:
+                            <b>
+                              {calculateTotalVotes()} of {proposal.total_weight}
+                            </b>
+                          </Paragraph>
+                          <Paragraph>
+                            Yes: <b>{proposal.votes.yes ?? 0}</b>
+                          </Paragraph>
+                          <Paragraph>
+                            No: <b>{proposal.votes.no ?? 0}</b>
+                          </Paragraph>
+                          <Paragraph>
+                            Abstain: <b>{proposal.votes.abstain ?? 0}</b>
+                          </Paragraph>
+                        </SectionWrapper>
+                      </SectionWrapper>
+                    }
+                  >
+                    <VotesTable isLoading={isTableLoading} votes={votes} />
+                  </Collapse.Panel>
+                </StyledCollapse>
               </SectionWrapper>
               <Separator />
               <SectionWrapper>

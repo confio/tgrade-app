@@ -4,9 +4,15 @@ import rejectedIcon from "App/assets/icons/cross.svg";
 import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
-import { useError, useOc, useSdk } from "service";
-import { Cw3Status, DsoContractQuerier, DsoProposalResponse, isDsoProposal, isOcProposal } from "utils/dso";
-import { getProposalTitle, OcProposalResponse } from "utils/oc";
+import { useError, useSdk } from "service";
+import {
+  getProposalTitle,
+  isOcProposalResponse,
+  MixedProposalResponse,
+  MixedProposalResponseId,
+  OcContractQuerier,
+} from "utils/oversightCommunity";
+import { Cw3Status, isTcProposalResponse } from "utils/trustedCircle";
 
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -34,20 +40,18 @@ function getImgSrcFromStatus(status: Cw3Status) {
 
 const columns = [
   {
-    title: "Nº",
-    key: "id",
-    render: (record: DsoProposalResponse | OcProposalResponse) => {
-      const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
-      return proposalId;
-    },
-    sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
-      if ((isDsoProposal(a) && isDsoProposal(b)) || (isOcProposal(a) && isOcProposal(b))) return a.id - b.id;
+    title: "ID",
+    dataIndex: "mixedId",
+    key: "mixedId",
+    sorter: (a: MixedProposalResponse, b: MixedProposalResponse) => {
+      if (
+        (isTcProposalResponse(a) && isTcProposalResponse(b)) ||
+        (isOcProposalResponse(a) && isOcProposalResponse(b))
+      )
+        return a.id - b.id;
 
-      const proposalAId = isOcProposal(a) ? `oc${a.id}` : `tc${a.id}`;
-      const proposalBId = isOcProposal(b) ? `oc${b.id}` : `tc${b.id}`;
-
-      if (proposalAId < proposalBId) return -1;
-      if (proposalAId > proposalBId) return 1;
+      if (a.mixedId < b.mixedId) return -1;
+      if (a.mixedId > b.mixedId) return 1;
 
       return 0;
     },
@@ -55,12 +59,12 @@ const columns = [
   {
     title: "Type",
     key: "title",
-    render: (record: DsoProposalResponse | OcProposalResponse) => getProposalTitle(record.proposal),
+    render: (record: MixedProposalResponse) => getProposalTitle(record.proposal),
   },
   {
     title: "Due date",
     key: "expires",
-    render: (record: DsoProposalResponse | OcProposalResponse) => {
+    render: (record: MixedProposalResponse) => {
       const expiryTime =
         Number(typeof record.expires === "string" ? record.expires : record.expires.at_time) / 1000000;
       const formatedDate = new Date(expiryTime).toLocaleDateString();
@@ -72,7 +76,7 @@ const columns = [
         </>
       );
     },
-    sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
+    sorter: (a: MixedProposalResponse, b: MixedProposalResponse) => {
       const aExpiryTime = Number(typeof a.expires === "string" ? a.expires : a.expires.at_time) / 1000000;
       const bExpiryTime = Number(typeof b.expires === "string" ? b.expires : b.expires.at_time) / 1000000;
       return bExpiryTime - aExpiryTime;
@@ -82,7 +86,7 @@ const columns = [
   {
     title: "Status",
     key: "status",
-    render: (record: DsoProposalResponse | OcProposalResponse) => (
+    render: (record: MixedProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
@@ -93,7 +97,7 @@ const columns = [
         <Paragraph>Abstained: {record.votes.abstain ?? 0}</Paragraph>
       </StatusBlock>
     ),
-    sorter: (a: DsoProposalResponse | OcProposalResponse, b: DsoProposalResponse | OcProposalResponse) => {
+    sorter: (a: MixedProposalResponse, b: MixedProposalResponse) => {
       function getSortNumFromStatus(status: Cw3Status): number {
         switch (status) {
           case "executed":
@@ -113,7 +117,7 @@ const columns = [
   {
     title: "Description",
     key: "description",
-    render: (record: DsoProposalResponse | OcProposalResponse) => (
+    render: (record: MixedProposalResponse) => (
       <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>
     ),
   },
@@ -122,32 +126,25 @@ const columns = [
 export default function OcDetail(): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { client, address },
+    sdkState: { config, client, address },
   } = useSdk();
-  const {
-    ocState: { ocAddress, ocProposalsAddress },
-  } = useOc();
 
   const [isTableLoading, setTableLoading] = useState(true);
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
-  const [proposals, setProposals] = useState<ReadonlyArray<DsoProposalResponse | OcProposalResponse>>([]);
-  const [clickedProposal, setClickedProposal] = useState<string>();
+  const [proposals, setProposals] = useState<readonly MixedProposalResponse[]>([]);
+  const [clickedProposal, setClickedProposal] = useState<MixedProposalResponseId>();
   const [isVotingMember, setVotingMember] = useState(false);
 
   const refreshProposals = useCallback(async () => {
-    if (!ocAddress || !ocProposalsAddress || !client) return;
+    if (!client) return;
 
     try {
-      const dsoContract = new DsoContractQuerier(ocAddress, client);
-      const ocProposalsContract = new DsoContractQuerier(ocProposalsAddress, client);
+      const ocContract = new OcContractQuerier(config, client);
+      const proposals = await ocContract.getAllMixedProposals();
+      setProposals(proposals);
 
-      const dsoProposals = await dsoContract.getAllProposals();
-      // FIXME: the OC contract needs its own queries class with different types
-      const ocProposals = await ocProposalsContract.getAllProposals();
-      setProposals([...dsoProposals, ...ocProposals]);
-
-      const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
+      const isVotingMember = (await ocContract.getAllVotingMembers()).some(
         (member) => member.addr === address,
       );
       setVotingMember(isVotingMember);
@@ -157,7 +154,7 @@ export default function OcDetail(): JSX.Element {
     } finally {
       setTableLoading(false);
     }
-  }, [address, client, handleError, ocAddress, ocProposalsAddress]);
+  }, [address, client, config, handleError]);
 
   useEffect(() => {
     refreshProposals();
@@ -185,14 +182,9 @@ export default function OcDetail(): JSX.Element {
             pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
             columns={columns}
             dataSource={proposals}
-            rowKey={(record: DsoProposalResponse | OcProposalResponse) =>
-              isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`
-            }
-            onRow={(record: DsoProposalResponse | OcProposalResponse) => ({
-              onClick: () => {
-                const proposalId = isOcProposal(record) ? `oc${record.id}` : `tc${record.id}`;
-                setClickedProposal(proposalId);
-              },
+            rowKey={(record: MixedProposalResponse) => record.mixedId}
+            onRow={(record: MixedProposalResponse) => ({
+              onClick: () => setClickedProposal(record.mixedId),
             })}
           />
         </ProposalsContainer>
@@ -205,7 +197,7 @@ export default function OcDetail(): JSX.Element {
       <OcProposalDetailModal
         isModalOpen={!!clickedProposal}
         closeModal={() => setClickedProposal(undefined)}
-        proposalId={clickedProposal}
+        mixedProposalId={clickedProposal}
         refreshProposals={refreshProposals}
       />
     </>

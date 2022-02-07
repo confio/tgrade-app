@@ -3,8 +3,8 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
-import { DsoContract, Punishment } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import { Punishment, TcContract } from "utils/trustedCircle";
 
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationPunishVotingParticipant from "./components/ConfirmationPunishVotingParticipant";
@@ -65,7 +65,7 @@ export default function ProposalPunishVotingParticipant({
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(dsoAddress, signingClient, config.gasPrice);
+      const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
       const nativeSlashing = slashingPercentage ? (parseFloat(slashingPercentage) / 100).toString() : "0";
 
       const punishment: Punishment = distributionList.length

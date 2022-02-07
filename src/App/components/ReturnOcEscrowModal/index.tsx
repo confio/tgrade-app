@@ -4,9 +4,9 @@ import Button from "App/components/Button";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import { lazy, useState } from "react";
-import { useError, useOc, useSdk } from "service";
-import { DsoContract } from "utils/dso";
+import { useError, useSdk } from "service";
 import { getErrorFromStackTrace } from "utils/errors";
+import { OcContract } from "utils/oversightCommunity";
 
 import BackButtonOrLink from "../BackButtonOrLink";
 import { ButtonGroup, ModalHeader, Separator, StyledModal } from "./style";
@@ -36,9 +36,6 @@ export default function ReturnOcEscrowModal({
     sdkState: { config, signer, address, signingClient },
   } = useSdk();
   const feeDenom = config.coinMap[config.feeToken].denom;
-  const {
-    ocState: { ocAddress },
-  } = useOc();
 
   const [isConnectWalletModalOpen, setConnectWalletModalOpen] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
@@ -51,15 +48,15 @@ export default function ReturnOcEscrowModal({
   }
 
   async function submitReturnEscrow() {
-    if (!ocAddress || !signingClient || !address) return;
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.returnEscrow(address);
+      const ocContract = new OcContract(config, signingClient);
+      const transactionHash = await ocContract.returnEscrow(address);
 
       setTxResult({
-        msg: `Returned exceeding escrow for Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Returned exceeding escrow for Oversight Community. Transaction ID: ${transactionHash}`,
       });
       refreshEscrows();
     } catch (error) {

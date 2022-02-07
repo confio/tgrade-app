@@ -1,8 +1,9 @@
 import { TxResult } from "App/components/ShowTxResult";
 import { useState } from "react";
-import { useError, useOc, useSdk } from "service";
-import { DsoContract, Punishment } from "utils/dso";
+import { useError, useSdk } from "service";
 import { getErrorFromStackTrace } from "utils/errors";
+import { OcContract } from "utils/oversightCommunity";
+import { Punishment } from "utils/trustedCircle";
 
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationPunishOCMember from "./components/ConfirmationPunishOCMember";
@@ -27,9 +28,6 @@ export default function ProposalPunishOCMember({
   const {
     sdkState: { address, signingClient, config },
   } = useSdk();
-  const {
-    ocState: { ocAddress },
-  } = useOc();
 
   const [memberToPunish, setMemberToPunish] = useState("");
   const [memberEscrow, setMemberEscrow] = useState("0");
@@ -56,11 +54,11 @@ export default function ProposalPunishOCMember({
   }
 
   async function submitCreateProposal() {
-    if (!ocAddress || !signingClient || !address) return;
+    if (!signingClient || !address) return;
     setSubmitting(true);
 
     try {
-      const dsoContract = new DsoContract(ocAddress, signingClient, config.gasPrice);
+      const ocContract = new OcContract(config, signingClient);
       const nativeSlashing = slashingPercentage ? (parseFloat(slashingPercentage) / 100).toString() : "0";
 
       const punishment: Punishment = distributionList.length
@@ -80,10 +78,10 @@ export default function ProposalPunishOCMember({
             },
           };
 
-      const transactionHash = await dsoContract.propose(address, comment, { punish_members: [punishment] });
+      const transactionHash = await ocContract.propose(address, comment, { punish_members: [punishment] });
 
       setTxResult({
-        msg: `Created proposal for punishing member to Oversight Community (${ocAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for punishing member to Oversight Community. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

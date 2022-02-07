@@ -61,3 +61,12 @@ export function addressStringToArray(addressString: string): readonly string[] {
   const nonEmptyOrDuplicateArray = [...new Set(membersArray.filter(Boolean))];
   return nonEmptyOrDuplicateArray;
 }
+
+export function isJson(string: string): boolean {
+  try {
+    JSON.parse(string);
+    return true;
+  } catch {
+    return false;
+  }
+}

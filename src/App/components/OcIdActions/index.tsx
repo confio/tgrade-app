@@ -5,7 +5,7 @@ import AddressTag from "App/components/AddressTag";
 import { useEffect, useState } from "react";
 import { openLeaveOcModal, useError, useOc, useSdk } from "service";
 import { nativeCoinToDisplay } from "utils/currency";
-import { DsoContractQuerier } from "utils/dso";
+import { OcContractQuerier } from "utils/oversightCommunity";
 
 import { ActionsButton, Separator, StyledOcIdActions, VotingRules, VSeparator } from "./style";
 
@@ -29,31 +29,31 @@ export default function OcIdActions(): JSX.Element {
 
   useEffect(() => {
     (async function queryVotingRules() {
-      if (!ocAddress || !client) return;
+      if (!client) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(ocAddress, client);
-        const dsoResponse = await dsoContract.getDso();
+        const ocContract = new OcContractQuerier(config, client);
+        const ocResponse = await ocContract.getOc();
         const minimumEscrow = nativeCoinToDisplay(
-          { denom: config.feeToken, amount: dsoResponse.escrow_amount },
+          { denom: config.feeToken, amount: ocResponse.escrow_amount },
           config.coinMap,
         );
-        const quorum = (parseFloat(dsoResponse.rules.quorum) * 100).toFixed(2).toString();
-        const threshold = (parseFloat(dsoResponse.rules.threshold) * 100).toFixed(2).toString();
-        const allowEndEarly = dsoResponse.rules.allow_end_early ? "Yes" : "No";
+        const quorum = (parseFloat(ocResponse.rules.quorum) * 100).toFixed(2).toString();
+        const threshold = (parseFloat(ocResponse.rules.threshold) * 100).toFixed(2).toString();
+        const allowEndEarly = ocResponse.rules.allow_end_early ? "Yes" : "No";
 
         setMinimumEscrow(minimumEscrow);
         setQuorum(quorum);
         setQuorum(quorum);
         setThreshold(threshold);
-        setVotingDuration(dsoResponse.rules.voting_period.toString());
+        setVotingDuration(ocResponse.rules.voting_period.toString());
         setAllowEndEarly(allowEndEarly);
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
-  }, [client, config.coinMap, config.feeToken, ocAddress, handleError]);
+  }, [client, config, handleError]);
 
   return (
     <StyledOcIdActions>

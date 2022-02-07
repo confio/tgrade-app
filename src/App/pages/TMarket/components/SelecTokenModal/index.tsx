@@ -11,7 +11,7 @@ import StyledSelectTokenModal, { ModalHeader } from "./style";
 
 interface SelectTokenModalProps {
   readonly isModalOpen: boolean;
-  readonly tokens: Array<TokenProps>;
+  readonly tokens: readonly TokenProps[];
   readonly closeModal: () => void;
   readonly setToken: any;
 }
@@ -57,7 +57,7 @@ export default function SelectTokenModal({
       </Stack>
       <Divider style={{ margin: "5px 0" }} />
       <Stack gap="s0">
-        <ListTokens closeModal={closeModal} setToken={setToken} />
+        <ListTokens closeModal={closeModal} tokens={tokens} setToken={setToken} />
       </Stack>
     </StyledSelectTokenModal>
   );

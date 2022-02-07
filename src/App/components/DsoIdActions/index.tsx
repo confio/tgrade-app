@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
 import { getDsoName, openLeaveDsoModal, useDso } from "service/dsos";
 import { nativeCoinToDisplay } from "utils/currency";
-import { DsoContractQuerier } from "utils/dso";
+import { TcContractQuerier } from "utils/trustedCircle";
 
 import { ActionsButton, StyledDsoIdActions, VotingRules, VSeparator } from "./style";
 
@@ -38,8 +38,8 @@ export default function DsoIdActions(): JSX.Element {
       if (!client) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
-        const dsoResponse = await dsoContract.getDso();
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
+        const dsoResponse = await dsoContract.getTc();
         const minimumEscrow = nativeCoinToDisplay(
           { denom: config.feeToken, amount: dsoResponse.escrow_amount },
           config.coinMap,

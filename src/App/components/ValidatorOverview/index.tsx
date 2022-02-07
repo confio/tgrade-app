@@ -2,11 +2,11 @@ import { ColumnProps } from "antd/lib/table";
 import { ReactComponent as LinkIcon } from "App/assets/icons/link-icon.svg";
 import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { config } from "config/network";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { EngagementContractQuerier } from "utils/poeEngagement";
 import { ellipsifyAddress } from "utils/ui";
-import { OperatorResponse, ValidatorContractQuerier } from "utils/validator";
+import { OperatorResponse, useLoadValidatorsBg, ValidatorContractQuerier } from "utils/validator";
 
 import { ValidatorDetail } from "../ValidatorDetail";
 import { StyledTable } from "./style";
@@ -15,6 +15,19 @@ interface BlockchainValues {
   totalEgPoints: number;
   totalEgRewards: number;
   totalTGD: number;
+}
+
+function validateURL(url: string) {
+  const pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i",
+  ); // fragment locator
+  return !!pattern.test(url);
 }
 
 export interface ValidatorType extends OperatorResponse {
@@ -115,7 +128,7 @@ const columns: ColumnProps<ValidatorType>[] = [
     title: "Website",
     key: "website",
     render: (record: ValidatorType) =>
-      record.metadata?.website ? (
+      validateURL(record.metadata?.website || "") ? (
         <a href={record.metadata?.website}>
           <LinkIcon />
         </a>
@@ -131,7 +144,12 @@ const columns: ColumnProps<ValidatorType>[] = [
   },
 ];
 export default function ValidatorOverview(): JSX.Element | null {
-  const [isTableLoading, setTableLoading] = useState(true);
+  const { handleError } = useError();
+  const {
+    sdkState: { client, config },
+  } = useSdk();
+
+  const { validators, status: validatorLoadingStatus } = useLoadValidatorsBg(config, client);
   const [validatorList, setValidatorList] = useState<readonly ValidatorType[]>([]);
   const [blockchainValues, setBlockchainValues] = useState<BlockchainValues>({
     totalEgPoints: 0,
@@ -139,10 +157,34 @@ export default function ValidatorOverview(): JSX.Element | null {
     totalTGD: 0,
   });
   const [selectedValidator, setSelectedValidator] = useState<ValidatorType>();
-  const { handleError } = useError();
-  const {
-    sdkState: { client, config },
-  } = useSdk();
+
+  const reloadValidator = useCallback(async (): Promise<void> => {
+    if (!selectedValidator || !client) return;
+
+    const valContract = new ValidatorContractQuerier(config, client);
+    const operatorResponse = await valContract.getValidator(selectedValidator.operator);
+    if (!operatorResponse) return;
+
+    const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
+    const ep = await egContract.getEngagementPoints(operatorResponse.operator);
+    const rewards = await egContract.getWithdrawableFunds(operatorResponse.operator);
+    const valActive = await valContract.getActiveValidators();
+
+    const validator: ValidatorType = {
+      ...operatorResponse,
+      engagementPoints: ep,
+      rewards: Number(rewards.amount),
+      status: "active",
+      //TODO: get proper power. Also getActiveValidators is not paginated.
+      power: Number(valActive[0].power),
+    };
+
+    setSelectedValidator(validator);
+    setValidatorList((validators) => [
+      ...validators.filter((currentValidator) => currentValidator.operator !== validator.operator),
+      validator,
+    ]);
+  }, [client, config, selectedValidator]);
 
   useEffect(() => {
     (async function updateValidators() {
@@ -150,13 +192,13 @@ export default function ValidatorOverview(): JSX.Element | null {
 
       try {
         const valContract = new ValidatorContractQuerier(config, client);
-        const validators = await valContract.getAllValidators();
         const valActive = await valContract.getActiveValidators();
         const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
 
         const totalEgPoints = await egContract.getTotalEngagementPoints();
         const EgRewards = await egContract.getDistributedFunds();
         const totalEgRewards = parseFloat(EgRewards.amount);
+        //TODO: Get from network or remove.
         const totalTGD = 100000000;
         setBlockchainValues({ totalEgPoints, totalEgRewards, totalTGD });
 
@@ -170,6 +212,7 @@ export default function ValidatorOverview(): JSX.Element | null {
               engagementPoints: ep,
               rewards: Number(rewards.amount),
               status: "active",
+              //TODO: get proper power. Also getActiveValidators is not paginated.
               power: Number(valActive[0].power),
             };
 
@@ -181,11 +224,9 @@ export default function ValidatorOverview(): JSX.Element | null {
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
-      } finally {
-        setTableLoading(false);
       }
     })();
-  }, [client, config, handleError]);
+  }, [client, config, handleError, validators]);
 
   return (
     <div style={{ width: "100%" }}>
@@ -196,9 +237,10 @@ export default function ValidatorOverview(): JSX.Element | null {
         onCancel={() => {
           setSelectedValidator(undefined);
         }}
+        reloadValidator={reloadValidator}
       />
       <StyledTable
-        loading={isTableLoading}
+        loading={validatorLoadingStatus === "loadingFirstPage"}
         pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
         dataSource={validatorList}
         columns={columns as any}

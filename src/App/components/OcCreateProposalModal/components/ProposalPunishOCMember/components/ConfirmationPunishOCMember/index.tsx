@@ -8,7 +8,7 @@ import Button from "App/components/Button";
 import { lazy, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
-import { DsoContract } from "utils/dso";
+import { OcContract } from "utils/oversightCommunity";
 
 import { AddressStack, ButtonGroup, ConfirmField, FeeGroup, Separator, TextComment } from "./style";
 
@@ -71,7 +71,7 @@ export default function ConfirmationPunishOCMember({
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(DsoContract.GAS_PROPOSE, config.gasPrice);
+      const fee = calculateFee(OcContract.GAS_PROPOSE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {

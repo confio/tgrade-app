@@ -6,7 +6,7 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { DsoContractQuerier, EscrowResponse, EscrowStatus } from "utils/dso";
+import { EscrowResponse, EscrowStatus, TcContractQuerier } from "utils/trustedCircle";
 
 import TooltipWrapper from "../TooltipWrapper";
 import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
@@ -25,7 +25,6 @@ export default function DsoEscrow(): JSX.Element {
 
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [returnModalOpen, setReturnModalOpen] = useState(false);
-
   const [userEscrow, setUserEscrow] = useState("0");
   const [requiredEscrow, setRequiredEscrow] = useState("0");
   const [exceedingEscrow, setExceedingEscrow] = useState("0");
@@ -40,14 +39,20 @@ export default function DsoEscrow(): JSX.Element {
       if (!client) return;
 
       try {
-        const dsoContract = new DsoContractQuerier(dsoAddress, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
 
         // get minimum escrow required for this DSO
-        const { escrow_amount, escrow_pending } = await dsoContract.getDso();
+        const { escrow_amount, escrow_pending } = await dsoContract.getTc();
         const feeDecimals = config.coinMap[config.feeToken].fractionalDigits;
 
         const requiredEscrowDecimal = Decimal.fromAtomics(escrow_amount, feeDecimals);
         setRequiredEscrow(requiredEscrowDecimal.toString());
+
+        /*       //check if votingmember, but user needs to pay escrow to be voting member
+        const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
+          (member) => member.addr === address,
+        );
+        setVotingMemeber(isVotingMember); */
 
         if (address) {
           const escrowResponse = await dsoContract.getEscrow(address);

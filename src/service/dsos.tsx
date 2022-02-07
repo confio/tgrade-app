@@ -5,8 +5,8 @@ import * as React from "react";
 import { createContext, HTMLAttributes, useContext, useEffect, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSdk } from "service";
-import { DsoContractQuerier } from "utils/dso";
 import { useLocalStorage } from "utils/storage";
+import { TcContractQuerier } from "utils/trustedCircle";
 
 interface DsoId {
   readonly address: string;
@@ -178,8 +178,8 @@ export default function DsoProvider({ children }: HTMLAttributes<HTMLOrSVGElemen
     if (!client) return;
 
     const dsoPromises: Promise<DsoId>[] = dsoState.dsoAddresses.map((dsoAddress) => {
-      const dsoContract = new DsoContractQuerier(dsoAddress, client);
-      return dsoContract.getDso().then(({ name }) => ({ address: dsoAddress, name }));
+      const dsoContract = new TcContractQuerier(dsoAddress, client);
+      return dsoContract.getTc().then(({ name }) => ({ address: dsoAddress, name }));
     });
 
     Promise.allSettled(dsoPromises).then((results) => {

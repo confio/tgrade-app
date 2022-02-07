@@ -4,7 +4,7 @@ import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { getFormItemName } from "utils/forms";
+import { getFormItemName, isJson } from "utils/forms";
 import * as Yup from "yup";
 
 import { ButtonGroup, Separator } from "./style";
@@ -25,7 +25,7 @@ const validationSchema = Yup.object().shape({
     .integer("Code ID must be an integer"),
   [getFormItemName(migrateMsgLabel)]: Yup.string()
     .typeError("Migrate msg must be alphanumeric")
-    .required("Migrate msg is required"),
+    .test(`is-valid-json`, "Migrate msg must be valid JSON", (msg) => !msg || isJson(msg)),
   [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
 });
 
@@ -74,7 +74,7 @@ export default function FormMigrateContract({
             <Stack gap="s1">
               <Field label={contractLabel} placeholder="Enter address" />
               <Field label={codeIdLabel} placeholder="Enter code ID" />
-              <Field label={migrateMsgLabel} placeholder="Enter message" />
+              <Field label={migrateMsgLabel} placeholder="Enter message" optional />
               <Field label={commentLabel} placeholder="Enter comment" optional />
               <Separator />
               <ButtonGroup>

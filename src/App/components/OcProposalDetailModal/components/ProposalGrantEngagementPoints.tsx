@@ -1,5 +1,5 @@
 import AddressTag from "App/components/AddressTag";
-import { Engagement } from "utils/dso";
+import { Engagement } from "utils/trustedCircle";
 
 import { AddressField, TextLabel } from "../style";
 

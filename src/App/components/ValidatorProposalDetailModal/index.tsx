@@ -1,4 +1,5 @@
 import { calculateFee } from "@cosmjs/stargate";
+import { Collapse } from "antd";
 import { ReactComponent as AbstainIcon } from "App/assets/icons/abstain-icon.svg";
 import closeIcon from "App/assets/icons/cross.svg";
 import { ReactComponent as RejectIcon } from "App/assets/icons/no-icon.svg";
@@ -17,9 +18,11 @@ import {
   ProposalResponse,
   ValidatorVotingContract,
   ValidatorVotingContractQuerier,
+  VoteInfo,
   VoteOption,
 } from "utils/validatorVoting";
 
+import VotesTable from "../VotesTable";
 import ProposalMigrateContract from "./components/ProposalMigrateContract";
 import ProposalPinCodes from "./components/ProposalPinCodes";
 import ProposalRegisterUpgrade from "./components/ProposalRegisterUpgrade";
@@ -37,6 +40,7 @@ import {
   RejectButton,
   SectionWrapper,
   Separator,
+  StyledCollapse,
   StyledModal,
   Text,
   TextValue,
@@ -81,6 +85,26 @@ export default function ValidatorProposalDetailModal({
   const proposalMigrateContract = proposal?.proposal.migrate_contract;
 
   const [isVotingMember, setVotingMember] = useState(false);
+
+  const [isTableLoading, setTableLoading] = useState(false);
+  const [votes, setVotes] = useState<readonly VoteInfo[]>([]);
+  useEffect(() => {
+    (async function queryVotes() {
+      if (!client || !proposalId) return;
+
+      try {
+        const validatorContract = new ValidatorVotingContractQuerier(config, client);
+        setTableLoading(true);
+        const votes = await validatorContract.getAllVotes(proposalId);
+        setVotes(votes);
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      } finally {
+        setTableLoading(false);
+      }
+    })();
+  }, [client, config, handleError, proposalId]);
 
   useEffect(() => {
     if (!signingClient) return;
@@ -264,24 +288,35 @@ export default function ValidatorProposalDetailModal({
               </Stack>
               <Separator />
               <SectionWrapper>
-                <Text>Progress And results</Text>
-                <SectionWrapper>
-                  <Paragraph>
-                    Total voted:
-                    <b>
-                      {calculateTotalVotes()} of {proposal.total_weight}
-                    </b>
-                  </Paragraph>
-                  <Paragraph>
-                    Yes: <b>{proposal.votes.yes ?? 0}</b>
-                  </Paragraph>
-                  <Paragraph>
-                    No: <b>{proposal.votes.no ?? 0}</b>
-                  </Paragraph>
-                  <Paragraph>
-                    Abstain: <b>{proposal.votes.abstain ?? 0}</b>
-                  </Paragraph>
-                </SectionWrapper>
+                <StyledCollapse ghost>
+                  <Collapse.Panel
+                    key="1"
+                    header={
+                      <SectionWrapper>
+                        <Text>Progress and results</Text>
+                        <SectionWrapper>
+                          <Paragraph>
+                            Total voted:
+                            <b>
+                              {calculateTotalVotes()} of {proposal.total_weight}
+                            </b>
+                          </Paragraph>
+                          <Paragraph>
+                            Yes: <b>{proposal.votes.yes ?? 0}</b>
+                          </Paragraph>
+                          <Paragraph>
+                            No: <b>{proposal.votes.no ?? 0}</b>
+                          </Paragraph>
+                          <Paragraph>
+                            Abstain: <b>{proposal.votes.abstain ?? 0}</b>
+                          </Paragraph>
+                        </SectionWrapper>
+                      </SectionWrapper>
+                    }
+                  >
+                    <VotesTable isLoading={isTableLoading} votes={votes} />
+                  </Collapse.Panel>
+                </StyledCollapse>
               </SectionWrapper>
               <Separator />
               <SectionWrapper>

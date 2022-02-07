@@ -9,9 +9,9 @@ import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
 import { useEffect, useState } from "react";
-import { useOc, useSdk } from "service";
-import { DsoContractQuerier } from "utils/dso";
+import { useSdk } from "service";
 import { addressStringToArray, getFormItemName, isValidAddress } from "utils/forms";
+import { OcContractQuerier } from "utils/oversightCommunity";
 import * as Yup from "yup";
 
 import { ButtonGroup, MemberTexts, PunishmentRow, Separator } from "./style";
@@ -51,9 +51,6 @@ export default function FormPunishOCMember({
     sdkState: { config, client },
   } = useSdk();
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
-  const {
-    ocState: { ocAddress },
-  } = useOc();
 
   // NOTE: Have local state for these because otherwise when entering
   //       the distribution list the form resets and wipes the fields
@@ -68,17 +65,17 @@ export default function FormPunishOCMember({
 
   useEffect(() => {
     (async function updateMemberEscrow() {
-      if (!ocAddress || !client || !memberToPunishInit) return;
+      if (!client || !memberToPunishInit) return;
 
       if (!isValidAddress(memberToPunishInit, config.addressPrefix)) {
         setMemberEscrowInit("0");
         return;
       }
 
-      const dsoContract = new DsoContractQuerier(ocAddress, client);
+      const ocContract = new OcContractQuerier(config, client);
 
       try {
-        const escrowResponse = await dsoContract.getEscrow(memberToPunishInit);
+        const escrowResponse = await ocContract.getEscrow(memberToPunishInit);
         if (!escrowResponse) throw new Error("No escrow found for user");
 
         const decimals = config.coinMap[config.feeToken].fractionalDigits;
@@ -88,7 +85,7 @@ export default function FormPunishOCMember({
         setMemberEscrowInit("0");
       }
     })();
-  }, [client, config.addressPrefix, config.coinMap, config.feeToken, memberToPunishInit, ocAddress]);
+  }, [client, config, memberToPunishInit]);
 
   useEffect(() => {
     const distributionListArray = addressStringToArray(distributionListString);

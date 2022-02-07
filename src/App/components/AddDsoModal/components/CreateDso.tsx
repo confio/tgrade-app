@@ -7,8 +7,8 @@ import { useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { gtagDsoAction } from "utils/analytics";
 import { displayAmountToNative } from "utils/currency";
-import { DsoContract } from "utils/dso";
 import { getErrorFromStackTrace } from "utils/errors";
+import { TcContract } from "utils/trustedCircle";
 
 import { ModalHeader, Separator } from "../style";
 import FormDsoBasicData, { FormDsoBasicDataValues } from "./FormDsoBasicData";
@@ -70,7 +70,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
     try {
       const nativeEscrowAmount = displayAmountToNative(escrowAmount, config.coinMap, config.feeToken);
 
-      const contractAddress = await DsoContract.createDso(
+      const contractAddress = await TcContract.createTc(
         signingClient,
         config.codeIds?.tgradeDso[0],
         address,

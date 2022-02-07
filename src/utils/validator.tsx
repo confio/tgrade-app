@@ -1,9 +1,10 @@
-import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { calculateFee, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { NetworkConfig } from "config/network";
+import { useEffect, useState } from "react";
 
 export interface ValidatorMetadata {
   /// The validator's name (required)
@@ -23,6 +24,11 @@ export interface OperatorResponse {
   readonly pubkey: any;
   readonly metadata: ValidatorMetadata;
   readonly jailed_until?: any;
+}
+
+interface ValidatorResponse {
+  /// This is unset if no validator registered
+  readonly validator?: OperatorResponse | null;
 }
 
 interface ListValidatorResponse {
@@ -62,6 +68,15 @@ export class ValidatorContractQuerier {
 
     const { address } = await queryService.ContractAddress({ contractType: PoEContractType.VALSET });
     this.valAddress = address;
+  }
+
+  async getValidator(operatorAddress: string): Promise<OperatorResponse | undefined> {
+    await this.initAddress();
+    if (!this.valAddress) throw new Error("no valAddress");
+    const query = { validator: { operator: operatorAddress } };
+    const { validator }: ValidatorResponse = await this.client.queryContractSmart(this.valAddress, query);
+
+    return validator ?? undefined;
   }
 
   async getValidators(startAfter?: string): Promise<readonly OperatorResponse[]> {
@@ -105,4 +120,69 @@ export class ValidatorContractQuerier {
     );
     return slashing;
   }
+}
+
+export class ValidatorContract extends ValidatorContractQuerier {
+  static readonly GAS_UNJAIL = 500_000;
+
+  readonly #signingClient: SigningCosmWasmClient;
+
+  constructor(config: NetworkConfig, signingClient: SigningCosmWasmClient) {
+    super(config, signingClient);
+    this.#signingClient = signingClient;
+  }
+
+  async unjailSelf(validatorAddress: string): Promise<string> {
+    await this.initAddress();
+    if (!this.valAddress) throw new Error("no valAddress");
+
+    const msg = { unjail: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      validatorAddress,
+      this.valAddress,
+      msg,
+      calculateFee(ValidatorContract.GAS_UNJAIL, this.config.gasPrice),
+    );
+
+    return transactionHash;
+  }
+}
+
+interface ValidatorsLoader {
+  readonly status: "idle" | "loadingFirstPage" | "loadingRestPages" | "done";
+  readonly validators: readonly OperatorResponse[];
+}
+
+export function useLoadValidatorsBg(config: NetworkConfig, client?: CosmWasmClient): ValidatorsLoader {
+  const [status, setStatus] = useState<ValidatorsLoader["status"]>("idle");
+  const [validators, setValidators] = useState<ValidatorsLoader["validators"]>([]);
+
+  const lastOperatorAddress: string | undefined = validators[validators.length - 1]?.operator;
+
+  useEffect(() => {
+    (async function () {
+      if (!client || status === "done") return;
+      const valContract = new ValidatorContractQuerier(config, client);
+
+      if (status === "idle") {
+        setStatus("loadingFirstPage");
+        const validators = await valContract.getValidators();
+        setValidators(validators);
+        setStatus("loadingRestPages");
+        return;
+      }
+
+      if (status === "loadingRestPages") {
+        const nextValidators = await valContract.getValidators(lastOperatorAddress);
+
+        if (nextValidators.length) {
+          setValidators((validators) => [...validators, ...nextValidators]);
+        } else {
+          setStatus("done");
+        }
+      }
+    })();
+  }, [client, config, lastOperatorAddress, status]);
+
+  return { status, validators };
 }
