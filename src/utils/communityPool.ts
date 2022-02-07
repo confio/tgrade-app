@@ -44,6 +44,8 @@ export type Expiration = {
   readonly never: Record<string, unknown>;
 };
 
+export type Cw3Status = "pending" | "open" | "rejected" | "passed" | "executed";
+
 export interface Votes {
   readonly yes: number;
   readonly no: number;
@@ -80,6 +82,10 @@ export interface VoteInfo {
 
 export interface VoteResponse {
   readonly vote: VoteInfo | null;
+}
+
+export interface VoteListResponse {
+  readonly votes: readonly VoteInfo[];
 }
 
 export class CommunityPoolContractQuerier {
@@ -144,6 +150,36 @@ export class CommunityPoolContractQuerier {
       query,
     );
     return proposalResponse;
+  }
+
+  async getVotes(proposalId: number, startAfter?: string): Promise<readonly VoteInfo[]> {
+    await this.initAddress();
+    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+
+    const query = {
+      list_votes: {
+        proposal_id: proposalId,
+        start_after: startAfter,
+      },
+    };
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(
+      this.communityPoolAddress,
+      query,
+    );
+    return votes;
+  }
+
+  async getAllVotes(proposalId: number): Promise<readonly VoteInfo[]> {
+    let votes: readonly VoteInfo[] = [];
+    let nextVotes: readonly VoteInfo[] = [];
+
+    do {
+      const lastVoterAddress = votes[votes.length - 1]?.voter;
+      nextVotes = await this.getVotes(proposalId, lastVoterAddress);
+      votes = [...votes, ...nextVotes];
+    } while (nextVotes.length);
+
+    return votes;
   }
 
   async getVote(proposalId: number, voter: string): Promise<VoteResponse> {

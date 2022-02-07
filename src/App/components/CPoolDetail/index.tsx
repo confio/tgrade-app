@@ -5,8 +5,7 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { CommunityPoolContractQuerier, ProposalResponse } from "utils/communityPool";
-import { Cw3Status } from "utils/dso";
+import { CommunityPoolContractQuerier, Cw3Status, ProposalResponse } from "utils/communityPool";
 
 import Stack from "../Stack/style";
 import { ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
