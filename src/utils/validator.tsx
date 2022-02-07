@@ -4,6 +4,7 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { NetworkConfig } from "config/network";
+import { useEffect, useState } from "react";
 
 export interface ValidatorMetadata {
   /// The validator's name (required)
@@ -145,4 +146,43 @@ export class ValidatorContract extends ValidatorContractQuerier {
 
     return transactionHash;
   }
+}
+
+interface ValidatorsLoader {
+  readonly status: "idle" | "loadingFirstPage" | "loadingRestPages" | "done";
+  readonly validators: readonly OperatorResponse[];
+}
+
+export function useLoadValidatorsBg(config: NetworkConfig, client?: CosmWasmClient): ValidatorsLoader {
+  const [status, setStatus] = useState<ValidatorsLoader["status"]>("idle");
+  const [validators, setValidators] = useState<ValidatorsLoader["validators"]>([]);
+
+  const lastOperatorAddress: string | undefined = validators[validators.length - 1]?.operator;
+
+  useEffect(() => {
+    (async function () {
+      if (!client || status === "done") return;
+      const valContract = new ValidatorContractQuerier(config, client);
+
+      if (status === "idle") {
+        setStatus("loadingFirstPage");
+        const validators = await valContract.getValidators();
+        setValidators(validators);
+        setStatus("loadingRestPages");
+        return;
+      }
+
+      if (status === "loadingRestPages") {
+        const nextValidators = await valContract.getValidators(lastOperatorAddress);
+
+        if (nextValidators.length) {
+          setValidators((validators) => [...validators, ...nextValidators]);
+        } else {
+          setStatus("done");
+        }
+      }
+    })();
+  }, [client, config, lastOperatorAddress, status]);
+
+  return { status, validators };
 }

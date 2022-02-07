@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { EngagementContractQuerier } from "utils/poeEngagement";
 import { ellipsifyAddress } from "utils/ui";
-import { OperatorResponse, ValidatorContractQuerier } from "utils/validator";
+import { OperatorResponse, useLoadValidatorsBg, ValidatorContractQuerier } from "utils/validator";
 
 import { ValidatorDetail } from "../ValidatorDetail";
 import { StyledTable } from "./style";
@@ -131,7 +131,12 @@ const columns: ColumnProps<ValidatorType>[] = [
   },
 ];
 export default function ValidatorOverview(): JSX.Element | null {
-  const [isTableLoading, setTableLoading] = useState(true);
+  const { handleError } = useError();
+  const {
+    sdkState: { client, config },
+  } = useSdk();
+
+  const { validators, status: validatorLoadingStatus } = useLoadValidatorsBg(config, client);
   const [validatorList, setValidatorList] = useState<readonly ValidatorType[]>([]);
   const [blockchainValues, setBlockchainValues] = useState<BlockchainValues>({
     totalEgPoints: 0,
@@ -139,10 +144,6 @@ export default function ValidatorOverview(): JSX.Element | null {
     totalTGD: 0,
   });
   const [selectedValidator, setSelectedValidator] = useState<ValidatorType>();
-  const { handleError } = useError();
-  const {
-    sdkState: { client, config },
-  } = useSdk();
 
   const reloadValidator = useCallback(async (): Promise<void> => {
     if (!selectedValidator || !client) return;
@@ -178,7 +179,6 @@ export default function ValidatorOverview(): JSX.Element | null {
 
       try {
         const valContract = new ValidatorContractQuerier(config, client);
-        const validators = await valContract.getAllValidators();
         const valActive = await valContract.getActiveValidators();
         const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
 
@@ -211,11 +211,9 @@ export default function ValidatorOverview(): JSX.Element | null {
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
-      } finally {
-        setTableLoading(false);
       }
     })();
-  }, [client, config, handleError]);
+  }, [client, config, handleError, validators]);
 
   return (
     <div style={{ width: "100%" }}>
@@ -229,7 +227,7 @@ export default function ValidatorOverview(): JSX.Element | null {
         reloadValidator={reloadValidator}
       />
       <StyledTable
-        loading={isTableLoading}
+        loading={validatorLoadingStatus === "loadingFirstPage"}
         pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
         dataSource={validatorList}
         columns={columns as any}
