@@ -214,7 +214,7 @@ export const ExecuteButton = styled(Button)`
   background-color: #fff;
   color: #000;
   &:hover {
-    background-color: #8692a6;
+    background-color: #0bb0b1;
     color: #fff;
   }
 `;
