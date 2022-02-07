@@ -1,5 +1,5 @@
+import { Tooltip } from "antd";
 import copyToClipboard from "clipboard-copy";
-import * as React from "react";
 import { ComponentProps } from "react";
 import { useSdk } from "service";
 import { ellipsifyAddress } from "utils/ui";
@@ -30,14 +30,16 @@ export default function AddressTag({
   } = useSdk();
 
   return (
-    <StyledAddressTag
-      icon={copyable ? <CopyIconImg /> : undefined}
-      onClick={copyable ? () => copyToClipboard(address) : undefined}
-      {...restProps}
-    >
-      {short ? ellipsifyAddress(address) : address}
+    <Tooltip trigger="click" title="Address Copied">
+      <StyledAddressTag
+        icon={copyable ? <CopyIconImg /> : undefined}
+        onClick={copyable ? () => copyToClipboard(address) : undefined}
+        {...restProps}
+      >
+        {short ? ellipsifyAddress(address) : address}
 
-      {myAddress === address && !noYou ? <span className="your-address">(you)</span> : null}
-    </StyledAddressTag>
+        {myAddress === address && !noYou ? <span className="your-address">(you)</span> : null}
+      </StyledAddressTag>
+    </Tooltip>
   );
 }
