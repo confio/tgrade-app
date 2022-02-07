@@ -194,7 +194,7 @@ export function ValidatorDetail({
                   <b>{validator.rewards} /</b> <p> {blockchainValues.totalEgRewards}</p>
                 </StyledInfoRow>
                 <Button type="ghost" onClick={() => setDistributionModalOpen(true)}>
-                  Claim rewards
+                  Claimed Engagement
                 </Button>
               </StyledCard>
               <StyledCard>
