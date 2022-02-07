@@ -184,7 +184,11 @@ export interface VoteInfo {
 }
 
 export interface VoteResponse {
-  readonly vote: VoteInfo | null;
+  readonly vote?: VoteInfo | null;
+}
+
+export interface VoteListResponse {
+  readonly votes: readonly VoteInfo[];
 }
 
 export interface Member {
@@ -420,6 +424,71 @@ export class OcContractQuerier {
     const mixedResponse: MixedProposalResponse = { ...proposalResponse, mixedId };
 
     return mixedResponse;
+  }
+
+  async getTcVotes(proposalId: number, startAfter: string): Promise<readonly VoteInfo[]> {
+    await this.initAddress();
+    if (!this.ocAddress) throw new Error("ocAddress was not set");
+
+    const query = {
+      list_votes_by_proposal: {
+        proposal_id: proposalId,
+        start_after: startAfter,
+      },
+    };
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.ocAddress, query);
+    return votes;
+  }
+
+  async getAllTcVotes(proposalId: number): Promise<readonly VoteInfo[]> {
+    let votes: readonly VoteInfo[] = [];
+    let nextVotes: readonly VoteInfo[] = [];
+
+    do {
+      const lastVoterAddress = votes[votes.length - 1]?.voter;
+      nextVotes = await this.getTcVotes(proposalId, lastVoterAddress);
+      votes = [...votes, ...nextVotes];
+    } while (nextVotes.length);
+
+    return votes;
+  }
+
+  async getOcVotes(proposalId: number, startAfter: string): Promise<readonly VoteInfo[]> {
+    await this.initAddress();
+    if (!this.ocProposalsAddress) throw new Error("ocProposalsAddress was not set");
+
+    const query = {
+      list_votes: {
+        proposal_id: proposalId,
+        start_after: startAfter,
+      },
+    };
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.ocProposalsAddress, query);
+    return votes;
+  }
+
+  async getAllOcVotes(proposalId: number): Promise<readonly VoteInfo[]> {
+    let votes: readonly VoteInfo[] = [];
+    let nextVotes: readonly VoteInfo[] = [];
+
+    do {
+      const lastVoterAddress = votes[votes.length - 1]?.voter;
+      nextVotes = await this.getOcVotes(proposalId, lastVoterAddress);
+      votes = [...votes, ...nextVotes];
+    } while (nextVotes.length);
+
+    return votes;
+  }
+
+  async getAllMixedVotes(mixedId: MixedProposalResponseId): Promise<readonly VoteInfo[]> {
+    const proposalIdType = mixedId.slice(0, 2);
+    const proposalIdNumber = parseInt(mixedId.slice(2), 10);
+
+    const votes = await (proposalIdType === "tc"
+      ? this.getAllTcVotes(proposalIdNumber)
+      : this.getAllOcVotes(proposalIdNumber));
+
+    return votes;
   }
 
   async getTcVote(proposalId: number, voter: string): Promise<VoteResponse> {

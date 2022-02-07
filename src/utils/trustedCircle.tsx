@@ -174,7 +174,11 @@ export interface VoteInfo {
 }
 
 export interface VoteResponse {
-  readonly vote: VoteInfo | null;
+  readonly vote?: VoteInfo | null;
+}
+
+export interface VoteListResponse {
+  readonly votes: readonly VoteInfo[];
 }
 
 export interface Member {
@@ -331,6 +335,30 @@ export class TcContractQuerier {
     const query = { proposal: { proposal_id: proposalId } };
     const proposalResponse: TcProposalResponse = await this.client.queryContractSmart(this.address, query);
     return proposalResponse;
+  }
+
+  async getVotes(proposalId: number, startAfter?: string): Promise<readonly VoteInfo[]> {
+    const query = {
+      list_votes_by_proposal: {
+        proposal_id: proposalId,
+        start_after: startAfter,
+      },
+    };
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.address, query);
+    return votes;
+  }
+
+  async getAllVotes(proposalId: number): Promise<readonly VoteInfo[]> {
+    let votes: readonly VoteInfo[] = [];
+    let nextVotes: readonly VoteInfo[] = [];
+
+    do {
+      const lastVoterAddress = votes[votes.length - 1]?.voter;
+      nextVotes = await this.getVotes(proposalId, lastVoterAddress);
+      votes = [...votes, ...nextVotes];
+    } while (nextVotes.length);
+
+    return votes;
   }
 
   async getVote(proposalId: number, voter: string): Promise<VoteResponse> {

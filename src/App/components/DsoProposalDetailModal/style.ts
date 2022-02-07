@@ -1,4 +1,4 @@
-import { Button, Divider, Modal, Typography } from "antd";
+import { Button, Collapse, Divider, Modal, Typography } from "antd";
 import Stack from "App/components/Stack/style";
 import styled from "styled-components";
 
@@ -246,5 +246,23 @@ export const RejectButton = styled(Button)`
   &:hover {
     background-color: #ff6465;
     color: #000;
+  }
+`;
+
+export const StyledCollapse = styled(Collapse)`
+  flex-basis: 100%;
+
+  &.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding: 0;
+    display: flex;
+    align-items: center;
+
+    & > div {
+      flex-basis: 100%;
+    }
+  }
+
+  & .ant-collapse-content > .ant-collapse-content-box {
+    padding: 0;
   }
 `;
