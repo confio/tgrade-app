@@ -54,7 +54,7 @@ export default function ProposalUpdateConsensusEvidenceParams({
 
     try {
       const validatorVotingContract = new ValidatorVotingContract(config, signingClient);
-      const transactionHash = await validatorVotingContract.propose(address, comment, {
+      const { txHash } = await validatorVotingContract.propose(address, comment, {
         update_consensus_evidence_params: {
           max_age_num_blocks: parseInt(maxAgeNumBlocks, 10),
           max_age_duration: parseInt(maxAgeDuration, 10),
@@ -63,7 +63,7 @@ export default function ProposalUpdateConsensusEvidenceParams({
       });
 
       setTxResult({
-        msg: `Created proposal for updating consensus evidence params. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for updating consensus evidence params. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

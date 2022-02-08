@@ -46,13 +46,13 @@ export default function ProposalSendTokens({
     try {
       const cPoolContract = new CommunityPoolContract(config, signingClient);
       const nativeAmount = displayAmountToNative(tokensAmount, config.coinMap, config.feeToken);
-      const transactionHash = await cPoolContract.proposeSend(address, comment, {
+      const { txHash } = await cPoolContract.proposeSend(address, comment, {
         to_addr: receiver,
         amount: { denom: config.feeToken, amount: nativeAmount },
       });
 
       setTxResult({
-        msg: `Created proposal for sending tokens from Community Pool. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for sending tokens from Community Pool. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

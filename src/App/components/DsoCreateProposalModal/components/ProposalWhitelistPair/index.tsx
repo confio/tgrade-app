@@ -108,13 +108,13 @@ export default function ProposalWhitelistPair({
 
     try {
       const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
+      const { txHash } = await dsoContract.propose(address, comment, {
         whitelist_contract: pairAddress,
       });
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({
-        msg: `Created proposal for whitelisting pair to ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for whitelisting pair to ${dsoName} (${dsoAddress}). Transaction ID: ${txHash}`,
       });
       gtagProposalAction("whitelist_success");
     } catch (error) {

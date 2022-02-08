@@ -134,6 +134,11 @@ export type MixedProposalResponse = (TcProposalResponse | OcProposalResponse) & 
   readonly mixedId: MixedProposalResponseId;
 };
 
+export interface OcProposeResponse {
+  readonly txHash: string;
+  readonly proposalId?: MixedProposalResponseId;
+}
+
 export function isOcProposalResponse(
   response: TcProposalResponse | OcProposalResponse,
 ): response is OcProposalResponse {
@@ -600,7 +605,7 @@ export class OcContract extends OcContractQuerier {
     senderAddress: string,
     description: string,
     proposal: TcProposal | OcProposal,
-  ): Promise<string> {
+  ): Promise<OcProposeResponse> {
     await this.initAddress();
     if (!this.ocAddress) throw new Error("ocAddress was not set");
     if (!this.ocProposalsAddress) throw new Error("ocProposalsAddress was not set");
@@ -610,13 +615,25 @@ export class OcContract extends OcContractQuerier {
     const title = getProposalTitle(proposal);
     const msg = { propose: { title, description, proposal } };
 
-    const { transactionHash } = await this.#signingClient.execute(
+    const result = await this.#signingClient.execute(
       senderAddress,
       queryAddress,
       msg,
       calculateFee(OcContract.GAS_PROPOSE, this.config.gasPrice),
     );
-    return transactionHash;
+
+    const proposalIdAttr = result.logs
+      .flatMap((log) => log.events)
+      .flatMap((event) => event.attributes)
+      .find((attr) => attr.key === "proposal_id");
+
+    const proposalPrefix = isOcProposal(proposal) ? "oc" : "tc";
+
+    const proposalId: MixedProposalResponseId | undefined = proposalIdAttr
+      ? `${proposalPrefix}${parseInt(proposalIdAttr.value, 10)}`
+      : undefined;
+
+    return { txHash: result.transactionHash, proposalId };
   }
 
   async voteProposal(
