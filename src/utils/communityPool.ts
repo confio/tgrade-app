@@ -265,8 +265,6 @@ export class CommunityPoolContract extends CommunityPoolContractQuerier {
 
     const proposalId = proposalIdAttr ? parseInt(proposalIdAttr.value, 10) : undefined;
 
-    console.log({ proposalId });
-
     return { txHash: result.transactionHash, proposalId };
   }
 

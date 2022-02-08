@@ -633,8 +633,6 @@ export class OcContract extends OcContractQuerier {
       ? `${proposalPrefix}${parseInt(proposalIdAttr.value, 10)}`
       : undefined;
 
-    console.log({ proposalId });
-
     return { txHash: result.transactionHash, proposalId };
   }
 
