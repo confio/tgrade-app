@@ -85,11 +85,11 @@ export default function ProposalPunishVotingParticipant({
             },
           };
 
-      const transactionHash = await dsoContract.propose(address, comment, { punish_members: [punishment] });
+      const { txHash } = await dsoContract.propose(address, comment, { punish_members: [punishment] });
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({
-        msg: `Created proposal for punishing voting member to ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for punishing voting member to ${dsoName} (${dsoAddress}). Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

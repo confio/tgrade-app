@@ -51,13 +51,13 @@ export default function ProposalAddVotingParticipants({
 
     try {
       const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
+      const { txHash } = await dsoContract.propose(address, comment, {
         add_voting_members: { voters: members },
       });
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({
-        msg: `Created proposal for adding voting participants to ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for adding voting participants to ${dsoName} (${dsoAddress}). Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

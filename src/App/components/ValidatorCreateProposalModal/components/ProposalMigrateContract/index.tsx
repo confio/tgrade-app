@@ -48,7 +48,7 @@ export default function ProposalMigrateContract({
 
     try {
       const validatorVotingContract = new ValidatorVotingContract(config, signingClient);
-      const transactionHash = await validatorVotingContract.propose(address, comment, {
+      const { txHash } = await validatorVotingContract.propose(address, comment, {
         migrate_contract: {
           contract,
           code_id: parseInt(codeId, 10),
@@ -57,7 +57,7 @@ export default function ProposalMigrateContract({
       });
 
       setTxResult({
-        msg: `Created proposal for migrating contract. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for migrating contract. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

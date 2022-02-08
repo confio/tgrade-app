@@ -114,7 +114,7 @@ export default function ProposalEditDso({
       const nativethreshold = threshold ? (parseFloat(threshold) / 100).toString() : undefined;
 
       const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
+      const { txHash } = await dsoContract.propose(address, comment, {
         edit_trusted_circle: {
           name: dsoName === currentDsoValues.dsoName ? undefined : dsoName,
           escrow_amount: nativeEscrowAmount,
@@ -127,7 +127,7 @@ export default function ProposalEditDso({
       });
 
       setTxResult({
-        msg: `Created proposal for editing ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for editing ${dsoName} (${dsoAddress}). Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
