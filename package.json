@@ -65,7 +65,11 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@cypress/browserify-preprocessor": "^3.0.2",
+    "@testing-library/cypress": "^8.0.2",
     "axios": "^0.24.0",
+    "cypress": "^9.4.1",
+    "cypress-cucumber-preprocessor": "^4.3.1",
     "firebase-tools": "^9.21.0",
     "ts-proto": "^1.85.0"
   },
@@ -87,11 +91,15 @@
     "lint": "npx eslint src/**/*.ts{,x} --max-warnings 0",
     "compile": "tsc",
     "format": "prettier --write --loglevel warn \"./src/**/*.ts{,x}\" --ignore-path \"./.custom-prettierignore\"",
-    "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh && prettier --write --loglevel warn \"./src/codec/**/*.ts\""
+    "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh && prettier --write --loglevel warn \"./src/codec/**/*.ts\"",
+    "cy:chrome:headless": "cypress run --browser chrome --headless"
   },
   "browserslist": [
     "last 2 chrome versions",
     "last 2 firefox versions",
     "last 2 safari versions"
-  ]
+  ],
+  "cypress-cucumber-preprocessor": {
+    "step_definitions": "cypress/steps-definition/"
+  }
 }
