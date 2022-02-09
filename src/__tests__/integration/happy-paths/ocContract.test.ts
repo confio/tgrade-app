@@ -8,6 +8,8 @@ import { Bech32 } from "@cosmjs/encoding";
 
 const mnemonic = process.env.SECRET_MNEMONIC || ""; // to run locally use real mnemonic instead
 const addressPrefix = "tgrade";
+const comment = "Add new member";
+const memberToAdd = makeRandomAddress();
 
 it("creates OC proposal with Oversight Community member", async () => {
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -16,11 +18,7 @@ it("creates OC proposal with Oversight Community member", async () => {
   });
 
   const signingClient = await createSigningClient(config, wallet);
-
   const { address } = (await wallet.getAccounts())[0];
-
-  const comment = "Add new member";
-  const memberToAdd = makeRandomAddress();
 
   const OcCommunity = new OcContract(config, signingClient);
 
@@ -29,6 +27,9 @@ it("creates OC proposal with Oversight Community member", async () => {
       voters: [memberToAdd],
     },
   });
+
+  expect(oC.proposalId).toBeTruthy();
+  if (!oC.proposalId) return;
 
   const txHash = await OcCommunity.executeProposal(address, oC.proposalId);
 
