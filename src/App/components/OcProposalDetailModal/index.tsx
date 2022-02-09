@@ -1,4 +1,5 @@
 import { calculateFee } from "@cosmjs/stargate";
+import { Collapse } from "antd";
 import { ReactComponent as AbstainIcon } from "App/assets/icons/abstain-icon.svg";
 import closeIcon from "App/assets/icons/cross.svg";
 import { ReactComponent as RejectIcon } from "App/assets/icons/no-icon.svg";
@@ -20,9 +21,11 @@ import {
   MixedProposalResponseId,
   OcContract,
   OcContractQuerier,
+  VoteInfo,
 } from "utils/oversightCommunity";
 import { isTcProposalResponse, VoteOption } from "utils/trustedCircle";
 
+import VotesTable from "../VotesTable";
 import ProposalAddOCMembers from "./components/ProposalAddOCMembers";
 import ProposalGrantEngagementPoints from "./components/ProposalGrantEngagementPoints";
 import ProposalPunishOCMember from "./components/ProposalPunishOCMember";
@@ -38,6 +41,7 @@ import {
   RejectButton,
   SectionWrapper,
   Separator,
+  StyledCollapse,
   StyledModal,
   Text,
   TextValue,
@@ -64,6 +68,7 @@ export default function OcProposalDetailModal({
 
   const [submitting, setSubmitting] = useState<VoteOption | "executing">();
   const [txResult, setTxResult] = useState<TxResult>();
+
   const [hasVoted, setHasVoted] = useState(false);
 
   const [txFee, setTxFee] = useState("0");
@@ -87,6 +92,26 @@ export default function OcProposalDetailModal({
     proposal && isOcProposalResponse(proposal) ? proposal.proposal.punish : undefined;
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
+
+  const [isTableLoading, setTableLoading] = useState(false);
+  const [votes, setVotes] = useState<readonly VoteInfo[]>([]);
+  useEffect(() => {
+    (async function queryVotes() {
+      if (!client || !mixedProposalId) return;
+
+      try {
+        const ocContract = new OcContractQuerier(config, client);
+        setTableLoading(true);
+        const votes = await ocContract.getAllMixedVotes(mixedProposalId);
+        setVotes(votes);
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      } finally {
+        setTableLoading(false);
+      }
+    })();
+  }, [client, config, handleError, mixedProposalId]);
 
   useEffect(() => {
     if (!signingClient) return;
@@ -265,24 +290,35 @@ export default function OcProposalDetailModal({
               </Stack>
               <Separator />
               <SectionWrapper>
-                <Text>Progress And results</Text>
-                <SectionWrapper>
-                  <Paragraph>
-                    Total voted:
-                    <b>
-                      {calculateTotalVotes()} of {proposal.total_weight}
-                    </b>
-                  </Paragraph>
-                  <Paragraph>
-                    Yes: <b>{proposal.votes.yes ?? 0}</b>
-                  </Paragraph>
-                  <Paragraph>
-                    No: <b>{proposal.votes.no ?? 0}</b>
-                  </Paragraph>
-                  <Paragraph>
-                    Abstain: <b>{proposal.votes.abstain ?? 0}</b>
-                  </Paragraph>
-                </SectionWrapper>
+                <StyledCollapse ghost>
+                  <Collapse.Panel
+                    key="1"
+                    header={
+                      <SectionWrapper>
+                        <Text>Progress and results</Text>
+                        <SectionWrapper>
+                          <Paragraph>
+                            Total voted:
+                            <b>
+                              {calculateTotalVotes()} of {proposal.total_weight}
+                            </b>
+                          </Paragraph>
+                          <Paragraph>
+                            Yes: <b>{proposal.votes.yes ?? 0}</b>
+                          </Paragraph>
+                          <Paragraph>
+                            No: <b>{proposal.votes.no ?? 0}</b>
+                          </Paragraph>
+                          <Paragraph>
+                            Abstain: <b>{proposal.votes.abstain ?? 0}</b>
+                          </Paragraph>
+                        </SectionWrapper>
+                      </SectionWrapper>
+                    }
+                  >
+                    <VotesTable isLoading={isTableLoading} votes={votes} />
+                  </Collapse.Panel>
+                </StyledCollapse>
               </SectionWrapper>
               <Separator />
               <SectionWrapper>

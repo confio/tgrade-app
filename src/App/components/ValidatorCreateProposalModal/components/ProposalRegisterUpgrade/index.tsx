@@ -47,12 +47,12 @@ export default function ProposalRegisterUpgrade({
 
     try {
       const validatorVotingContract = new ValidatorVotingContract(config, signingClient);
-      const transactionHash = await validatorVotingContract.propose(address, comment, {
+      const { txHash } = await validatorVotingContract.propose(address, comment, {
         register_upgrade: { name, height: parseInt(height, 10), info },
       });
 
       setTxResult({
-        msg: `Created proposal for registering upgrade. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for registering upgrade. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

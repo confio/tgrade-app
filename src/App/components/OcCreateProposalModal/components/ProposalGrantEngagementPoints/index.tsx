@@ -47,7 +47,7 @@ export default function ProposalGrantEngagementPoints({
 
     try {
       const ocContract = new OcContract(config, signingClient);
-      const transactionHash = await ocContract.propose(address, comment, {
+      const { txHash } = await ocContract.propose(address, comment, {
         grant_engagement: {
           member,
           points: parseInt(points, 10),
@@ -55,7 +55,7 @@ export default function ProposalGrantEngagementPoints({
       });
 
       setTxResult({
-        msg: `Created proposal for granting Engagement Points from Oversight Community Proposals. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for granting Engagement Points from Oversight Community Proposals. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

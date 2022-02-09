@@ -49,7 +49,7 @@ export default function ProposalRemoveParticipants({
 
     try {
       const dsoContract = new TcContract(dsoAddress, signingClient, config.gasPrice);
-      const transactionHash = await dsoContract.propose(address, comment, {
+      const { txHash } = await dsoContract.propose(address, comment, {
         add_remove_non_voting_members: {
           remove: members,
           add: [],
@@ -58,7 +58,7 @@ export default function ProposalRemoveParticipants({
 
       const dsoName = getDsoName(dsos, dsoAddress);
       setTxResult({
-        msg: `Created proposal for removing participants from ${dsoName} (${dsoAddress}). Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for removing participants from ${dsoName} (${dsoAddress}). Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
