@@ -48,10 +48,6 @@
           "address": "tgrade1a7pa85nwuwyrzkvp0qjdzd40wzrs75zneh3vcq",
           "coins": [
             {
-              "amount": "1000000000",
-              "denom": "node0token"
-            },
-            {
               "amount": "500000000",
               "denom": "utgd"
             }
@@ -63,7 +59,12 @@
         "default_send_enabled": true,
         "send_enabled": []
       },
-      "supply": []
+      "supply": [
+        {
+          "amount": "101500000000",
+          "denom": "utgd"
+        }
+      ]
     },
     "capability": {
       "index": "1",
@@ -78,6 +79,7 @@
     "evidence": {
       "evidence": []
     },
+    "feegrant": {},
     "globalfee": {
       "params": {
         "minimum_gas_prices": []
@@ -102,7 +104,10 @@
       },
       "connection_genesis": {
         "client_connection_paths": [],
-        "connections": []
+        "connections": [],
+        "params": {
+          "max_expected_time_per_block": "30000000000"
+        }
       }
     },
     "params": null,
