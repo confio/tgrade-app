@@ -3,13 +3,11 @@ import { createSigningClient } from "utils/sdk";
 import { OcContract } from "../../../utils/oversightCommunity";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
-import { Bip39, Random } from "@cosmjs/crypto";
+
+const mnemonic = process.env.SECRET_MNEMONIC;
 
 describe("create a signing client using the mnemonic", async () => {
   it("creates proposal for Add Oversight Community member", async () => {
-    //should be discuss were we can keep secret mnemonic (with tokens)
-    const mnemonic = Bip39.encode(Random.getBytes(16)).toString();
-
     const addressPrefix = "tgrade";
 
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
