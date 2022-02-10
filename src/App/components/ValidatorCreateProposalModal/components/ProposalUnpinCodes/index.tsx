@@ -44,12 +44,12 @@ export default function ProposalUnpinCodes({
     try {
       const validatorVotingContract = new ValidatorVotingContract(config, signingClient);
       const codeIdNumbers = codeIds.map((codeId) => parseInt(codeId, 10));
-      const transactionHash = await validatorVotingContract.propose(address, comment, {
+      const { txHash } = await validatorVotingContract.propose(address, comment, {
         unpin_codes: codeIdNumbers,
       });
 
       setTxResult({
-        msg: `Created proposal for unpinning codes. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for unpinning codes. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

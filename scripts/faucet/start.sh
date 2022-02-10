@@ -13,6 +13,7 @@ export FAUCET_MNEMONIC="now mesh clog card twin rather knee head fancy matrix sp
 export FAUCET_GAS_PRICE=0.025utgd
 export FAUCET_ADDRESS_PREFIX=tgrade
 export FAUCET_TOKENS=utgd
+export FAUCET_GAS_LIMIT=100000
 
 # docker pull "$REPOSITORY:$VERSION"
 
@@ -23,6 +24,7 @@ docker run --read-only --rm \
   -e FAUCET_GAS_PRICE \
   -e FAUCET_ADDRESS_PREFIX \
   -e FAUCET_TOKENS \
+  -e FAUCET_GAS_LIMIT \
   --name "$CONTAINER_NAME" \
   -p 8000:8000 \
   "$REPOSITORY:$VERSION" \

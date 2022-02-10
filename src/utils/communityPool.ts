@@ -73,6 +73,11 @@ export interface ProposalListResponse {
   readonly proposals: readonly ProposalResponse[];
 }
 
+export interface CPoolProposeResponse {
+  readonly txHash: string;
+  readonly proposalId?: number;
+}
+
 export interface VoteInfo {
   readonly voter: string;
   readonly vote: VoteOption;
@@ -230,7 +235,11 @@ export class CommunityPoolContract extends CommunityPoolContractQuerier {
     this.#signingClient = signingClient;
   }
 
-  async proposeSend(senderAddress: string, description: string, sendProposal: SendProposal): Promise<string> {
+  async proposeSend(
+    senderAddress: string,
+    description: string,
+    sendProposal: SendProposal,
+  ): Promise<CPoolProposeResponse> {
     await this.initAddress();
     if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
 
@@ -242,13 +251,21 @@ export class CommunityPoolContract extends CommunityPoolContractQuerier {
       },
     };
 
-    const { transactionHash } = await this.#signingClient.execute(
+    const result = await this.#signingClient.execute(
       senderAddress,
       this.communityPoolAddress,
       msg,
       calculateFee(CommunityPoolContract.GAS_PROPOSE, this.config.gasPrice),
     );
-    return transactionHash;
+
+    const proposalIdAttr = result.logs
+      .flatMap((log) => log.events)
+      .flatMap((event) => event.attributes)
+      .find((attr) => attr.key === "proposal_id");
+
+    const proposalId = proposalIdAttr ? parseInt(proposalIdAttr.value, 10) : undefined;
+
+    return { txHash: result.transactionHash, proposalId };
   }
 
   async voteProposal(senderAddress: string, proposalId: number, vote: VoteOption): Promise<string> {
