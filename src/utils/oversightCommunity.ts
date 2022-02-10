@@ -134,6 +134,11 @@ export type MixedProposalResponse = (TcProposalResponse | OcProposalResponse) & 
   readonly mixedId: MixedProposalResponseId;
 };
 
+export interface OcProposeResponse {
+  readonly txHash: string;
+  readonly proposalId?: MixedProposalResponseId;
+}
+
 export function isOcProposalResponse(
   response: TcProposalResponse | OcProposalResponse,
 ): response is OcProposalResponse {
@@ -184,7 +189,11 @@ export interface VoteInfo {
 }
 
 export interface VoteResponse {
-  readonly vote: VoteInfo | null;
+  readonly vote?: VoteInfo | null;
+}
+
+export interface VoteListResponse {
+  readonly votes: readonly VoteInfo[];
 }
 
 export interface Member {
@@ -422,6 +431,71 @@ export class OcContractQuerier {
     return mixedResponse;
   }
 
+  async getTcVotes(proposalId: number, startAfter: string): Promise<readonly VoteInfo[]> {
+    await this.initAddress();
+    if (!this.ocAddress) throw new Error("ocAddress was not set");
+
+    const query = {
+      list_votes_by_proposal: {
+        proposal_id: proposalId,
+        start_after: startAfter,
+      },
+    };
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.ocAddress, query);
+    return votes;
+  }
+
+  async getAllTcVotes(proposalId: number): Promise<readonly VoteInfo[]> {
+    let votes: readonly VoteInfo[] = [];
+    let nextVotes: readonly VoteInfo[] = [];
+
+    do {
+      const lastVoterAddress = votes[votes.length - 1]?.voter;
+      nextVotes = await this.getTcVotes(proposalId, lastVoterAddress);
+      votes = [...votes, ...nextVotes];
+    } while (nextVotes.length);
+
+    return votes;
+  }
+
+  async getOcVotes(proposalId: number, startAfter: string): Promise<readonly VoteInfo[]> {
+    await this.initAddress();
+    if (!this.ocProposalsAddress) throw new Error("ocProposalsAddress was not set");
+
+    const query = {
+      list_votes: {
+        proposal_id: proposalId,
+        start_after: startAfter,
+      },
+    };
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.ocProposalsAddress, query);
+    return votes;
+  }
+
+  async getAllOcVotes(proposalId: number): Promise<readonly VoteInfo[]> {
+    let votes: readonly VoteInfo[] = [];
+    let nextVotes: readonly VoteInfo[] = [];
+
+    do {
+      const lastVoterAddress = votes[votes.length - 1]?.voter;
+      nextVotes = await this.getOcVotes(proposalId, lastVoterAddress);
+      votes = [...votes, ...nextVotes];
+    } while (nextVotes.length);
+
+    return votes;
+  }
+
+  async getAllMixedVotes(mixedId: MixedProposalResponseId): Promise<readonly VoteInfo[]> {
+    const proposalIdType = mixedId.slice(0, 2);
+    const proposalIdNumber = parseInt(mixedId.slice(2), 10);
+
+    const votes = await (proposalIdType === "tc"
+      ? this.getAllTcVotes(proposalIdNumber)
+      : this.getAllOcVotes(proposalIdNumber));
+
+    return votes;
+  }
+
   async getTcVote(proposalId: number, voter: string): Promise<VoteResponse> {
     await this.initAddress();
     if (!this.ocAddress) throw new Error("ocAddress was not set");
@@ -531,7 +605,7 @@ export class OcContract extends OcContractQuerier {
     senderAddress: string,
     description: string,
     proposal: TcProposal | OcProposal,
-  ): Promise<string> {
+  ): Promise<OcProposeResponse> {
     await this.initAddress();
     if (!this.ocAddress) throw new Error("ocAddress was not set");
     if (!this.ocProposalsAddress) throw new Error("ocProposalsAddress was not set");
@@ -541,13 +615,25 @@ export class OcContract extends OcContractQuerier {
     const title = getProposalTitle(proposal);
     const msg = { propose: { title, description, proposal } };
 
-    const { transactionHash } = await this.#signingClient.execute(
+    const result = await this.#signingClient.execute(
       senderAddress,
       queryAddress,
       msg,
       calculateFee(OcContract.GAS_PROPOSE, this.config.gasPrice),
     );
-    return transactionHash;
+
+    const proposalIdAttr = result.logs
+      .flatMap((log) => log.events)
+      .flatMap((event) => event.attributes)
+      .find((attr) => attr.key === "proposal_id");
+
+    const proposalPrefix = isOcProposal(proposal) ? "oc" : "tc";
+
+    const proposalId: MixedProposalResponseId | undefined = proposalIdAttr
+      ? `${proposalPrefix}${parseInt(proposalIdAttr.value, 10)}`
+      : undefined;
+
+    return { txHash: result.transactionHash, proposalId };
   }
 
   async voteProposal(

@@ -65,7 +65,7 @@ export default function ProposalPunishValidator({
         ? "forever"
         : { duration: Number.isNaN(dateToSeconds) ? 0 : dateToSeconds };
 
-      const transactionHash = await ocContract.propose(address, comment, {
+      const { txHash } = await ocContract.propose(address, comment, {
         punish: {
           member: validators,
           portion: nativePortion,
@@ -74,7 +74,7 @@ export default function ProposalPunishValidator({
       });
 
       setTxResult({
-        msg: `Created proposal for punishing validator to Oversight Community. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for punishing validator to Oversight Community. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

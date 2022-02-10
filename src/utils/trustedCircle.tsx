@@ -150,6 +150,11 @@ export interface TcProposalResponse {
   readonly votes: Votes;
 }
 
+export interface TcProposeResponse {
+  readonly txHash: string;
+  readonly proposalId?: number;
+}
+
 export function isTcProposalResponse(
   response: TcProposalResponse | OcProposalResponse,
 ): response is TcProposalResponse {
@@ -174,7 +179,11 @@ export interface VoteInfo {
 }
 
 export interface VoteResponse {
-  readonly vote: VoteInfo | null;
+  readonly vote?: VoteInfo | null;
+}
+
+export interface VoteListResponse {
+  readonly votes: readonly VoteInfo[];
 }
 
 export interface Member {
@@ -228,6 +237,12 @@ export interface InstantiateMsg {
   readonly allow_end_early: boolean;
   /// List of non-voting members to be added to the Trusted Circle upon creation
   readonly initial_members: readonly string[];
+  /// cw4 contract with list of addresses denied to be part of TrustedCircle
+  readonly deny_list?: string | null;
+  /// If true, no further adjustments may happen.
+  readonly edit_trusted_circle_disabled: boolean;
+  /// Distributed reward denom
+  readonly reward_denom: string;
 }
 
 export function getProposalTitle(proposal: TcProposal): string {
@@ -333,6 +348,30 @@ export class TcContractQuerier {
     return proposalResponse;
   }
 
+  async getVotes(proposalId: number, startAfter?: string): Promise<readonly VoteInfo[]> {
+    const query = {
+      list_votes_by_proposal: {
+        proposal_id: proposalId,
+        start_after: startAfter,
+      },
+    };
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.address, query);
+    return votes;
+  }
+
+  async getAllVotes(proposalId: number): Promise<readonly VoteInfo[]> {
+    let votes: readonly VoteInfo[] = [];
+    let nextVotes: readonly VoteInfo[] = [];
+
+    do {
+      const lastVoterAddress = votes[votes.length - 1]?.voter;
+      nextVotes = await this.getVotes(proposalId, lastVoterAddress);
+      votes = [...votes, ...nextVotes];
+    } while (nextVotes.length);
+
+    return votes;
+  }
+
   async getVote(proposalId: number, voter: string): Promise<VoteResponse> {
     const query = { vote: { proposal_id: proposalId, voter } };
     const voteResponse: VoteResponse = await this.client.queryContractSmart(this.address, query);
@@ -373,7 +412,7 @@ export class TcContract extends TcContractQuerier {
     funds: readonly Coin[],
     gasPrice: GasPrice,
   ): Promise<string> {
-    const msg: Record<string, unknown> = {
+    const msg: InstantiateMsg = {
       name: tcName,
       escrow_amount: escrowAmount,
       voting_period: parseInt(votingDuration, 10),
@@ -382,12 +421,13 @@ export class TcContract extends TcContractQuerier {
       initial_members: members,
       allow_end_early: allowEndEarly,
       edit_trusted_circle_disabled: false, // TODO: revisit what makes sense here
+      reward_denom: "utgd",
     };
 
     const { contractAddress } = await signingClient.instantiate(
       creatorAddress,
       codeId,
-      msg,
+      msg as unknown as Record<string, unknown>,
       tcName,
       calculateFee(TcContract.GAS_CREATE_TC, gasPrice),
       {
@@ -445,17 +485,29 @@ export class TcContract extends TcContractQuerier {
     return transactionHash;
   }
 
-  async propose(senderAddress: string, description: string, proposal: TcProposal): Promise<string> {
+  async propose(
+    senderAddress: string,
+    description: string,
+    proposal: TcProposal,
+  ): Promise<TcProposeResponse> {
     const title = getProposalTitle(proposal);
     const msg = { propose: { title, description, proposal } };
 
-    const { transactionHash } = await this.#signingClient.execute(
+    const result = await this.#signingClient.execute(
       senderAddress,
       this.address,
       msg,
       calculateFee(TcContract.GAS_PROPOSE, this.#gasPrice),
     );
-    return transactionHash;
+
+    const proposalIdAttr = result.logs
+      .flatMap((log) => log.events)
+      .flatMap((event) => event.attributes)
+      .find((attr) => attr.key === "proposal_id");
+
+    const proposalId = proposalIdAttr ? parseInt(proposalIdAttr.value, 10) : undefined;
+
+    return { txHash: result.transactionHash, proposalId };
   }
 
   async voteProposal(senderAddress: string, proposalId: number, vote: VoteOption): Promise<string> {

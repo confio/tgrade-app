@@ -78,10 +78,10 @@ export default function ProposalPunishOCMember({
             },
           };
 
-      const transactionHash = await ocContract.propose(address, comment, { punish_members: [punishment] });
+      const { txHash } = await ocContract.propose(address, comment, { punish_members: [punishment] });
 
       setTxResult({
-        msg: `Created proposal for punishing member to Oversight Community. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for punishing member to Oversight Community. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

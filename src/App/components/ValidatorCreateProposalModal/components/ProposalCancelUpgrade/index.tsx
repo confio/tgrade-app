@@ -41,10 +41,10 @@ export default function ProposalCancelUpgrade({
 
     try {
       const validatorVotingContract = new ValidatorVotingContract(config, signingClient);
-      const transactionHash = await validatorVotingContract.propose(address, comment, { cancel_upgrade: {} });
+      const { txHash } = await validatorVotingContract.propose(address, comment, { cancel_upgrade: {} });
 
       setTxResult({
-        msg: `Created proposal for cancelling upgrade. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for cancelling upgrade. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
