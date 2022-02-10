@@ -1,5 +1,11 @@
 xdescribe("Wallet", () => {
-  it("Send native, CW20, or Trusted tokens to another address.", () => {
+  it("Send native token", () => {
+    //TODO
+  });
+  it("Send CW20 token", () => {
+    //TODO
+  });
+  it("Send Trusted token", () => {
     //TODO
   });
 });
