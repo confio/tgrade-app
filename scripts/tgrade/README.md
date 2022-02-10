@@ -26,6 +26,10 @@ Without new PoE contracts of DeFi contract upgrades.
     - gen_txs
     - contract configs for tests (like short voting period...)
 * Test backend via `start_debug.sh`
+* Some changes might be needed on `src/config/network.ts`
+  * `chainId`: it should match the `chain_id` of the template.
+  * `factoryAddress`: it should match the address of the factory logged when running `./start_all.sh`.
+  * `codeIds`: when running `./start_all.sh`, make sure the code IDs match the contracts in this field.
 * Test all from `script` folder: `cd ..`
   * run `./start_all.sh` to start chain, seed contracts, start faucet
   * in project root, check webapp still works via `yarn install;yarn start:local`
