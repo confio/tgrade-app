@@ -24,3 +24,5 @@ describe("Trusted Circle", () => {
     });
   });
 });
+
+export {};
