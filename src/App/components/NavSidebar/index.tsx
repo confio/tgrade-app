@@ -4,7 +4,16 @@ import { Link } from "react-router-dom";
 import { useSdk } from "service";
 
 import * as Icon from "./icons";
-import { Cell, LinkWrapper, Navbar, StyledAddressTag, StyledText, TextCell } from "./style";
+import {
+  Cell,
+  LinkWrapper,
+  Navbar,
+  StyledAddressTag,
+  StyledCollapse,
+  StyledPanel,
+  StyledText,
+  TextCell,
+} from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
@@ -39,22 +48,42 @@ export const NavSidebar: React.FC = () => {
             </TextCell>
           </Cell>
         </Link>
-        <Link to={paths.oc.prefix}>
-          <Cell>
-            <Icon.Oversight />
-            <TextCell>
-              <StyledText>Oversight Community</StyledText>
-              <Icon.Manage />
-            </TextCell>
-          </Cell>
-        </Link>
-        <Link to={paths.validators.prefix}>
-          <Cell>
-            <TextCell>
-              <StyledText style={{ marginLeft: "45px" }}>Validators</StyledText>
-            </TextCell>
-          </Cell>
-        </Link>
+        <StyledCollapse ghost expandIconPosition="right">
+          <StyledPanel
+            key="1"
+            header={
+              <Cell>
+                <Icon.Oversight />
+                <TextCell>
+                  <StyledText>Governance</StyledText>
+                  <Icon.Manage />
+                </TextCell>
+              </Cell>
+            }
+          >
+            <Link to={paths.oc.prefix}>
+              <Cell>
+                <TextCell>
+                  <StyledText>Oversight Community</StyledText>
+                </TextCell>
+              </Cell>
+            </Link>
+            <Link to={paths.validators.prefix}>
+              <Cell>
+                <TextCell>
+                  <StyledText>Validators</StyledText>
+                </TextCell>
+              </Cell>
+            </Link>
+            <Link to={paths.cpool.prefix}>
+              <Cell>
+                <TextCell>
+                  <StyledText>Community Pool</StyledText>
+                </TextCell>
+              </Cell>
+            </Link>
+          </StyledPanel>
+        </StyledCollapse>
         <Link to={paths.engagement.prefix}>
           <Cell>
             <Icon.Flag />

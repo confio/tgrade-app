@@ -89,6 +89,11 @@ export interface ProposalResponse {
   readonly votes: Votes;
 }
 
+export interface ValProposeResponse {
+  readonly txHash: string;
+  readonly proposalId?: number;
+}
+
 export interface ProposalListResponse {
   readonly proposals: readonly ProposalResponse[];
 }
@@ -102,6 +107,10 @@ export interface VoteInfo {
 
 export interface VoteResponse {
   readonly vote: VoteInfo | null;
+}
+
+export interface VoteListResponse {
+  readonly votes: readonly VoteInfo[];
 }
 
 export function getProposalTitle(proposal: ProposalContent): string {
@@ -191,6 +200,36 @@ export class ValidatorVotingContractQuerier {
     return proposalResponse;
   }
 
+  async getVotes(proposalId: number, startAfter?: string): Promise<readonly VoteInfo[]> {
+    await this.initAddress();
+    if (!this.validatorVotingAddress) throw new Error("validatorVotingAddress was not set");
+
+    const query = {
+      list_votes: {
+        proposal_id: proposalId,
+        start_after: startAfter,
+      },
+    };
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(
+      this.validatorVotingAddress,
+      query,
+    );
+    return votes;
+  }
+
+  async getAllVotes(proposalId: number): Promise<readonly VoteInfo[]> {
+    let votes: readonly VoteInfo[] = [];
+    let nextVotes: readonly VoteInfo[] = [];
+
+    do {
+      const lastVoterAddress = votes[votes.length - 1]?.voter;
+      nextVotes = await this.getVotes(proposalId, lastVoterAddress);
+      votes = [...votes, ...nextVotes];
+    } while (nextVotes.length);
+
+    return votes;
+  }
+
   async getVote(proposalId: number, voter: string): Promise<VoteResponse> {
     await this.initAddress();
     if (!this.validatorVotingAddress) throw new Error("validatorVotingAddress was not set");
@@ -242,7 +281,11 @@ export class ValidatorVotingContract extends ValidatorVotingContractQuerier {
     this.#signingClient = signingClient;
   }
 
-  async propose(senderAddress: string, description: string, proposal: ProposalContent): Promise<string> {
+  async propose(
+    senderAddress: string,
+    description: string,
+    proposal: ProposalContent,
+  ): Promise<ValProposeResponse> {
     await this.initAddress();
     if (!this.validatorVotingAddress) throw new Error("validatorVotingAddress was not set");
 
@@ -254,13 +297,21 @@ export class ValidatorVotingContract extends ValidatorVotingContractQuerier {
       },
     };
 
-    const { transactionHash } = await this.#signingClient.execute(
+    const result = await this.#signingClient.execute(
       senderAddress,
       this.validatorVotingAddress,
       msg,
       calculateFee(ValidatorVotingContract.GAS_PROPOSE, this.config.gasPrice),
     );
-    return transactionHash;
+
+    const proposalIdAttr = result.logs
+      .flatMap((log) => log.events)
+      .flatMap((event) => event.attributes)
+      .find((attr) => attr.key === "proposal_id");
+
+    const proposalId = proposalIdAttr ? parseInt(proposalIdAttr.value, 10) : undefined;
+
+    return { txHash: result.transactionHash, proposalId };
   }
 
   async voteProposal(senderAddress: string, proposalId: number, vote: VoteOption): Promise<string> {

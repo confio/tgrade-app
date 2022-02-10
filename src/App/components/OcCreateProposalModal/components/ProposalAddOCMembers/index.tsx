@@ -43,14 +43,14 @@ export default function ProposalAddOCMembers({
 
     try {
       const ocContract = new OcContract(config, signingClient);
-      const transactionHash = await ocContract.propose(address, comment, {
+      const { txHash } = await ocContract.propose(address, comment, {
         add_voting_members: {
           voters: members,
         },
       });
 
       setTxResult({
-        msg: `Created proposal for adding members to Oversight Community. Transaction ID: ${transactionHash}`,
+        msg: `Created proposal for adding members to Oversight Community. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

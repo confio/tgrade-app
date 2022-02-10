@@ -1,5 +1,4 @@
-import { Typography } from "antd";
-import { Tag } from "antd";
+import { Collapse, Tag, Typography } from "antd";
 import MenuBG from "App/assets/images/menu-background.jpg";
 import Styled from "styled-components";
 
@@ -76,4 +75,20 @@ font-weight: 400;
 line-height: 16px;
 letter-spacing: 0em;
 text-align: left;
+`;
+
+export const StyledCollapse = Styled(Collapse)`
+  & > .ant-collapse-item > .ant-collapse-header, .ant-collapse-content-box {
+    padding: 0;
+  }
+
+  & .ant-collapse-header span[role="img"] {
+    color: white;
+  }
+`;
+
+export const StyledPanel = Styled(Collapse.Panel)`
+  a ${StyledText} {
+    margin-left: var(--s3);
+  }
 `;
