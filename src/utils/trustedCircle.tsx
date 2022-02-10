@@ -237,6 +237,12 @@ export interface InstantiateMsg {
   readonly allow_end_early: boolean;
   /// List of non-voting members to be added to the Trusted Circle upon creation
   readonly initial_members: readonly string[];
+  /// cw4 contract with list of addresses denied to be part of TrustedCircle
+  readonly deny_list?: string | null;
+  /// If true, no further adjustments may happen.
+  readonly edit_trusted_circle_disabled: boolean;
+  /// Distributed reward denom
+  readonly reward_denom: string;
 }
 
 export function getProposalTitle(proposal: TcProposal): string {
@@ -406,7 +412,7 @@ export class TcContract extends TcContractQuerier {
     funds: readonly Coin[],
     gasPrice: GasPrice,
   ): Promise<string> {
-    const msg: Record<string, unknown> = {
+    const msg: InstantiateMsg = {
       name: tcName,
       escrow_amount: escrowAmount,
       voting_period: parseInt(votingDuration, 10),
@@ -415,12 +421,13 @@ export class TcContract extends TcContractQuerier {
       initial_members: members,
       allow_end_early: allowEndEarly,
       edit_trusted_circle_disabled: false, // TODO: revisit what makes sense here
+      reward_denom: "utgd",
     };
 
     const { contractAddress } = await signingClient.instantiate(
       creatorAddress,
       codeId,
-      msg,
+      msg as unknown as Record<string, unknown>,
       tcName,
       calculateFee(TcContract.GAS_CREATE_TC, gasPrice),
       {
