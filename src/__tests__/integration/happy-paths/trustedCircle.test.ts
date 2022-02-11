@@ -42,15 +42,15 @@ describe("Trusted Circle", () => {
       config.gasPrice,
     );
 
-    const dsoContract = new TcContractQuerier(tcContractAddress, signingClient);
-    const dsoResponse = await dsoContract.getTc();
+    const tcContract = new TcContractQuerier(tcContractAddress, signingClient);
+    const tcResponse = await tcContract.getTc();
 
-    expect(dsoResponse.escrow_amount).toBe(escrowAmount);
-    expect(dsoResponse.escrow_pending).toBe(null);
-    expect(dsoResponse.rules.voting_period.toString()).toBe(votingPeriod);
-    expect(dsoResponse.rules.quorum).toBe("0.3");
-    expect(dsoResponse.rules.threshold).toBe("0.51");
-    expect(dsoResponse.rules.allow_end_early).toBe(allowEndEarly);
+    expect(tcResponse.escrow_amount).toBe(escrowAmount);
+    expect(tcResponse.escrow_pending).toBeNull();
+    expect(tcResponse.rules.voting_period.toString()).toBe(votingPeriod);
+    expect(tcResponse.rules.quorum).toBe("0.3");
+    expect(tcResponse.rules.threshold).toBe("0.51");
+    expect(tcResponse.rules.allow_end_early).toBe(allowEndEarly);
     expect(tcContractAddress.startsWith(config.addressPrefix)).toBeTruthy();
   });
 
