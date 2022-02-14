@@ -54,7 +54,7 @@ const local: NetworkConfig = {
   coinMap: {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
-  gasPrice: GasPrice.fromString("0.025utgd"),
+  gasPrice: GasPrice.fromString("0.05utgd"),
   factoryAddress: "tgrade1fventeva948ue0fzhp6xselr522rnqwger9wg7r0g9f4jemsqh6sd9g4hg",
   codeIds: {
     // The first 8 codeIds are reserved by tgrade automatically when launched
@@ -67,20 +67,20 @@ const local: NetworkConfig = {
 };
 
 const tgradeInternal: NetworkConfig = {
-  chainId: "tgrade-internal-7",
-  chainName: "Tgrade-internal-7",
+  chainId: "tgrade-internal-8",
+  chainName: "Tgrade-internal-8",
   addressPrefix: "tgrade",
-  rpcUrl: "https://rpc.internal-7.tgrade.io",
-  httpUrl: "https://lcd.internal-7.tgrade.io",
-  faucetUrl: "https://faucet.internal-7.tgrade.io",
+  rpcUrl: "https://rpc.internal-8.tgrade.io",
+  httpUrl: "https://lcd.internal-8.tgrade.io",
+  faucetUrl: "https://faucet.internal-8.tgrade.io",
   feeToken: "utgd",
   stakingToken: "utgd",
   faucetTokens: ["utgd"],
   coinMap: {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
-  gasPrice: GasPrice.fromString("0.025utgd"),
-  factoryAddress: "tgrade1fventeva948ue0fzhp6xselr522rnqwgp5c9qv",
+  gasPrice: GasPrice.fromString("0.05utgd"),
+  factoryAddress: "tgrade1fventeva948ue0fzhp6xselr522rnqwger9wg7r0g9f4jemsqh6sd9g4hg",
   codeIds: {
     // The first 8 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [2],
