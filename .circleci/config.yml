@@ -128,8 +128,8 @@ jobs:
           command: |
             wget -O "$HOME/yarn.deb" https://dl.yarnpkg.com/debian/pool/main/y/yarn/yarn_1.22.15_all.deb
             sudo dpkg -i "$HOME/yarn.deb"
-      - run: yarn cypress install
       - run: yarn install --frozen-lockfile
+      - run: yarn cypress install
       - run:
           name: Wait for chains to start up
           command: |
