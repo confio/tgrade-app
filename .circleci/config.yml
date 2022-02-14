@@ -107,12 +107,8 @@ jobs:
             ./scripts/stop_all.sh
 
   cypress:
-    docker:
-      - image: ubuntu-2004:202107-02
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    working_directory: ~/app
+    machine:
+      image: ubuntu-2004:202107-02
     steps:
       - checkout
       - run: # start early for less wait time below
