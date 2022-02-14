@@ -33,7 +33,7 @@ export function getAddressField(t: TFunction, addressPrefix: string, optional = 
     })
     .test(`has-valid-length`, t("form.address.length"), (address) => {
       const decodedAddress = getDecodedAddress(address);
-      return decodedAddress?.data.length === 20;
+      return !!decodedAddress?.data && decodedAddress.data.length >= 20;
     });
 }
 
@@ -50,7 +50,7 @@ export function isValidAddress(address: string, requiredPrefix: string): boolean
     if (prefix !== requiredPrefix) {
       return false;
     }
-    return data.length === 20;
+    return data.length >= 20;
   } catch {
     return false;
   }
