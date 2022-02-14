@@ -128,6 +128,7 @@ jobs:
           command: |
             wget -O "$HOME/yarn.deb" https://dl.yarnpkg.com/debian/pool/main/y/yarn/yarn_1.22.15_all.deb
             sudo dpkg -i "$HOME/yarn.deb"
+      - run: yarn cypress install
       - run:
           name: Version information
           command: echo "node $(node --version)"; echo "yarn $(yarn --version)"
@@ -136,7 +137,6 @@ jobs:
           keys:
             - v2-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn install --frozen-lockfile
-      - run: yarn cypress install
       - save_cache:
           name: Save Yarn Package Cache
           key: v2-dependencies-{{ checksum "yarn.lock" }}
