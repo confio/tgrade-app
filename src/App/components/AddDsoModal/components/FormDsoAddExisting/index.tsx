@@ -42,7 +42,7 @@ export default function FormDsoAddExisting({
       })
       .test(`has-valid-length`, `Trusted Circle address must have a data length of 20`, (address) => {
         const decodedAddress = getDecodedAddress(address);
-        return decodedAddress?.data.length === 20;
+        return !!decodedAddress?.data && decodedAddress.data.length >= 20;
       }),
   });
 
