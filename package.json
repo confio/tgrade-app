@@ -89,7 +89,8 @@
     "lint": "npx eslint src/**/*.ts{,x} --max-warnings 0",
     "compile": "tsc",
     "format": "prettier --write --loglevel warn \"./src/**/*.ts{,x}\" --ignore-path \"./.custom-prettierignore\"",
-    "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh && prettier --write --loglevel warn \"./src/codec/**/*.ts\""
+    "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh && prettier --write --loglevel warn \"./src/codec/**/*.ts\"",
+    "cy:run": "cypress run --browser chrome"
   },
   "browserslist": [
     "last 2 chrome versions",
