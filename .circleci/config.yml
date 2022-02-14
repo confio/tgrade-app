@@ -152,7 +152,7 @@ jobs:
           command: |
             cd ./scripts/tgrade/
             ./init.sh
-      - run: yarn cy:run
+      - run: node_modules/.bin/cypress run
       - run:
           name: Stop chains
           command: |
