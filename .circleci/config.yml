@@ -141,7 +141,7 @@ jobs:
           name: Save Yarn Package Cache
           key: v2-dependencies-{{ checksum "yarn.lock" }}
           paths:
-            - ~/.cache/yarn
+            - ~/.cache
             - node_modules
       - run:
           name: Wait for chains to start up
