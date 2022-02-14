@@ -15,7 +15,7 @@ const config = {
   faucet: "http://localhost:8000",
   bech32prefix: "tgrade",
   feeDenom: "utgd",
-  gasPrice: GasPrice.fromString("0.025utgd"),
+  gasPrice: GasPrice.fromString("0.05utgd"),
 };
 
 async function main() {
