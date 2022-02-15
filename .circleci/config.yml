@@ -167,8 +167,6 @@ jobs:
             cd ./scripts/tgrade/
             ./init.sh
       - run:
-          command: yarn start:local
-      - run:
           command: yarn cy:run
       - run:
           name: Stop chains
