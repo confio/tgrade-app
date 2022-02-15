@@ -111,11 +111,11 @@ jobs:
       image: ubuntu-2004:202107-02
     steps:
       - checkout
-      - run: # start early for less wait time below
-          name: Start tgrade and faucet
-          command: |
-            ./scripts/start_all_ci.sh
-          background: true
+      #- run: # start early for less wait time below
+      #    name: Start tgrade and faucet
+      #    command: |
+      #      ./scripts/start_all_ci.sh
+      #    background: true
       - run:
           name: Install nodejs
           # In the current image, `sudo apt install nodejs` requires `sudo apt update` which is too slow
@@ -128,26 +128,27 @@ jobs:
           command: |
             wget -O "$HOME/yarn.deb" https://dl.yarnpkg.com/debian/pool/main/y/yarn/yarn_1.22.15_all.deb
             sudo dpkg -i "$HOME/yarn.deb"
-      - run: yarn install --frozen-lockfile
+      - run: yarn install
       - run: yarn cypress install
-      - run:
-          name: Wait for chains to start up
-          command: |
-            timeout 60 bash -c "until curl -s http://localhost:8000/status > /dev/null; do sleep 0.5; done"
-      - run:
-          name: Deploy contracts
-          command: |
-            cd ./scripts/tgrade/
-            ./init.sh
-      - run:
-          name: Run cypress
-          command: |
-            cd ..
-            npx cypress run
-      - run:
-          name: Stop chains
-          command: |
-            ./scripts/stop_all.sh
+      - run: npx cypress run
+      #- run:
+      #    name: Wait for chains to start up
+      #    command: |
+      #      timeout 60 bash -c "until curl -s http://localhost:8000/status > /dev/null; do sleep 0.5; done"
+      #- run:
+      #    name: Deploy contracts
+      #    command: |
+      #      cd ./scripts/tgrade/
+      #      ./init.sh
+      #- run:
+      #    name: Run cypress
+      #    command: |
+      #      cd ..
+      #      npx cypress run
+      #- run:
+      #    name: Stop chains
+      #    command: |
+      #      ./scripts/stop_all.sh
 
 workflows:
   version: 2
