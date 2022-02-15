@@ -1,10 +1,10 @@
-import { Bip39, Random } from "@cosmjs/crypto";
+import { Random } from "@cosmjs/crypto";
 import { Bech32 } from "@cosmjs/encoding";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
-import { createSigningClient } from "utils/sdk";
+import { createSigningClient, generateMnemonic } from "utils/sdk";
 import { TcContract, TcContractQuerier } from "utils/trustedCircle";
 
 const tcName = "Trusted Circle #1";
@@ -16,14 +16,13 @@ const members: readonly string[] = [makeRandomAddress()];
 const allowEndEarly = true;
 const comment = "Comment message";
 
-const mnemonic = Bip39.encode(Random.getBytes(16)).toString();
-const addressPrefix = "tgrade";
+const mnemonic = generateMnemonic();
 
 describe("Trusted Circle", () => {
   it("Create a Trusted circle", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
-      prefix: addressPrefix,
+      prefix: config.addressPrefix,
     });
 
     const signingClient = await createSigningClient(config, wallet);
@@ -43,7 +42,12 @@ describe("Trusted Circle", () => {
       threshold,
       members,
       allowEndEarly,
-      [{ denom: config.feeToken, amount: escrowAmount }],
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
       config.gasPrice,
     );
 
@@ -59,10 +63,10 @@ describe("Trusted Circle", () => {
     expect(tcContractAddress.startsWith(config.addressPrefix)).toBeTruthy();
   });
 
-  it("Create and execute TC proposal for add_voting_members", async () => {
+  it("Create and execute TC proposal for adding voting members", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
-      prefix: addressPrefix,
+      prefix: config.addressPrefix,
     });
 
     const signingClient = await createSigningClient(config, wallet);
@@ -82,16 +86,17 @@ describe("Trusted Circle", () => {
       threshold,
       members,
       allowEndEarly,
-      [{ denom: config.feeToken, amount: escrowAmount }],
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
       config.gasPrice,
     );
 
-    const tcContract = new TcContractQuerier(tcContractAddress, signingClient);
-    expect(tcContractAddress.startsWith(config.addressPrefix)).toBeTruthy();
-
-    const dsoContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
-
-    const txHash = await dsoContract.propose(address, comment, {
+    const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
+    const txHash = await tcContract.propose(address, comment, {
       add_voting_members: { voters: members },
     });
 
@@ -99,18 +104,17 @@ describe("Trusted Circle", () => {
     if (!txHash.proposalId) return;
 
     const getCreatedProposal = await tcContract.getProposal(txHash.proposalId);
-    expect(getCreatedProposal.proposal.add_voting_members).toBeTruthy();
-    expect(getCreatedProposal.proposal.add_voting_members?.voters[0]).toContain("tgrade1");
+    expect(getCreatedProposal.proposal.add_voting_members?.voters[0]).toContain(config.addressPrefix);
 
-    await dsoContract.executeProposal(address, txHash.proposalId);
-    const getExecutedCreatedProposal = await tcContract.getProposal(txHash.proposalId);
-    expect(getExecutedCreatedProposal.status).toBe("executed");
+    await tcContract.executeProposal(address, txHash.proposalId);
+    const executedProposal = await tcContract.getProposal(txHash.proposalId);
+    expect(executedProposal.status).toBe("executed");
   }, 30000);
 
-  it("Create and execute TC proposal for add_non_voting_members", async () => {
+  it("Create and execute TC proposal for adding non voting members", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
-      prefix: addressPrefix,
+      prefix: config.addressPrefix,
     });
 
     const signingClient = await createSigningClient(config, wallet);
@@ -130,37 +134,38 @@ describe("Trusted Circle", () => {
       threshold,
       members,
       allowEndEarly,
-      [{ denom: config.feeToken, amount: escrowAmount }],
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
       config.gasPrice,
     );
 
-    const tcContract = new TcContractQuerier(tcContractAddress, signingClient);
-    expect(tcContractAddress.startsWith(config.addressPrefix)).toBeTruthy();
-
-    const dsoContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
-
-    const txHash = await dsoContract.propose(address, comment, {
+    const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
+    const txHash = await tcContract.propose(address, comment, {
       add_remove_non_voting_members: { remove: [], add: [makeRandomAddress()] },
     });
 
     expect(txHash.proposalId).toBeTruthy();
     if (!txHash.proposalId) return;
 
-    const getCreatedProposal = await tcContract.getProposal(txHash.proposalId);
+    const createdProposal = await tcContract.getProposal(txHash.proposalId);
 
-    expect(getCreatedProposal.proposal.add_remove_non_voting_members).toBeTruthy();
-    expect(getCreatedProposal.proposal.add_remove_non_voting_members?.add[0]).toContain("tgrade1");
-    expect(getCreatedProposal.proposal.add_remove_non_voting_members?.remove.length).toBe(0);
+    expect(createdProposal.proposal.add_remove_non_voting_members).toBeTruthy();
+    expect(createdProposal.proposal.add_remove_non_voting_members?.add[0]).toContain(config.addressPrefix);
+    expect(createdProposal.proposal.add_remove_non_voting_members?.remove.length).toBe(0);
 
-    await dsoContract.executeProposal(address, txHash.proposalId);
-    const getExecutedCreatedProposal = await tcContract.getProposal(txHash.proposalId);
-    expect(getExecutedCreatedProposal.status).toBe("executed");
+    await tcContract.executeProposal(address, txHash.proposalId);
+    const executedProposal = await tcContract.getProposal(txHash.proposalId);
+    expect(executedProposal.status).toBe("executed");
   }, 30000);
 
-  it("Create and execute TC proposal for edit_trusted_circle", async () => {
+  it("Create and execute TC proposal for editing trusted circle", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
-      prefix: addressPrefix,
+      prefix: config.addressPrefix,
     });
 
     const signingClient = await createSigningClient(config, wallet);
@@ -180,16 +185,17 @@ describe("Trusted Circle", () => {
       threshold,
       members,
       allowEndEarly,
-      [{ denom: config.feeToken, amount: escrowAmount }],
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
       config.gasPrice,
     );
 
-    const tcContract = new TcContractQuerier(tcContractAddress, signingClient);
-    expect(tcContractAddress.startsWith(config.addressPrefix)).toBeTruthy();
-
-    const dsoContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
-
-    const txHash = await dsoContract.propose(address, comment, {
+    const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
+    const txHash = await tcContract.propose(address, comment, {
       edit_trusted_circle: {
         name: "new name for the Trusted Circle",
         escrow_amount: null,
@@ -203,27 +209,26 @@ describe("Trusted Circle", () => {
     expect(txHash.proposalId).toBeTruthy();
     if (!txHash.proposalId) return;
 
-    const getCreatedProposal = await tcContract.getProposal(txHash.proposalId);
+    const createdProposal = await tcContract.getProposal(txHash.proposalId);
 
-    expect(getCreatedProposal.proposal.edit_trusted_circle).toBeTruthy();
-    expect(getCreatedProposal.proposal.edit_trusted_circle?.name).toContain("Trusted Circle");
+    expect(createdProposal.proposal.edit_trusted_circle).toBeTruthy();
+    expect(createdProposal.proposal.edit_trusted_circle?.name).toContain("Trusted Circle");
 
-    await dsoContract.executeProposal(address, txHash.proposalId);
-    const getExecutedCreatedProposal = await tcContract.getProposal(txHash.proposalId);
+    await tcContract.executeProposal(address, txHash.proposalId);
+    const executedProposal = await tcContract.getProposal(txHash.proposalId);
 
-    console.log(getExecutedCreatedProposal);
-    expect(getExecutedCreatedProposal.status).toBe("executed");
+    expect(executedProposal.status).toBe("executed");
   }, 30000);
 
-  xit("Create and execute TC proposal for Remove non voting participants", () => {
+  xit("Create and execute TC proposal for removing non voting participants", () => {
     //TODO
   });
 
-  xit("Create and execute TC proposal for Punish voting participant", () => {
+  xit("Create and execute TC proposal for punishing voting participant", () => {
     //TODO
   });
 
-  xit("Create and execute TC proposal for Whitelist Pair", () => {
+  xit("Create and execute TC proposal for whitelist pair", () => {
     //TODO
   });
 
