@@ -140,9 +140,15 @@ jobs:
             cd ./scripts/tgrade/
             ./init.sh
       - run:
-          name: Trying find cypress
-          command: npx cypress version
-      - run: npx cypress run
+          name: Deploy contracts
+          command: |
+            cd ./scripts/tgrade/
+            ./init.sh
+      - run:
+          name: Run cypress
+          command: |
+            cd ..
+            npx cypress version
       - run:
           name: Stop chains
           command: |
