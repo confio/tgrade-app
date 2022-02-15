@@ -63,7 +63,7 @@ export default function WithdrawRewardsContainer({
     (async function updateWithdrawableFunds() {
       if (!egContract || !queryAddress || !isValidAddress(queryAddress, config.addressPrefix)) return;
 
-      const withdrawableFunds = await egContract.getWithdrawableFunds(queryAddress);
+      const withdrawableFunds = await egContract.getWithdrawableRewards(queryAddress);
       const displayWithdrawableFunds = nativeCoinToDisplay(withdrawableFunds, config.coinMap);
       setWithdrawableFunds(displayWithdrawableFunds);
     })();
@@ -100,7 +100,7 @@ export default function WithdrawRewardsContainer({
     if (!address || !(egContract instanceof EngagementContract)) return;
 
     try {
-      const txHash = await egContract.withdrawFunds(address, queryAddress, receiverAddress || undefined);
+      const txHash = await egContract.withdrawRewards(address, queryAddress, receiverAddress || undefined);
       setTxResult({
         msg: `Rewards from ${queryAddress} withdrawn to ${
           receiverAddress || address

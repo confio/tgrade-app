@@ -300,7 +300,7 @@ export default function OcProposalDetailModal({
                           <Paragraph>
                             Total voted:
                             <b>
-                              {calculateTotalVotes()} of {proposal.total_weight}
+                              {calculateTotalVotes()} of {proposal.total_points}
                             </b>
                           </Paragraph>
                           <Paragraph>

@@ -167,7 +167,7 @@ export default function ValidatorOverview(): JSX.Element | null {
 
     const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
     const ep = await egContract.getEngagementPoints(operatorResponse.operator);
-    const rewards = await egContract.getWithdrawableFunds(operatorResponse.operator);
+    const rewards = await egContract.getWithdrawableRewards(operatorResponse.operator);
     const valActive = await valContract.getActiveValidators();
 
     const validator: ValidatorType = {
@@ -196,7 +196,7 @@ export default function ValidatorOverview(): JSX.Element | null {
         const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
 
         const totalEgPoints = await egContract.getTotalEngagementPoints();
-        const EgRewards = await egContract.getDistributedFunds();
+        const EgRewards = await egContract.getDistributedRewards();
         const totalEgRewards = parseFloat(EgRewards.amount);
         //TODO: Get from network or remove.
         const totalTGD = 100000000;
@@ -205,7 +205,7 @@ export default function ValidatorOverview(): JSX.Element | null {
         const validatorList = await Promise.all(
           validators.map(async (operatorResponse) => {
             const ep = await egContract.getEngagementPoints(operatorResponse.operator);
-            const rewards = await egContract.getWithdrawableFunds(operatorResponse.operator);
+            const rewards = await egContract.getWithdrawableRewards(operatorResponse.operator);
 
             const validatorItem: ValidatorType = {
               ...operatorResponse,
