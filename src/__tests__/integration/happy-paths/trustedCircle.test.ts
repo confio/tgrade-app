@@ -206,7 +206,6 @@ describe("Trusted Circle", () => {
     const getCreatedProposal = await tcContract.getProposal(txHash.proposalId);
 
     expect(getCreatedProposal.proposal.edit_trusted_circle).toBeTruthy();
-    expect(getCreatedProposal.proposal.edit_trusted_circle.edit_trusted_circle_disabled).toBeNull();
     expect(getCreatedProposal.proposal.edit_trusted_circle?.name).toContain("Trusted Circle");
 
     await dsoContract.executeProposal(address, txHash.proposalId);
