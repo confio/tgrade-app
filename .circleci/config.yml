@@ -118,6 +118,10 @@ jobs:
       image: ubuntu-2004:202111-02
     steps:
       - checkout
+      - run:
+          name: Upgrade max watchable files to avoid ENOSPC
+          command: sudo sysctl -w fs.inotify.max_user_watches=524288
+
       - run: # start early for less wait time below
           name: Start tgrade and faucet
           command: |
@@ -168,6 +172,10 @@ jobs:
             ./init.sh
       - run:
           command: yarn cy:run
+      - store_artifacts:
+          path: cypress/videos
+      - store_artifacts:
+          path: cypress/screenshots
       - run:
           name: Stop chains
           command: |

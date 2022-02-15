@@ -4,5 +4,6 @@
   "viewportWidth": 1366,
   "viewportHeight": 768,
   "watchForFileChanges": false,
-  "video": true
+  "video": true,
+  "screenshotOnRunFailure": true
 }
