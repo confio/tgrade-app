@@ -7,7 +7,7 @@ import { NetworkConfig } from "config/network";
 
 export interface Config {
   readonly denom: string;
-  readonly tokens_per_weight: string;
+  readonly tokens_per_point: string;
   readonly min_bond: string;
   readonly unbonding_period: number;
   readonly auto_return_limit: number;
@@ -17,14 +17,14 @@ interface UnbondingPeriodResponse {
   readonly unbonding_period: number;
 }
 
-interface TotalWeightResponse {
-  readonly weight: number;
+interface TotalPointsResponse {
+  readonly points: number;
   readonly denom: string;
 }
 
 export interface Member {
   readonly addr: string;
-  readonly weight: number;
+  readonly points: number;
 }
 
 export interface MemberListResponse {
@@ -32,7 +32,7 @@ export interface MemberListResponse {
 }
 
 interface MemberResponse {
-  readonly weight?: number | null;
+  readonly points?: number | null;
 }
 
 export interface StakedResponse {
@@ -87,13 +87,13 @@ export class StakingContractQuerier {
     return unbonding_period;
   }
 
-  async getTotalWeight(): Promise<TotalWeightResponse> {
+  async getTotalPoints(): Promise<TotalPointsResponse> {
     await this.initAddress();
     if (!this.stakingAddress) throw new Error("stakingAddress was not set");
 
-    const query = { total_weight: {} };
-    const totalWeight: TotalWeightResponse = await this.client.queryContractSmart(this.stakingAddress, query);
-    return totalWeight;
+    const query = { total_points: {} };
+    const totalPoints: TotalPointsResponse = await this.client.queryContractSmart(this.stakingAddress, query);
+    return totalPoints;
   }
 
   async getMembers(startAfter?: string): Promise<readonly Member[]> {
@@ -118,22 +118,22 @@ export class StakingContractQuerier {
     return members;
   }
 
-  async getMemberWeight(address: string): Promise<number> {
+  async getMemberPoints(address: string): Promise<number> {
     await this.initAddress();
     if (!this.stakingAddress) throw new Error("stakingAddress was not set");
 
     const query = { member: { addr: address } };
-    const { weight }: MemberResponse = await this.client.queryContractSmart(this.stakingAddress, query);
-    return weight ?? 0;
+    const { points }: MemberResponse = await this.client.queryContractSmart(this.stakingAddress, query);
+    return points ?? 0;
   }
 
   async getVotingPower(address: string): Promise<number> {
     await this.initAddress();
     if (!this.stakingAddress) throw new Error("stakingAddress was not set");
 
-    const { weight: totalWeight } = await this.getTotalWeight();
-    const currentWeight = await this.getMemberWeight(address);
-    const votingPower = (currentWeight / totalWeight) * 100;
+    const { points: totalPoints } = await this.getTotalPoints();
+    const currentPoints = await this.getMemberPoints(address);
+    const votingPower = (currentPoints / totalPoints) * 100;
 
     return votingPower;
   }
@@ -142,19 +142,17 @@ export class StakingContractQuerier {
     await this.initAddress();
     if (!this.stakingAddress) throw new Error("stakingAddress was not set");
 
-    const { weight: currentTotalWeight } = await this.getTotalWeight();
-    const currentWeight = await this.getMemberWeight(address);
+    const { points: currentTotalPoints } = await this.getTotalPoints();
+    const currentPoints = await this.getMemberPoints(address);
 
-    const { tokens_per_weight } = await this.getConfiguration();
-    const tokensPerWeightNumber = parseFloat(tokens_per_weight);
-    const potentialWeightToAdd = tokensAdd ? parseFloat(tokensAdd.amount) * tokensPerWeightNumber : 0;
-    const potentialWeightToRemove = tokensRemove
-      ? parseFloat(tokensRemove.amount) * tokensPerWeightNumber
-      : 0;
+    const { tokens_per_point } = await this.getConfiguration();
+    const tokensPerPointNumber = parseFloat(tokens_per_point);
+    const potentialPointsToAdd = tokensAdd ? parseFloat(tokensAdd.amount) * tokensPerPointNumber : 0;
+    const potentialPointsToRemove = tokensRemove ? parseFloat(tokensRemove.amount) * tokensPerPointNumber : 0;
 
-    const potentialWeight = currentWeight + potentialWeightToAdd - potentialWeightToRemove;
-    const totalWeight = currentTotalWeight + potentialWeightToAdd - potentialWeightToRemove;
-    const potentialVotingPower = (potentialWeight / totalWeight) * 100;
+    const potentialPoints = currentPoints + potentialPointsToAdd - potentialPointsToRemove;
+    const totalPoints = currentTotalPoints + potentialPointsToAdd - potentialPointsToRemove;
+    const potentialVotingPower = (potentialPoints / totalPoints) * 100;
 
     return isNaN(potentialVotingPower) ? 0 : potentialVotingPower;
   }
