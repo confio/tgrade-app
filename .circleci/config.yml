@@ -167,7 +167,7 @@ jobs:
             cd ./scripts/tgrade/
             ./init.sh
       - run:
-          command: npx cypress run
+          command: yarn cy:run
       - run:
           name: Stop chains
           command: |
