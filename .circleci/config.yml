@@ -139,6 +139,9 @@ jobs:
           command: |
             cd ./scripts/tgrade/
             ./init.sh
+      - run:
+          name: Trying find cypress
+          command: echo "npx cypress --version"; echo "ls"; echo "pwd"
       - run: node_modules/.bin/cypress run
       - run:
           name: Stop chains
