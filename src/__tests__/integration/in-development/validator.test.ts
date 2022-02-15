@@ -1,9 +1,9 @@
 xdescribe("Validator", () => {
-  it("As a validator, I can stake tokens", () => {
+  it.skip("As a validator, I can stake tokens", () => {
     //TODO
   });
 
-  it("As a validator, I can unstake tokens", () => {
+  it.skip("As a validator, I can unstake tokens", () => {
     //TODO
   });
 

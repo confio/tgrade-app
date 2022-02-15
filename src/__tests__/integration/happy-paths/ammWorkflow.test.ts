@@ -7,7 +7,7 @@ import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
 import { Pool, ProvideFormValues, SwapFormValues, Token, WithdrawFormValues } from "utils/tokens";
 import { TcContract } from "utils/trustedCircle";
 
-it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
+it.skip("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
   const signer = await loadOrCreateWallet(config);
   const signingClient = await createSigningClient(config, signer);
   const address = (await signer.getAccounts())[0].address;

@@ -18,7 +18,7 @@ const mnemonic = process.env.SECRET_MNEMONIC || ""; // to run locally use real m
 const addressPrefix = "tgrade";
 
 describe("Trusted Circle", () => {
-  it("Create a Trusted circle", async () => {
+  it.skip("Create a Trusted circle", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: addressPrefix,
@@ -54,11 +54,11 @@ describe("Trusted Circle", () => {
     expect(tcContractAddress.startsWith(config.addressPrefix)).toBeTruthy();
   });
 
-  it("Create every type of TC proposal and execute them", () => {
+  it.skip("Create every type of TC proposal and execute them", () => {
     //TODO
   });
 
-  it("Add another voting member", () => {
+  it.skip("Add another voting member", () => {
     //TODO
     /**
      * For that we need to create and execute Add voting member proposal,

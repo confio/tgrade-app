@@ -12,7 +12,7 @@ const addressPrefix = "tgrade";
 const comment = "Add new member";
 const memberToAdd = makeRandomAddress();
 
-it("creates OC proposal with Oversight Community member", async () => {
+it.skip("creates OC proposal with Oversight Community member", async () => {
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: addressPrefix,
