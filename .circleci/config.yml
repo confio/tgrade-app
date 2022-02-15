@@ -108,7 +108,7 @@ jobs:
 
   cypress:
     machine:
-      image: ubuntu-2004:202107-02
+      image: ubuntu-2004:202111-02
     steps:
       - checkout
       #- run: # start early for less wait time below
@@ -128,7 +128,18 @@ jobs:
           command: |
             wget -O "$HOME/yarn.deb" https://dl.yarnpkg.com/debian/pool/main/y/yarn/yarn_1.22.15_all.deb
             sudo dpkg -i "$HOME/yarn.deb"
-      - run: yarn install
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - v2-dependencies-{{ checksum "yarn.lock" }}
+      - run: yarn install --frozen-lockfile
+      # - run: yarn build
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: v2-dependencies-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+            - node_modules
       - run: yarn cypress install
       - run: npx cypress run
       #- run:
