@@ -23,6 +23,30 @@ describe("Trusted Circle", () => {
       cy.contains("Trusted Circle Test #1").should("be.visible");
     });
   });
+
+  describe("add non-voting participant", () => {
+    it("non-voting is created", () => {
+      //TODO
+    });
+  });
+
+  describe("non-voting participant", () => {
+    it("can trade whitelisted token pair", () => {
+      //TODO
+    });
+  });
+
+  describe("remove non-voting participant", () => {
+    it("should remove non-voting participant", () => {
+      //TODO
+    });
+  });
+
+  describe("non-voting participant trades whitelisted token pair ", () => {
+    it("show an unauthorised message and trade fails ", () => {
+      //TODO
+    });
+  });
 });
 
 export {};
