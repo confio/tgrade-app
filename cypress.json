@@ -5,5 +5,8 @@
   "viewportHeight": 768,
   "watchForFileChanges": false,
   "video": true,
-  "screenshotOnRunFailure": true
+  "screenshotOnRunFailure": true,
+  "retries": {
+    "runMode": 1
+  }
 }
