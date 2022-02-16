@@ -15,6 +15,7 @@ describe("Trusted Circle", () => {
       cy.contains("Web wallet (demo)").click();
       cy.wait(1500); //should be improved
       cy.findByRole("button", { name: /Sign transaction and pay escrow/i }).click();
+      cy.wait(20000); //should be improved
       cy.findByRole("button", { name: /Go to Trusted Circle details/i }).click();
     });
     it("show that trusted circle is created", () => {
