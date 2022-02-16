@@ -220,9 +220,73 @@ describe("Trusted Circle", () => {
     expect(executedProposal.status).toBe("executed");
   }, 30000);
 
-  xit("Create and execute TC proposal for removing non voting participants", () => {
-    //TODO
-  });
+  it("Create and execute TC proposal for removing non voting participants", async () => {
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const signingClient = await createSigningClient(config, wallet);
+    const { address } = (await wallet.getAccounts())[0];
+
+    const faucetClient = new FaucetClient(config.faucetUrl);
+    await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
+
+    const tcContractAddress = await TcContract.createTc(
+      signingClient,
+      config.codeIds?.tgradeDso?.[0] ?? 0,
+      address,
+      tcName,
+      escrowAmount,
+      votingPeriod,
+      quorum,
+      threshold,
+      members,
+      allowEndEarly,
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
+      config.gasPrice,
+    );
+
+    const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
+
+    // Add non_voting_members
+    const addMemberAddress = await tcContract.propose(address, comment, {
+      add_remove_non_voting_members: { remove: [], add: [makeRandomAddress()] },
+    });
+
+    expect(addMemberAddress.proposalId).toBeTruthy();
+    if (!addMemberAddress.proposalId) return;
+
+    const createdFirstProposal = await tcContract.getProposal(addMemberAddress.proposalId);
+    expect(createdFirstProposal.title).toContain("Add participants");
+    expect(createdFirstProposal.status).toContain("passed");
+    expect(createdFirstProposal.proposal.add_remove_non_voting_members?.add[0]).toContain(
+      config.addressPrefix,
+    );
+    expect(createdFirstProposal.proposal.add_remove_non_voting_members?.remove.length).toBe(0);
+
+    // Remove non_voting_members
+    const removeMemberAddress = await tcContract.propose(address, comment, {
+      add_remove_non_voting_members: { remove: [addMemberAddress.txHash], add: [] },
+    });
+
+    expect(removeMemberAddress.proposalId).toBeTruthy();
+    if (!removeMemberAddress.proposalId) return;
+
+    const createdSecondProposal = await tcContract.getProposal(removeMemberAddress.proposalId);
+    expect(createdSecondProposal.title).toContain("Remove participants");
+    expect(createdSecondProposal.status).toContain("passed");
+    expect(createdSecondProposal.proposal.add_remove_non_voting_members?.add.length).toBe(0);
+    expect(createdSecondProposal.proposal.add_remove_non_voting_members?.remove.length).not.toBe(0);
+
+    const executedProposal = await tcContract.getProposal(2);
+    expect(executedProposal.status).toBe("passed");
+  }, 30000);
 
   xit("Create and execute TC proposal for punishing voting participant", () => {
     //TODO
