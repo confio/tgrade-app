@@ -284,7 +284,7 @@ describe("Trusted Circle", () => {
     expect(createdSecondProposal.proposal.add_remove_non_voting_members?.add.length).toBe(0);
     expect(createdSecondProposal.proposal.add_remove_non_voting_members?.remove.length).not.toBe(0);
 
-    const executedProposal = await tcContract.getProposal(2);
+    const executedProposal = await tcContract.getProposal(removeMemberAddress.proposalId);
     expect(executedProposal.status).toBe("passed");
   }, 30000);
 
