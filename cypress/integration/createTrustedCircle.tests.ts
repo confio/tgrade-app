@@ -6,14 +6,19 @@ describe("Trusted Circle", () => {
   describe("create trusted circle", () => {
     beforeEach(() => {
       cy.findByText(/Add Trusted Circle/i).click();
+      cy.wait(5000); //should be improved
       cy.findByText(/Create Trusted Circle/i).click();
+      cy.wait(5000); //should be improved
       cy.findByPlaceholderText(/Enter Trusted Circle name/i).type("Trusted Circle Test #1");
+      cy.wait(20000); //should be improved
       cy.findByRole("button", { name: /Next/i }).click();
+      cy.wait(5000); //should be improved
       cy.findByRole("button", { name: /Next/i }).click();
+      cy.wait(5000); //should be improved
       cy.findByRole("button", { name: /Connect wallet/i }).click();
-      cy.wait(1500); //should be improved
+      cy.wait(5000); //should be improved
       cy.contains("Web wallet (demo)").click();
-      cy.wait(1500); //should be improved
+      cy.wait(5000); //should be improved
       cy.findByRole("button", { name: /Sign transaction and pay escrow/i }).click();
       cy.wait(20000); //should be improved
       cy.findByRole("button", { name: /Go to Trusted Circle details/i }).click();
