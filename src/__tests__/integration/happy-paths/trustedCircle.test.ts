@@ -153,7 +153,6 @@ describe("Trusted Circle", () => {
 
     const createdProposal = await tcContract.getProposal(txHash.proposalId);
 
-    expect(createdProposal.proposal.add_remove_non_voting_members).toBeTruthy();
     expect(createdProposal.proposal.add_remove_non_voting_members?.add[0]).toContain(config.addressPrefix);
     expect(createdProposal.proposal.add_remove_non_voting_members?.remove.length).toBe(0);
 
@@ -211,7 +210,6 @@ describe("Trusted Circle", () => {
 
     const createdProposal = await tcContract.getProposal(txHash.proposalId);
 
-    expect(createdProposal.proposal.edit_trusted_circle).toBeTruthy();
     expect(createdProposal.proposal.edit_trusted_circle?.name).toContain("Trusted Circle");
 
     await tcContract.executeProposal(address, txHash.proposalId);
