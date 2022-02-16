@@ -24,7 +24,7 @@ describe("Trusted Circle", () => {
       cy.findByRole("button", { name: /Try again/i }).should("not.exist");
 
       cy.get(".ant-steps-item-active .ant-steps-item-icon span").should("have.text", "3");
-      cy.wait(1500); // do not know what happens in 1,5s but if there is no wait it does not click on the button
+      cy.wait(3500); // do not know what happens in 1,5s but if there is no wait it does not click on the button
       cy.findByRole("button", { name: /Sign transaction and pay escrow/i }).click();
 
       cy.findByRole("button", { name: /Go to Trusted Circle details/i }).click();
