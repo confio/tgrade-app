@@ -254,6 +254,24 @@ export class Contract20WS {
       return undefined;
     }
   }
+  static async sendTokens(
+    signingClient: SigningCosmWasmClient,
+    senderAddress: string,
+    contractAddress: string,
+    recipientAddress: string,
+    amountToSend: string,
+  ): Promise<string> {
+    const result = await signingClient.execute(
+      senderAddress,
+      contractAddress,
+      {
+        transfer: { recipient: recipientAddress, amount: amountToSend },
+      },
+      calculateFee(200_000, GasPrice.fromString("0.05utgd")),
+    );
+
+    return result.transactionHash;
+  }
   static async Authorized(
     signingClient: SigningCosmWasmClient,
     contractAddress: string,
