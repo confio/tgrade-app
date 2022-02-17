@@ -173,8 +173,8 @@ export default function ValidatorOverview(): JSX.Element | null {
 
     const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
     const ep = await egContract.getEngagementPoints(operatorResponse.operator);
-    const withdrawableFunds = await egContract.getWithdrawableFunds(operatorResponse.operator);
-    const displayWithdrawableFunds = nativeCoinToDisplay(withdrawableFunds, config.coinMap);
+    const withdrawableRewards = await egContract.getWithdrawableRewards(operatorResponse.operator);
+    const displayWithdrawableRewards = nativeCoinToDisplay(withdrawableRewards, config.coinMap);
     const stakingContract = new StakingContractQuerier(config, client);
     const nativeStakedCoin = await stakingContract.getStakedTokens(operatorResponse.operator);
     const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
@@ -183,7 +183,7 @@ export default function ValidatorOverview(): JSX.Element | null {
     const validator: ValidatorType = {
       ...operatorResponse,
       engagementPoints: ep,
-      rewards: parseFloat(displayWithdrawableFunds.amount),
+      rewards: parseFloat(displayWithdrawableRewards.amount),
       staked: prettyStakedCoin.amount,
       status: "active",
       power: votingPower,
@@ -204,7 +204,7 @@ export default function ValidatorOverview(): JSX.Element | null {
         const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
 
         const totalEgPoints = await egContract.getTotalEngagementPoints();
-        const EgRewards = await egContract.getDistributedFunds();
+        const EgRewards = await egContract.getDistributedRewards();
         const totalEgRewards = parseFloat(EgRewards.amount);
         //TODO: Get from network or remove.
         const totalTGD = 100000000;
@@ -213,8 +213,8 @@ export default function ValidatorOverview(): JSX.Element | null {
         const validatorList = await Promise.all(
           validators.map(async (operatorResponse) => {
             const ep = await egContract.getEngagementPoints(operatorResponse.operator);
-            const withdrawableFunds = await egContract.getWithdrawableFunds(operatorResponse.operator);
-            const displayWithdrawableFunds = nativeCoinToDisplay(withdrawableFunds, config.coinMap);
+            const withdrawableRewards = await egContract.getWithdrawableRewards(operatorResponse.operator);
+            const displayWithdrawableRewards = nativeCoinToDisplay(withdrawableRewards, config.coinMap);
             const stakingContract = new StakingContractQuerier(config, client);
             const nativeStakedCoin = await stakingContract.getStakedTokens(operatorResponse.operator);
             const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
@@ -223,7 +223,7 @@ export default function ValidatorOverview(): JSX.Element | null {
             const validatorItem: ValidatorType = {
               ...operatorResponse,
               engagementPoints: ep,
-              rewards: parseFloat(displayWithdrawableFunds.amount),
+              rewards: parseFloat(displayWithdrawableRewards.amount),
               staked: prettyStakedCoin.amount,
               status: "active",
               power: votingPower,

@@ -1,21 +1,21 @@
 xdescribe("T-Market", () => {
-  it("Create a digital asset", () => {
+  it.skip("Create a digital asset", () => {
     //TODO
   });
 
-  it("Create a trading pair", () => {
+  it.skip("Create a trading pair", () => {
     //TODO
   });
 
-  it("Provide liquidity to a trading pair", () => {
+  it.skip("Provide liquidity to a trading pair", () => {
     //TODO
   });
 
-  it("Exchange tokens from the created trading pair", () => {
+  it.skip("Exchange tokens from the created trading pair", () => {
     //TODO
   });
 
-  it("Withdraw liquidity tokens", () => {
+  it.skip("Withdraw liquidity tokens", () => {
     //TODO
   });
 });

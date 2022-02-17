@@ -1,11 +1,11 @@
 xdescribe("Wallet", () => {
-  it("Send native token", () => {
+  it.skip("Send native token", () => {
     //TODO
   });
-  it("Send CW20 token", () => {
+  it.skip("Send CW20 token", () => {
     //TODO
   });
-  it("Send Trusted token", () => {
+  it.skip("Send Trusted token", () => {
     //TODO
   });
 });

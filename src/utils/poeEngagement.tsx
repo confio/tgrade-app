@@ -11,13 +11,13 @@ interface AdminResponse {
   readonly admin: string;
 }
 
-interface TotalWeightResponse {
-  readonly weight: number;
+interface TotalPointsResponse {
+  readonly points: number;
 }
 
 interface Member {
   readonly addr: string;
-  readonly weight: number;
+  readonly points: number;
 }
 
 interface MemberListResponse {
@@ -25,7 +25,7 @@ interface MemberListResponse {
 }
 
 interface MemberResponse {
-  readonly weight?: number | null;
+  readonly points?: number | null;
 }
 
 interface HooksResponse {
@@ -36,8 +36,8 @@ interface PreauthResponse {
   readonly preauths: number;
 }
 
-interface FundsResponse {
-  readonly funds: Coin;
+interface RewardsResponse {
+  readonly rewards: Coin;
 }
 
 interface DelegatedResponse {
@@ -96,9 +96,9 @@ export class EngagementContractQuerier {
     await this.initAddress();
     if (!this.egAddress) throw new Error(errorEgAddressNotSet);
 
-    const query = { total_weight: {} };
-    const { weight }: TotalWeightResponse = await this.client.queryContractSmart(this.egAddress, query);
-    return weight;
+    const query = { total_points: {} };
+    const { points }: TotalPointsResponse = await this.client.queryContractSmart(this.egAddress, query);
+    return points;
   }
 
   async getEngagementPoints(address: string, atHeight?: number): Promise<number> {
@@ -106,8 +106,8 @@ export class EngagementContractQuerier {
     if (!this.egAddress) throw new Error(errorEgAddressNotSet);
 
     const query = { member: { addr: address, at_height: atHeight } };
-    const { weight }: MemberResponse = await this.client.queryContractSmart(this.egAddress, query);
-    return weight ?? 0;
+    const { points }: MemberResponse = await this.client.queryContractSmart(this.egAddress, query);
+    return points ?? 0;
   }
 
   async getMembers(startAfter?: string): Promise<readonly Member[]> {
@@ -150,31 +150,31 @@ export class EngagementContractQuerier {
     return preauths;
   }
 
-  async getWithdrawableFunds(ownerAddress: string): Promise<Coin> {
+  async getWithdrawableRewards(ownerAddress: string): Promise<Coin> {
     await this.initAddress();
     if (!this.egAddress) throw new Error(errorEgAddressNotSet);
 
-    const query = { withdrawable_funds: { owner: ownerAddress } };
-    const { funds }: FundsResponse = await this.client.queryContractSmart(this.egAddress, query);
-    return funds;
+    const query = { withdrawable_rewards: { owner: ownerAddress } };
+    const asd: RewardsResponse = await this.client.queryContractSmart(this.egAddress, query);
+    return asd.rewards;
   }
 
-  async getDistributedFunds(): Promise<Coin> {
+  async getDistributedRewards(): Promise<Coin> {
     await this.initAddress();
     if (!this.egAddress) throw new Error(errorEgAddressNotSet);
 
-    const query = { distributed_funds: {} };
-    const { funds }: FundsResponse = await this.client.queryContractSmart(this.egAddress, query);
-    return funds;
+    const query = { distributed_rewards: {} };
+    const { rewards }: RewardsResponse = await this.client.queryContractSmart(this.egAddress, query);
+    return rewards;
   }
 
-  async getUndistributedFunds(): Promise<Coin> {
+  async getUndistributedRewards(): Promise<Coin> {
     await this.initAddress();
     if (!this.egAddress) throw new Error(errorEgAddressNotSet);
 
-    const query = { undistributed_funds: {} };
-    const { funds }: FundsResponse = await this.client.queryContractSmart(this.egAddress, query);
-    return funds;
+    const query = { undistributed_rewards: {} };
+    const { rewards }: RewardsResponse = await this.client.queryContractSmart(this.egAddress, query);
+    return rewards;
   }
 
   async getDelegated(ownerAddress: string): Promise<string> {
@@ -211,7 +211,7 @@ export class EngagementContractQuerier {
 }
 
 export class EngagementContract extends EngagementContractQuerier {
-  static readonly GAS_WITHDRAW_FUNDS = 200_000;
+  static readonly GAS_WITHDRAW_REWARDS = 200_000;
   static readonly GAS_DELEGATED_WITHDRAWAL = 200_000;
 
   readonly #signingClient: SigningCosmWasmClient;
@@ -221,7 +221,7 @@ export class EngagementContract extends EngagementContractQuerier {
     this.#signingClient = signingClient;
   }
 
-  async withdrawFunds(
+  async withdrawRewards(
     senderAddress: string,
     ownerAddress?: string,
     receiverAddress?: string,
@@ -229,12 +229,12 @@ export class EngagementContract extends EngagementContractQuerier {
     await this.initAddress();
     if (!this.egAddress) throw new Error(errorEgAddressNotSet);
 
-    const msg = { withdraw_funds: { owner: ownerAddress, receiver: receiverAddress } };
+    const msg = { withdraw_rewards: { owner: ownerAddress, receiver: receiverAddress } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
       this.egAddress,
       msg,
-      calculateFee(EngagementContract.GAS_WITHDRAW_FUNDS, this.config.gasPrice),
+      calculateFee(EngagementContract.GAS_WITHDRAW_REWARDS, this.config.gasPrice),
     );
     return transactionHash;
   }

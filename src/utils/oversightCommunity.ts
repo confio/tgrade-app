@@ -48,14 +48,14 @@ export interface OcResponse {
 }
 
 export type Punishment = {
-  readonly DistributeEscrow?: {
+  readonly distribute_escrow?: {
     readonly member: string;
     readonly slashing_percentage: string;
     readonly distribution_list: readonly string[];
     readonly kick_out: boolean;
   };
 } & {
-  readonly BurnEscrow?: {
+  readonly burn_escrow?: {
     readonly member: string;
     readonly slashing_percentage: string;
     readonly kick_out: boolean;
@@ -123,7 +123,7 @@ export interface OcProposalResponse {
   readonly status: Cw3Status;
   readonly expires: TgExpiration;
   readonly rules: VotingRules;
-  readonly total_weight: number;
+  readonly total_points: number;
   /// This is a running tally of all votes cast on this proposal so far.
   readonly votes: Votes;
 }
@@ -185,7 +185,7 @@ export interface VoteInfo {
   readonly voter: string;
   readonly vote: VoteOption;
   readonly proposal_id: number;
-  readonly weight: number;
+  readonly points: number;
 }
 
 export interface VoteResponse {
@@ -198,7 +198,7 @@ export interface VoteListResponse {
 
 export interface Member {
   readonly addr: string;
-  readonly weight: number;
+  readonly points: number;
 }
 
 export interface MemberListResponse {
@@ -310,7 +310,7 @@ export class OcContractQuerier {
     await this.initAddress();
     if (!this.ocAddress) throw new Error("ocAddress was not set");
 
-    const query = { list_voting_members: { start_after: startAfter } };
+    const query = { list_voters: { start_after: startAfter } };
     const { members }: MemberListResponse = await this.client.queryContractSmart(this.ocAddress, query);
     return members;
   }
@@ -436,7 +436,7 @@ export class OcContractQuerier {
     if (!this.ocAddress) throw new Error("ocAddress was not set");
 
     const query = {
-      list_votes_by_proposal: {
+      list_votes: {
         proposal_id: proposalId,
         start_after: startAfter,
       },
