@@ -7,7 +7,7 @@ xdescribe("Validator", () => {
     //TODO
   });
 
-  it('The "Claim rewards" functionality for validators works the same as Engagement', () => {
+  it.skip('The "Claim rewards" functionality for validators works the same as Engagement', () => {
     //TODO
   });
 });

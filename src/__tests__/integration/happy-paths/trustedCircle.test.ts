@@ -18,7 +18,7 @@ const mnemonic = process.env.SECRET_MNEMONIC || ""; // to run locally use real m
 const addressPrefix = "tgrade";
 
 describe("Trusted Circle", () => {
-  it.skip("Create a Trusted circle", async () => {
+  it("Create a Trusted circle", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: addressPrefix,
