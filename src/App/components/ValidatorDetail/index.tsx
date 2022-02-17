@@ -6,6 +6,7 @@ import { useError, useSdk } from "service";
 import { getErrorFromStackTrace } from "utils/errors";
 import { ValidatorContract, ValidatorSlashing } from "utils/validator";
 
+import AddressTag from "../AddressTag";
 import DistributionModal from "../DistributionModal";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StakeModal, { StakeModalState } from "../StakeModal";
@@ -157,9 +158,9 @@ export function ValidatorDetail({
           </ModalHeader>
           <div style={{ display: "flex", flexDirection: "column", minHeight: "530px" }}>
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
                 <Title> {validator.metadata?.moniker ?? ""}</Title>
-                <p> {validator.operator}</p>
+                <AddressTag address={validator.operator} copyable />
                 <p> {validator.metadata?.website ?? ""}</p>
               </div>
               {validator.jailed_until ? (
