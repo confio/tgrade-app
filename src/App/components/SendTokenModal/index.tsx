@@ -19,7 +19,7 @@ import Field from "../Field";
 import Stack from "../Stack/style";
 import { ButtonGroup, ModalHeader, Separator, StyledModal } from "./style";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const amountLabel = "Amount to send";
 const recipientLabel = "Recipient address";
@@ -141,6 +141,9 @@ export default function SendTokenModal({
           <ModalHeader>
             <Stack gap="s1">
               <Title>Send tokens</Title>
+              <Text>
+                Balance: {selectedToken.humanBalance} {selectedToken.symbol}
+              </Text>
             </Stack>
             {!isSubmitting ? <img alt="Close button" src={closeIcon} onClick={() => resetModal()} /> : null}
           </ModalHeader>
