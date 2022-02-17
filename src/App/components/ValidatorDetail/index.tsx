@@ -191,7 +191,7 @@ export function ValidatorDetail({
               <StyledCard>
                 <Title>Distributed rewards, TGD</Title>
                 <StyledInfoRow>
-                  <b>{validator.rewards} /</b> <p> {blockchainValues.totalEgRewards}</p>
+                  <b>{validator.rewards}</b>
                 </StyledInfoRow>
                 <Button type="ghost" onClick={() => setDistributionModalOpen(true)}>
                   Claim rewards
@@ -200,7 +200,7 @@ export function ValidatorDetail({
               <StyledCard>
                 <Title>Staked, TGD</Title>
                 <StyledInfoRow>
-                  <b>{validator.staked || "-"} /</b> <p> {blockchainValues.totalTGD}</p>
+                  <b>{validator.staked}</b>
                 </StyledInfoRow>
                 {validator.operator === address ? (
                   <ButtonGroup>
@@ -217,8 +217,8 @@ export function ValidatorDetail({
                 ) : null}
               </StyledCard>
               <StyledCard>
-                <Title>Potential voting power</Title>
-                <p>{validator.power}</p>
+                <Title>Voting power</Title>
+                <p>{validator.power} %</p>
               </StyledCard>
             </div>
             <div style={{ marginTop: "25px", marginBottom: "10px" }}>
