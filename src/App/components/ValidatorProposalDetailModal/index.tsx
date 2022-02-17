@@ -252,7 +252,7 @@ export default function ValidatorProposalDetailModal({
             </Button>
           ) : null}
           <Button onClick={() => resetModal()}>
-            <span>Go to Oversight Community details</span>
+            <span>Go to Validator details</span>
           </Button>
         </ShowTxResult>
       ) : (

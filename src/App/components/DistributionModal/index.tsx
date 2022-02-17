@@ -88,11 +88,11 @@ export default function DistributionModal({
           </ModalHeader>
           <Stack gap="s4">
             <TextStack>
-              <Title>Validator rewards</Title>
+              <Title>Distributed rewards</Title>
               <Text>You can delegate the withdrawal of your funds to another address.</Text>
               <Text>
-                You may also check any address' validator points and rewards, and attempt a reward withdrawal.
-                Another address can be set as receiver of the withdrawal.
+                You may also check any address' distributed points and rewards, and attempt a reward
+                withdrawal. Another address can be set as receiver of the withdrawal.
               </Text>
             </TextStack>
             <DelegateContainer

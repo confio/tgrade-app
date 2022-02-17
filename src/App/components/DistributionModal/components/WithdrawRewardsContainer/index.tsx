@@ -115,7 +115,7 @@ export default function WithdrawRewardsContainer({
 
   return (
     <CheckStack>
-      <BoldText>Check validator rewards</BoldText>
+      <BoldText>Check distributed rewards</BoldText>
       <WithdrawRewardsForm
         canWithdraw={withdrawableFunds?.amount !== "0"}
         address={address}
@@ -128,14 +128,14 @@ export default function WithdrawRewardsContainer({
       >
         <Row>
           <Cell>
-            <Text>Validator points</Text>
+            <Text>Distributed points</Text>
             <Text>
               <BoldText>{engagement} / </BoldText>
               {totalEngagement} ({((engagement / totalEngagement) * 100).toFixed(2)}%)
             </Text>
           </Cell>
           <Cell>
-            <Text>Validator rewards</Text>
+            <Text>Distributed rewards</Text>
             <Text>
               {withdrawableFunds?.amount || "—"} {withdrawableFunds?.denom || ""}
             </Text>

@@ -6,6 +6,7 @@ import { useError, useSdk } from "service";
 import { getErrorFromStackTrace } from "utils/errors";
 import { ValidatorContract, ValidatorSlashing } from "utils/validator";
 
+import AddressTag from "../AddressTag";
 import DistributionModal from "../DistributionModal";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StakeModal, { StakeModalState } from "../StakeModal";
@@ -157,9 +158,9 @@ export function ValidatorDetail({
           </ModalHeader>
           <div style={{ display: "flex", flexDirection: "column", minHeight: "530px" }}>
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
                 <Title> {validator.metadata?.moniker ?? ""}</Title>
-                <p> {validator.operator}</p>
+                <AddressTag address={validator.operator} copyable />
                 <p> {validator.metadata?.website ?? ""}</p>
               </div>
               {validator.jailed_until ? (
@@ -183,15 +184,15 @@ export function ValidatorDetail({
               }}
             >
               <StyledCard>
-                <Title>Engagement points</Title>
+                <Title>Distributed points</Title>
                 <StyledInfoRow>
                   <b>{validator.engagementPoints} /</b> <p> {blockchainValues.totalEgPoints}</p>
                 </StyledInfoRow>
               </StyledCard>
               <StyledCard>
-                <Title>Engagement rewards, TGD</Title>
+                <Title>Distributed rewards, TGD</Title>
                 <StyledInfoRow>
-                  <b>{validator.rewards} /</b> <p> {blockchainValues.totalEgRewards}</p>
+                  <b>{validator.rewards}</b>
                 </StyledInfoRow>
                 <Button type="ghost" onClick={() => setDistributionModalOpen(true)}>
                   Claim rewards
@@ -200,7 +201,7 @@ export function ValidatorDetail({
               <StyledCard>
                 <Title>Staked, TGD</Title>
                 <StyledInfoRow>
-                  <b>{validator.staked || "-"} /</b> <p> {blockchainValues.totalTGD}</p>
+                  <b>{validator.staked}</b>
                 </StyledInfoRow>
                 {validator.operator === address ? (
                   <ButtonGroup>
@@ -217,8 +218,8 @@ export function ValidatorDetail({
                 ) : null}
               </StyledCard>
               <StyledCard>
-                <Title>Potential voting power</Title>
-                <p>{validator.power}</p>
+                <Title>Voting power</Title>
+                <p>{validator.power} %</p>
               </StyledCard>
             </div>
             <div style={{ marginTop: "25px", marginBottom: "10px" }}>
