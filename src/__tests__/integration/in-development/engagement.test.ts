@@ -1,25 +1,25 @@
 xdescribe("Engagement", () => {
-  it("Check engagement of an address", () => {
+  it.skip("Check engagement of an address", () => {
     //TODO
   });
 
-  it("Claim my own rewards", () => {
+  it.skip("Claim my own rewards", () => {
     //TODO
   });
 
-  it("Claim my own rewards and send them to another address", () => {
+  it.skip("Claim my own rewards and send them to another address", () => {
     //TODO
   });
 
-  it("Set another account as my delegate", () => {
+  it.skip("Set another account as my delegate", () => {
     //TODO
   });
 
-  it("As a delegate, claim rewards from an account that has chosen me as delegate", () => {
+  it.skip("As a delegate, claim rewards from an account that has chosen me as delegate", () => {
     //TODO
   });
 
-  it("As a delegate, claim rewards from an account that has chosen me as delegate and send them to another address", () => {
+  it.skip("As a delegate, claim rewards from an account that has chosen me as delegate and send them to another address", () => {
     //TODO
   });
 });

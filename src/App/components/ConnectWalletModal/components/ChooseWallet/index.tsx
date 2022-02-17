@@ -9,14 +9,15 @@ import {
 } from "utils/sdk";
 
 import closeIcon from "../../../../assets/icons/cross.svg";
-import webIcon from "../../../../assets/icons/web.svg";
+import tgradeIcon from "../../../../assets/icons/tgrade-square.svg";
 import keplrIcon from "../../../../assets/images/keplr-logo.png";
 import ledgerIcon from "../../../../assets/images/ledger-logo.png";
 import Stack from "../../../Stack/style";
 import WalletButton from "../../../WalletButton";
+import { BalancesList } from "./components/BalancesList";
 import { ChooseButtons, LogoutButton, ModalHeader, StyledAddressTag, SwitchButtons } from "./style";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 interface ChooseWalletProps {
   readonly closeModal: () => void;
@@ -43,11 +44,8 @@ export default function ChooseWallet({
   }
 
   return (
-    <Stack gap="s1">
+    <>
       <ModalHeader>
-        <Stack gap="s1">
-          <Title>Connect Wallet</Title>
-        </Stack>
         <img alt="Close button" src={closeIcon} onClick={() => closeModal()} />
       </ModalHeader>
       {address ? (
@@ -55,6 +53,7 @@ export default function ChooseWallet({
           <Stack gap="s1">
             <Text>Currently connected to {getLastConnectedWallet() || ""} wallet:</Text>
             <StyledAddressTag address={address} copyable />
+            <BalancesList />
           </Stack>
           <Stack gap="s1">
             <Text>Switch to:</Text>
@@ -76,12 +75,15 @@ export default function ChooseWallet({
             ) : null}
             {!isWebSigner(signer) ? (
               <WalletButton
-                iconSrc={webIcon}
+                iconSrc={tgradeIcon}
                 iconAlt="Web logo"
                 text="Web wallet (demo)"
                 onClick={() => chooseWeb()}
               />
             ) : null}
+            <LogoutButton type="ghost" onClick={() => logout()}>
+              <div>Logout</div>
+            </LogoutButton>
           </Stack>
         </SwitchButtons>
       ) : (
@@ -106,8 +108,8 @@ export default function ChooseWallet({
             ) : null}
             {!isWebSigner(signer) ? (
               <WalletButton
-                iconSrc={webIcon}
-                iconAlt="Web logo"
+                iconSrc={tgradeIcon}
+                iconAlt="Web wallet logo"
                 text="Web wallet (demo)"
                 onClick={() => chooseWeb()}
               />
@@ -115,11 +117,6 @@ export default function ChooseWallet({
           </ChooseButtons>
         </Stack>
       )}
-      {address ? (
-        <LogoutButton type="ghost" onClick={() => logout()}>
-          <div>Logout</div>
-        </LogoutButton>
-      ) : null}
-    </Stack>
+    </>
   );
 }

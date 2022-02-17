@@ -280,7 +280,7 @@ describe("Trusted Circle", () => {
     //TODO
   });
 
-  xit("Add another voting member", () => {
+  it.skip("Add another voting member", () => {
     //TODO
     /**
      * For that we need to create and execute Add voting member proposal,

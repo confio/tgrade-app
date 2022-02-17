@@ -1,5 +1,6 @@
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
-import { Coin, StdFee } from "@cosmjs/stargate";
+import { assertIsDeliverTxSuccess, calculateFee, Coin, GasPrice, StdFee } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import { useEffect, useState } from "react";
 import { useSdk } from "service";
@@ -97,3 +98,21 @@ export function useBalance(address?: string): readonly Coin[] {
   return currentBalance;
 }
 export const UINT128_MAX = "340282366920938463463374607431768211454";
+
+export async function sendTokens(
+  signingClient: SigningCosmWasmClient,
+  senderAddress: string,
+  recipientAddress: string,
+  coinToSend: Coin,
+): Promise<string> {
+  const result = await signingClient.sendTokens(
+    senderAddress,
+    recipientAddress,
+    [coinToSend],
+    calculateFee(200_000, GasPrice.fromString("0.05utgd")),
+  );
+
+  assertIsDeliverTxSuccess(result);
+
+  return result.transactionHash;
+}

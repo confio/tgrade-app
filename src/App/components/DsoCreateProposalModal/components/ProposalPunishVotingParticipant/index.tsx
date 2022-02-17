@@ -70,7 +70,7 @@ export default function ProposalPunishVotingParticipant({
 
       const punishment: Punishment = distributionList.length
         ? {
-            DistributeEscrow: {
+            distribute_escrow: {
               distribution_list: distributionList,
               member: memberToPunish,
               slashing_percentage: nativeSlashing,
@@ -78,7 +78,7 @@ export default function ProposalPunishVotingParticipant({
             },
           }
         : {
-            BurnEscrow: {
+            burn_escrow: {
               member: memberToPunish,
               slashing_percentage: nativeSlashing,
               kick_out: kickOut,

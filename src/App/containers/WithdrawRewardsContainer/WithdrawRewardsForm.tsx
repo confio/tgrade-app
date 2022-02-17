@@ -75,7 +75,8 @@ export default function WithdrawRewardsForm({
                     }}
                   />
                   <Button
-                    disabled={!isValid || isSubmitting || !canWithdraw}
+                    disabled={!isValid || !canWithdraw}
+                    loading={isSubmitting}
                     onClick={() => submitForm()}
                     style={{ alignSelf: "flex-start" }}
                   >

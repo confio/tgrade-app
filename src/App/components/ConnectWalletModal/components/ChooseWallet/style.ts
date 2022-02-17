@@ -46,22 +46,30 @@ export const ChooseButtons = styled.div`
 `;
 
 export const SwitchButtons = styled.div`
+  padding: 1px; /* So button hover border does not get cut*/
+  height: 400px;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s0);
 
-  & > div {
-    flex-basis: 50%;
+  & > div:nth-child(1) {
+    flex-basis: 70%;
+
+    & > div {
+      overflow-y: auto;
+    }
   }
 
-  & button {
-    flex-basis: calc(50% - calc(var(--s1) / 2));
-  }
+  & > div:nth-child(2) {
+    flex-basis: 30%;
 
-  & .ant-btn {
-    align-self: flex-start;
+    & .ant-btn {
+      align-self: flex-start;
+    }
   }
 `;
 
 export const LogoutButton = styled(Button)`
-  align-self: flex-start;
+  display: block;
+  width: 100%;
 `;

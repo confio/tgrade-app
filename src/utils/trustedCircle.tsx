@@ -33,14 +33,14 @@ export interface TcResponse {
 }
 
 export type Punishment = {
-  readonly DistributeEscrow?: {
+  readonly distribute_escrow?: {
     readonly member: string;
     readonly slashing_percentage: string;
     readonly distribution_list: readonly string[];
     readonly kick_out: boolean;
   };
 } & {
-  readonly BurnEscrow?: {
+  readonly burn_escrow?: {
     readonly member: string;
     readonly slashing_percentage: string;
     readonly kick_out: boolean;
@@ -142,10 +142,10 @@ export interface TcProposalResponse {
     readonly at_time: CosmWasmTimestamp;
   };
   /// This is the threshold that is applied to this proposal. Both the rules of the voting contract,
-  /// as well as the total_weight of the voting group may have changed since this time. That means
+  /// as well as the total_points of the voting group may have changed since this time. That means
   /// that the generic `Threshold{}` query does not provide valid information for existing proposals.
   readonly rules: VotingRules;
-  readonly total_weight: number;
+  readonly total_points: number;
   /// This is a running tally of all votes cast on this proposal so far.
   readonly votes: Votes;
 }
@@ -175,7 +175,7 @@ export interface VoteInfo {
   readonly voter: string;
   readonly vote: VoteOption;
   readonly proposal_id: number;
-  readonly weight: number;
+  readonly points: number;
 }
 
 export interface VoteResponse {
@@ -188,7 +188,7 @@ export interface VoteListResponse {
 
 export interface Member {
   readonly addr: string;
-  readonly weight: number;
+  readonly points: number;
 }
 
 export interface MemberListResponse {
@@ -299,7 +299,7 @@ export class TcContractQuerier {
   }
 
   async getVotingMembers(startAfter?: string): Promise<readonly Member[]> {
-    const query = { list_voting_members: { start_after: startAfter } };
+    const query = { list_voters: { start_after: startAfter } };
     const { members }: MemberListResponse = await this.client.queryContractSmart(this.address, query);
     return members;
   }
@@ -350,7 +350,7 @@ export class TcContractQuerier {
 
   async getVotes(proposalId: number, startAfter?: string): Promise<readonly VoteInfo[]> {
     const query = {
-      list_votes_by_proposal: {
+      list_votes: {
         proposal_id: proposalId,
         start_after: startAfter,
       },
