@@ -61,7 +61,7 @@ describe("Trusted Circle", () => {
     expect(tcResponse.rules.threshold).toBe("0.51");
     expect(tcResponse.rules.allow_end_early).toBe(allowEndEarly);
     expect(tcContractAddress.startsWith(config.addressPrefix)).toBeTruthy();
-  });
+  }, 15000);
 
   it("Create and execute TC proposal for adding voting members", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
