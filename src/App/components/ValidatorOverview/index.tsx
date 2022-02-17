@@ -9,6 +9,7 @@ import { EngagementContractQuerier } from "utils/poeEngagement";
 import { StakingContractQuerier } from "utils/staking";
 import { ellipsifyAddress } from "utils/ui";
 import { OperatorResponse, useLoadValidatorsBg, ValidatorContractQuerier } from "utils/validator";
+
 import { ValidatorDetail } from "../ValidatorDetail";
 import { StyledTable } from "./style";
 
