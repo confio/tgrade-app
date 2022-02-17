@@ -183,13 +183,13 @@ export function ValidatorDetail({
               }}
             >
               <StyledCard>
-                <Title>Engagement points</Title>
+                <Title>Distributed points</Title>
                 <StyledInfoRow>
                   <b>{validator.engagementPoints} /</b> <p> {blockchainValues.totalEgPoints}</p>
                 </StyledInfoRow>
               </StyledCard>
               <StyledCard>
-                <Title>Engagement rewards, TGD</Title>
+                <Title>Distributed rewards, TGD</Title>
                 <StyledInfoRow>
                   <b>{validator.rewards} /</b> <p> {blockchainValues.totalEgRewards}</p>
                 </StyledInfoRow>
