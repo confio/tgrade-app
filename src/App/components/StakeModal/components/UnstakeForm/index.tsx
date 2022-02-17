@@ -131,7 +131,7 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
         validationSchema={validationSchema}
         onSubmit={() => submitUnstakeTokens()}
       >
-        {({ submitForm, isValid, setFieldValue }) => (
+        {({ submitForm, isValid, setFieldValue, isSubmitting }) => (
           <>
             <Form>
               <FormStack gap="s1">
@@ -155,7 +155,7 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
                   <Field label={potentialVotingPowerLabel} placeholder="0%" disabled />
                 </UnstakeFields>
                 {unstakeTime ? <Text>Your withdrawn tokens will be frozen for {unstakeTime}</Text> : null}
-                <Button disabled={!isValid} onClick={() => submitForm()}>
+                <Button disabled={!isValid} loading={isSubmitting} onClick={() => submitForm()}>
                   <div>Unstake tokens</div>
                 </Button>
               </FormStack>
