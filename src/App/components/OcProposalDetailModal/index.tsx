@@ -30,6 +30,7 @@ import ProposalAddOCMembers from "./components/ProposalAddOCMembers";
 import ProposalGrantEngagementPoints from "./components/ProposalGrantEngagementPoints";
 import ProposalPunishOCMember from "./components/ProposalPunishOCMember";
 import ProposalPunishValidator from "./components/ProposalPunishValidator";
+import ProposalUnjailValidator from "./components/ProposalUnjailValidator";
 import {
   AbstainedButton,
   AcceptButton,
@@ -90,6 +91,9 @@ export default function OcProposalDetailModal({
     proposal && isOcProposalResponse(proposal) ? proposal.proposal.grant_engagement : undefined;
   const proposalPunishValidator =
     proposal && isOcProposalResponse(proposal) ? proposal.proposal.punish : undefined;
+
+  const proposalUnjailValidator =
+    proposal && isOcProposalResponse(proposal) ? proposal.proposal.unjail : undefined;
 
   const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
 
@@ -286,6 +290,7 @@ export default function OcProposalDetailModal({
                 <ProposalPunishOCMember proposalPunishVotingMember={proposalPunishOCMember} />
                 <ProposalGrantEngagementPoints proposalGrantEngagement={proposalGrantEngagementPoints} />
                 <ProposalPunishValidator proposalPunishValidator={proposalPunishValidator} />
+                <ProposalUnjailValidator proposalUnjailValidator={proposalUnjailValidator} />
                 <TextValue>{proposal.description}</TextValue>
               </Stack>
               <Separator />
