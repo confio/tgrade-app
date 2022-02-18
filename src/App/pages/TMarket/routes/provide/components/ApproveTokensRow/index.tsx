@@ -17,14 +17,13 @@ const ApproveTokensRow = (): JSX.Element => {
   const approveTokenA = async (): Promise<void> => {
     try {
       if (!values?.selectFrom?.address || !address) return;
-      const result = await Contract20WS.Authorized(
+      await Contract20WS.Authorized(
         signingClient,
         values.selectFrom.address,
         address,
         selectedPair.contract_addr,
       );
       setIsTokenApprovedA(provideDispatch, true);
-      console.log(result);
     } catch (error) {
       console.error(`Error when approving token ${values.selectFrom?.symbol}`);
       console.error(error);
@@ -34,14 +33,13 @@ const ApproveTokensRow = (): JSX.Element => {
   const approveTokenB = async (): Promise<void> => {
     try {
       if (!values?.selectTo?.address || !address) return;
-      const result = await Contract20WS.Authorized(
+      await Contract20WS.Authorized(
         signingClient,
         values.selectTo.address,
         address,
         selectedPair.contract_addr,
       );
       setIsTokenApprovedB(provideDispatch, true);
-      console.log(result);
     } catch (error) {
       console.error(`Error when approving token ${values.selectTo?.symbol}`);
       console.error(error);

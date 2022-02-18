@@ -37,7 +37,6 @@ export default function LeaveOcModal(): JSX.Element {
       try {
         const dsoContract = new OcContractQuerier(config, client);
         const escrowResponse = await dsoContract.getEscrow(address);
-        console.log({ escrowResponse });
 
         if (escrowResponse) {
           setMembership(escrowResponse.status);

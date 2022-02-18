@@ -69,7 +69,7 @@ export function ValidatorDetail({
         const slashingEvents = await validatorContract.getSlashingEvents(validator.operator);
         setSlashingEvents(slashingEvents);
       } catch {
-        console.log(`${validator.operator} does not have slashing events`);
+        // NOTE: the validator does not have slashing events, do nothing
       }
     })();
   }, [config, signingClient, validator]);
