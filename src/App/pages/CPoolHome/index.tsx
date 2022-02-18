@@ -14,7 +14,7 @@ export default function CPoolHome(): JSX.Element | null {
       <Stack gap="s-2" style={{ width: "100%" }}>
         <TextStack>
           <Title>Community Pool</Title>
-          <Text>5% of all rewards from the chain regularly goes to this community contract</Text>
+          <Text>The community pool is funded by 5% of the chain rewards</Text>
         </TextStack>
         <CPoolDetail />
       </Stack>
