@@ -2,9 +2,10 @@ import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
+import { config } from "config/network";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { getFormItemName } from "utils/forms";
+import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
 
 import { ButtonGroup, Separator } from "./style";
@@ -16,7 +17,12 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(commentLabel)]: Yup.string().typeError("comment should be text").required(),
   [getFormItemName(validatorLabel)]: Yup.string()
     .typeError("Addresses must be alphanumeric")
-    .required("Participants are required"),
+    .required("Participants are required")
+    .test(
+      "is-address-valid",
+      "validator address must be valid",
+      (validatorAddress) => !validatorAddress || isValidAddress(validatorAddress, config.addressPrefix),
+    ),
 });
 
 export interface FormUnjailValidatorValues {
