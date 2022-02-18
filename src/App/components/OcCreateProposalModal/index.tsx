@@ -13,7 +13,7 @@ const ProposalAddOCMembers = lazy(() => import("./components/ProposalAddOCMember
 const ProposalPunishOCMember = lazy(() => import("./components/ProposalPunishOCMember"));
 const ProposalGrantEngagementPoints = lazy(() => import("./components/ProposalGrantEngagementPoints"));
 const ProposalPunishValidator = lazy(() => import("./components/ProposalPunishValidator"));
-//const ProposalUnjailValidator = lazy(() => import("./components/ProposalUnjailValidator"));
+const ProposalUnjailValidator = lazy(() => import("./components/ProposalUnjailValidator"));
 
 const { Title, Text } = Typography;
 const { Step } = Steps;
@@ -164,7 +164,7 @@ export default function OcCreateProposalModal({
               setTxResult={setTxResult}
             />
           ) : proposalStep.type === ProposalType.UnjailValidator ? (
-            <ProposalPunishValidator
+            <ProposalUnjailValidator
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
               isSubmitting={isSubmitting}

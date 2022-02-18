@@ -1,4 +1,3 @@
-import { Decimal } from "@cosmjs/math";
 import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
@@ -8,16 +7,13 @@ import { useError, useSdk } from "service";
 import { getDisplayAmountFromFee } from "utils/currency";
 import { OcContract } from "utils/oversightCommunity";
 
-import { ButtonGroup, ConfirmField, FeeGroup, Heading, Separator, TextComment } from "./style";
+import { ButtonGroup, ConfirmField, FeeGroup, Separator, TextComment } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Text, Paragraph } = Typography;
 
-interface ConfirmationPunishValidatorProps {
-  readonly validatorToPunish: string;
-  readonly slashingPercentage: string;
-  readonly jail: string;
-  readonly jailedUntil: string;
+interface ConfirmationUnjailValidatorProps {
+  readonly validatorToUnjail: string;
   readonly comment: string;
   readonly isSubmitting: boolean;
   readonly goBack: () => void;
@@ -25,41 +21,20 @@ interface ConfirmationPunishValidatorProps {
 }
 
 export default function ConfirmationUnjailValidator({
-  validatorToPunish,
-  jail,
-  jailedUntil,
-  slashingPercentage,
+  validatorToUnjail,
   comment,
   isSubmitting,
   goBack,
   submitForm,
-}: ConfirmationPunishValidatorProps): JSX.Element {
+}: ConfirmationUnjailValidatorProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, signer, signingClient },
   } = useSdk();
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const [toSlash, setToSlash] = useState("0");
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
-
-  useEffect(() => {
-    if (!slashingPercentage || !signingClient) return;
-
-    try {
-      const slashingPercentageNumber = parseFloat(slashingPercentage) / 100;
-      const toSlash = (
-        Decimal.fromUserInput("", config.coinMap[config.feeToken].fractionalDigits).toFloatApproximation() *
-        slashingPercentageNumber
-      ).toString();
-
-      setToSlash(toSlash);
-    } catch (error) {
-      if (!(error instanceof Error)) return;
-      handleError(error);
-    }
-  }, [config.coinMap, config.feeToken, handleError, signingClient, slashingPercentage]);
 
   useEffect(() => {
     if (!signingClient) return;
@@ -77,26 +52,11 @@ export default function ConfirmationUnjailValidator({
   return (
     <>
       <ConfirmField>
-        <Text>Validator(s) to be punished: </Text>
-        <b style={{ color: "red" }}>{jail ? "Jailed Forever" : `Jailed until ${jailedUntil}`}</b>
+        <Text>Validator to be unjailed: </Text>
         <br />
-        <TextComment>{validatorToPunish}</TextComment>
+        <TextComment>{validatorToUnjail}</TextComment>
       </ConfirmField>
       <TextComment>{comment}</TextComment>
-      <ConfirmField>
-        <Heading>Distribute to: </Heading>
-        <Text>None</Text>
-      </ConfirmField>
-      <ConfirmField>
-        <Heading>Returned to User: </Heading>
-        <Text>{`${feeTokenDenom}`}</Text>
-      </ConfirmField>
-      {slashingPercentage && slashingPercentage !== "0" ? (
-        <ConfirmField>
-          <Heading>Amount to be destroyed: </Heading>
-          <Text>{`${slashingPercentage}% of ${""} ${feeTokenDenom} = ${toSlash} ${feeTokenDenom}`}</Text>
-        </ConfirmField>
-      ) : null}
 
       <Separator />
       <ButtonGroup>
