@@ -1,23 +1,23 @@
 import { Typography } from "antd";
 import closeIcon from "App/assets/icons/cross.svg";
 import Button from "App/components/Button";
+import ConnectWalletModal from "App/components/ConnectWalletModal";
 import Stack from "App/components/Stack/style";
-import { lazy, useState } from "react";
+import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { closeLeaveOcModal, useOc } from "service/oversightCommunity";
 import { getErrorFromStackTrace } from "utils/errors";
-import { OcContract } from "utils/oversightCommunity";
+import { MemberStatus, OcContract, OcContractQuerier } from "utils/oversightCommunity";
 
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StyledLeaveOcModal, { ButtonGroup, ModalHeader, Separator } from "./style";
 
-const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Title, Text } = Typography;
 
 export default function LeaveOcModal(): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, signer, address, signingClient },
+    sdkState: { config, signer, address, client, signingClient },
   } = useSdk();
   const {
     ocState: { leaveOcModalState },
@@ -27,6 +27,29 @@ export default function LeaveOcModal(): JSX.Element {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
+
+  const [membership, setMembership] = useState<MemberStatus>();
+
+  useEffect(() => {
+    (async function queryMembership() {
+      if (!client || !address) return;
+
+      try {
+        const dsoContract = new OcContractQuerier(config, client);
+        const escrowResponse = await dsoContract.getEscrow(address);
+        console.log({ escrowResponse });
+
+        if (escrowResponse) {
+          setMembership(escrowResponse.status);
+        } else {
+          setMembership(undefined);
+        }
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      }
+    })();
+  }, [address, client, config, handleError]);
 
   function resetModal() {
     closeLeaveOcModal(ocDispatch);
@@ -55,6 +78,7 @@ export default function LeaveOcModal(): JSX.Element {
 
   return (
     <StyledLeaveOcModal
+      destroyOnClose
       centered
       footer={null}
       closable={false}
@@ -89,8 +113,24 @@ export default function LeaveOcModal(): JSX.Element {
         <Stack gap="s1">
           <ModalHeader>
             <Stack gap="s1">
-              <Title>Do you really want to leave the Oversight Community?</Title>
-              <Text>When you leave, you can only come return when invited by a voting participant.</Text>
+              <Title>Leave Oversight Community</Title>
+              {!membership ? <Text>You are not currently a member of the Oversight Community.</Text> : null}
+              {membership?.non_voting ? (
+                <Text>When you leave, you can only come return when invited by a voting participant.</Text>
+              ) : null}
+              {membership?.voting ? (
+                <Text>
+                  When you leave, you can only come return when invited by a voting participant. Your escrow
+                  will also be frozen for some time.
+                </Text>
+              ) : null}
+              {membership?.leaving ? (
+                <Text>You are already in the process of leaving the Oversight Community.</Text>
+              ) : null}
+              {membership?.pending ? (
+                <Text>You need to deposit the required escrow to gain voting rights.</Text>
+              ) : null}
+              {membership?.pending_paid ? <Text>You will become a voting member soon.</Text> : null}
             </Stack>
             {!isSubmitting ? (
               <img alt="Close button" src={closeIcon} onClick={() => closeLeaveOcModal(ocDispatch)} />
@@ -99,6 +139,7 @@ export default function LeaveOcModal(): JSX.Element {
           <Separator />
           <ButtonGroup>
             <Button
+              disabled={!!membership?.leaving}
               loading={isSubmitting}
               danger={!!signer}
               onClick={signer ? () => submitLeaveOc() : () => setModalOpen(true)}
