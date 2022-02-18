@@ -52,7 +52,7 @@ export default function ProposalUnjailValidator({
       });
 
       setTxResult({
-        msg: `Created proposal for punishing validator to Oversight Community. Transaction ID: ${txHash}`,
+        msg: `Created proposal for unjailing validator to Oversight Community. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
