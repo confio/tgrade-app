@@ -9,12 +9,12 @@ import * as Yup from "yup";
 
 import { ButtonGroup, Separator } from "./style";
 
-const validatorsLabel = "Addresses of validators you want to punish";
+const validatorLabel = "Address of validator you want to unjail";
 const commentLabel = "Comments (these comments are visible on the proposal once people vote on it)";
 
 const validationSchema = Yup.object().shape({
   [getFormItemName(commentLabel)]: Yup.string().typeError("comment should be text").required(),
-  [getFormItemName(validatorsLabel)]: Yup.string()
+  [getFormItemName(validatorLabel)]: Yup.string()
     .typeError("Addresses must be alphanumeric")
     .required("Participants are required"),
 });
@@ -41,7 +41,7 @@ export default function FormUnjailValidator({
   return (
     <Formik
       initialValues={{
-        [getFormItemName(validatorsLabel)]: validator,
+        [getFormItemName(validatorLabel)]: validator,
         [getFormItemName(commentLabel)]: comment,
       }}
       enableReinitialize

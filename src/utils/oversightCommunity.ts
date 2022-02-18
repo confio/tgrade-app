@@ -102,6 +102,11 @@ export interface OcProposal extends TcProposal {
     readonly member: string;
     readonly points: number;
   };
+  readonly unjail?: {
+    /** address of the member to unjail */
+    readonly member: string;
+    readonly comment: string;
+  };
   readonly punish?: {
     /** address of the member to be punished */
     readonly member: string;
@@ -143,7 +148,7 @@ export function isOcProposalResponse(
   response: TcProposalResponse | OcProposalResponse,
 ): response is OcProposalResponse {
   const proposal = response.proposal;
-  return !!proposal.grant_engagement || !!proposal.punish;
+  return !!proposal.grant_engagement || !!proposal.punish || !!proposal.unjail;
 }
 
 export function isOcProposal(proposal: TcProposal | OcProposal): proposal is OcProposal {
@@ -243,6 +248,8 @@ export function getProposalTitle(proposal: TcProposal | OcProposal): string {
       return "Grant Engagement Points";
     case "punish":
       return "Punish Validator";
+    case "unjail":
+      return "Unjail Validator";
     default:
       return "Uknown proposal type";
   }

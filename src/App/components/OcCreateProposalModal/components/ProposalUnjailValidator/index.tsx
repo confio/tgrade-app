@@ -45,10 +45,10 @@ export default function ProposalUnjailValidator({
       const ocContract = new OcContract(config, signingClient);
 
       const { txHash } = await ocContract.propose(address, comment, {
-        /*      unjail_valiator: {
-          member: validators,
+        unjail: {
+          member: validator,
           comment,
-        }, */
+        },
       });
 
       setTxResult({
