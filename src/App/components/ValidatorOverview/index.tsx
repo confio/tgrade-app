@@ -4,7 +4,9 @@ import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { config } from "config/network";
 import { useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
+import { nativeCoinToDisplay } from "utils/currency";
 import { EngagementContractQuerier } from "utils/poeEngagement";
+import { StakingContractQuerier } from "utils/staking";
 import { ellipsifyAddress } from "utils/ui";
 import { OperatorResponse, useLoadValidatorsBg, ValidatorContractQuerier } from "utils/validator";
 
@@ -35,7 +37,7 @@ export interface ValidatorType extends OperatorResponse {
   engagementPoints?: number;
   rewards?: number;
   power?: number;
-  staked?: string;
+  staked: string;
   status?: string;
   metadata: {
     moniker: string;
@@ -93,7 +95,11 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Staked",
     key: "staked",
-    render: (record: ValidatorType) => <p>{record.staked || "—"}</p>,
+    render: (record: ValidatorType) => (
+      <p>
+        {record.staked || "—"} {config.coinMap[config.feeToken].denom}
+      </p>
+    ),
     sorter: (a: ValidatorType, b: ValidatorType) => {
       if ((a.staked ?? "") < (b.staked ?? "")) return -1;
       if ((a.staked ?? "") > (b.staked ?? "")) return 1;
@@ -102,7 +108,7 @@ const columns: ColumnProps<ValidatorType>[] = [
     },
   },
   {
-    title: "Engagement points",
+    title: "Distributed points",
     key: "engagementPoints",
     render: (record: ValidatorType) => <p>{record.engagementPoints}</p>,
     sorter: (a: ValidatorType, b: ValidatorType) => (a.engagementPoints ?? 0) - (b.engagementPoints ?? 0),
@@ -121,7 +127,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Voting Power",
     key: "power",
-    render: (record: ValidatorType) => <p>{record.power || "—"}</p>,
+    render: (record: ValidatorType) => <p>{record.power || "—"} %</p>,
     sorter: (a: ValidatorType, b: ValidatorType) => (a.power ?? 0) - (b.power ?? 0),
   },
   {
@@ -167,16 +173,20 @@ export default function ValidatorOverview(): JSX.Element | null {
 
     const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
     const ep = await egContract.getEngagementPoints(operatorResponse.operator);
-    const rewards = await egContract.getWithdrawableFunds(operatorResponse.operator);
-    const valActive = await valContract.getActiveValidators();
+    const withdrawableRewards = await egContract.getWithdrawableRewards(operatorResponse.operator);
+    const displayWithdrawableRewards = nativeCoinToDisplay(withdrawableRewards, config.coinMap);
+    const stakingContract = new StakingContractQuerier(config, client);
+    const nativeStakedCoin = await stakingContract.getStakedTokens(operatorResponse.operator);
+    const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
+    const votingPower = await stakingContract.getVotingPower(operatorResponse.operator);
 
     const validator: ValidatorType = {
       ...operatorResponse,
       engagementPoints: ep,
-      rewards: Number(rewards.amount),
+      rewards: parseFloat(displayWithdrawableRewards.amount),
+      staked: prettyStakedCoin.amount,
       status: "active",
-      //TODO: get proper power. Also getActiveValidators is not paginated.
-      power: Number(valActive[0].power),
+      power: votingPower,
     };
 
     setSelectedValidator(validator);
@@ -191,12 +201,10 @@ export default function ValidatorOverview(): JSX.Element | null {
       if (!client) return;
 
       try {
-        const valContract = new ValidatorContractQuerier(config, client);
-        const valActive = await valContract.getActiveValidators();
         const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
 
         const totalEgPoints = await egContract.getTotalEngagementPoints();
-        const EgRewards = await egContract.getDistributedFunds();
+        const EgRewards = await egContract.getDistributedRewards();
         const totalEgRewards = parseFloat(EgRewards.amount);
         //TODO: Get from network or remove.
         const totalTGD = 100000000;
@@ -205,15 +213,20 @@ export default function ValidatorOverview(): JSX.Element | null {
         const validatorList = await Promise.all(
           validators.map(async (operatorResponse) => {
             const ep = await egContract.getEngagementPoints(operatorResponse.operator);
-            const rewards = await egContract.getWithdrawableFunds(operatorResponse.operator);
+            const withdrawableRewards = await egContract.getWithdrawableRewards(operatorResponse.operator);
+            const displayWithdrawableRewards = nativeCoinToDisplay(withdrawableRewards, config.coinMap);
+            const stakingContract = new StakingContractQuerier(config, client);
+            const nativeStakedCoin = await stakingContract.getStakedTokens(operatorResponse.operator);
+            const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
+            const votingPower = await stakingContract.getVotingPower(operatorResponse.operator);
 
             const validatorItem: ValidatorType = {
               ...operatorResponse,
               engagementPoints: ep,
-              rewards: Number(rewards.amount),
+              rewards: parseFloat(displayWithdrawableRewards.amount),
+              staked: prettyStakedCoin.amount,
               status: "active",
-              //TODO: get proper power. Also getActiveValidators is not paginated.
-              power: Number(valActive[0].power),
+              power: votingPower,
             };
 
             return validatorItem;

@@ -8,6 +8,17 @@ import { NetworkConfig } from "config/network";
 import { UINT128_MAX } from "./currency";
 import { PairProps, TokenProps } from "./tokens";
 
+export interface InstantiateMsg {
+  readonly name: string;
+  readonly symbol: string;
+  readonly decimals: number;
+  readonly initial_balances: readonly InitialValuesInterface[];
+  readonly mint?: MinterInterface | null;
+  readonly marketing?: InstantiateMarketingInfo | null;
+  /// This is the address of a cw4 compatible contract that will serve as a whitelist
+  readonly whitelist_group?: string | null;
+}
+
 export interface InitialValuesInterface {
   address: string;
   amount: string;
@@ -72,20 +83,30 @@ export class Contract20WS {
     dsoAddress?: string,
   ): Promise<string> {
     //Initial Message
-    const initMsg: any = {
+    const initMsg: InstantiateMsg = {
       name: name,
       symbol: symbol,
       decimals: decimals,
       initial_balances: initial_balances,
-      minter: minter,
+      mint: minter,
       marketing: marketingInfo,
       whitelist_group: dsoAddress,
     };
 
+    const instParams = {
+      senderAddress: creatorAddress,
+      codeId,
+      msg: initMsg,
+      label: "CW20 instance",
+      fee: calculateFee(500_000, GasPrice.fromString("0.05utgd")),
+    };
+
+    console.log({ instParams });
+
     const { contractAddress } = await signingClient.instantiate(
       creatorAddress,
       codeId,
-      initMsg,
+      initMsg as unknown as Record<string, unknown>,
       "CW20 instance",
       calculateFee(500_000, GasPrice.fromString("0.05utgd")),
     );
@@ -253,6 +274,24 @@ export class Contract20WS {
     } catch {
       return undefined;
     }
+  }
+  static async sendTokens(
+    signingClient: SigningCosmWasmClient,
+    senderAddress: string,
+    contractAddress: string,
+    recipientAddress: string,
+    amountToSend: string,
+  ): Promise<string> {
+    const result = await signingClient.execute(
+      senderAddress,
+      contractAddress,
+      {
+        transfer: { recipient: recipientAddress, amount: amountToSend },
+      },
+      calculateFee(200_000, GasPrice.fromString("0.05utgd")),
+    );
+
+    return result.transactionHash;
   }
   static async Authorized(
     signingClient: SigningCosmWasmClient,

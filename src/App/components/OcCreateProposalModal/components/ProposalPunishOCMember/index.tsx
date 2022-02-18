@@ -63,7 +63,7 @@ export default function ProposalPunishOCMember({
 
       const punishment: Punishment = distributionList.length
         ? {
-            DistributeEscrow: {
+            distribute_escrow: {
               distribution_list: distributionList,
               member: memberToPunish,
               slashing_percentage: nativeSlashing,
@@ -71,7 +71,7 @@ export default function ProposalPunishOCMember({
             },
           }
         : {
-            BurnEscrow: {
+            burn_escrow: {
               member: memberToPunish,
               slashing_percentage: nativeSlashing,
               kick_out: kickOut,

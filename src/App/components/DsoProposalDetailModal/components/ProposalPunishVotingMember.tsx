@@ -18,17 +18,17 @@ export default function ProposalPunishVotingMember({
   proposalPunishVotingMember,
 }: ProposalPunishVotingMemberProps): JSX.Element | null {
   const memberToPunish =
-    proposalPunishVotingMember?.BurnEscrow?.member || proposalPunishVotingMember?.DistributeEscrow?.member;
+    proposalPunishVotingMember?.burn_escrow?.member || proposalPunishVotingMember?.distribute_escrow?.member;
 
   const kickOutMember =
-    proposalPunishVotingMember?.BurnEscrow?.kick_out ||
-    proposalPunishVotingMember?.DistributeEscrow?.kick_out;
+    proposalPunishVotingMember?.burn_escrow?.kick_out ||
+    proposalPunishVotingMember?.distribute_escrow?.kick_out;
 
   const slashingPercentage =
-    proposalPunishVotingMember?.BurnEscrow?.slashing_percentage ||
-    proposalPunishVotingMember?.DistributeEscrow?.slashing_percentage;
+    proposalPunishVotingMember?.burn_escrow?.slashing_percentage ||
+    proposalPunishVotingMember?.distribute_escrow?.slashing_percentage;
 
-  const distributionList = proposalPunishVotingMember?.DistributeEscrow?.distribution_list ?? [];
+  const distributionList = proposalPunishVotingMember?.distribute_escrow?.distribution_list ?? [];
 
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();

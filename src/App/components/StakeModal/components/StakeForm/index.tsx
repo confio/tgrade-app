@@ -117,7 +117,7 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
         validationSchema={validationSchema}
         onSubmit={() => submitStakeTokens()}
       >
-        {({ submitForm, isValid, setFieldValue }) => (
+        {({ submitForm, isValid, setFieldValue, isSubmitting }) => (
           <>
             <Form>
               <FormStack gap="s1">
@@ -140,7 +140,7 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
                   />
                   <Field label={potentialVotingPowerLabel} placeholder="0%" disabled />
                 </UnstakeFields>
-                <Button disabled={!isValid} onClick={() => submitForm()}>
+                <Button disabled={!isValid} loading={isSubmitting} onClick={() => submitForm()}>
                   <div>Stake tokens</div>
                 </Button>
               </FormStack>

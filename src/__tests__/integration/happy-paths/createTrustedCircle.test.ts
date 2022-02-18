@@ -3,7 +3,7 @@ import { config } from "config/network";
 import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
 import { TcContract } from "utils/trustedCircle";
 
-it("creates a Trusted Circle with a member", async () => {
+it.skip("creates a Trusted Circle with a member", async () => {
   const signer = await loadOrCreateWallet(config);
   const signingClient = await createSigningClient(config, signer);
   const address = (await signer.getAccounts())[0].address;
@@ -37,7 +37,7 @@ it("creates a Trusted Circle with a member", async () => {
   expect(contractAddress.startsWith(config.addressPrefix)).toBeTruthy();
 }, 30000);
 
-it("creates a Trusted Circle and adds a member with a proposal", async () => {
+it.skip("creates a Trusted Circle and adds a member with a proposal", async () => {
   const signer = await loadOrCreateWallet(config);
   const signingClient = await createSigningClient(config, signer);
   const address = (await signer.getAccounts())[0].address;

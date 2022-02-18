@@ -24,6 +24,7 @@ export default function ConnectWalletModal({
 
   return (
     <StyledConnectWalletModal
+      destroyOnClose
       centered
       footer={null}
       closable={false}

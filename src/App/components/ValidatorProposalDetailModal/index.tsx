@@ -252,7 +252,7 @@ export default function ValidatorProposalDetailModal({
             </Button>
           ) : null}
           <Button onClick={() => resetModal()}>
-            <span>Go to Oversight Community details</span>
+            <span>Go to Validator details</span>
           </Button>
         </ShowTxResult>
       ) : (
@@ -298,7 +298,7 @@ export default function ValidatorProposalDetailModal({
                           <Paragraph>
                             Total voted:
                             <b>
-                              {calculateTotalVotes()} of {proposal.total_weight}
+                              {calculateTotalVotes()} of {proposal.total_points}
                             </b>
                           </Paragraph>
                           <Paragraph>

@@ -18,7 +18,7 @@ export interface VotingRules {
 
 export interface VoterDetail {
   readonly addr: string;
-  readonly weight: number;
+  readonly points: number;
 }
 
 export interface VoterListResponse {
@@ -61,10 +61,10 @@ export interface ProposalResponse {
   readonly status: "pending" | "open" | "rejected" | "passed" | "executed";
   readonly expires: Expiration;
   /// This is the threshold that is applied to this proposal. Both the rules of the voting contract,
-  /// as well as the total_weight of the voting group may have changed since this time. That means
+  /// as well as the total_points of the voting group may have changed since this time. That means
   /// that the generic `Threshold{}` query does not provide valid information for existing proposals.
   readonly rules: VotingRules;
-  readonly total_weight: number;
+  readonly total_points: number;
   /// This is a running tally of all votes cast on this proposal so far.
   readonly votes: Votes;
 }
@@ -82,7 +82,7 @@ export interface VoteInfo {
   readonly voter: string;
   readonly vote: VoteOption;
   readonly proposal_id: number;
-  readonly weight: number;
+  readonly points: number;
 }
 
 export interface VoteResponse {
