@@ -102,17 +102,17 @@ export interface OcProposal extends TcProposal {
     readonly member: string;
     readonly points: number;
   };
-  readonly unjail?: {
-    /** address of the member to unjail */
-    readonly member: string;
-    readonly comment: string;
-  };
   readonly punish?: {
     /** address of the member to be punished */
     readonly member: string;
     /** A Decimal */
     readonly portion: string;
     readonly jailing_duration: JailingDuration | null;
+  };
+  readonly unjail?: {
+    /** address of the member to unjail */
+    readonly member: string;
+    readonly comment: string;
   };
 }
 
@@ -152,7 +152,7 @@ export function isOcProposalResponse(
 }
 
 export function isOcProposal(proposal: TcProposal | OcProposal): proposal is OcProposal {
-  return !!proposal.grant_engagement || !!proposal.punish;
+  return !!proposal.grant_engagement || !!proposal.punish || !!proposal.unjail;
 }
 
 export type Expiration =
