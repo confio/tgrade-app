@@ -13,6 +13,8 @@ const ProposalAddOCMembers = lazy(() => import("./components/ProposalAddOCMember
 const ProposalPunishOCMember = lazy(() => import("./components/ProposalPunishOCMember"));
 const ProposalGrantEngagementPoints = lazy(() => import("./components/ProposalGrantEngagementPoints"));
 const ProposalPunishValidator = lazy(() => import("./components/ProposalPunishValidator"));
+//const ProposalUnjailValidator = lazy(() => import("./components/ProposalUnjailValidator"));
+
 const { Title, Text } = Typography;
 const { Step } = Steps;
 
@@ -21,6 +23,7 @@ export enum ProposalType {
   PunishOCMember = "punish-oc-member",
   GrantEngagementPoints = "grant-engagement-points",
   PunishValidator = "punish-validator",
+  UnjailValidator = "unjail-validator",
 }
 
 export const proposalLabels = {
@@ -28,6 +31,7 @@ export const proposalLabels = {
   [ProposalType.PunishOCMember]: "Punish Oversight Community member",
   [ProposalType.GrantEngagementPoints]: "Grant Engagement Points",
   [ProposalType.PunishValidator]: "Punish Validator",
+  [ProposalType.UnjailValidator]: "Unjail Validator",
 };
 
 export const proposalTitles = {
@@ -36,6 +40,7 @@ export const proposalTitles = {
   [ProposalType.PunishOCMember]: "Punish Oversight Community member",
   [ProposalType.GrantEngagementPoints]: "Grant Engagement Points",
   [ProposalType.PunishValidator]: "Punish Validator",
+  [ProposalType.UnjailValidator]: "Unjail Validator",
   confirmation: "Confirmation",
 };
 
@@ -151,6 +156,14 @@ export default function OcCreateProposalModal({
               setTxResult={setTxResult}
             />
           ) : proposalStep.type === ProposalType.PunishValidator ? (
+            <ProposalPunishValidator
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.UnjailValidator ? (
             <ProposalPunishValidator
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
