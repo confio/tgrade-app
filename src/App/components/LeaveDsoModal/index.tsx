@@ -4,12 +4,12 @@ import Button from "App/components/Button";
 import Stack from "App/components/Stack/style";
 import { DsoHomeParams } from "App/pages/DsoHome";
 import { paths } from "App/paths";
-import { lazy, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
 import { closeLeaveDsoModal } from "service/dsos";
 import { getErrorFromStackTrace } from "utils/errors";
-import { TcContract } from "utils/trustedCircle";
+import { MemberStatus, TcContract, TcContractQuerier } from "utils/trustedCircle";
 
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./style";
@@ -22,7 +22,7 @@ export default function LeaveDsoModal(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { config, signer, address, signingClient },
+    sdkState: { config, signer, address, client, signingClient },
   } = useSdk();
   const {
     dsoState: { dsos, leaveDsoModalState },
@@ -32,8 +32,29 @@ export default function LeaveDsoModal(): JSX.Element {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
+  const [membership, setMembership] = useState<MemberStatus>();
 
   const dsoName = getDsoName(dsos, dsoAddress);
+
+  useEffect(() => {
+    (async function queryMembership() {
+      if (!client || !address) return;
+
+      try {
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
+        const escrowResponse = await dsoContract.getEscrow(address);
+
+        if (escrowResponse) {
+          setMembership(escrowResponse.status);
+        } else {
+          setMembership(undefined);
+        }
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      }
+    })();
+  }, [address, client, dsoAddress, handleError]);
 
   function resetModal() {
     closeLeaveDsoModal(dsoDispatch);
@@ -63,6 +84,7 @@ export default function LeaveDsoModal(): JSX.Element {
 
   return (
     <StyledLeaveDsoModal
+      destroyOnClose
       centered
       footer={null}
       closable={false}
@@ -97,8 +119,24 @@ export default function LeaveDsoModal(): JSX.Element {
         <Stack gap="s1">
           <ModalHeader>
             <Stack gap="s1">
-              <Title>Do you really want to leave "{dsoName}"?</Title>
-              <Text>When you leave, you can only come return when invited by a voting participant.</Text>
+              <Title>Leave "{dsoName}"</Title>
+              {!membership ? <Text>You are not currently a member of this Trusted Circle.</Text> : null}
+              {membership?.non_voting ? (
+                <Text>When you leave, you can only come return when invited by a voting participant.</Text>
+              ) : null}
+              {membership?.voting ? (
+                <Text>
+                  When you leave, you can only come return when invited by a voting participant. Your escrow
+                  will also be frozen for some time.
+                </Text>
+              ) : null}
+              {membership?.leaving ? (
+                <Text>You are already in the process of leaving this Trusted Circle.</Text>
+              ) : null}
+              {membership?.pending ? (
+                <Text>You need to deposit the required escrow to gain voting rights.</Text>
+              ) : null}
+              {membership?.pending_paid ? <Text>You will become a voting member soon.</Text> : null}
             </Stack>
             {!isSubmitting ? (
               <img alt="Close button" src={closeIcon} onClick={() => closeLeaveDsoModal(dsoDispatch)} />
@@ -107,6 +145,7 @@ export default function LeaveDsoModal(): JSX.Element {
           <Separator />
           <ButtonGroup>
             <Button
+              disabled={!!membership?.leaving}
               loading={isSubmitting}
               danger={!!signer}
               onClick={signer ? () => submitLeaveDso() : () => setModalOpen(true)}
