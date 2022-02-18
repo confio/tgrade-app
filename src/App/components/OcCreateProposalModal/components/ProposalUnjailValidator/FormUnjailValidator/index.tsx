@@ -16,8 +16,8 @@ const commentLabel = "Comments (these comments are visible on the proposal once 
 const validationSchema = Yup.object().shape({
   [getFormItemName(commentLabel)]: Yup.string().typeError("comment should be text").required(),
   [getFormItemName(validatorLabel)]: Yup.string()
-    .typeError("Addresses must be alphanumeric")
-    .required("Participants are required")
+    .typeError("Validator address must be alphanumeric")
+    .required("Validator address is required")
     .test(
       "is-address-valid",
       "validator address must be valid",
