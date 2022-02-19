@@ -105,9 +105,8 @@ jobs:
           name: Stop chains
           command: |
             ./scripts/stop_all.sh
-      - store_artifacts: # Save tests results as artifacts
-          path: test-results.xml
-      - store_artifacts: # Save coverage reports as artifacts
+      - store_artifacts: # Save coverage HTML (coverage/lcov-report/index.html) reports as artifacts
+          # https://create-react-app.dev/docs/running-tests/#coverage-reporting
           path: coverage
 
   cypress:
