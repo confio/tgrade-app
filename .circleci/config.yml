@@ -100,7 +100,7 @@ jobs:
             cd ./scripts/tgrade/
             ./init.sh
       - run:
-          command: yarn test --watchAll=false
+          command: yarn craco test "--coverage" "--watchAll=false"
       - run:
           name: Stop chains
           command: |
