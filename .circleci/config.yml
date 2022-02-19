@@ -100,11 +100,15 @@ jobs:
             cd ./scripts/tgrade/
             ./init.sh
       - run:
-          command: yarn craco test "--coverage" "--watchAll=false"
+          command: yarn craco test --coverage --watchAll=false
       - run:
           name: Stop chains
           command: |
             ./scripts/stop_all.sh
+      - store_artifacts: # Save tests results as artifacts
+          path: test-results.xml
+      - store_artifacts: # Save coverage reports as artifacts
+          path: coverage
 
   cypress:
     machine:
