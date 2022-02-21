@@ -83,7 +83,7 @@ export function ValidatorDetail({
   const jailedUntilInMilliseconds = isJailed
     ? Math.round(
         (todayDateInSeconds +
-          parseInt((validator.jailed_until as { Until: string }).Until, 10) +
+          parseInt((validator.jailed_until as { until: string }).until, 10) +
           dateOffset) /
           1000000,
       )
