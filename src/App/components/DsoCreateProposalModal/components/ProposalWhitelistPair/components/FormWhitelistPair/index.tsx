@@ -8,6 +8,7 @@ import { Formik } from "formik";
 import { Form } from "formik-antd";
 import { useSdk } from "service";
 import { getFormItemName, isValidAddress } from "utils/forms";
+import { ellipsifyAddress } from "utils/ui";
 import * as Yup from "yup";
 
 import { TokensPerPair } from "../..";
@@ -46,10 +47,6 @@ export default function FormWhitelistPair({
   const validationSchema = Yup.object().shape({
     [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
   });
-
-  function ellipsifyAddress(str: string): string {
-    return str.length > 26 ? `${str.slice(0, 7)}…${str.slice(-7)}` : str;
-  }
 
   return (
     <Formik
