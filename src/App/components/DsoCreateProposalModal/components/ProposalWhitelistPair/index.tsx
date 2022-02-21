@@ -52,7 +52,7 @@ export default function ProposalWhitelistPair({
 
   const [pairAddress, setPairAddress] = useState("");
   const [comment, setComment] = useState("");
-  const [isPairsLoading, setPairsLoading] = useState(false);
+  const [isLoadingPairs, setLoadingPairs] = useState(false);
 
   const [tokensPerPairs, setTokensPerPairs] = useState<readonly TokensPerPair[]>([]);
 
@@ -76,7 +76,7 @@ export default function ProposalWhitelistPair({
   useEffect(() => {
     (async function getPairs() {
       if (!client || !signingClient) return;
-      setPairsLoading(true);
+      setLoadingPairs(true);
       const pairs = await getPairsEager(client, config.factoryAddress);
 
       const tokensPerPairs: readonly TokensPerPair[] = await Promise.all(
@@ -94,7 +94,7 @@ export default function ProposalWhitelistPair({
       );
 
       setTokensPerPairs(tokensPerPairsWithDso);
-      setPairsLoading(false);
+      setLoadingPairs(false);
     })();
   }, [client, config.factoryAddress, dsoAddress, getPairToken, signingClient]);
 
@@ -143,7 +143,7 @@ export default function ProposalWhitelistPair({
           tokensPerPairs={tokensPerPairs}
           pairAddress={pairAddress}
           setPairAddress={setPairAddress}
-          isLoadingPairs={isPairsLoading}
+          isLoadingPairs={isLoadingPairs}
           comment={comment}
           goBack={() => setProposalStep(undefined)}
           handleSubmit={submitWhitelistPair}
