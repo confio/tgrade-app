@@ -3,7 +3,7 @@ import { LedgerSigner } from "@cosmjs/ledger-amino";
 import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Coin } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useCallback, useContext, useEffect, useReducer } from "react";
 import { gtagConnectWallet, gtagSendWalletInfo } from "utils/analytics";
 import { Faucet } from "utils/faucet";
 import {
@@ -179,6 +179,25 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
       mounted = false;
     };
   }, [handleError, sdkState.config.rpcUrl]);
+
+  /*
+      NOTE: we use useCallback to provide referential stability so that window.addEventListener
+      knows it's the same function.
+  */
+  const handleAccountChange = useCallback(async () => {
+    const signer = await loadKeplrWallet(config);
+    sdkDispatch({ type: "setSigner", payload: signer });
+  }, [config]);
+
+  useEffect(() => {
+    const accountChangeKey = "keplr_keystorechange";
+
+    if (isKeplrSigner(sdkState.signer)) {
+      window.addEventListener(accountChangeKey, handleAccountChange);
+    } else {
+      window.removeEventListener(accountChangeKey, handleAccountChange);
+    }
+  }, [handleAccountChange, sdkState.signer]);
 
   useEffect(() => {
     let mounted = true;
