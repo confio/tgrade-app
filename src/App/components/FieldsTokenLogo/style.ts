@@ -8,7 +8,8 @@ export const StyledFieldsTokenLogo = styled.div`
 
   img[alt="Token logo"] {
     margin-top: var(--s2);
-    height: 52px;
+    max-width: 52px;
+    max-height: 52px;
   }
 
   img[alt="Remove logo"] {

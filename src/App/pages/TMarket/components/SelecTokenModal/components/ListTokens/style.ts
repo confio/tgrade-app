@@ -25,7 +25,8 @@ export const ContainerLogoNames = styled.div`
   flex-shrink: 0;
 
   & img {
-    height: 32px;
+    max-width: 32px;
+    max-height: 32px;
   }
 `;
 
