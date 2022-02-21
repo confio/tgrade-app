@@ -55,7 +55,6 @@ export default function FormPunishValidator({
   const handleDateChange = (d: Date): void => {
     if (!d) return;
     const date = new Date(d).toLocaleDateString("en-GB");
-    console.log({ d }, { date });
     setJailedUntil(date);
   };
   const validatorsLabel = "Addresses of validators you want to punish";

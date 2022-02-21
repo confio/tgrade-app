@@ -441,7 +441,6 @@ export class TcContract extends TcContractQuerier {
         funds: funds,
       },
     );
-    console.log("New contract address:", contractAddress);
     return contractAddress;
   }
 
