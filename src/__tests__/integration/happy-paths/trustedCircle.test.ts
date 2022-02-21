@@ -324,7 +324,8 @@ describe("Trusted Circle", () => {
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
       .toString();
 
-    const cw20tokenAddress = await Contract20WS.createContract(
+    // Creat contract with trusted token
+    const tcTokenAddress = await Contract20WS.createContract(
       signingClient,
       codeId,
       address,
@@ -339,11 +340,11 @@ describe("Trusted Circle", () => {
       ],
       undefined,
       undefined,
-      undefined,
+      tcContractAddress,
     );
 
     const tokens = await Contract20WS.getAll(config, signingClient, address);
-    const cw20tokenInfo = tokens[cw20tokenAddress];
+    const tcTokenInfo = tokens[tcTokenAddress];
     const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
 
     const tgradeToken = {
@@ -361,7 +362,7 @@ describe("Trusted Circle", () => {
       From: 1.0,
       To: 10.0,
       selectFrom: tgradeToken,
-      selectTo: cw20tokenInfo,
+      selectTo: tcTokenInfo,
     };
 
     await Factory.createPair(
@@ -372,11 +373,12 @@ describe("Trusted Circle", () => {
       config.gasPrice,
     );
     const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
+    console.log(pairs);
     expect(pairs).toBeTruthy();
 
     // Whitelist pair on Trusted Circle
     const comment = "Whitelist tgd-tst";
-    const pair = pairs[`${tgradeToken.address}-${cw20tokenInfo.address}`];
+    const pair = pairs[`${tgradeToken.address}-${tcTokenInfo.address}`];
     const pairAddress = pair.contract_addr;
 
     const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
@@ -387,11 +389,13 @@ describe("Trusted Circle", () => {
 
     const tcContractQuerier = new TcContractQuerier(tcContractAddress, signingClient);
     const createdProposal = await tcContractQuerier.getProposal(txHash.proposalId);
+    expect(createdProposal.title).toBe("Whitelist pair");
     expect(createdProposal.status).toBe("passed");
     expect(createdProposal.proposal.whitelist_contract).toContain(config.addressPrefix);
 
     await tcContract.executeProposal(address, txHash.proposalId);
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
+    expect(executedProposal.description).toBe("Whitelist tgd-tst");
     expect(executedProposal.status).toBe("executed");
   }, 20000);
 

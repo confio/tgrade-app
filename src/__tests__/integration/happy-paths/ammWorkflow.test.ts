@@ -148,12 +148,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
     threshold,
     members,
     allowEndEarly,
-    [
-      {
-        denom: config.feeToken,
-        amount: escrowAmount,
-      },
-    ],
+    [{ denom: config.feeToken, amount: escrowAmount }],
     config.gasPrice,
   );
   expect(dsoAddress.startsWith(config.addressPrefix)).toBeTruthy();
@@ -177,12 +172,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
     tokenName,
     tokenSymbol,
     tokenDecimals,
-    [
-      {
-        address,
-        amount,
-      },
-    ],
+    [{ address, amount }],
     undefined,
     undefined,
     dsoAddress,
