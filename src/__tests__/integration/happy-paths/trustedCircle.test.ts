@@ -373,7 +373,6 @@ describe("Trusted Circle", () => {
       config.gasPrice,
     );
     const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
-    console.log(pairs);
     expect(pairs).toBeTruthy();
 
     // Whitelist pair on Trusted Circle
