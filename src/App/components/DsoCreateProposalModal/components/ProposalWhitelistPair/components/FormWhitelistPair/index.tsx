@@ -8,6 +8,7 @@ import { Formik } from "formik";
 import { Form } from "formik-antd";
 import { useSdk } from "service";
 import { getFormItemName, isValidAddress } from "utils/forms";
+import { ellipsifyAddress } from "utils/ui";
 import * as Yup from "yup";
 
 import { TokensPerPair } from "../..";
@@ -24,6 +25,7 @@ export interface FormWhiteilstPairValues {
 interface FormWhitelistPairProps extends FormWhiteilstPairValues {
   readonly tokensPerPairs: readonly TokensPerPair[];
   readonly pairAddress: string;
+  readonly isLoadingPairs: boolean;
   readonly setPairAddress: React.Dispatch<React.SetStateAction<string>>;
   readonly goBack: () => void;
   readonly handleSubmit: (values: FormWhiteilstPairValues) => void;
@@ -36,6 +38,7 @@ export default function FormWhitelistPair({
   comment,
   goBack,
   handleSubmit,
+  isLoadingPairs,
 }: FormWhitelistPairProps): JSX.Element {
   const {
     sdkState: { config },
@@ -61,6 +64,7 @@ export default function FormWhitelistPair({
             <Stack gap="s1">
               <StyledSelect
                 suffixIcon={<DownArrow />}
+                loading={isLoadingPairs}
                 size="large"
                 value={
                   isValidAddress(pairAddress, config.addressPrefix) ? pairAddress : "Select pair to whitelist"
@@ -69,7 +73,7 @@ export default function FormWhitelistPair({
               >
                 {tokensPerPairs.map((pair) => (
                   <Option key={pair.pairAddress} value={pair.pairAddress}>
-                    {`${pair.tokenA.name} ⇄ ${pair.tokenB.name}`}
+                    {`${pair.tokenA.name} ⇄ ${pair.tokenB.name} ${ellipsifyAddress(pair.pairAddress)}`}
                   </Option>
                 ))}
               </StyledSelect>
