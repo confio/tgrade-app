@@ -33,12 +33,7 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
     tokenName,
     tokenSymbol,
     tokenDecimals,
-    [
-      {
-        address,
-        amount,
-      },
-    ],
+    [{ address, amount }],
     undefined,
     undefined,
     undefined,
