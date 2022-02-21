@@ -45,6 +45,10 @@ export default function FormWhitelistPair({
     [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
   });
 
+  function ellipsifyAddress(str: string): string {
+    return str.length > 26 ? `${str.slice(0, 7)}…${str.slice(-7)}` : str;
+  }
+
   return (
     <Formik
       initialValues={{ [getFormItemName(commentLabel)]: comment }}
@@ -69,7 +73,7 @@ export default function FormWhitelistPair({
               >
                 {tokensPerPairs.map((pair) => (
                   <Option key={pair.pairAddress} value={pair.pairAddress}>
-                    {`${pair.tokenA.name} ⇄ ${pair.tokenB.name}`}
+                    {`${pair.tokenA.name} ⇄ ${pair.tokenB.name} ${ellipsifyAddress(pair.pairAddress)}`}
                   </Option>
                 ))}
               </StyledSelect>
