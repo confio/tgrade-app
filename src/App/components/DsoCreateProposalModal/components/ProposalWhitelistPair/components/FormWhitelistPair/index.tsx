@@ -24,6 +24,7 @@ export interface FormWhiteilstPairValues {
 interface FormWhitelistPairProps extends FormWhiteilstPairValues {
   readonly tokensPerPairs: readonly TokensPerPair[];
   readonly pairAddress: string;
+  readonly isLoadingPairs: boolean;
   readonly setPairAddress: React.Dispatch<React.SetStateAction<string>>;
   readonly goBack: () => void;
   readonly handleSubmit: (values: FormWhiteilstPairValues) => void;
@@ -36,6 +37,7 @@ export default function FormWhitelistPair({
   comment,
   goBack,
   handleSubmit,
+  isLoadingPairs,
 }: FormWhitelistPairProps): JSX.Element {
   const {
     sdkState: { config },
@@ -65,6 +67,7 @@ export default function FormWhitelistPair({
             <Stack gap="s1">
               <StyledSelect
                 suffixIcon={<DownArrow />}
+                loading={isLoadingPairs}
                 size="large"
                 value={
                   isValidAddress(pairAddress, config.addressPrefix) ? pairAddress : "Select pair to whitelist"
