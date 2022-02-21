@@ -93,16 +93,6 @@ export class Contract20WS {
       whitelist_group: dsoAddress,
     };
 
-    const instParams = {
-      senderAddress: creatorAddress,
-      codeId,
-      msg: initMsg,
-      label: "CW20 instance",
-      fee: calculateFee(500_000, GasPrice.fromString("0.05utgd")),
-    };
-
-    console.log({ instParams });
-
     const { contractAddress } = await signingClient.instantiate(
       creatorAddress,
       codeId,

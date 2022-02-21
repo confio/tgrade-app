@@ -54,6 +54,8 @@ export const TokenLogoName = styled.div`
   flex-grow: 1;
 
   & img {
+    width: 100%;
+    height: 100%;
     max-width: 30px;
     max-height: 30px;
   }

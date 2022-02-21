@@ -73,6 +73,10 @@ export interface ValidatorPunishment {
   readonly jailing_duration?: { duration: number } | "forever";
 }
 
+export interface ValidatorUnjail {
+  readonly member: string;
+}
+
 export type TcProposal = {
   /// Apply a diff to the existing non-voting members.
   /// Remove is applied after add, so if an address is in both, it is removed
@@ -95,6 +99,8 @@ export type TcProposal = {
   readonly whitelist_contract?: string;
 } & {
   readonly punish?: ValidatorPunishment;
+} & {
+  readonly unjail?: ValidatorUnjail;
 };
 
 export type Expiration =
@@ -435,7 +441,6 @@ export class TcContract extends TcContractQuerier {
         funds: funds,
       },
     );
-    console.log("New contract address:", contractAddress);
     return contractAddress;
   }
 

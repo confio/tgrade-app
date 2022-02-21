@@ -62,7 +62,7 @@ export default function ProposalPunishValidator({
       const jailedTo = jailedUntil ? jailedUntil : 0;
       const dateToSeconds = Math.round(moment(jailedTo, "DD/MM/YYYY").unix() - new Date().getTime() / 1000);
       const jailTime = jailedForever
-        ? "forever"
+        ? { forever: {} }
         : { duration: Number.isNaN(dateToSeconds) ? 0 : dateToSeconds };
 
       const { txHash } = await ocContract.propose(address, comment, {

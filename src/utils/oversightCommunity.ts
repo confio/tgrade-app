@@ -109,6 +109,11 @@ export interface OcProposal extends TcProposal {
     readonly portion: string;
     readonly jailing_duration: JailingDuration | null;
   };
+  readonly unjail?: {
+    /** address of the member to unjail */
+    readonly member: string;
+    readonly comment: string;
+  };
 }
 
 /**
@@ -143,11 +148,11 @@ export function isOcProposalResponse(
   response: TcProposalResponse | OcProposalResponse,
 ): response is OcProposalResponse {
   const proposal = response.proposal;
-  return !!proposal.grant_engagement || !!proposal.punish;
+  return !!proposal.grant_engagement || !!proposal.punish || !!proposal.unjail;
 }
 
 export function isOcProposal(proposal: TcProposal | OcProposal): proposal is OcProposal {
-  return !!proposal.grant_engagement || !!proposal.punish;
+  return !!proposal.grant_engagement || !!proposal.punish || !!proposal.unjail;
 }
 
 export type Expiration =
@@ -243,6 +248,8 @@ export function getProposalTitle(proposal: TcProposal | OcProposal): string {
       return "Grant Engagement Points";
     case "punish":
       return "Punish Validator";
+    case "unjail":
+      return "Unjail Validator";
     default:
       return "Uknown proposal type";
   }

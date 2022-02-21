@@ -69,7 +69,7 @@ export function ValidatorDetail({
         const slashingEvents = await validatorContract.getSlashingEvents(validator.operator);
         setSlashingEvents(slashingEvents);
       } catch {
-        console.log(`${validator.operator} does not have slashing events`);
+        // NOTE: the validator does not have slashing events, do nothing
       }
     })();
   }, [config, signingClient, validator]);
@@ -83,7 +83,7 @@ export function ValidatorDetail({
   const jailedUntilInMilliseconds = isJailed
     ? Math.round(
         (todayDateInSeconds +
-          parseInt((validator.jailed_until as { Until: string }).Until, 10) +
+          parseInt((validator.jailed_until as { until: string }).until, 10) +
           dateOffset) /
           1000000,
       )

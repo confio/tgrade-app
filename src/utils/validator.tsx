@@ -110,6 +110,7 @@ export class ValidatorContractQuerier {
     const { validators }: any = await this.client.queryContractSmart(this.valAddress, query);
     return validators;
   }
+
   async getSlashingEvents(operator: string): Promise<readonly ValidatorSlashing[]> {
     await this.initAddress();
     if (!this.valAddress) throw new Error("no valAddress");

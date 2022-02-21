@@ -1,10 +1,9 @@
 import { Typography } from "antd";
 import { DsoHomeParams } from "App/pages/DsoHome";
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { EscrowResponse, EscrowStatus, TcContractQuerier } from "utils/trustedCircle";
+import { EscrowResponse, EscrowStatus, MemberStatus, TcContractQuerier } from "utils/trustedCircle";
 
 import { MemberCount, MemberCounts, MembersStack } from "./style";
 
@@ -18,7 +17,7 @@ export default function DsoMembers(): JSX.Element {
   } = useSdk();
   const [numVoters, setNumVoters] = useState(0);
   const [numNonVoters, setNumNonVoters] = useState(0);
-  const [membership, setMembership] = useState<"voting" | "nonVoting">();
+  const [membership, setMembership] = useState<MemberStatus>();
 
   useEffect(() => {
     (async function updateNumMembers() {
@@ -61,10 +60,9 @@ export default function DsoMembers(): JSX.Element {
         const escrowResponse = await dsoContract.getEscrow(address);
 
         if (escrowResponse) {
-          const membership = escrowResponse.status.voting ? "voting" : "nonVoting";
-          setMembership(membership);
+          setMembership(escrowResponse.status);
         } else {
-          setMembership("nonVoting");
+          setMembership(undefined);
         }
       } catch (error) {
         if (!(error instanceof Error)) return;
@@ -76,16 +74,21 @@ export default function DsoMembers(): JSX.Element {
   return (
     <MembersStack>
       <Title level={2}>Members</Title>
+      {membership?.leaving ? <Text>You are in the process of leaving this Trusted Circle</Text> : null}
+      {membership?.pending ? (
+        <Text>You need to deposit the required escrow to gain voting rights</Text>
+      ) : null}
+      {membership?.pending_paid ? <Text>You will become a voting member soon</Text> : null}
       <MemberCounts>
         <MemberCount>
           <Text>{numVoters}</Text>
           <Text>voting member(s)</Text>
-          {membership === "voting" ? <Text>(you)</Text> : null}
+          {membership?.voting ? <Text>(you)</Text> : null}
         </MemberCount>
         <MemberCount>
           <Text>{numNonVoters}</Text>
           <Text>non-voting member(s)</Text>
-          {membership === "nonVoting" ? <Text>(you)</Text> : null}
+          {membership && !membership.voting ? <Text>(you)</Text> : null}
         </MemberCount>
       </MemberCounts>
     </MembersStack>

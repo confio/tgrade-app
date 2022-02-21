@@ -34,6 +34,7 @@ export default function FieldsTokenLogo({
         optional
         value={previewLogoUrl}
         onInputChange={({ target }) => {
+          if (target.value === "") setLogoError(undefined);
           setPreviewLogoUrl(target.value);
           setLogoUrl(target.value);
         }}

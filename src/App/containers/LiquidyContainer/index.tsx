@@ -6,15 +6,8 @@ import { LiquidityWrapper, StyledTabs } from "./style";
 //import { ReactComponent as TgradeLogo } from "App/assets/icons/tgradeLogo.svg";
 
 export default function LiquidyContainer(): JSX.Element | null {
-  function onChange(pagination: any, filters: any, sorter: any, extra: any) {
-    console.log("params", pagination, filters, sorter, extra);
-  }
-
   const { TabPane } = StyledTabs;
 
-  function handleClick(key: number | undefined, record: any) {
-    console.log(key, record);
-  }
   return (
     <LiquidityWrapper>
       <StyledTabs defaultActiveKey="1">
@@ -32,36 +25,12 @@ export default function LiquidyContainer(): JSX.Element | null {
             Create a pair
           </Button>
           <div style={{ width: "100%", borderRadius: "16px" }}>
-            <Table
-              onRow={(record, rowIndex) => {
-                return {
-                  onClick: () => {
-                    handleClick(rowIndex, record);
-                  },
-                };
-              }}
-              columns={undefined}
-              dataSource={undefined}
-              onChange={onChange}
-              pagination={false}
-            />
+            <Table columns={undefined} dataSource={undefined} pagination={false} />
           </div>
         </TabPane>
         <TabPane tab="Liquidity" key="2">
           <div style={{ width: "100%", borderRadius: "16px" }}>
-            <Table
-              onRow={(record, rowIndex) => {
-                return {
-                  onClick: () => {
-                    handleClick(rowIndex, record);
-                  },
-                };
-              }}
-              columns={undefined}
-              dataSource={undefined}
-              onChange={onChange}
-              pagination={false}
-            />
+            <Table columns={undefined} dataSource={undefined} pagination={false} />
           </div>
         </TabPane>
       </StyledTabs>
