@@ -5,12 +5,11 @@ import { Decimal, Uint64 } from "@cosmjs/math";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
+import { Contract20WS } from "utils/cw20";
+import { Factory } from "utils/factory";
 import { createSigningClient, generateMnemonic } from "utils/sdk";
+import { SwapFormValues } from "utils/tokens";
 import { TcContract, TcContractQuerier } from "utils/trustedCircle";
-
-import { Contract20WS } from "../../../utils/cw20";
-import { Factory } from "../../../utils/factory";
-import { SwapFormValues } from "../../../utils/tokens";
 
 const tcName = "Trusted Circle #1";
 const escrowAmount = "1000000";
