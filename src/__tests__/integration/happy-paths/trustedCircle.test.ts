@@ -1,10 +1,14 @@
 import { Random } from "@cosmjs/crypto";
 import { Bech32 } from "@cosmjs/encoding";
 import { FaucetClient } from "@cosmjs/faucet-client";
+import { Decimal, Uint64 } from "@cosmjs/math";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
+import { Contract20WS } from "utils/cw20";
+import { Factory } from "utils/factory";
 import { createSigningClient, generateMnemonic } from "utils/sdk";
+import { SwapFormValues } from "utils/tokens";
 import { TcContract, TcContractQuerier } from "utils/trustedCircle";
 
 const tcName = "Trusted Circle #1";
@@ -103,8 +107,8 @@ describe("Trusted Circle", () => {
     expect(txHash.proposalId).toBeTruthy();
     if (!txHash.proposalId) return;
 
-    const getCreatedProposal = await tcContract.getProposal(txHash.proposalId);
-    expect(getCreatedProposal.proposal.add_voting_members?.voters[0]).toContain(config.addressPrefix);
+    const createdProposal = await tcContract.getProposal(txHash.proposalId);
+    expect(createdProposal.proposal.add_voting_members?.voters[0]).toContain(config.addressPrefix);
 
     await tcContract.executeProposal(address, txHash.proposalId);
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
@@ -276,9 +280,123 @@ describe("Trusted Circle", () => {
     //TODO
   });
 
-  xit("Create and execute TC proposal for whitelist pair", () => {
-    //TODO
-  });
+  it("Create and execute TC proposal for whitelist pair", async () => {
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const signingClient = await createSigningClient(config, wallet);
+    const { address } = (await wallet.getAccounts())[0];
+
+    const faucetClient = new FaucetClient(config.faucetUrl);
+    await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
+
+    const tcContractAddress = await TcContract.createTc(
+      signingClient,
+      config.codeIds?.tgradeDso?.[0] ?? 0,
+      address,
+      tcName,
+      escrowAmount,
+      votingPeriod,
+      quorum,
+      threshold,
+      members,
+      allowEndEarly,
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
+      config.gasPrice,
+    );
+
+    // Create token
+    const tokenSymbol = "TST";
+    const tokenName = "Test Token";
+    const tokenDecimals = 6;
+    const tokenInitialSupply = "100000000";
+
+    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+
+    const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
+      .multiply(Uint64.fromNumber(10 ** tokenDecimals))
+      .toString();
+
+    // Creat contract with trusted token
+    const tcTokenAddress = await Contract20WS.createContract(
+      signingClient,
+      codeId,
+      address,
+      tokenName,
+      tokenSymbol,
+      tokenDecimals,
+      [
+        {
+          address,
+          amount,
+        },
+      ],
+      undefined,
+      undefined,
+      tcContractAddress,
+    );
+
+    const tokens = await Contract20WS.getAll(config, signingClient, address);
+    const tcTokenInfo = tokens[tcTokenAddress];
+    const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
+
+    const tgradeToken = {
+      address: config.feeToken,
+      balance: balance_utgd,
+      humanBalance: Decimal.fromAtomics(balance_utgd, config.coinMap.utgd.fractionalDigits).toString(),
+      decimals: config.coinMap.utgd.fractionalDigits,
+      name: "Tgrade",
+      symbol: config.coinMap.utgd.denom,
+      total_supply: "",
+    };
+
+    // Create pair
+    const createPairValues: SwapFormValues = {
+      From: 1.0,
+      To: 10.0,
+      selectFrom: tgradeToken,
+      selectTo: tcTokenInfo,
+    };
+
+    await Factory.createPair(
+      signingClient,
+      address,
+      config.factoryAddress,
+      createPairValues,
+      config.gasPrice,
+    );
+    const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
+    expect(pairs).toBeTruthy();
+
+    // Whitelist pair on Trusted Circle
+    const comment = "Whitelist tgd-tst";
+    const pair = pairs[`${tgradeToken.address}-${tcTokenInfo.address}`];
+    const pairAddress = pair.contract_addr;
+
+    const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
+    const txHash = await tcContract.propose(address, comment, { whitelist_contract: pairAddress });
+
+    expect(txHash.proposalId).toBeTruthy();
+    if (!txHash.proposalId) return;
+
+    const tcContractQuerier = new TcContractQuerier(tcContractAddress, signingClient);
+    const createdProposal = await tcContractQuerier.getProposal(txHash.proposalId);
+    expect(createdProposal.title).toBe("Whitelist pair");
+    expect(createdProposal.status).toBe("passed");
+    expect(createdProposal.proposal.whitelist_contract).toContain(config.addressPrefix);
+
+    await tcContract.executeProposal(address, txHash.proposalId);
+    const executedProposal = await tcContract.getProposal(txHash.proposalId);
+    expect(executedProposal.description).toBe("Whitelist tgd-tst");
+    expect(executedProposal.status).toBe("executed");
+  }, 20000);
 
   it.skip("Add another voting member", () => {
     //TODO
