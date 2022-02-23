@@ -189,7 +189,6 @@ workflows:
   build_and_test:
     jobs:
       - lint
-      - cypress
       - test:
           # https://circleci.com/docs/2.0/env-vars/
           context: Testing-Env-Vars
@@ -200,5 +199,5 @@ workflows:
       - build:
           requires:
             - lint
-            - cypress
+            - hold
             - test
