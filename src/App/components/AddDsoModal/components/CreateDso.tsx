@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import closeIcon from "App/assets/icons/cross.svg";
-import { initialRetryValues } from "App/components/AddDsoModal";
+import { initialCreateDsoValues } from "App/components/AddDsoModal";
 import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
@@ -99,7 +99,7 @@ export default function CreateDso({
         msg: `You are the voting participant in ${dsoName} (${contractAddress}).`,
       });
       gtagDsoAction("create_success");
-      setRetryCreateDsoData(initialRetryValues);
+      setRetryCreateDsoData(initialCreateDsoValues);
     } catch (error) {
       if (!(error instanceof Error)) return;
       setRetryCreateDsoData({ dsoName, votingDuration, quorum, threshold, allowEndEarly });

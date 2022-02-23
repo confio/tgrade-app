@@ -14,7 +14,7 @@ enum AddDsoSteps {
   Create = "Create",
 }
 
-export const initialRetryValues = {
+export const initialCreateDsoValues = {
   dsoName: "",
   votingDuration: "14",
   quorum: "1",
@@ -28,7 +28,7 @@ export default function AddDsoModal(): JSX.Element {
 
   const [addDsoStep, setAddDsoStep] = useState(AddDsoSteps.Existing);
   const [txResult, setTxResult] = useState<TxResult>();
-  const [retryCreateDso, setRetryCreateDso] = useState(initialRetryValues);
+  const [retryCreateDso, setRetryCreateDso] = useState(initialCreateDsoValues);
 
   function goToNewDso(address?: string) {
     if (address) history.push(`${paths.dso.prefix}/${address}`);
