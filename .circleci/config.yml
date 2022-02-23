@@ -192,7 +192,8 @@ workflows:
       - test:
           # https://circleci.com/docs/2.0/env-vars/
           context: Testing-Env-Vars
-      - cypress
+      - cypress:
+          type: approval
       - build:
           requires:
             - lint
