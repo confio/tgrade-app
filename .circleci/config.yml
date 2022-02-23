@@ -189,11 +189,14 @@ workflows:
   build_and_test:
     jobs:
       - lint
+      - cypress
       - test:
           # https://circleci.com/docs/2.0/env-vars/
           context: Testing-Env-Vars
-      - cypress:
-          type: approval
+      - hold: # <<< A job that will require manual approval in the CircleCI web application.
+          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+          requires: # We only run the "hold" job when test2 has succeeded
+            - cypress
       - build:
           requires:
             - lint
