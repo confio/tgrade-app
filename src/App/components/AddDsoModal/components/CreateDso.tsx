@@ -1,9 +1,10 @@
 import { Typography } from "antd";
 import closeIcon from "App/assets/icons/cross.svg";
+import { initialRetryValues } from "App/components/AddDsoModal";
 import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { gtagDsoAction } from "utils/analytics";
 import { displayAmountToNative } from "utils/currency";
@@ -27,9 +28,16 @@ enum CreateDsoSteps {
 interface CreateDsoProps {
   readonly setTxResult: (txResult: TxResult) => void;
   readonly goToAddExistingDso: () => void;
+  readonly retryCreateDsoData: FormDsoBasicDataValues;
+  setRetryCreateDsoData: Dispatch<SetStateAction<FormDsoBasicDataValues>>;
 }
 
-export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDsoProps): JSX.Element {
+export default function CreateDso({
+  setTxResult,
+  goToAddExistingDso,
+  setRetryCreateDsoData,
+  retryCreateDsoData,
+}: CreateDsoProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, address, signingClient },
@@ -39,11 +47,11 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
   const [addDsoStep, setAddDsoStep] = useState(CreateDsoSteps.BasicData);
   const [isSubmitting, setSubmitting] = useState(false);
 
-  const [dsoName, setDsoName] = useState("");
-  const [votingDuration, setVotingDuration] = useState("14");
-  const [quorum, setQuorum] = useState("1");
-  const [threshold, setThreshold] = useState("50.01");
-  const [allowEndEarly, setAllowEndEarly] = useState(true);
+  const [dsoName, setDsoName] = useState(retryCreateDsoData.dsoName);
+  const [votingDuration, setVotingDuration] = useState(retryCreateDsoData.votingDuration);
+  const [quorum, setQuorum] = useState(retryCreateDsoData.quorum);
+  const [threshold, setThreshold] = useState(retryCreateDsoData.threshold);
+  const [allowEndEarly, setAllowEndEarly] = useState(retryCreateDsoData.allowEndEarly);
   const [members, setMembers] = useState<readonly string[]>([]);
 
   function handleSubmitBasicData({
@@ -91,8 +99,10 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
         msg: `You are the voting participant in ${dsoName} (${contractAddress}).`,
       });
       gtagDsoAction("create_success");
+      setRetryCreateDsoData(initialRetryValues);
     } catch (error) {
       if (!(error instanceof Error)) return;
+      setRetryCreateDsoData({ dsoName, votingDuration, quorum, threshold, allowEndEarly });
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {
