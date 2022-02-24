@@ -200,5 +200,5 @@ workflows:
       - build:
           requires:
             - lint
-            - cypress
+            #- cypress
             - test
