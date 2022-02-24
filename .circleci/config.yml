@@ -109,7 +109,7 @@ jobs:
           # https://create-react-app.dev/docs/running-tests/#coverage-reporting
           path: coverage
 
-  cypress:
+  cypress: # temporarily not in use due to there is no any important tests
     machine:
       # We can't use a containerized environment since it requires remote docker to start custom containers.
       # However, we can't access the remote docker's network from the primary container. This is a
@@ -192,13 +192,7 @@ workflows:
       - test:
           # https://circleci.com/docs/2.0/env-vars/
           context: Testing-Env-Vars
-      - run Cypress?: # <<< A job that will require manual approval in the CircleCI web application.
-          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-      - cypress:
-          requires:
-            - run Cypress?
       - build:
           requires:
             - lint
-            #- cypress
             - test
