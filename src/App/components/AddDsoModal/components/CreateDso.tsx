@@ -28,15 +28,15 @@ enum CreateDsoSteps {
 interface CreateDsoProps {
   readonly setTxResult: (txResult: TxResult) => void;
   readonly goToAddExistingDso: () => void;
-  readonly retryCreateDsoData: FormDsoBasicDataValues;
-  setRetryCreateDsoData: Dispatch<SetStateAction<FormDsoBasicDataValues>>;
+  readonly createDsoData: FormDsoBasicDataValues;
+  readonly setCreateDsoData: Dispatch<SetStateAction<FormDsoBasicDataValues>>;
 }
 
 export default function CreateDso({
   setTxResult,
   goToAddExistingDso,
-  setRetryCreateDsoData,
-  retryCreateDsoData,
+  createDsoData,
+  setCreateDsoData,
 }: CreateDsoProps): JSX.Element {
   const { handleError } = useError();
   const {
@@ -46,12 +46,6 @@ export default function CreateDso({
 
   const [addDsoStep, setAddDsoStep] = useState(CreateDsoSteps.BasicData);
   const [isSubmitting, setSubmitting] = useState(false);
-
-  const [dsoName, setDsoName] = useState(retryCreateDsoData.dsoName);
-  const [votingDuration, setVotingDuration] = useState(retryCreateDsoData.votingDuration);
-  const [quorum, setQuorum] = useState(retryCreateDsoData.quorum);
-  const [threshold, setThreshold] = useState(retryCreateDsoData.threshold);
-  const [allowEndEarly, setAllowEndEarly] = useState(retryCreateDsoData.allowEndEarly);
   const [members, setMembers] = useState<readonly string[]>([]);
 
   function handleSubmitBasicData({
@@ -61,11 +55,7 @@ export default function CreateDso({
     threshold,
     allowEndEarly,
   }: FormDsoBasicDataValues) {
-    setDsoName(dsoName);
-    setVotingDuration(votingDuration);
-    setQuorum(quorum);
-    setThreshold(threshold);
-    setAllowEndEarly(allowEndEarly);
+    setCreateDsoData({ dsoName, votingDuration, quorum, threshold, allowEndEarly });
     setAddDsoStep(CreateDsoSteps.Members);
   }
 
@@ -82,13 +72,13 @@ export default function CreateDso({
         signingClient,
         config.codeIds?.tgradeDso[0],
         address,
-        dsoName,
+        createDsoData.dsoName,
         nativeEscrowAmount,
-        votingDuration,
-        quorum,
-        threshold,
+        createDsoData.votingDuration,
+        createDsoData.quorum,
+        createDsoData.threshold,
         members,
-        allowEndEarly,
+        createDsoData.allowEndEarly,
         [{ denom: config.feeToken, amount: nativeEscrowAmount }],
         config.gasPrice,
       );
@@ -96,13 +86,12 @@ export default function CreateDso({
       addDso(dsoDispatch, contractAddress);
       setTxResult({
         contractAddress,
-        msg: `You are the voting participant in ${dsoName} (${contractAddress}).`,
+        msg: `You are the voting participant in ${createDsoData.dsoName} (${contractAddress}).`,
       });
       gtagDsoAction("create_success");
-      setRetryCreateDsoData(initialCreateDsoValues);
+      setCreateDsoData(initialCreateDsoValues);
     } catch (error) {
       if (!(error instanceof Error)) return;
-      setRetryCreateDsoData({ dsoName, votingDuration, quorum, threshold, allowEndEarly });
       setTxResult({ error: getErrorFromStackTrace(error) });
       handleError(error);
     } finally {
@@ -130,11 +119,11 @@ export default function CreateDso({
         <FormDsoBasicData
           handleSubmit={(values) => handleSubmitBasicData(values)}
           goToAddExistingDso={goToAddExistingDso}
-          dsoName={dsoName}
-          votingDuration={votingDuration}
-          quorum={quorum}
-          threshold={threshold}
-          allowEndEarly={allowEndEarly}
+          dsoName={createDsoData.dsoName}
+          votingDuration={createDsoData.votingDuration}
+          quorum={createDsoData.quorum}
+          threshold={createDsoData.threshold}
+          allowEndEarly={createDsoData.allowEndEarly}
         />
       ) : addDsoStep === CreateDsoSteps.Members ? (
         <FormDsoMembers

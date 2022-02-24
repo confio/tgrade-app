@@ -28,7 +28,7 @@ export default function AddDsoModal(): JSX.Element {
 
   const [addDsoStep, setAddDsoStep] = useState(AddDsoSteps.Existing);
   const [txResult, setTxResult] = useState<TxResult>();
-  const [retryCreateDso, setRetryCreateDso] = useState(initialCreateDsoValues);
+  const [createDsoData, setCreateDsoData] = useState(initialCreateDsoValues);
 
   function goToNewDso(address?: string) {
     if (address) history.push(`${paths.dso.prefix}/${address}`);
@@ -79,8 +79,8 @@ export default function AddDsoModal(): JSX.Element {
           ) : addDsoStep === AddDsoSteps.Create ? (
             <CreateDso
               setTxResult={setTxResult}
-              retryCreateDsoData={retryCreateDso}
-              setRetryCreateDsoData={setRetryCreateDso}
+              createDsoData={createDsoData}
+              setCreateDsoData={setCreateDsoData}
               goToAddExistingDso={() => setAddDsoStep(AddDsoSteps.Existing)}
             />
           ) : null}
