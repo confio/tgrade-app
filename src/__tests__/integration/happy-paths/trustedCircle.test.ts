@@ -9,7 +9,7 @@ import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
 import { createSigningClient, generateMnemonic } from "utils/sdk";
 import { SwapFormValues } from "utils/tokens";
-import { TcContract, TcContractQuerier } from "utils/trustedCircle";
+import { Punishment, TcContract, TcContractQuerier } from "utils/trustedCircle";
 
 const tcName = "Trusted Circle #1";
 const escrowAmount = "1000000";
@@ -276,9 +276,131 @@ describe("Trusted Circle", () => {
     expect(executedProposal.status).toBe("executed");
   }, 30000);
 
-  xit("Create and execute TC proposal for punishing voting participant", () => {
-    //TODO
-  });
+  it("Create and execute TC proposal for punishing voting participant (burn_escrow)", async () => {
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const signingClient = await createSigningClient(config, wallet);
+    const { address } = (await wallet.getAccounts())[0];
+
+    const faucetClient = new FaucetClient(config.faucetUrl);
+    await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
+
+    const tcContractAddress = await TcContract.createTc(
+      signingClient,
+      config.codeIds?.tgradeDso?.[0] ?? 0,
+      address,
+      tcName,
+      escrowAmount,
+      votingPeriod,
+      quorum,
+      threshold,
+      members,
+      allowEndEarly,
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
+      config.gasPrice,
+    );
+
+    const punishment: Punishment = {
+      burn_escrow: {
+        member: address,
+        slashing_percentage: "1",
+        kick_out: true,
+      },
+    };
+
+    const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
+    const txHash = await tcContract.propose(address, comment, {
+      punish_members: [punishment],
+    });
+
+    expect(txHash.proposalId).toBeTruthy();
+    if (!txHash.proposalId) return;
+
+    const createdProposal = await tcContract.getProposal(txHash.proposalId);
+
+    expect(createdProposal.status).toContain("passed");
+    expect(createdProposal.proposal.punish_members?.[0].burn_escrow?.member).toBe(address);
+    expect(createdProposal.proposal.punish_members?.[0].burn_escrow?.slashing_percentage).toBe("1");
+    expect(createdProposal.proposal.punish_members?.[0].burn_escrow?.kick_out).toBe(true);
+
+    await tcContract.executeProposal(address, txHash.proposalId);
+    const executedProposal = await tcContract.getProposal(txHash.proposalId);
+    expect(executedProposal.title).toBe("Punish voting participant");
+    expect(executedProposal.status).toBe("executed");
+  }, 15000);
+
+  it("Create and execute TC proposal for punishing voting participant (distribute_escrow)", async () => {
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const signingClient = await createSigningClient(config, wallet);
+    const { address } = (await wallet.getAccounts())[0];
+
+    const faucetClient = new FaucetClient(config.faucetUrl);
+    await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
+
+    const tcContractAddress = await TcContract.createTc(
+      signingClient,
+      config.codeIds?.tgradeDso?.[0] ?? 0,
+      address,
+      tcName,
+      escrowAmount,
+      votingPeriod,
+      quorum,
+      threshold,
+      members,
+      allowEndEarly,
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
+      config.gasPrice,
+    );
+
+    const punishment: Punishment = {
+      distribute_escrow: {
+        distribution_list: [members[0]],
+        member: address,
+        slashing_percentage: "1",
+        kick_out: true,
+      },
+    };
+
+    const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
+    const txHash = await tcContract.propose(address, comment, {
+      punish_members: [punishment],
+    });
+
+    expect(txHash.proposalId).toBeTruthy();
+    if (!txHash.proposalId) return;
+
+    const createdProposal = await tcContract.getProposal(txHash.proposalId);
+
+    expect(createdProposal.status).toContain("passed");
+    expect(createdProposal.proposal.punish_members?.[0].distribute_escrow?.member).toBe(address);
+    expect(createdProposal.proposal.punish_members?.[0].distribute_escrow?.slashing_percentage).toBe("1");
+    expect(createdProposal.proposal.punish_members?.[0].distribute_escrow?.distribution_list[0]).toBe(
+      members[0],
+    );
+    expect(createdProposal.proposal.punish_members?.[0].distribute_escrow?.kick_out).toBe(true);
+
+    await tcContract.executeProposal(address, txHash.proposalId);
+    const executedProposal = await tcContract.getProposal(txHash.proposalId);
+    expect(executedProposal.title).toBe("Punish voting participant");
+    expect(executedProposal.status).toBe("executed");
+  }, 15000);
 
   it("Create and execute TC proposal for whitelist pair", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
