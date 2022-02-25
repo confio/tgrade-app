@@ -165,7 +165,7 @@ export default function OcDetail(): JSX.Element {
       <Stack style={{ width: "100%" }}>
         <OcIdActions />
         <EscrowEngagementContainer>
-          <OcEscrow />
+          <OcEscrow isVotingMember={isVotingMember} />
           <OcEngagement />
         </EscrowEngagementContainer>
         <ProposalsContainer>
