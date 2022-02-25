@@ -4,7 +4,7 @@ import { Typography } from "antd";
 import Button from "App/components/Button";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { OcContractQuerier } from "utils/oversightCommunity";
+import { MemberStatus, OcContractQuerier } from "utils/oversightCommunity";
 import { EscrowResponse, EscrowStatus } from "utils/trustedCircle";
 
 import TooltipWrapper from "../TooltipWrapper";
@@ -14,11 +14,7 @@ const DepositOcEscrowModal = lazy(() => import("App/components/DepositOcEscrowMo
 const ReturnOcEscrowModal = lazy(() => import("App/components/ReturnOcEscrowModal"));
 const { Title, Text } = Typography;
 
-interface OcEscrowProps {
-  isVotingMember: boolean;
-}
-
-export default function OcEscrow({ isVotingMember }: OcEscrowProps): JSX.Element {
+export default function OcEscrow(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, client, address },
@@ -37,6 +33,7 @@ export default function OcEscrow({ isVotingMember }: OcEscrowProps): JSX.Element
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
   const [gracePeriod, setGracePeriod] = useState<string>();
+  const [membership, setMembership] = useState<MemberStatus>();
 
   const refreshEscrows = useCallback(
     async function () {
@@ -56,6 +53,7 @@ export default function OcEscrow({ isVotingMember }: OcEscrowProps): JSX.Element
           const escrowResponse = await ocContract.getEscrow(address);
 
           if (escrowResponse) {
+            setMembership(escrowResponse.status);
             const decimals = config.coinMap[config.feeToken].fractionalDigits;
             // get user deposited escrow
             const userEscrowDecimal = Decimal.fromAtomics(escrowResponse.paid, decimals);
@@ -72,6 +70,8 @@ export default function OcEscrow({ isVotingMember }: OcEscrowProps): JSX.Element
             const frozenEscrowDate = escrowResponse.status.leaving?.claim_at;
             if (frozenEscrowDate) setFrozenEscrowDate(new Date(frozenEscrowDate * 1000));
           }
+        } else {
+          setMembership(undefined);
         }
 
         // get pending escrow and grace period if any
@@ -188,14 +188,18 @@ export default function OcEscrow({ isVotingMember }: OcEscrowProps): JSX.Element
         <Pie {...pieConfig} />
       </TotalEscrowStack>
       <YourEscrowStack gap="s1">
-        {isVotingMember ? <Title level={2}>Your escrow</Title> : <Title level={2}>No escrow required</Title>}
-        {isVotingMember ? (
+        {!membership?.non_voting ? (
+          <Title level={2}>Your escrow</Title>
+        ) : (
+          <Title level={2}>No escrow required</Title>
+        )}
+        {!membership?.non_voting ? (
           <AmountStack gap="s-4">
             <Text>Current paid in:</Text>
             <Text>{`${userEscrow} ${feeDenom}`}</Text>
           </AmountStack>
         ) : null}
-        {isVotingMember ? (
+        {!membership?.non_voting ? (
           <AmountStack gap="s-4">
             <Text>Needed to get voting rights:</Text>
             {pendingEscrow ? (
@@ -209,12 +213,12 @@ export default function OcEscrow({ isVotingMember }: OcEscrowProps): JSX.Element
             )}
           </AmountStack>
         ) : null}
-        {(isVotingMember && !frozenEscrowDate) || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
+        {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
           <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
         ) : null}
         {(!frozenEscrowDate && exceedingEscrow !== "0") ||
         (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button type="ghost" onClick={() => setReturnModalOpen(true)}>
+          <Button disabled={!!membership?.non_voting} type="ghost" onClick={() => setReturnModalOpen(true)}>
             Claim escrow
           </Button>
         ) : null}

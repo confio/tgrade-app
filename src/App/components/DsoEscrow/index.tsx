@@ -6,6 +6,7 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { MemberStatus } from "utils/oversightCommunity";
 import { EscrowResponse, EscrowStatus, TcContractQuerier } from "utils/trustedCircle";
 
 import TooltipWrapper from "../TooltipWrapper";
@@ -33,7 +34,28 @@ export default function DsoEscrow(): JSX.Element {
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
   const [gracePeriod, setGracePeriod] = useState<string>();
-  const [isVotingMember, setIsVotingMember] = useState(false);
+  const [membership, setMembership] = useState<MemberStatus>();
+
+  useEffect(() => {
+    (async function queryMembership() {
+      if (!client || !address) return;
+
+      try {
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
+        const escrowResponse = await dsoContract.getEscrow(address);
+        console.log({ escrowResponse });
+
+        if (escrowResponse) {
+          setMembership(escrowResponse.status);
+        } else {
+          setMembership(undefined);
+        }
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      }
+    })();
+  }, [address, client, dsoAddress, handleError]);
 
   const refreshEscrows = useCallback(
     async function () {
@@ -48,11 +70,6 @@ export default function DsoEscrow(): JSX.Element {
 
         const requiredEscrowDecimal = Decimal.fromAtomics(escrow_amount, feeDecimals);
         setRequiredEscrow(requiredEscrowDecimal.toString());
-
-        const isVotingMember = (await dsoContract.getNonVotingMembers()).some(
-          (member) => member.addr !== address,
-        );
-        setIsVotingMember(isVotingMember);
 
         if (address) {
           const escrowResponse = await dsoContract.getEscrow(address);
@@ -190,14 +207,18 @@ export default function DsoEscrow(): JSX.Element {
         <Pie {...pieConfig} />
       </TotalEscrowStack>
       <YourEscrowStack gap="s1">
-        {isVotingMember ? <Title level={2}>Your escrow</Title> : <Title level={2}>No Escrow Required</Title>}
-        {isVotingMember ? (
+        {!membership?.non_voting ? (
+          <Title level={2}>Your escrow</Title>
+        ) : (
+          <Title level={2}>No Escrow Required</Title>
+        )}
+        {!membership?.non_voting ? (
           <AmountStack gap="s-4">
             <Text>Current paid in:</Text>
             <Text>{`${userEscrow} ${feeDenom}`}</Text>
           </AmountStack>
         ) : null}
-        {isVotingMember ? (
+        {!membership?.non_voting ? (
           <AmountStack gap="s-4">
             <Text>Needed to get voting rights:</Text>
             {pendingEscrow ? (
@@ -212,7 +233,7 @@ export default function DsoEscrow(): JSX.Element {
           </AmountStack>
         ) : null}
         {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button disabled={!isVotingMember} onClick={() => setDepositModalOpen(true)}>
+          <Button disabled={!!membership?.non_voting} onClick={() => setDepositModalOpen(true)}>
             Deposit escrow
           </Button>
         ) : null}
