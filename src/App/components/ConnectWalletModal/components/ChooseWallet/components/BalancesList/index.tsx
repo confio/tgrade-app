@@ -75,6 +75,7 @@ export function BalancesList(): JSX.Element {
       <BalancesContainer>
         {tokenList.map((token) => (
           <BalancesItem
+            key={token.address}
             onClick={() => {
               setSelectedToken(token);
             }}

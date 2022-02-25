@@ -45,6 +45,7 @@ export default function VotesTable({ isLoading, votes }: VotesTableProps): JSX.E
   return (
     <Table
       loading={isLoading}
+      rowKey={(record: any) => record?.voter}
       pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
       columns={columns}
       dataSource={votes}
