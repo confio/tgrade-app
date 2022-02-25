@@ -4,7 +4,7 @@ import { Typography } from "antd";
 import Button from "App/components/Button";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { OcContractQuerier } from "utils/oversightCommunity";
+import { MemberStatus, OcContractQuerier } from "utils/oversightCommunity";
 import { EscrowResponse, EscrowStatus } from "utils/trustedCircle";
 
 import TooltipWrapper from "../TooltipWrapper";
@@ -33,6 +33,7 @@ export default function OcEscrow(): JSX.Element {
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
   const [gracePeriod, setGracePeriod] = useState<string>();
+  const [membership, setMembership] = useState<MemberStatus>();
 
   const refreshEscrows = useCallback(
     async function () {
@@ -52,6 +53,8 @@ export default function OcEscrow(): JSX.Element {
           const escrowResponse = await ocContract.getEscrow(address);
 
           if (escrowResponse) {
+            setMembership(escrowResponse.status);
+
             const decimals = config.coinMap[config.feeToken].fractionalDigits;
             // get user deposited escrow
             const userEscrowDecimal = Decimal.fromAtomics(escrowResponse.paid, decimals);
@@ -184,29 +187,46 @@ export default function OcEscrow(): JSX.Element {
         <Pie {...pieConfig} />
       </TotalEscrowStack>
       <YourEscrowStack gap="s1">
-        <Title level={2}>Your escrow</Title>
-        <AmountStack gap="s-4">
-          <Text>Current paid in:</Text>
-          <Text>{`${userEscrow} ${feeDenom}`}</Text>
-        </AmountStack>
-        <AmountStack gap="s-4">
-          <Text>Needed to get voting rights:</Text>
-          {pendingEscrow ? (
-            <TooltipWrapper
-              title={`The current minimum escrow is ${requiredEscrow} ${feeDenom}, but ${pendingEscrow} ${feeDenom} will be needed after ${gracePeriod} in order to have voting rights`}
-            >
-              <Text>{`${pendingEscrow} ${feeDenom}`}</Text>
-            </TooltipWrapper>
-          ) : (
-            <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
-          )}
-        </AmountStack>
+        {membership !== undefined && !membership?.non_voting ? (
+          <Title level={2}>Your escrow</Title>
+        ) : (
+          <Title level={2}>No escrow required</Title>
+        )}
+        {membership !== undefined && !membership?.non_voting ? (
+          <AmountStack gap="s-4">
+            <Text>Current paid in:</Text>
+            <Text>{`${userEscrow} ${feeDenom}`}</Text>
+          </AmountStack>
+        ) : null}
+        {membership !== undefined && !membership?.non_voting ? (
+          <AmountStack gap="s-4">
+            <Text>Needed to get voting rights:</Text>
+            {pendingEscrow ? (
+              <TooltipWrapper
+                title={`The current minimum escrow is ${requiredEscrow} ${feeDenom}, but ${pendingEscrow} ${feeDenom} will be needed after ${gracePeriod} in order to have voting rights`}
+              >
+                <Text>{`${pendingEscrow} ${feeDenom}`}</Text>
+              </TooltipWrapper>
+            ) : (
+              <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
+            )}
+          </AmountStack>
+        ) : null}
         {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
+          <Button
+            disabled={membership === undefined || !!membership?.non_voting}
+            onClick={() => setDepositModalOpen(true)}
+          >
+            Deposit escrow
+          </Button>
         ) : null}
         {(!frozenEscrowDate && exceedingEscrow !== "0") ||
         (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button type="ghost" onClick={() => setReturnModalOpen(true)}>
+          <Button
+            disabled={membership === undefined || !!membership?.non_voting}
+            type="ghost"
+            onClick={() => setReturnModalOpen(true)}
+          >
             Claim escrow
           </Button>
         ) : null}
