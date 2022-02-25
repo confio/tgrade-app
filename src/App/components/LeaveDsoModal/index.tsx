@@ -17,7 +17,7 @@ import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./styl
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Title, Text } = Typography;
 
-export default function LeaveDsoModal(): JSX.Element {
+export default function LeaveDsoModal(): JSX.Element | null {
   const history = useHistory();
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
@@ -34,11 +34,9 @@ export default function LeaveDsoModal(): JSX.Element {
   const [txResult, setTxResult] = useState<TxResult>();
   const [membership, setMembership] = useState<MemberStatus>();
 
-  const dsoName = getDsoName(dsos, dsoAddress);
-
   useEffect(() => {
     (async function queryMembership() {
-      if (!client || !address) return;
+      if (!client || !address || !dsoAddress) return;
 
       try {
         const dsoContract = new TcContractQuerier(dsoAddress, client);
@@ -55,6 +53,10 @@ export default function LeaveDsoModal(): JSX.Element {
       }
     })();
   }, [address, client, dsoAddress, handleError]);
+
+  if (!dsoAddress) return null;
+
+  const dsoName = getDsoName(dsos, dsoAddress);
 
   function resetModal() {
     closeLeaveDsoModal(dsoDispatch);
