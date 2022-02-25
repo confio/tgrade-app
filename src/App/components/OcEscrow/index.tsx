@@ -25,7 +25,6 @@ export default function OcEscrow({ isVotingMember }: OcEscrowProps): JSX.Element
   } = useSdk();
 
   const feeDenom = config.coinMap[config.feeToken].denom;
-  console.log(isVotingMember);
 
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [returnModalOpen, setReturnModalOpen] = useState(false);

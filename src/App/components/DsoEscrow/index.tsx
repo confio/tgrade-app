@@ -33,6 +33,7 @@ export default function DsoEscrow(): JSX.Element {
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
   const [gracePeriod, setGracePeriod] = useState<string>();
+  const [isVotingMember, setIsVotingMember] = useState(false);
 
   const refreshEscrows = useCallback(
     async function () {
@@ -48,11 +49,10 @@ export default function DsoEscrow(): JSX.Element {
         const requiredEscrowDecimal = Decimal.fromAtomics(escrow_amount, feeDecimals);
         setRequiredEscrow(requiredEscrowDecimal.toString());
 
-        /*       //check if votingmember, but user needs to pay escrow to be voting member
-        const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
-          (member) => member.addr === address,
+        const isVotingMember = (await dsoContract.getNonVotingMembers()).some(
+          (member) => member.addr !== address,
         );
-        setVotingMemeber(isVotingMember); */
+        setIsVotingMember(isVotingMember);
 
         if (address) {
           const escrowResponse = await dsoContract.getEscrow(address);
@@ -190,25 +190,31 @@ export default function DsoEscrow(): JSX.Element {
         <Pie {...pieConfig} />
       </TotalEscrowStack>
       <YourEscrowStack gap="s1">
-        <Title level={2}>Your escrow</Title>
-        <AmountStack gap="s-4">
-          <Text>Current paid in:</Text>
-          <Text>{`${userEscrow} ${feeDenom}`}</Text>
-        </AmountStack>
-        <AmountStack gap="s-4">
-          <Text>Needed to get voting rights:</Text>
-          {pendingEscrow ? (
-            <TooltipWrapper
-              title={`The current minimum escrow is ${requiredEscrow} ${feeDenom}, but ${pendingEscrow} ${feeDenom} will be needed after ${gracePeriod} in order to have voting rights`}
-            >
-              <Text>{`${pendingEscrow} ${feeDenom}`}</Text>
-            </TooltipWrapper>
-          ) : (
-            <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
-          )}
-        </AmountStack>
+        {isVotingMember ? <Title level={2}>Your escrow</Title> : <Title level={2}>No Escrow Required</Title>}
+        {isVotingMember ? (
+          <AmountStack gap="s-4">
+            <Text>Current paid in:</Text>
+            <Text>{`${userEscrow} ${feeDenom}`}</Text>
+          </AmountStack>
+        ) : null}
+        {isVotingMember ? (
+          <AmountStack gap="s-4">
+            <Text>Needed to get voting rights:</Text>
+            {pendingEscrow ? (
+              <TooltipWrapper
+                title={`The current minimum escrow is ${requiredEscrow} ${feeDenom}, but ${pendingEscrow} ${feeDenom} will be needed after ${gracePeriod} in order to have voting rights`}
+              >
+                <Text>{`${pendingEscrow} ${feeDenom}`}</Text>
+              </TooltipWrapper>
+            ) : (
+              <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
+            )}
+          </AmountStack>
+        ) : null}
         {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
+          <Button disabled={!isVotingMember} onClick={() => setDepositModalOpen(true)}>
+            Deposit escrow
+          </Button>
         ) : null}
         {(!frozenEscrowDate && exceedingEscrow !== "0") ||
         (frozenEscrowDate && frozenEscrowDate < new Date()) ? (

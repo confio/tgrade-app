@@ -310,6 +310,12 @@ export class TcContractQuerier {
     return members;
   }
 
+  async getNonVotingMembers(startAfter?: string): Promise<readonly Member[]> {
+    const query = { list_non_voting_members: { start_after: startAfter } };
+    const { members }: MemberListResponse = await this.client.queryContractSmart(this.address, query);
+    return members;
+  }
+
   async getAllVotingMembers(): Promise<readonly Member[]> {
     let votingMembers: readonly Member[] = [];
     let nextVotingMembers: readonly Member[] = [];
