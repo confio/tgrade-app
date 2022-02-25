@@ -54,6 +54,7 @@ export default function OcEscrow(): JSX.Element {
 
           if (escrowResponse) {
             setMembership(escrowResponse.status);
+
             const decimals = config.coinMap[config.feeToken].fractionalDigits;
             // get user deposited escrow
             const userEscrowDecimal = Decimal.fromAtomics(escrowResponse.paid, decimals);
@@ -70,8 +71,6 @@ export default function OcEscrow(): JSX.Element {
             const frozenEscrowDate = escrowResponse.status.leaving?.claim_at;
             if (frozenEscrowDate) setFrozenEscrowDate(new Date(frozenEscrowDate * 1000));
           }
-        } else {
-          setMembership(undefined);
         }
 
         // get pending escrow and grace period if any
@@ -188,18 +187,18 @@ export default function OcEscrow(): JSX.Element {
         <Pie {...pieConfig} />
       </TotalEscrowStack>
       <YourEscrowStack gap="s1">
-        {!membership?.non_voting ? (
+        {membership !== undefined && !membership?.non_voting ? (
           <Title level={2}>Your escrow</Title>
         ) : (
           <Title level={2}>No escrow required</Title>
         )}
-        {!membership?.non_voting ? (
+        {membership !== undefined && !membership?.non_voting ? (
           <AmountStack gap="s-4">
             <Text>Current paid in:</Text>
             <Text>{`${userEscrow} ${feeDenom}`}</Text>
           </AmountStack>
         ) : null}
-        {!membership?.non_voting ? (
+        {membership !== undefined && !membership?.non_voting ? (
           <AmountStack gap="s-4">
             <Text>Needed to get voting rights:</Text>
             {pendingEscrow ? (
@@ -214,11 +213,20 @@ export default function OcEscrow(): JSX.Element {
           </AmountStack>
         ) : null}
         {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
+          <Button
+            disabled={membership === undefined || !!membership?.non_voting}
+            onClick={() => setDepositModalOpen(true)}
+          >
+            Deposit escrow
+          </Button>
         ) : null}
         {(!frozenEscrowDate && exceedingEscrow !== "0") ||
         (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button disabled={!!membership?.non_voting} type="ghost" onClick={() => setReturnModalOpen(true)}>
+          <Button
+            disabled={membership === undefined || !!membership?.non_voting}
+            type="ghost"
+            onClick={() => setReturnModalOpen(true)}
+          >
             Claim escrow
           </Button>
         ) : null}
