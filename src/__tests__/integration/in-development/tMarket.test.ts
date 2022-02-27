@@ -20,7 +20,6 @@ const quorum = "30";
 const threshold = "51";
 const members: readonly string[] = [makeRandomAddress()];
 const allowEndEarly = true;
-const comment = "Comment message";
 
 const mnemonic = generateMnemonic();
 console.log(mnemonic);
