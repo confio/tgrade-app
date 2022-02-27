@@ -22,7 +22,6 @@ const members: readonly string[] = [makeRandomAddress()];
 const allowEndEarly = true;
 
 const mnemonic = generateMnemonic();
-console.log(mnemonic);
 
 describe("T-Market", () => {
   it("Create a digital asset with logo", async () => {
@@ -168,7 +167,7 @@ describe("T-Market", () => {
     );
     const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
     expect(pairs["utgd-" + cw20tokenAddress].asset_infos[0].native).toContain("utgd");
-    expect(pairs["utgd-" + cw20tokenAddress].asset_infos[1].native).toContain(config.addressPrefix);
+    expect(pairs["utgd-" + cw20tokenAddress].asset_infos[1].token).toContain(config.addressPrefix);
     expect(pairs["utgd-" + cw20tokenAddress].contract_addr).toContain(config.addressPrefix);
     expect(pairs["utgd-" + cw20tokenAddress].liquidity_token).toContain(config.addressPrefix);
     expect(pairs["utgd-" + cw20tokenAddress].commission).toBe("0.003");
