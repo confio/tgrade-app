@@ -42,33 +42,13 @@ describe("T-Market", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
-    const tcContractAddress = await TcContract.createTc(
-      signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
-      address,
-      tcName,
-      escrowAmount,
-      votingPeriod,
-      quorum,
-      threshold,
-      members,
-      allowEndEarly,
-      [
-        {
-          denom: config.feeToken,
-          amount: escrowAmount,
-        },
-      ],
-      config.gasPrice,
-    );
-
     const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
 
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
       .toString();
 
-    // Creat contract with trusted token
+    // Creat contract with CW20
     const tcTokenAddress = await Contract20WS.createContract(
       signingClient,
       codeId,
@@ -84,7 +64,7 @@ describe("T-Market", () => {
       ],
       undefined,
       undefined,
-      tcContractAddress,
+      undefined,
     );
 
     const tokens = await Contract20WS.getAll(config, signingClient, address);
