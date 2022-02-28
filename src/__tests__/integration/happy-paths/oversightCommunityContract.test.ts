@@ -3,9 +3,8 @@ import { Bech32 } from "@cosmjs/encoding";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
+import { OcContract } from "utils/oversightCommunity";
 import { createSigningClient } from "utils/sdk";
-
-import { OcContract } from "../../../utils/oversightCommunity";
 
 const mnemonic = process.env.SECRET_MNEMONIC || ""; // to run locally use real mnemonic instead
 const addressPrefix = "tgrade";
