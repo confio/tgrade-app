@@ -1,25 +1,13 @@
-import { Random } from "@cosmjs/crypto";
-import { Bech32 } from "@cosmjs/encoding";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import tempImgUrl from "App/assets/icons/token-placeholder.png";
-
-import { config } from "../../../config/network";
-import { Contract20WS } from "../../../utils/cw20";
-import { Factory } from "../../../utils/factory";
-import { createSigningClient, generateMnemonic, loadOrCreateWallet } from "../../../utils/sdk";
-import { SwapFormValues } from "../../../utils/tokens";
-import { TcContract } from "../../../utils/trustedCircle";
-
-const tcName = "Trusted Circle #1";
-const escrowAmount = "1000000";
-const votingPeriod = "19";
-const quorum = "30";
-const threshold = "51";
-const members: readonly string[] = [makeRandomAddress()];
-const allowEndEarly = true;
+import { config } from "config/network";
+import { Contract20WS } from "utils/cw20";
+import { Factory } from "utils/factory";
+import { createSigningClient, generateMnemonic, loadOrCreateWallet } from "utils/sdk";
+import { SwapFormValues } from "utils/tokens";
 
 const mnemonic = generateMnemonic();
 
@@ -165,7 +153,3 @@ describe("T-Market", () => {
     //TODO
   });
 });
-
-function makeRandomAddress(): string {
-  return Bech32.encode("tgrade", Random.getBytes(20));
-}
