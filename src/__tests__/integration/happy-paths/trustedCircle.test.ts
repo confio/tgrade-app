@@ -23,7 +23,7 @@ const comment = "Comment message";
 const mnemonic = generateMnemonic();
 
 describe("Trusted Circle", () => {
-  it("Create a Trusted circle", async () => {
+  it("Create a Trusted circle without member", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: config.addressPrefix,
@@ -519,15 +519,6 @@ describe("Trusted Circle", () => {
     expect(executedProposal.description).toBe("Whitelist tgd-tst");
     expect(executedProposal.status).toBe("executed");
   }, 20000);
-
-  it.skip("Add another voting member", () => {
-    //TODO
-    /**
-     * For that we need to create and execute Add voting member proposal,
-     * and then the member needs to deposit required escrow.
-     * Then we should create proposals and test that the 2 members can vote yes, no, abstain.
-     */
-  });
 });
 
 function makeRandomAddress(): string {

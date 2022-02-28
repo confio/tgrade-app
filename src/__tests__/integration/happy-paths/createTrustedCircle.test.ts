@@ -1,9 +1,11 @@
+import { Random } from "@cosmjs/crypto";
+import { Bech32 } from "@cosmjs/encoding";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { config } from "config/network";
 import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
 import { TcContract } from "utils/trustedCircle";
 
-it.skip("creates a Trusted Circle with a member", async () => {
+it("creates a Trusted Circle with a member", async () => {
   const signer = await loadOrCreateWallet(config);
   const signingClient = await createSigningClient(config, signer);
   const address = (await signer.getAccounts())[0].address;
@@ -11,19 +13,19 @@ it.skip("creates a Trusted Circle with a member", async () => {
   const faucetClient = new FaucetClient(config.faucetUrl);
   await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
-  const dsoName = "Trusted Circle 1";
+  const memberName = "Trusted Circle 1";
   const escrowAmount = "1000000";
   const votingDuration = "19";
   const quorum = "30";
   const threshold = "51";
-  const members: readonly string[] = ["tgrade1uuy629yfuw2mf383t33x0jk2qwtf6rvv4dhmxs"];
+  const members: readonly string[] = [makeRandomAddress()];
   const allowEndEarly = true;
 
   const contractAddress = await TcContract.createTc(
     signingClient,
     config.codeIds?.tgradeDso?.[0] ?? 0,
     address,
-    dsoName,
+    memberName,
     escrowAmount,
     votingDuration,
     quorum,
@@ -35,9 +37,9 @@ it.skip("creates a Trusted Circle with a member", async () => {
   );
 
   expect(contractAddress.startsWith(config.addressPrefix)).toBeTruthy();
-}, 30000);
+}, 15000);
 
-it.skip("creates a Trusted Circle and adds a member with a proposal", async () => {
+it("creates a Trusted Circle and adds a member with a proposal", async () => {
   const signer = await loadOrCreateWallet(config);
   const signingClient = await createSigningClient(config, signer);
   const address = (await signer.getAccounts())[0].address;
@@ -78,4 +80,8 @@ it.skip("creates a Trusted Circle and adds a member with a proposal", async () =
 
   const txHash = await dsoContract.executeProposal(address, 1);
   expect(txHash).toBeTruthy();
-}, 30000);
+}, 15000);
+
+function makeRandomAddress(): string {
+  return Bech32.encode("tgrade", Random.getBytes(20));
+}
