@@ -225,6 +225,7 @@ describe("T-Market", () => {
       provideValues,
       config.gasPrice,
     );
+    expect(provideStatus.transactionHash).toBeTruthy();
     expect(provideStatus.transactionHash.length).toBe(64);
   }, 25000);
 
