@@ -105,6 +105,160 @@ describe("Trusted Circle with two members", () => {
     expect(proposalAfter.votes.yes).toBe(2);
     expect(proposalAfter.status).toBe("passed");
   }, 30000);
+
+  it("Vote - 'No' in proposal", async () => {
+    const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const signingClient_01 = await createSigningClient(config, wallet_01);
+    const { address: walletUserA } = (await wallet_01.getAccounts())[0];
+
+    const faucetClient_01 = new FaucetClient(config.faucetUrl);
+    await faucetClient_01.credit(walletUserA, config.faucetTokens?.[0] ?? config.feeToken);
+
+    const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_02, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const signingClient_02 = await createSigningClient(config, wallet_02);
+    const { address: walletUserB } = (await wallet_02.getAccounts())[0];
+
+    const faucetClient_02 = new FaucetClient(config.faucetUrl);
+    await faucetClient_02.credit(walletUserB, config.faucetTokens?.[0] ?? config.feeToken);
+
+    const tcContractAddress = await TcContract.createTc(
+      signingClient_01,
+      config.codeIds?.tgradeDso?.[0] ?? 0,
+      walletUserA,
+      tcName,
+      escrowAmount,
+      votingPeriod,
+      quorum,
+      threshold,
+      member,
+      allowEndEarly,
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
+      config.gasPrice,
+    );
+
+    const tcContract_01 = new TcContract(tcContractAddress, signingClient_01, config.gasPrice);
+    const tcContract_02 = new TcContract(tcContractAddress, signingClient_02, config.gasPrice);
+
+    const txHash = await tcContract_01.propose(walletUserA, comment, {
+      add_voting_members: { voters: [walletUserB] },
+    });
+
+    if (!txHash.proposalId) return;
+    await tcContract_01.getProposal(txHash.proposalId);
+    await tcContract_01.executeProposal(walletUserA, txHash.proposalId);
+    const executedProposal = await tcContract_01.getProposal(txHash.proposalId);
+    expect(executedProposal.status).toBe("executed");
+
+    await tcContract_02.depositEscrow(walletUserB, [{ denom: config.feeToken, amount: escrowAmount }]);
+
+    const escrowResponse = await tcContract_02.getEscrow(walletUserB);
+    expect(escrowResponse?.paid).toBe(escrowAmount);
+
+    const txHashSecond = await tcContract_01.propose(walletUserA, comment, {
+      add_voting_members: { voters: [walletUserB] },
+    });
+
+    if (!txHashSecond.proposalId) return;
+    const proposalBefore = await tcContract_01.getProposal(txHashSecond.proposalId);
+    expect(proposalBefore.votes.no).toBe(0);
+    expect(proposalBefore.status).toBe("open");
+
+    await tcContract_02.voteProposal(walletUserB, txHashSecond.proposalId, "no");
+    const proposalAfter = await tcContract_01.getProposal(txHashSecond.proposalId);
+
+    expect(proposalAfter.votes.no).toBe(1);
+    expect(proposalAfter.status).toBe("open");
+  }, 30000);
+
+  it("Vote - 'abstain' in proposal", async () => {
+    const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const signingClient_01 = await createSigningClient(config, wallet_01);
+    const { address: walletUserA } = (await wallet_01.getAccounts())[0];
+
+    const faucetClient_01 = new FaucetClient(config.faucetUrl);
+    await faucetClient_01.credit(walletUserA, config.faucetTokens?.[0] ?? config.feeToken);
+
+    const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_02, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const signingClient_02 = await createSigningClient(config, wallet_02);
+    const { address: walletUserB } = (await wallet_02.getAccounts())[0];
+
+    const faucetClient_02 = new FaucetClient(config.faucetUrl);
+    await faucetClient_02.credit(walletUserB, config.faucetTokens?.[0] ?? config.feeToken);
+
+    const tcContractAddress = await TcContract.createTc(
+      signingClient_01,
+      config.codeIds?.tgradeDso?.[0] ?? 0,
+      walletUserA,
+      tcName,
+      escrowAmount,
+      votingPeriod,
+      quorum,
+      threshold,
+      member,
+      allowEndEarly,
+      [
+        {
+          denom: config.feeToken,
+          amount: escrowAmount,
+        },
+      ],
+      config.gasPrice,
+    );
+
+    const tcContract_01 = new TcContract(tcContractAddress, signingClient_01, config.gasPrice);
+    const tcContract_02 = new TcContract(tcContractAddress, signingClient_02, config.gasPrice);
+
+    const txHash = await tcContract_01.propose(walletUserA, comment, {
+      add_voting_members: { voters: [walletUserB] },
+    });
+
+    if (!txHash.proposalId) return;
+    await tcContract_01.getProposal(txHash.proposalId);
+    await tcContract_01.executeProposal(walletUserA, txHash.proposalId);
+    const executedProposal = await tcContract_01.getProposal(txHash.proposalId);
+    expect(executedProposal.status).toBe("executed");
+
+    await tcContract_02.depositEscrow(walletUserB, [{ denom: config.feeToken, amount: escrowAmount }]);
+
+    const escrowResponse = await tcContract_02.getEscrow(walletUserB);
+    expect(escrowResponse?.paid).toBe(escrowAmount);
+
+    const txHashSecond = await tcContract_01.propose(walletUserA, comment, {
+      add_voting_members: { voters: [walletUserB] },
+    });
+
+    if (!txHashSecond.proposalId) return;
+    const proposalBefore = await tcContract_01.getProposal(txHashSecond.proposalId);
+    expect(proposalBefore.votes.abstain).toBe(0);
+    expect(proposalBefore.status).toBe("open");
+
+    await tcContract_02.voteProposal(walletUserB, txHashSecond.proposalId, "abstain");
+    const proposalAfter = await tcContract_01.getProposal(txHashSecond.proposalId);
+
+    expect(proposalAfter.votes.abstain).toBe(1);
+    expect(proposalAfter.status).toBe("passed");
+  }, 30000);
 });
 
 function makeRandomAddress(): string {
