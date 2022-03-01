@@ -188,7 +188,7 @@ export default function DsoProvider({ children }: HTMLAttributes<HTMLOrSVGElemen
         (result): result is PromiseFulfilledResult<DsoId> => result.status === "fulfilled",
       );
 
-      if (rejectedResults.length) {
+      if (rejectedResults?.length) {
         const dsoAddresses = fulfilledResults.map((result) => result.value.address);
         dsoDispatch({ type: "setDsoAddresses", payload: dsoAddresses });
       } else {

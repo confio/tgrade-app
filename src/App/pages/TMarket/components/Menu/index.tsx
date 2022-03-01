@@ -12,7 +12,7 @@ const MenuAMM = (): JSX.Element => {
       <Menu.Item key={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`}>Exchange</Menu.Item>
       <Menu.Item key={`${paths.tmarket.prefix}${paths.tmarket.provide.prefix}`}>Provide Liquidity</Menu.Item>
       <Menu.Item key={`${paths.tmarket.prefix}${paths.tmarket.withdraw.prefix}`}>Withdraw</Menu.Item>
-      <Menu.Item disabled>
+      <Menu.Item key="charts-and-statistics" disabled>
         Charts and statistics
         <StyledSoonIcon />
       </Menu.Item>

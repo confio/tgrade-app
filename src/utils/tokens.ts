@@ -46,6 +46,7 @@ export interface PairProps {
   asset_infos: tokenObj[];
   contract_addr: string;
   liquidity_token: string;
+  commission: string;
 }
 export interface TokenProps {
   address: string;

@@ -6,6 +6,7 @@ import { DsoHomeParams } from "App/pages/DsoHome";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
+import { MemberStatus } from "utils/oversightCommunity";
 import { EscrowResponse, EscrowStatus, TcContractQuerier } from "utils/trustedCircle";
 
 import TooltipWrapper from "../TooltipWrapper";
@@ -33,6 +34,28 @@ export default function DsoEscrow(): JSX.Element {
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
   const [gracePeriod, setGracePeriod] = useState<string>();
+  const [membership, setMembership] = useState<MemberStatus>();
+
+  useEffect(() => {
+    (async function queryMembership() {
+      if (!client || !address) return;
+
+      try {
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
+        const escrowResponse = await dsoContract.getEscrow(address);
+        console.log({ escrowResponse });
+
+        if (escrowResponse) {
+          setMembership(escrowResponse.status);
+        } else {
+          setMembership(undefined);
+        }
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      }
+    })();
+  }, [address, client, dsoAddress, handleError]);
 
   const refreshEscrows = useCallback(
     async function () {
@@ -47,12 +70,6 @@ export default function DsoEscrow(): JSX.Element {
 
         const requiredEscrowDecimal = Decimal.fromAtomics(escrow_amount, feeDecimals);
         setRequiredEscrow(requiredEscrowDecimal.toString());
-
-        /*       //check if votingmember, but user needs to pay escrow to be voting member
-        const isVotingMember = (await dsoContract.getAllVotingMembers()).some(
-          (member) => member.addr === address,
-        );
-        setVotingMemeber(isVotingMember); */
 
         if (address) {
           const escrowResponse = await dsoContract.getEscrow(address);
@@ -190,25 +207,35 @@ export default function DsoEscrow(): JSX.Element {
         <Pie {...pieConfig} />
       </TotalEscrowStack>
       <YourEscrowStack gap="s1">
-        <Title level={2}>Your escrow</Title>
-        <AmountStack gap="s-4">
-          <Text>Current paid in:</Text>
-          <Text>{`${userEscrow} ${feeDenom}`}</Text>
-        </AmountStack>
-        <AmountStack gap="s-4">
-          <Text>Needed to get voting rights:</Text>
-          {pendingEscrow ? (
-            <TooltipWrapper
-              title={`The current minimum escrow is ${requiredEscrow} ${feeDenom}, but ${pendingEscrow} ${feeDenom} will be needed after ${gracePeriod} in order to have voting rights`}
-            >
-              <Text>{`${pendingEscrow} ${feeDenom}`}</Text>
-            </TooltipWrapper>
-          ) : (
-            <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
-          )}
-        </AmountStack>
+        {!membership?.non_voting ? (
+          <Title level={2}>Your escrow</Title>
+        ) : (
+          <Title level={2}>No Escrow Required</Title>
+        )}
+        {!membership?.non_voting ? (
+          <AmountStack gap="s-4">
+            <Text>Current paid in:</Text>
+            <Text>{`${userEscrow} ${feeDenom}`}</Text>
+          </AmountStack>
+        ) : null}
+        {!membership?.non_voting ? (
+          <AmountStack gap="s-4">
+            <Text>Needed to get voting rights:</Text>
+            {pendingEscrow ? (
+              <TooltipWrapper
+                title={`The current minimum escrow is ${requiredEscrow} ${feeDenom}, but ${pendingEscrow} ${feeDenom} will be needed after ${gracePeriod} in order to have voting rights`}
+              >
+                <Text>{`${pendingEscrow} ${feeDenom}`}</Text>
+              </TooltipWrapper>
+            ) : (
+              <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
+            )}
+          </AmountStack>
+        ) : null}
         {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button onClick={() => setDepositModalOpen(true)}>Deposit escrow</Button>
+          <Button disabled={!!membership?.non_voting} onClick={() => setDepositModalOpen(true)}>
+            Deposit escrow
+          </Button>
         ) : null}
         {(!frozenEscrowDate && exceedingEscrow !== "0") ||
         (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
