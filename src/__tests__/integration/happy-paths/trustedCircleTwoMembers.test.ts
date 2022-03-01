@@ -12,27 +12,23 @@ const escrowAmount = "1000000";
 const votingPeriod = "19";
 const quorum = "30";
 const threshold = "51";
-const members_01: readonly string[] = [makeRandomAddress()];
-const members_02: readonly string[] = [makeRandomAddress()];
-
-console.log("MEMBER 01 " + members_01);
-console.log("MEMBER 02 " + members_02);
+const member: readonly string[] = [makeRandomAddress()];
 
 const allowEndEarly = true;
-const comment = "Comment message";
+const comment = "New proposal";
 
 const mnemonic_01 = generateMnemonic();
 const mnemonic_02 = generateMnemonic();
 
-console.log("MNEMONIC 01 " + mnemonic_01);
-console.log("MNEMONIC 02 " + mnemonic_02);
-
-describe("Trusted Circle", () => {
-  it("Add another voting member -> 2 members_01 can vote yes, no, abstain.", async () => {
+describe("Trusted Circle with two members", () => {
+  it("Vote - 'Yes' in proposal", async () => {
     /**
-     * For that we need to create and execute Add voting member proposal,
-     * and then the member needs to deposit required escrow.
-     * Then we should create proposals and test that the 2 members_01 can vote yes, no, abstain.
+     * Two members sign in as @Client_01 and @Client_02
+     * Create and execute proposal with 'Add voting member' option for (@User_B) under Client_01
+     * Add escrow for @User_B
+     * Create second proposal under @Client_01 using @User_B wallet
+     * Proposal has created with state 'Open'
+     * Vote - 'Yes' in proposal using @User_B member
      */
 
     const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
@@ -41,10 +37,10 @@ describe("Trusted Circle", () => {
     });
 
     const signingClient_01 = await createSigningClient(config, wallet_01);
-    const { address } = (await wallet_01.getAccounts())[0];
+    const { address: walletUserA } = (await wallet_01.getAccounts())[0];
 
     const faucetClient_01 = new FaucetClient(config.faucetUrl);
-    await faucetClient_01.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
+    await faucetClient_01.credit(walletUserA, config.faucetTokens?.[0] ?? config.feeToken);
 
     const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_02, {
       hdPaths: [makeCosmoshubPath(0)],
@@ -53,7 +49,6 @@ describe("Trusted Circle", () => {
 
     const signingClient_02 = await createSigningClient(config, wallet_02);
     const { address: walletUserB } = (await wallet_02.getAccounts())[0];
-    console.log("wallet_02   " + walletUserB);
 
     const faucetClient_02 = new FaucetClient(config.faucetUrl);
     await faucetClient_02.credit(walletUserB, config.faucetTokens?.[0] ?? config.feeToken);
@@ -61,13 +56,13 @@ describe("Trusted Circle", () => {
     const tcContractAddress = await TcContract.createTc(
       signingClient_01,
       config.codeIds?.tgradeDso?.[0] ?? 0,
-      address,
+      walletUserA,
       tcName,
       escrowAmount,
       votingPeriod,
       quorum,
       threshold,
-      [],
+      member,
       allowEndEarly,
       [
         {
@@ -78,32 +73,40 @@ describe("Trusted Circle", () => {
       config.gasPrice,
     );
 
-    console.log(tcContractAddress);
-
     const tcContract_01 = new TcContract(tcContractAddress, signingClient_01, config.gasPrice);
-    const txHash = await tcContract_01.propose(address, comment, {
+    const tcContract_02 = new TcContract(tcContractAddress, signingClient_02, config.gasPrice);
+
+    const txHash = await tcContract_01.propose(walletUserA, comment, {
       add_voting_members: { voters: [walletUserB] },
     });
 
-    expect(txHash.proposalId).toBeTruthy();
     if (!txHash.proposalId) return;
-
-    const createdProposal = await tcContract_01.getProposal(txHash.proposalId);
-    await tcContract_01.executeProposal(address, txHash.proposalId);
+    await tcContract_01.getProposal(txHash.proposalId);
+    await tcContract_01.executeProposal(walletUserA, txHash.proposalId);
     const executedProposal = await tcContract_01.getProposal(txHash.proposalId);
     expect(executedProposal.status).toBe("executed");
 
-    const tcContract_02 = new TcContract(tcContractAddress, signingClient_02, config.gasPrice);
-    const transactionHash = await tcContract_02.depositEscrow(walletUserB, [
-      { denom: config.feeToken, amount: escrowAmount },
-    ]);
+    await tcContract_02.depositEscrow(walletUserB, [{ denom: config.feeToken, amount: escrowAmount }]);
 
-    //await tcContract_01.voteProposal(address, txHash.proposalId, "yes");
-  }, 35000);
+    const escrowResponse = await tcContract_02.getEscrow(walletUserB);
+    expect(escrowResponse?.paid).toBe(escrowAmount);
 
-  afterEach(async () => {});
+    const txHashSecond = await tcContract_01.propose(walletUserA, comment, {
+      add_voting_members: { voters: [walletUserB] },
+    });
+
+    if (!txHashSecond.proposalId) return;
+    const proposalBefore = await tcContract_01.getProposal(txHashSecond.proposalId);
+    expect(proposalBefore.votes.yes).toBe(1);
+    expect(proposalBefore.status).toBe("open");
+
+    await tcContract_02.voteProposal(walletUserB, txHashSecond.proposalId, "yes");
+    const proposalAfter = await tcContract_01.getProposal(txHashSecond.proposalId);
+    expect(proposalAfter.votes.yes).toBe(2);
+    expect(proposalAfter.status).toBe("passed");
+  }, 30000);
 });
 
 function makeRandomAddress(): string {
-  return Bech32.encode("tgrade", Random.getBytes(20));
+  return Bech32.encode(config.addressPrefix, Random.getBytes(20));
 }
