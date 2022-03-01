@@ -81,7 +81,6 @@ describe("Trusted Circle", () => {
     console.log(tcContractAddress);
 
     const tcContract_01 = new TcContract(tcContractAddress, signingClient_01, config.gasPrice);
-    const tcContract_02 = new TcContract(tcContractAddress, signingClient_02, config.gasPrice);
     const txHash = await tcContract_01.propose(address, comment, {
       add_voting_members: { voters: [walletUserB] },
     });
@@ -94,6 +93,7 @@ describe("Trusted Circle", () => {
     const executedProposal = await tcContract_01.getProposal(txHash.proposalId);
     expect(executedProposal.status).toBe("executed");
 
+    const tcContract_02 = new TcContract(tcContractAddress, signingClient_02, config.gasPrice);
     const transactionHash = await tcContract_02.depositEscrow(walletUserB, [
       { denom: config.feeToken, amount: escrowAmount },
     ]);
