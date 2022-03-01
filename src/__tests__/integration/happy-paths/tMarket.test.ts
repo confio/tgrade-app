@@ -37,7 +37,7 @@ describe("T-Market", () => {
       .toString();
 
     // Creat contract with CW20
-    const tcTokenAddress = await Contract20WS.createContract(
+    const cw20tokenAddress = await Contract20WS.createContract(
       signingClient,
       codeId,
       address,
@@ -56,14 +56,14 @@ describe("T-Market", () => {
     );
 
     const tokens = await Contract20WS.getAll(config, signingClient, address);
-    expect(tokens[tcTokenAddress].name).toBe(tokenName);
-    expect(tokens[tcTokenAddress].symbol).toBe(tokenSymbol);
-    expect(tokens[tcTokenAddress].decimals).toBe(tokenDecimals);
-    expect(tokens[tcTokenAddress].total_supply).toBe(tokenInitialSupply + "000000");
-    expect(tokens[tcTokenAddress].balance).toBe(tokenInitialSupply + "000000");
-    expect(tokens[tcTokenAddress].humanBalance).toBe(tokenInitialSupply);
-    expect(tokens[tcTokenAddress].address).toContain(config.addressPrefix);
-    expect(tokens[tcTokenAddress].img).toBe(tempImgUrl);
+    expect(tokens[cw20tokenAddress].name).toBe(tokenName);
+    expect(tokens[cw20tokenAddress].symbol).toBe(tokenSymbol);
+    expect(tokens[cw20tokenAddress].decimals).toBe(tokenDecimals);
+    expect(tokens[cw20tokenAddress].total_supply).toBe(tokenInitialSupply + "000000");
+    expect(tokens[cw20tokenAddress].balance).toBe(tokenInitialSupply + "000000");
+    expect(tokens[cw20tokenAddress].humanBalance).toBe(tokenInitialSupply);
+    expect(tokens[cw20tokenAddress].address).toContain(config.addressPrefix);
+    expect(tokens[cw20tokenAddress].img).toBe(tempImgUrl);
   }, 15000);
 
   xit("Create a digital asset without logo", async () => {
