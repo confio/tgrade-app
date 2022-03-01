@@ -1,9 +1,10 @@
 import { Typography } from "antd";
 import closeIcon from "App/assets/icons/cross.svg";
+import { initialCreateDsoValues } from "App/components/AddDsoModal";
 import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { addDso, closeAddDsoModal, useDso, useError, useSdk } from "service";
 import { gtagDsoAction } from "utils/analytics";
 import { displayAmountToNative } from "utils/currency";
@@ -27,9 +28,16 @@ enum CreateDsoSteps {
 interface CreateDsoProps {
   readonly setTxResult: (txResult: TxResult) => void;
   readonly goToAddExistingDso: () => void;
+  readonly createDsoData: FormDsoBasicDataValues;
+  readonly setCreateDsoData: Dispatch<SetStateAction<FormDsoBasicDataValues>>;
 }
 
-export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDsoProps): JSX.Element {
+export default function CreateDso({
+  setTxResult,
+  goToAddExistingDso,
+  createDsoData,
+  setCreateDsoData,
+}: CreateDsoProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, address, signingClient },
@@ -38,12 +46,6 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
 
   const [addDsoStep, setAddDsoStep] = useState(CreateDsoSteps.BasicData);
   const [isSubmitting, setSubmitting] = useState(false);
-
-  const [dsoName, setDsoName] = useState("");
-  const [votingDuration, setVotingDuration] = useState("14");
-  const [quorum, setQuorum] = useState("1");
-  const [threshold, setThreshold] = useState("50.01");
-  const [allowEndEarly, setAllowEndEarly] = useState(true);
   const [members, setMembers] = useState<readonly string[]>([]);
 
   function handleSubmitBasicData({
@@ -53,11 +55,7 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
     threshold,
     allowEndEarly,
   }: FormDsoBasicDataValues) {
-    setDsoName(dsoName);
-    setVotingDuration(votingDuration);
-    setQuorum(quorum);
-    setThreshold(threshold);
-    setAllowEndEarly(allowEndEarly);
+    setCreateDsoData({ dsoName, votingDuration, quorum, threshold, allowEndEarly });
     setAddDsoStep(CreateDsoSteps.Members);
   }
 
@@ -74,13 +72,13 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
         signingClient,
         config.codeIds?.tgradeDso[0],
         address,
-        dsoName,
+        createDsoData.dsoName,
         nativeEscrowAmount,
-        votingDuration,
-        quorum,
-        threshold,
+        createDsoData.votingDuration,
+        createDsoData.quorum,
+        createDsoData.threshold,
         members,
-        allowEndEarly,
+        createDsoData.allowEndEarly,
         [{ denom: config.feeToken, amount: nativeEscrowAmount }],
         config.gasPrice,
       );
@@ -88,9 +86,10 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
       addDso(dsoDispatch, contractAddress);
       setTxResult({
         contractAddress,
-        msg: `You are the voting participant in ${dsoName} (${contractAddress}).`,
+        msg: `You are the voting participant in ${createDsoData.dsoName} (${contractAddress}).`,
       });
       gtagDsoAction("create_success");
+      setCreateDsoData(initialCreateDsoValues);
     } catch (error) {
       if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
@@ -120,11 +119,11 @@ export default function CreateDso({ setTxResult, goToAddExistingDso }: CreateDso
         <FormDsoBasicData
           handleSubmit={(values) => handleSubmitBasicData(values)}
           goToAddExistingDso={goToAddExistingDso}
-          dsoName={dsoName}
-          votingDuration={votingDuration}
-          quorum={quorum}
-          threshold={threshold}
-          allowEndEarly={allowEndEarly}
+          dsoName={createDsoData.dsoName}
+          votingDuration={createDsoData.votingDuration}
+          quorum={createDsoData.quorum}
+          threshold={createDsoData.threshold}
+          allowEndEarly={createDsoData.allowEndEarly}
         />
       ) : addDsoStep === CreateDsoSteps.Members ? (
         <FormDsoMembers

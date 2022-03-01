@@ -14,12 +14,21 @@ enum AddDsoSteps {
   Create = "Create",
 }
 
+export const initialCreateDsoValues = {
+  dsoName: "",
+  votingDuration: "14",
+  quorum: "1",
+  threshold: "50.01",
+  allowEndEarly: true,
+};
+
 export default function AddDsoModal(): JSX.Element {
   const history = useHistory();
   const { dsoState, dsoDispatch } = useDso();
 
   const [addDsoStep, setAddDsoStep] = useState(AddDsoSteps.Existing);
   const [txResult, setTxResult] = useState<TxResult>();
+  const [createDsoData, setCreateDsoData] = useState(initialCreateDsoValues);
 
   function goToNewDso(address?: string) {
     if (address) history.push(`${paths.dso.prefix}/${address}`);
@@ -70,6 +79,8 @@ export default function AddDsoModal(): JSX.Element {
           ) : addDsoStep === AddDsoSteps.Create ? (
             <CreateDso
               setTxResult={setTxResult}
+              createDsoData={createDsoData}
+              setCreateDsoData={setCreateDsoData}
               goToAddExistingDso={() => setAddDsoStep(AddDsoSteps.Existing)}
             />
           ) : null}
