@@ -23,7 +23,7 @@ const comment = "Comment message";
 const mnemonic = generateMnemonic();
 
 describe("Trusted Circle", () => {
-  it("Create a Trusted circle", async () => {
+  it("Create a Trusted circle with one voting member (you)", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: config.addressPrefix,
@@ -65,7 +65,7 @@ describe("Trusted Circle", () => {
     expect(tcResponse.rules.threshold).toBe("0.51");
     expect(tcResponse.rules.allow_end_early).toBe(allowEndEarly);
     expect(tcContractAddress.startsWith(config.addressPrefix)).toBeTruthy();
-  }, 15000);
+  }, 10000);
 
   it("Create and execute TC proposal for adding voting members", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -108,12 +108,13 @@ describe("Trusted Circle", () => {
     if (!txHash.proposalId) return;
 
     const createdProposal = await tcContract.getProposal(txHash.proposalId);
+    // it will become voting after this member did claim for executed proposal
     expect(createdProposal.proposal.add_voting_members?.voters[0]).toContain(config.addressPrefix);
 
     await tcContract.executeProposal(address, txHash.proposalId);
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
     expect(executedProposal.status).toBe("executed");
-  }, 30000);
+  }, 15000);
 
   it("Create and execute TC proposal for adding non voting members", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -163,7 +164,7 @@ describe("Trusted Circle", () => {
     await tcContract.executeProposal(address, txHash.proposalId);
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
     expect(executedProposal.status).toBe("executed");
-  }, 30000);
+  }, 15000);
 
   it("Create and execute TC proposal for editing trusted circle", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -220,7 +221,7 @@ describe("Trusted Circle", () => {
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
 
     expect(executedProposal.status).toBe("executed");
-  }, 30000);
+  }, 15000);
 
   it("Create and execute TC proposal for removing non voting participants", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -274,7 +275,7 @@ describe("Trusted Circle", () => {
     await tcContract.executeProposal(address, removeMemberAddress.proposalId);
     const executedProposal = await tcContract.getProposal(removeMemberAddress.proposalId);
     expect(executedProposal.status).toBe("executed");
-  }, 30000);
+  }, 15000);
 
   it("Create and execute TC proposal for punishing voting participant (burn_escrow)", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {

@@ -87,6 +87,7 @@
     "deploy:staging": "firebase deploy --only hosting:staging.tgrade.finance",
     "deploy:try": "firebase deploy --only hosting:try.tgrade.finance",
     "test": "craco test",
+    "test:coverage": "yarn craco test --coverage --watchAll=false",
     "lint": "npx eslint src/**/*.ts{,x} --max-warnings 0",
     "compile": "tsc",
     "format": "prettier --write --loglevel warn \"./src/**/*.ts{,x}\" --ignore-path \"./.custom-prettierignore\"",
