@@ -64,6 +64,8 @@ export type ProposalContent = {
   readonly update_consensus_evidence_params?: UpdateConsensusEvidenceParams;
 } & {
   readonly migrate_contract?: MigrateContract;
+} & {
+  readonly text?: Record<string, never>;
 });
 
 export interface Votes {
@@ -131,6 +133,8 @@ export function getProposalTitle(proposal: ProposalContent): string {
       return "Update consensus evidence parameters";
     case "migrate_contract":
       return "Migrate contract";
+    case "text":
+      return "Open Text Proposal";
     default:
       throw new Error("Error: unhandled proposal type");
   }
