@@ -7,6 +7,14 @@ import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
 import { Pool, ProvideFormValues, SwapFormValues, Token, WithdrawFormValues } from "utils/tokens";
 import { TcContract } from "utils/trustedCircle";
 
+/**
+ * T-Market (AMM)
+ * https://confio.slab.com/posts/t-market-amm-8o6becv6
+ *
+ * Associate an asset to a Trusted Circle and exchange it on the T-Market
+ * https://confio.slab.com/posts/associate-an-asset-to-a-trusted-circle-and-exchange-it-on-the-t-market-08leooex
+ * */
+
 it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
   const signer = await loadOrCreateWallet(config);
   const signingClient = await createSigningClient(config, signer);
@@ -266,4 +274,4 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
     config.gasPrice,
   );
   expect(withdrawStatus).toBeTruthy();
-}, 60000);
+}, 30000);

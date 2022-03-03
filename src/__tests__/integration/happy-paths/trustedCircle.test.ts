@@ -22,6 +22,11 @@ const comment = "Comment message";
 
 const mnemonic = generateMnemonic();
 
+/**
+ * Trusted Circles: the basics
+ * https://confio.slab.com/posts/trusted-circles-the-basics-mw00vbcr
+ * */
+
 describe("Trusted Circle", () => {
   it("Create a Trusted circle with one voting member (you)", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -518,7 +523,7 @@ describe("Trusted Circle", () => {
 
     await tcContract.executeProposal(address, txHash.proposalId);
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
-    expect(executedProposal.description).toBe("Whitelist tgd-tst");
+    expect(executedProposal.description).toBe("Whitelist with pair TGS <-> TST");
     expect(executedProposal.status).toBe("executed");
   }, 20000);
 });
