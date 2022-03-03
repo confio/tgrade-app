@@ -32,8 +32,9 @@ export interface SendProposal {
   readonly amount: Coin;
 }
 
-export interface ProposalContent {
-  readonly send_proposal: SendProposal;
+export interface CpoolProposal {
+  readonly send_proposal?: SendProposal;
+  readonly text?: Record<string, never>;
 }
 
 export type Expiration = {
@@ -57,7 +58,7 @@ export interface ProposalResponse {
   readonly id: number;
   readonly title: string;
   readonly description: string;
-  readonly proposal: ProposalContent;
+  readonly proposal: CpoolProposal;
   readonly status: "pending" | "open" | "rejected" | "passed" | "executed";
   readonly expires: Expiration;
   /// This is the threshold that is applied to this proposal. Both the rules of the voting contract,
@@ -91,6 +92,19 @@ export interface VoteResponse {
 
 export interface VoteListResponse {
   readonly votes: readonly VoteInfo[];
+}
+
+export function getProposalTitle(proposal: CpoolProposal): string {
+  const proposalProp = Object.keys(proposal)[0];
+
+  switch (proposalProp) {
+    case "send_proposal":
+      return "Send tokens";
+    case "text":
+      return "Open Text Proposal";
+    default:
+      return "Uknown proposal type";
+  }
 }
 
 export class CommunityPoolContractQuerier {
@@ -235,21 +249,16 @@ export class CommunityPoolContract extends CommunityPoolContractQuerier {
     this.#signingClient = signingClient;
   }
 
-  async proposeSend(
+  async propose(
     senderAddress: string,
     description: string,
-    sendProposal: SendProposal,
+    proposal: CpoolProposal,
   ): Promise<CPoolProposeResponse> {
     await this.initAddress();
     if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
 
-    const msg = {
-      propose: {
-        title: `Send tokens`,
-        description,
-        proposal: { send_proposal: sendProposal },
-      },
-    };
+    const title = getProposalTitle(proposal);
+    const msg = { propose: { title, description, proposal } };
 
     const result = await this.#signingClient.execute(
       senderAddress,
