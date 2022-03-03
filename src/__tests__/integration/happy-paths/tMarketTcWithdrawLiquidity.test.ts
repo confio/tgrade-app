@@ -274,4 +274,4 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
     config.gasPrice,
   );
   expect(withdrawStatus).toBeTruthy();
-}, 30000);
+}, 50000);
