@@ -1,5 +1,23 @@
-import { FormItem, Input } from "formik-antd";
+import { FormItem } from "formik-antd";
 import styled from "styled-components";
+
+export const UnitInputContainer = styled.div`
+  display: flex;
+  align-items: stretch;
+`;
+
+export const UnitWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 4.5rem;
+  background-color: var(--color-input-label-bg);
+  border: 1px solid var(--color-input-border);
+  border-right: none;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+`;
 
 export default styled(FormItem)`
   .ant-form-item-control-input-content > * + * {
@@ -17,26 +35,14 @@ export default styled(FormItem)`
     border-bottom-right-radius: 6px;
   }
 
-  & .unit-input-container {
-    display: flex;
-    align-items: stretch;
-  }
-
-  & .unit-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 4.5rem;
-    background-color: var(--color-input-label-bg);
-    border: 1px solid var(--color-input-border);
-    border-right: none;
+  & .unitless-input,
+  & .unitless-input textarea {
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
   }
 
   &.ant-form-item-has-error {
-    & .unit-wrapper {
+    & ${UnitWrapper} {
       background-color: var(--color-error-form);
 
       & span.ant-typography {
@@ -58,9 +64,4 @@ export const LabelWrapper = styled.div`
   & > span.ant-typography + img[alt="Tooltip"] {
     margin-left: var(--s-4);
   }
-`;
-
-export const UnitlessInput = styled(Input)`
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
 `;
