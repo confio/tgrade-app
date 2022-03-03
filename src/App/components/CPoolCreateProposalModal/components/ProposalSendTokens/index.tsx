@@ -5,20 +5,21 @@ import { CommunityPoolContract } from "utils/communityPool";
 import { displayAmountToNative } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 
+import { ProposalStep, ProposalType } from "../..";
 import ConfirmationSendTokens from "./components/ConfirmationSendTokens";
 import FormSendTokens, { FormSendTokensValues } from "./components/FormSendTokens";
 
 interface ProposalSendTokensProps {
-  readonly confirmationStep: boolean;
-  readonly setConfirmationStep: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly proposalStep: ProposalStep;
+  readonly setProposalStep: React.Dispatch<React.SetStateAction<ProposalStep | undefined>>;
   readonly isSubmitting: boolean;
   readonly setSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
 }
 
 export default function ProposalSendTokens({
-  confirmationStep,
-  setConfirmationStep,
+  proposalStep,
+  setProposalStep,
   isSubmitting,
   setSubmitting,
   setTxResult,
@@ -36,7 +37,7 @@ export default function ProposalSendTokens({
     setReceiver(member);
     setTokensAmount(points);
     setComment(comment);
-    setConfirmationStep(true);
+    setProposalStep({ type: ProposalType.SendTokens, confirmation: true });
   }
 
   async function submitCreateProposal() {
@@ -46,9 +47,11 @@ export default function ProposalSendTokens({
     try {
       const cPoolContract = new CommunityPoolContract(config, signingClient);
       const nativeAmount = displayAmountToNative(tokensAmount, config.coinMap, config.feeToken);
-      const { txHash } = await cPoolContract.proposeSend(address, comment, {
-        to_addr: receiver,
-        amount: { denom: config.feeToken, amount: nativeAmount },
+      const { txHash } = await cPoolContract.propose(address, comment, {
+        send_proposal: {
+          to_addr: receiver,
+          amount: { denom: config.feeToken, amount: nativeAmount },
+        },
       });
 
       setTxResult({
@@ -65,13 +68,13 @@ export default function ProposalSendTokens({
 
   return (
     <>
-      {confirmationStep ? (
+      {proposalStep.confirmation ? (
         <ConfirmationSendTokens
           receiver={receiver}
           tokensAmount={tokensAmount}
           comment={comment}
           isSubmitting={isSubmitting}
-          goBack={() => setConfirmationStep(false)}
+          goBack={() => setProposalStep({ type: ProposalType.SendTokens })}
           submitForm={submitCreateProposal}
         />
       ) : (
@@ -79,6 +82,7 @@ export default function ProposalSendTokens({
           receiver={receiver}
           tokensAmount={tokensAmount}
           comment={comment}
+          goBack={() => setProposalStep(undefined)}
           handleSubmit={submitSendTokens}
         />
       )}
