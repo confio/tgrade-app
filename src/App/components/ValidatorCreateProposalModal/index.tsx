@@ -5,6 +5,7 @@ import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
 import { lazy, useState } from "react";
 
+import ProposalOpenText from "./components/ProposalOpenText";
 import SelectProposal from "./components/SelectProposal";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
@@ -32,6 +33,7 @@ export enum ProposalType {
   UpdateConsensusBlockParams = "update-consensus-block-params",
   UpdateConsensusEvidenceParams = "update-consensus-evidence-params",
   MigrateContract = "migrate-contract",
+  OpenText = "open-text",
 }
 
 export const proposalLabels = {
@@ -42,6 +44,7 @@ export const proposalLabels = {
   [ProposalType.UpdateConsensusBlockParams]: "Update consensus block parameters",
   [ProposalType.UpdateConsensusEvidenceParams]: "Update consensus evidence parameters",
   [ProposalType.MigrateContract]: "Migrate contract",
+  [ProposalType.OpenText]: "Open text proposal",
 };
 
 export const proposalTitles = {
@@ -186,6 +189,14 @@ export default function ValidatorCreateProposalModal({
             />
           ) : proposalStep.type === ProposalType.MigrateContract ? (
             <ProposalMigrateContract
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.OpenText ? (
+            <ProposalOpenText
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
               isSubmitting={isSubmitting}
