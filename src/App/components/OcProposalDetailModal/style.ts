@@ -27,6 +27,7 @@ export const TextLabel = styled(Typography.Text)`
 export const TextValue = styled(Typography.Text)`
   && {
     color: var(--color-text-1ary);
+    white-space: pre-line;
   }
 `;
 

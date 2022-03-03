@@ -5,6 +5,7 @@ import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
 import { lazy, useState } from "react";
 
+import ProposalOpenText from "./components/ProposalOpenText";
 import SelectProposal from "./components/SelectProposal";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
@@ -24,6 +25,7 @@ export enum ProposalType {
   GrantEngagementPoints = "grant-engagement-points",
   PunishValidator = "punish-validator",
   UnjailValidator = "unjail-validator",
+  OpenText = "open-text",
 }
 
 export const proposalLabels = {
@@ -32,6 +34,7 @@ export const proposalLabels = {
   [ProposalType.GrantEngagementPoints]: "Grant Engagement Points",
   [ProposalType.PunishValidator]: "Punish Validator",
   [ProposalType.UnjailValidator]: "Unjail Validator",
+  [ProposalType.OpenText]: "Open Text Proposal",
 };
 
 export const proposalTitles = {
@@ -41,6 +44,7 @@ export const proposalTitles = {
   [ProposalType.GrantEngagementPoints]: "Grant Engagement Points",
   [ProposalType.PunishValidator]: "Punish Validator",
   [ProposalType.UnjailValidator]: "Unjail Validator",
+  [ProposalType.OpenText]: "Open text proposal",
   confirmation: "Confirmation",
 };
 
@@ -165,6 +169,14 @@ export default function OcCreateProposalModal({
             />
           ) : proposalStep.type === ProposalType.UnjailValidator ? (
             <ProposalUnjailValidator
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.OpenText ? (
+            <ProposalOpenText
               proposalStep={proposalStep}
               setProposalStep={setProposalStep}
               isSubmitting={isSubmitting}

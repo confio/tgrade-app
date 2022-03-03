@@ -1,3 +1,4 @@
+import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
@@ -6,7 +7,7 @@ import { Form } from "formik-antd";
 import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 
-import { Separator } from "./style";
+import { ButtonGroup, Separator } from "./style";
 
 const receiverLabel = "Address to send tokens to";
 const tokensAmountLabel = "Amount of tokens";
@@ -30,6 +31,7 @@ export interface FormSendTokensValues {
 }
 
 interface FormSendTokensProps extends FormSendTokensValues {
+  readonly goBack: () => void;
   readonly handleSubmit: (values: FormSendTokensValues) => void;
 }
 
@@ -37,6 +39,7 @@ export default function FormSendTokens({
   receiver,
   tokensAmount,
   comment,
+  goBack,
   handleSubmit,
 }: FormSendTokensProps): JSX.Element {
   return (
@@ -64,9 +67,12 @@ export default function FormSendTokens({
               <Field label={tokensAmountLabel} placeholder="Enter tokens" />
               <Field label={commentLabel} placeholder="Enter comment" optional />
               <Separator />
-              <Button disabled={!isValid} onClick={() => submitForm()}>
-                <div>Create proposal</div>
-              </Button>
+              <ButtonGroup>
+                <BackButtonOrLink onClick={() => goBack()} text="Back" />
+                <Button disabled={!isValid} onClick={() => submitForm()}>
+                  <div>Create proposal</div>
+                </Button>
+              </ButtonGroup>
             </Stack>
           </Form>
         </>

@@ -1,3 +1,4 @@
+import Stack from "App/components/Stack/style";
 import styled from "styled-components";
 
 export const Separator = styled.hr`
@@ -6,13 +7,13 @@ export const Separator = styled.hr`
   border-top: 1px solid var(--color-input-border);
 `;
 
-export const FieldGroup = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+export const FormStack = styled(Stack)`
+  & .ant-input-textarea {
+    flex-basis: 100%;
+  }
 
-  & .ant-form-item {
-    flex-basis: 18rem;
+  & .ant-form-item-has-error .ant-input-textarea::after {
+    color: var(--color-error-form);
   }
 `;
 
