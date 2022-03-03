@@ -5,7 +5,12 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { CommunityPoolContractQuerier, Cw3Status, ProposalResponse } from "utils/communityPool";
+import {
+  CommunityPoolContractQuerier,
+  Cw3Status,
+  getProposalTitle,
+  ProposalResponse,
+} from "utils/communityPool";
 
 import Stack from "../Stack/style";
 import { ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -38,7 +43,7 @@ const columns = [
   {
     title: "Type",
     key: "title",
-    render: () => "Send tokens",
+    render: (record: ProposalResponse) => getProposalTitle(record.proposal),
   },
   {
     title: "Due date",
