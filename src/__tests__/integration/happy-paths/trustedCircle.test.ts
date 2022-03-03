@@ -498,11 +498,12 @@ describe("Trusted Circle", () => {
     const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
     expect(pairs).toBeTruthy();
 
-    // Whitelist pair on Trusted Circle
-    const comment = "Whitelist tgd-tst";
+    // Provide Liquidity for 'Whitelist pair' on Trusted Circle
+    const comment = "Whitelist with pair TGS <-> TST";
     const pair = pairs[`${tgradeToken.address}-${tcTokenInfo.address}`];
     const pairAddress = pair.contract_addr;
 
+    // Create 'Whitelist pair' proposal with just created pair
     const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
     const txHash = await tcContract.propose(address, comment, { whitelist_contract: pairAddress });
 

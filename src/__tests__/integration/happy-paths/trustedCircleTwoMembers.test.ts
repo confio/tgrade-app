@@ -24,7 +24,7 @@ describe("Trusted Circle with two members", () => {
   it("Vote - 'Yes' in proposal", async () => {
     /**
      * Two members sign in as @Client_01 and @Client_02
-     * Create and execute proposal with 'Add voting member' option for (@User_B) under Client_01
+     * Create and execute proposal with 'Add voting member' using address of (@User_B) under Client_01
      * Add escrow for @User_B
      * Create second proposal under @Client_01 using @User_B wallet
      * Proposal has created with state 'Open'
