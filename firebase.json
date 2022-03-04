@@ -1,13 +1,30 @@
 {
   "hosting": [
     {
+      "target": "dapp.tgrade.finance",
+      "public": "build",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [{ "key": "Cache-Control", "value": "max-age=300" }]
+        },
+        {
+          "source": "static/**",
+          "headers": [{ "key": "Cache-Control", "value": "max-age=31536000" }]
+        }
+      ]
+    },
+    {
       "target": "dev.tgrade.finance",
       "public": "build",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
         {
           "source": "**",
@@ -28,11 +45,7 @@
     {
       "target": "staging.tgrade.finance",
       "public": "build",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
         {
           "source": "**",
@@ -43,31 +56,6 @@
         {
           "source": "**",
           "headers": [{ "key": "Cache-Control", "value": "max-age=60" }]
-        },
-        {
-          "source": "static/**",
-          "headers": [{ "key": "Cache-Control", "value": "max-age=31536000" }]
-        }
-      ]
-    },
-    {
-      "target": "try.tgrade.finance",
-      "public": "build",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ],
-      "headers": [
-        {
-          "source": "**",
-          "headers": [{ "key": "Cache-Control", "value": "max-age=300" }]
         },
         {
           "source": "static/**",
