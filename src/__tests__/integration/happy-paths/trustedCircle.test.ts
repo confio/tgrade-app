@@ -22,6 +22,11 @@ const comment = "Comment message";
 
 const mnemonic = generateMnemonic();
 
+/**
+ * Trusted Circles: the basics
+ * https://confio.slab.com/posts/trusted-circles-the-basics-mw00vbcr
+ * */
+
 describe("Trusted Circle", () => {
   it("Create a Trusted circle with one voting member (you)", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -498,11 +503,12 @@ describe("Trusted Circle", () => {
     const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
     expect(pairs).toBeTruthy();
 
-    // Whitelist pair on Trusted Circle
-    const comment = "Whitelist tgd-tst";
+    // Provide Liquidity for 'Whitelist pair' on Trusted Circle
+    const comment = "Whitelist with pair TGS <-> TST";
     const pair = pairs[`${tgradeToken.address}-${tcTokenInfo.address}`];
     const pairAddress = pair.contract_addr;
 
+    // Create 'Whitelist pair' proposal with just created pair
     const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
     const txHash = await tcContract.propose(address, comment, { whitelist_contract: pairAddress });
 
@@ -517,7 +523,7 @@ describe("Trusted Circle", () => {
 
     await tcContract.executeProposal(address, txHash.proposalId);
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
-    expect(executedProposal.description).toBe("Whitelist tgd-tst");
+    expect(executedProposal.description).toBe("Whitelist with pair TGS <-> TST");
     expect(executedProposal.status).toBe("executed");
   }, 20000);
 });

@@ -7,7 +7,7 @@ import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
 import { createSigningClient, generateMnemonic, loadOrCreateWallet } from "utils/sdk";
-import { Pool, ProvideFormValues, SwapFormValues } from "utils/tokens";
+import { Pool, ProvideFormValues, SwapFormValues, Token } from "utils/tokens";
 
 const mnemonic = generateMnemonic();
 
@@ -229,11 +229,102 @@ describe("T-Market", () => {
     expect(provideStatus.transactionHash.length).toBe(64);
   }, 25000);
 
-  it.skip("Exchange tokens from the created trading pair", () => {
-    //TODO
-  });
+  it("Exchange tokens from the created trading pair", async () => {
+    const tokenSymbol = "SNX";
+    const tokenName = "Synthetix";
+    const tokenDecimals = 2;
+    const tokenInitialSupply = "123456789";
 
-  it.skip("Withdraw liquidity tokens", () => {
-    //TODO
-  });
+    const signer = await loadOrCreateWallet(config);
+    const signingClient = await createSigningClient(config, signer);
+    const address = (await signer.getAccounts())[0].address;
+
+    const faucetClient = new FaucetClient(config.faucetUrl);
+    await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
+
+    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+
+    const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
+      .multiply(Uint64.fromNumber(10 ** tokenDecimals))
+      .toString();
+
+    // Create digital asset
+    const cw20tokenAddress = await Contract20WS.createContract(
+      signingClient,
+      codeId,
+      address,
+      tokenName,
+      tokenSymbol,
+      tokenDecimals,
+      [{ address, amount }],
+      undefined,
+      undefined,
+      // created token is not included in TC
+      undefined,
+    );
+
+    const tokens = await Contract20WS.getAll(config, signingClient, address);
+    const cw20tokenInfo = tokens[cw20tokenAddress];
+
+    const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
+
+    const tgradeToken = {
+      address: config.feeToken,
+      balance: balance_utgd,
+      humanBalance: Decimal.fromAtomics(balance_utgd, config.coinMap.utgd.fractionalDigits).toString(),
+      decimals: config.coinMap.utgd.fractionalDigits,
+      name: "Tgrade",
+      symbol: config.coinMap.utgd.denom,
+      total_supply: "",
+    };
+
+    const createPairValues: SwapFormValues = {
+      From: 1.0,
+      To: 5.0,
+      selectFrom: tgradeToken,
+      selectTo: cw20tokenInfo,
+    };
+
+    // Create trading pair
+    await Factory.createPair(
+      signingClient,
+      address,
+      config.factoryAddress,
+      createPairValues,
+      config.gasPrice,
+    );
+    const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
+
+    // Provide liquidity
+    const provideValues: ProvideFormValues = {
+      assetA: 1.0,
+      assetB: 8.0,
+      selectFrom: tgradeToken,
+      selectTo: cw20tokenInfo,
+    };
+
+    const pair = pairs[`${tgradeToken.address}-${cw20tokenInfo.address}`];
+    const pairAddress = pair.contract_addr;
+
+    await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
+    const provideStatus = await Pool.ProvideLiquidity(
+      signingClient,
+      pairAddress,
+      address,
+      provideValues,
+      config.gasPrice,
+    );
+    expect(provideStatus.transactionHash).toBeTruthy();
+    expect(provideStatus.transactionHash.length).toBe(64);
+
+    // Swap with TGD
+    const swapPairValues: SwapFormValues = {
+      From: 1.0,
+      To: 0.0, // This is simulated
+      selectFrom: tgradeToken,
+      selectTo: cw20tokenInfo,
+    };
+    const swappedStatus = await Token.Swap(signingClient, address, pair, swapPairValues, config.gasPrice);
+    expect(swappedStatus).toBeTruthy();
+  }, 25000);
 });
