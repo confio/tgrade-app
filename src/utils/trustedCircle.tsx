@@ -94,13 +94,7 @@ export type TcProposal = {
 } & {
   readonly edit_trusted_circle?: TrustedCircleAdjustements;
 } & {
-  readonly grant_engagement?: Engagement;
-} & {
   readonly whitelist_contract?: string;
-} & {
-  readonly punish?: ValidatorPunishment;
-} & {
-  readonly unjail?: ValidatorUnjail;
 };
 
 export type Expiration =
@@ -161,14 +155,14 @@ export interface TcProposeResponse {
   readonly proposalId?: number;
 }
 
+export function isTcProposal(proposal: TcProposal & OcProposal): proposal is TcProposal {
+  return !isOcProposal(proposal);
+}
+
 export function isTcProposalResponse(
   response: TcProposalResponse | OcProposalResponse,
 ): response is TcProposalResponse {
   return !isOcProposalResponse(response);
-}
-
-export function isTcProposal(proposal: TcProposal | OcProposal): proposal is TcProposal {
-  return !isOcProposal(proposal);
 }
 
 export interface ProposalListResponse {

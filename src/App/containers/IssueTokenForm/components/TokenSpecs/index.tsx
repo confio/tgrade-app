@@ -8,18 +8,18 @@ import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { useState } from "react";
-import { EmbeddedLogoType } from "utils/cw20";
 import { getFormItemName } from "utils/forms";
+import { isValidUrl } from "utils/query";
 import * as Yup from "yup";
 
-import { FormStack, LogoErrorText, NameWrapper, Separator } from "./style";
+import { FormStack, NameWrapper, Separator } from "./style";
 
 const { Step } = Steps;
 
 export interface FormTokenSpecsFields {
   readonly tokenSymbol: string;
   readonly tokenName: string;
+  readonly logoUrl: string;
   readonly initialSupply: string;
   readonly decimals: string;
   readonly mint: string;
@@ -28,8 +28,7 @@ export interface FormTokenSpecsFields {
 
 const tokenSymbolLabel = "Token symbol";
 const tokenNameLabel = "Token name";
-const logoUrlLabel = "URL of the logo SVG image";
-const logoFileLabel = "Upload Logo (SVG)";
+const logoUrlLabel = "URL of the image logo (SVG/PNG)";
 const initialSupplyLabel = "Initial supply";
 const decimalsLabel = "Set decimal places";
 const mintLabel = "Mint";
@@ -47,6 +46,14 @@ const validationSchema = Yup.object().shape({
     .required("Token name is required")
     .min(3, "Token name must have between 3 and 30 characters")
     .max(30, "Token name must have between 3 and 30 characters"),
+  [getFormItemName(logoUrlLabel)]: Yup.string()
+    .typeError("Logo url must be alphanumeric")
+    .test(
+      "is-url-valid",
+      "Logo url must point to png or svg",
+      (logoUrl) =>
+        !logoUrl || (isValidUrl(logoUrl) && (logoUrl.endsWith(".svg") || logoUrl.endsWith(".png"))),
+    ),
   [getFormItemName(initialSupplyLabel)]: Yup.number()
     .typeError("Initial supply must be a number")
     .required("Initial supply is required")
@@ -70,24 +77,16 @@ const validationSchema = Yup.object().shape({
 
 interface TokenSpecsProps {
   readonly closeModal: () => void;
-  readonly setLogoUrl: React.Dispatch<React.SetStateAction<string | undefined>>;
-  readonly setLogoFile: React.Dispatch<React.SetStateAction<EmbeddedLogoType | undefined>>;
   readonly handleSubmit: (values: FormTokenSpecsFields) => void;
 }
 
-export default function TokenSpecs({
-  closeModal,
-  setLogoUrl,
-  setLogoFile,
-  handleSubmit,
-}: TokenSpecsProps): JSX.Element {
-  const [logoError, setLogoError] = useState<string>();
-
+export default function TokenSpecs({ closeModal, handleSubmit }: TokenSpecsProps): JSX.Element {
   return (
     <Formik
       initialValues={{
         [getFormItemName(tokenSymbolLabel)]: "",
         [getFormItemName(tokenNameLabel)]: "",
+        [getFormItemName(logoUrlLabel)]: "",
         [getFormItemName(initialSupplyLabel)]: "",
         [getFormItemName(decimalsLabel)]: "",
         [getFormItemName(mintLabel)]: MintType.None,
@@ -99,6 +98,7 @@ export default function TokenSpecs({
         handleSubmit({
           tokenSymbol: values[getFormItemName(tokenSymbolLabel)].toString(),
           tokenName: values[getFormItemName(tokenNameLabel)].toString(),
+          logoUrl: values[getFormItemName(logoUrlLabel)].toString(),
           initialSupply: values[getFormItemName(initialSupplyLabel)].toString(),
           decimals: values[getFormItemName(decimalsLabel)].toString(),
           mint: values[getFormItemName(mintLabel)].toString(),
@@ -106,7 +106,7 @@ export default function TokenSpecs({
         });
       }}
     >
-      {({ isValid, submitForm, isSubmitting, values, errors }) => {
+      {({ isValid, submitForm, isSubmitting, values, errors, setFieldValue }) => {
         return (
           <Stack gap="s2">
             <ModalHeader title="Create digital asset" isSubmitting={isSubmitting} closeModal={closeModal}>
@@ -124,12 +124,9 @@ export default function TokenSpecs({
                 </NameWrapper>
                 <FieldsTokenLogo
                   logoUrlLabel={logoUrlLabel}
-                  logoFileLabel={logoFileLabel}
-                  setLogoUrl={setLogoUrl}
-                  setLogoFile={setLogoFile}
-                  setLogoError={setLogoError}
+                  logoUrl={values[getFormItemName(logoUrlLabel)]}
+                  clearLogoUrl={() => setFieldValue(getFormItemName(logoUrlLabel), "", true)}
                 />
-                <LogoErrorText>{logoError}</LogoErrorText>
                 <Separator />
                 <FieldsTokenSupply
                   formikValues={values}
@@ -143,7 +140,7 @@ export default function TokenSpecs({
                 <ModalButtons
                   buttonPrimary={{
                     text: "Next",
-                    disabled: !isValid || !!logoError,
+                    disabled: !isValid,
                     onClick: submitForm,
                   }}
                   isLoading={isSubmitting}

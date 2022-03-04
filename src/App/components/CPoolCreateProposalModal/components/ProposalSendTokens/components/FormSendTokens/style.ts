@@ -15,3 +15,13 @@ export const FieldGroup = styled.div`
     flex-basis: 18rem;
   }
 `;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  button:first-child {
+    margin-right: var(--s0);
+  }
+`;

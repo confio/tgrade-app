@@ -6,17 +6,13 @@ import {
   QueryClient as ReactQueryClient,
   QueryClientProvider as ReactQueryClientProvider,
 } from "react-query";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, ThemeProvider } from "service";
 import TMarketProvider from "service/tmarket";
 
 import LoadingSpinner from "./components/LoadingSpinner";
 import CPoolHome from "./pages/CPoolHome";
 import DocumentationPage from "./pages/DocumentationPage";
-import LandingPage from "./pages/LandingPage";
-import CookiePolicy from "./pages/LandingPage/CookiePolicy";
-import Impressum from "./pages/LandingPage/Impressum";
-import PrivacyPolicy from "./pages/LandingPage/PrivacyPolicy";
 import ValidatorsHome from "./pages/ValidatorsHome";
 import { paths } from "./paths";
 
@@ -39,7 +35,7 @@ export default function App(): JSX.Element {
                       <Switch>
                         <Suspense fallback={<LoadingSpinner fullPage />}>
                           <Route exact path={paths.root}>
-                            <LandingPage />
+                            <Redirect to={`${paths.dso.prefix}`} />
                           </Route>
                           <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
                             <DsoProvider>
@@ -65,15 +61,6 @@ export default function App(): JSX.Element {
                           </Route>
                           <Route path={`${paths.documentation.prefix}`}>
                             <DocumentationPage />
-                          </Route>
-                          <Route path={`${paths.privacypolicy.prefix}`}>
-                            <PrivacyPolicy />
-                          </Route>
-                          <Route path={`${paths.cookiepolicy.prefix}`}>
-                            <CookiePolicy />
-                          </Route>
-                          <Route path={`${paths.impressum.prefix}`}>
-                            <Impressum />
                           </Route>
                         </Suspense>
                       </Switch>

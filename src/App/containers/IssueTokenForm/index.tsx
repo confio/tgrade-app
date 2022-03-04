@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useError, useSdk } from "service";
 import { useTMarket } from "service/tmarket";
 import { gtagTokenAction } from "utils/analytics";
-import { Contract20WS, EmbeddedLogoType, LogoType, MinterInterface } from "utils/cw20";
+import { Contract20WS, LogoType, MinterInterface } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import TokenMarketing, { FormMarketingFields } from "./components/TokenMarketing";
@@ -34,7 +34,6 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
   const [tokenSymbol, setTokenSymbol] = useState("");
   const [tokenName, setTokenName] = useState("");
   const [logoUrl, setLogoUrl] = useState<string>();
-  const [logoFile, setLogoFile] = useState<EmbeddedLogoType>();
   const [initialSupply, setInitialSupply] = useState("");
   const [decimals, setDecimals] = useState("");
   const [mint, setMint] = useState("");
@@ -43,6 +42,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
   async function submitTokenSpecs(values: FormTokenSpecsFields) {
     setTokenSymbol(values.tokenSymbol);
     setTokenName(values.tokenName);
+    setLogoUrl(values.logoUrl);
     setInitialSupply(values.initialSupply);
     setDecimals(values.decimals);
     setMint(values.mint);
@@ -75,11 +75,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
       const minter: MinterInterface | undefined = canMint ? { minter: address, cap } : undefined;
 
       const codeId = values.dsoAddress ? config.codeIds.tgradeCw20[0] : config.codeIds.cw20Tokens[0];
-      const logo: LogoType | undefined = logoUrl
-        ? { url: logoUrl }
-        : logoFile
-        ? { embedded: logoFile }
-        : undefined;
+      const logo: LogoType | undefined = logoUrl ? { url: logoUrl } : undefined;
       const marketing =
         values.project || values.description || logo
           ? { project: values.project, description: values.description, marketing: address, logo }
@@ -114,12 +110,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
   return (
     <>
       {issueTokenStep === IssueTokenSteps.Specs ? (
-        <TokenSpecs
-          closeModal={closeModal}
-          setLogoUrl={setLogoUrl}
-          setLogoFile={setLogoFile}
-          handleSubmit={submitTokenSpecs}
-        />
+        <TokenSpecs closeModal={closeModal} handleSubmit={submitTokenSpecs} />
       ) : issueTokenStep === IssueTokenSteps.Marketing ? (
         <TokenMarketing
           closeModal={closeModal}
