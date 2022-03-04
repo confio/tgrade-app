@@ -86,7 +86,6 @@
     "deploy:dapp": "firebase deploy --only hosting:dapp.tgrade.finance",
     "deploy:dev": "firebase deploy --only hosting:dev.tgrade.finance",
     "deploy:staging": "firebase deploy --only hosting:staging.tgrade.finance",
-    "deploy:try": "firebase deploy --only hosting:try.tgrade.finance",
     "test": "craco test",
     "test:coverage": "yarn craco test --coverage --watchAll=false",
     "lint": "npx eslint src/**/*.ts{,x} --max-warnings 0",

@@ -11,7 +11,7 @@ export default function PrivacyPolicy(): JSX.Element | null {
       <p>
         This Privacy Policy describes the policies of Confio GmbH, Potsdamer Platz 1, 7th Floor, Europe 10785
         Berlin, Germany, email: hello@confio.gmbh, on the collection, use and disclosure of your information
-        that we collect when you use our website ( try.tgrade.finance ). (the “Service”). By accessing or
+        that we collect when you use our website ( dapp.tgrade.finance ). (the “Service”). By accessing or
         using the Service, you are consenting to the collection, use and disclosure of your information in
         accordance with this Privacy Policy. If you do not consent to the same, please do not access or use
         the Service.
@@ -127,7 +127,7 @@ export default function PrivacyPolicy(): JSX.Element | null {
           <p>
             To learn more about how we use these and your choices in relation to these tracking technologies,
             please refer to our
-            <a rel="noreferrer" href="try.tgrade.finance/cookiepolicy">
+            <a rel="noreferrer" href="dapp.tgrade.finance/cookiepolicy">
               Cookie Policy.
             </a>
           </p>
