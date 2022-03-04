@@ -6,7 +6,7 @@ import {
   QueryClient as ReactQueryClient,
   QueryClientProvider as ReactQueryClientProvider,
 } from "react-query";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, ThemeProvider } from "service";
 import TMarketProvider from "service/tmarket";
 
@@ -35,9 +35,7 @@ export default function App(): JSX.Element {
                       <Switch>
                         <Suspense fallback={<LoadingSpinner fullPage />}>
                           <Route exact path={paths.root}>
-                            <DsoProvider>
-                              <Dso />
-                            </DsoProvider>
+                            <Redirect to={`${paths.dso.prefix}`} />
                           </Route>
                           <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
                             <DsoProvider>
