@@ -43,7 +43,6 @@ export default function DsoEscrow(): JSX.Element {
       try {
         const dsoContract = new TcContractQuerier(dsoAddress, client);
         const escrowResponse = await dsoContract.getEscrow(address);
-        console.log({ escrowResponse });
 
         if (escrowResponse) {
           setMembership(escrowResponse.status);

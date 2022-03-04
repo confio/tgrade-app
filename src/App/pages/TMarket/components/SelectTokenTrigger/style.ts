@@ -22,5 +22,8 @@ export const SelectTokenParagraph = styled(Typography.Paragraph)`
   font-weight: 500;
 `;
 export const Image = styled.img`
+  width: 100%;
+  height: 100%;
   max-width: 40px;
+  max-height: 40px;
 `;
