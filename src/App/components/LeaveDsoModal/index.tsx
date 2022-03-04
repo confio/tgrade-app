@@ -36,7 +36,7 @@ export default function LeaveDsoModal(): JSX.Element | null {
 
   useEffect(() => {
     (async function queryMembership() {
-      if (!client || !address || !dsoAddress) return;
+      if (!client || !address || !dsoAddress || dsoAddress === "undefined") return;
 
       try {
         const dsoContract = new TcContractQuerier(dsoAddress, client);
