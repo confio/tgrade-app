@@ -5,6 +5,9 @@
   "targets": {
     "tgrade-487d8": {
       "hosting": {
+        "dapp.tgrade.finance": [
+          "tgrade-dapp"
+        ],
         "dev.tgrade.finance": [
           "tgrade-dev"
         ],
