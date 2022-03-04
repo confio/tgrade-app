@@ -26,7 +26,7 @@ describe("T-Market with Trusted Circle", () => {
      * -------------//----------
      * Create token 'T-Market'
      * Create Asset(Contract) with trusted token
-     * Get pair tgradeToken & cw20token
+     * Get pair tgradeToken & tgradeCw20
      * Add proposal with 'Whitelist pair' on Trusted Circle and execute it
      * Provide liquidity --> Check that this succeeds because we have whitelisted
      * */
@@ -66,7 +66,7 @@ describe("T-Market with Trusted Circle", () => {
     const tokenDecimals = 6;
     const tokenInitialSupply = "100000000";
 
-    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+    const codeId = config.codeIds?.tgradeCw20?.[0] ?? 0;
 
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
@@ -158,7 +158,7 @@ describe("T-Market with Trusted Circle", () => {
      * -------------//----------
      * Create token 'T-Market'
      * Create Asset(Contract) with trusted token
-     * Get pair tgradeToken & cw20token
+     * Get pair tgradeToken & tgradeCw20
      * Provide liquidity --> Check that this fails because we have not whitelisted yet
      * */
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -197,7 +197,8 @@ describe("T-Market with Trusted Circle", () => {
     const tokenDecimals = 6;
     const tokenInitialSupply = "100000000";
 
-    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+    // select 'tgradeCw20' as Trusted token
+    const codeId = config.codeIds?.tgradeCw20?.[0] ?? 0;
 
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
@@ -263,13 +264,11 @@ describe("T-Market with Trusted Circle", () => {
     const pairAddress = pair.contract_addr;
 
     await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
-    const provideStatus = await Pool.ProvideLiquidity(
-      signingClient,
-      pairAddress,
-      address,
-      provideValues,
-      config.gasPrice,
-    );
-    expect(provideStatus).toBeTruthy();
+    try {
+      await Pool.ProvideLiquidity(signingClient, pairAddress, address, provideValues, config.gasPrice);
+    } catch (error) {
+      // failed to execute message; message index: 0: dispatch: submessages: Unauthorized: execute wasm contract failed
+      expect(error).toBeTruthy();
+    }
   }, 25000);
 });
