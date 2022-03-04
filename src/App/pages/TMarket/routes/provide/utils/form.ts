@@ -85,21 +85,24 @@ export const handleValidation = async (
     to: undefined,
   };
   //Insufficient balance FROM
-  values.assetA && values.assetA > parseFloat(values.selectFrom.humanBalance)
-    ? (errors.from = "Insufficient Balance")
-    : (errors.from = undefined);
+  if (values.assetA && values.assetA > parseFloat(values.selectFrom.humanBalance)) {
+    errors.from = "Insufficient Balance";
+  }
 
   //Insufficient balance TO
-  values.assetB && values.assetB > parseFloat(values.selectTo.humanBalance)
-    ? (errors.to = "Insufficient Balance")
-    : (errors.to = undefined);
+  if (values.assetB && values.assetB > parseFloat(values.selectTo.humanBalance)) {
+    errors.to = "Insufficient Balance";
+  }
 
   //Insufficient provide FROM
-  values.assetA && values.assetA >= 0
-    ? (errors.from = undefined)
-    : (errors.from = "Must provide some liquidity");
+  if (!(values.assetA && values.assetA >= 0)) {
+    errors.from = "Must provide some liquidity";
+  }
+
   //Insufficient provide TO
-  values.assetB && values.assetB >= 0 ? (errors.to = undefined) : (errors.to = "Must provide some liquidity");
+  if (!(values.assetB && values.assetB >= 0)) {
+    errors.to = "Must provide some liquidity";
+  }
 
   setErrors(errors);
 };
