@@ -13,9 +13,6 @@
         ],
         "staging.tgrade.finance": [
           "tgrade-staging"
-        ],
-        "try.tgrade.finance": [
-          "tgrade-try"
         ]
       }
     }
