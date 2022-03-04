@@ -144,7 +144,7 @@ export default function Provide(): JSX.Element {
             <EstimatedMessage />
             <SubmitButton
               disabled={
-                (!isTokenApprovedA || !isTokenApprovedB || errors.from !== undefined) &&
+                (!isTokenApprovedA || !isTokenApprovedB || !!errors.from || !!errors.to) &&
                 selectedPair !== undefined
               }
               loading={loading}
