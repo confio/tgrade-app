@@ -119,7 +119,6 @@ describe("T-Market with Trusted Circle", () => {
     const pairs = await Factory.getPairs(signingClient, config.factoryAddress);
     expect(pairs).toBeTruthy();
 
-    // Provide liquidity
     const provideValues: ProvideFormValues = {
       assetA: 1.0,
       assetB: 10.0,
@@ -130,16 +129,6 @@ describe("T-Market with Trusted Circle", () => {
     const pair = pairs[`${tgradeToken.address}-${cw20tokenInfo.address}`];
     const pairAddress = pair.contract_addr;
 
-    await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
-    const provideStatus = await Pool.ProvideLiquidity(
-      signingClient,
-      pairAddress,
-      address,
-      provideValues,
-      config.gasPrice,
-    );
-    expect(provideStatus).toBeTruthy();
-
     // Whitelist pair on Trusted Circle
     const comment = "Whitelist Pair -> TGN-BAL";
     const tcContract = new TcContract(tcContractAddress, signingClient, config.gasPrice);
@@ -149,6 +138,17 @@ describe("T-Market with Trusted Circle", () => {
     if (!createdProposalHash.proposalId) return;
     const txHash = await tcContract.executeProposal(address, createdProposalHash.proposalId);
     expect(txHash).toBeTruthy();
+
+    // Provide liquidity
+    await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
+    const provideStatus = await Pool.ProvideLiquidity(
+      signingClient,
+      pairAddress,
+      address,
+      provideValues,
+      config.gasPrice,
+    );
+    expect(provideStatus).toBeTruthy();
   }, 30000);
 
   it("should fail to pair with a proposal of the Trusted Circle", async () => {
