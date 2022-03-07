@@ -24,10 +24,12 @@ const ToToken = (): JSX.Element => {
   const { client, address } = sdkState;
   const { estimatingFromB, pairs, searchText } = tMarketState;
   const { selectedPair } = provideState;
+
   const setToken = (token: TokenProps) => {
     setValues({
       ...values,
       selectTo: token,
+      selectFrom: values.selectFrom?.address === token.address ? values.selectTo : values.selectFrom,
     });
   };
 
