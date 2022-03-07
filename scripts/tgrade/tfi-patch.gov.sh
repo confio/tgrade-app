@@ -13,7 +13,7 @@ chainId=chain-JAynv8
 nodeUrl=tcp://localhost:26657
 factoryContractAddress="tgrade1fventeva948ue0fzhp6xselr522rnqwger9wg7r0g9f4jemsqh6sd9g4hg"
 upgradeHeight=30
-NEW_VERSION=local-v07 # todo: set to proper version, when tagged and published
+NEW_VERSION="v0.7.0"
 #------------------
 
 work_dir=$(mktemp -d)
