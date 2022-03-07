@@ -19,6 +19,7 @@ const ToToken = (): JSX.Element => {
     setValues({
       ...values,
       selectTo: token,
+      selectFrom: values.selectFrom?.address === token.address ? values.selectTo : values.selectFrom,
     });
   };
   const tokens: TokenProps[] = getTokensList(tMarketState.tokens, searchText);
