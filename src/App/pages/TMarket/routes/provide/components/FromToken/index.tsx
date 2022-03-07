@@ -29,6 +29,7 @@ const FromToken = (): JSX.Element => {
     setValues({
       ...values,
       selectFrom: token,
+      selectTo: values.selectTo?.address === token.address ? values.selectFrom : values.selectTo,
     });
   };
 
