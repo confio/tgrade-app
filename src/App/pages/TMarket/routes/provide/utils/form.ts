@@ -32,12 +32,6 @@ export const handleValidation = async (
 ): Promise<void> => {
   if (!client || !address || !values.selectFrom || !values.selectTo || !pairs) return;
 
-  if (values.selectFrom.address === values.selectTo.address) {
-    console.error("Cannot set the same tokens in swap");
-    values.selectTo = undefined;
-  }
-  if (!values.selectTo) return;
-
   //CHECK if has pair
   const pair: PairProps | undefined = Pair.getPair(pairs, values.selectFrom.address, values.selectTo.address);
   pair ? setPair(pair) : setPair(undefined);
