@@ -17,43 +17,6 @@
     <meta name="app-version" content="%REACT_APP_GIT_SHA%" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Tgrade</title>
-    <!-- Dummy function if Google Analytics should not be used -->
-    <script>
-      function gtag() {}
-    </script>
-    <!-- Google Analytics for dapp.tgrade.finance only -->
-    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet") { %>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CL60E9X5BW"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-CL60E9X5BW");
-    </script>
-    <!-- Twitter universal website tag code -->
-    <script>
-      !(function (e, t, n, s, u, a) {
-        e.twq ||
-          ((s = e.twq =
-            function () {
-              s.exe ? s.exe.apply(s, arguments) : s.queue.push(arguments);
-            }),
-          (s.version = "1.1"),
-          (s.queue = []),
-          (u = t.createElement(n)),
-          (u.async = !0),
-          (u.src = "//static.ads-twitter.com/uwt.js"),
-          (a = t.getElementsByTagName(n)[0]),
-          a.parentNode.insertBefore(u, a));
-      })(window, document, "script");
-      // Insert Twitter Pixel ID and Standard Event data below
-      twq("init", "o6wgl");
-      twq("track", "PageView");
-    </script>
-    <!-- End Twitter universal website tag code -->
-    <% } %>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="preload"
@@ -77,15 +40,56 @@
       media="print"
       onload="this.media='all'"
     />
-    <!-- Start cookieyes banner -->
+    <!-- Start Dummy function if Google Analytics should not be used -->
+    <script>
+      function gtag() {}
+    </script>
+    <!-- End Dummy function if Google Analytics should not be used -->
     <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet") { %>
+    <!-- Start cookieyes banner -->
     <script
       id="cookieyes"
       type="text/javascript"
       src="https://cdn-cookieyes.com/client_data/5e57ea3b79f494a0063f03c6/script.js"
     ></script>
-    <% } %>
     <!-- End cookieyes banner -->
+    <!-- Start Google Analytics for dapp.tgrade.finance only -->
+    <script
+      async
+      data-cookieyes="cookieyes-analytics"
+      src="https://www.googletagmanager.com/gtag/js?id=G-CL60E9X5BW"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-CL60E9X5BW");
+    </script>
+    <!-- End Google Analytics for dapp.tgrade.finance only -->
+    <!-- Start Twitter universal website tag code -->
+    <script>
+      !(function (e, t, n, s, u, a) {
+        e.twq ||
+          ((s = e.twq =
+            function () {
+              s.exe ? s.exe.apply(s, arguments) : s.queue.push(arguments);
+            }),
+          (s.version = "1.1"),
+          (s.queue = []),
+          (u = t.createElement(n)),
+          (u.async = !0),
+          (u.src = "//static.ads-twitter.com/uwt.js"),
+          (a = t.getElementsByTagName(n)[0]),
+          a.parentNode.insertBefore(u, a));
+      })(window, document, "script");
+      // Insert Twitter Pixel ID and Standard Event data below
+      twq("init", "o6wgl");
+      twq("track", "PageView");
+    </script>
+    <!-- End Twitter universal website tag code -->
+    <% } %>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
