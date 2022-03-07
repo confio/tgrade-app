@@ -77,7 +77,8 @@ tgrade q wasm contract $factoryContractAddress -o json --node="$nodeUrl" | jq
 
 msg=$(cat << EOF
 {"propose": {"title": "Upgrade", "description": "Upgade to v0.7.0", "proposal": {"register_upgrade": {"name":"v07", "height": $upgradeHeight, "info": "$factoryContractAddress"}} }}
-EOF)
+EOF
+)
 
 echo "-----------------------"
 echo "## Add new upgrade proposal: $msg"
@@ -93,7 +94,8 @@ proposal_id=$(echo "$rsp" | jq -er '.logs[0].events[-1].attributes[3].value')
 # Voting not supported with 1 validator community member
 #msg=$(cat << EOF
 #{"vote": {"proposal_id": $proposal_id, "vote": "yes"}}
-#EOF)
+#EOF
+#)
 #echo "-----------------------"
 #echo "Vote proposal: $msg"
 #echo "-----------------------"
@@ -104,7 +106,8 @@ proposal_id=$(echo "$rsp" | jq -er '.logs[0].events[-1].attributes[3].value')
 
 msg=$(cat << EOF
 {"execute": {"proposal_id": $proposal_id}}
-EOF)
+EOF
+)
 
 echo "-----------------------"
 echo "Execute proposal: $msg"
@@ -161,7 +164,8 @@ title="Migrate tfi factory contract to code id $codeID"
 description="Migrate tfi factory contract with address '$factoryContractAddress' to code id '$codeID'"
 msg=$(cat << EOF
 {"propose": {"title": "$title", "description": "$description", "proposal": {"migrate_contract": {"contract":"$factoryContractAddress", "code_id": $codeID, "migrate_msg": "$(echo -n '{}' | base64)"}} }}
-EOF)
+EOF
+)
 echo "-----------------------"
 echo "## Submit tfi factory migration proposal: $msg"
 echo "-----------------------"
@@ -177,7 +181,8 @@ proposal_id=$(echo "$rsp" | jq -er '.logs[0].events[-1].attributes[3].value')
 # Prepare migration execute message
 msg=$(cat << EOF
 {"execute": {"proposal_id": $proposal_id}}
-EOF)
+EOF
+)
 
 echo "-----------------------"
 echo "Execute proposal: $msg"
