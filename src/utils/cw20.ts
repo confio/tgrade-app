@@ -236,10 +236,21 @@ export class Contract20WS {
       await Promise.all([cw20TokensAddressesPromise, tgradeCw20AddressesPromise])
     ).flat();
 
+    // Get batched token infos
+    const tokensInfos: TokenProps[] = [];
+
+    while (tokensInfos.length < tokenAddresses.length) {
+      console.log({ tokensInfoslength: tokensInfos.length });
+      const nextTokensInfos = await Promise.all(
+        tokenAddresses
+          .slice(tokensInfos.length, 300 + tokensInfos.length)
+          .map((address) => this.getTokenInfo(client, clientAddress, address, config)),
+      );
+
+      tokensInfos.unshift(...nextTokensInfos);
+    }
+
     // Fill map with tokens info
-    const tokensInfos = await Promise.all(
-      tokenAddresses.map((address) => this.getTokenInfo(client, clientAddress, address, config)),
-    );
     tokensInfos.forEach((tokenInfo) => {
       tokensMap[tokenInfo.address] = tokenInfo;
     });
