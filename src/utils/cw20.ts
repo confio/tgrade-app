@@ -63,6 +63,16 @@ export interface DownloadLogoResponse {
   readonly data: string;
 }
 
+// Types for temporary getContract pagination from cosmjs-types
+interface PageResponse {
+  nextKey: Uint8Array;
+  total: Long;
+}
+interface QueryContractsByCodeResponse {
+  contracts: string[];
+  pagination?: PageResponse;
+}
+
 export class Contract20WS {
   readonly #signingClient: SigningCosmWasmClient;
 
