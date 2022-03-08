@@ -14,7 +14,7 @@ const comment = "Comment message" + new Date();
 const member = makeRandomAddress();
 
 describe("Engagement", () => {
-  it("Check engagement of an address", async () => {
+  it("Check 'Engagement: denom & amount' of an address", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: config.addressPrefix,
@@ -23,8 +23,9 @@ describe("Engagement", () => {
     const signingClient = await createSigningClient(config, wallet);
     const { address } = (await wallet.getAccounts())[0];
     const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, signingClient);
-    const delegatedAddress = await egContract.getDelegated(address);
-    expect(delegatedAddress).toBe(address);
+    const engagementPoints = await egContract.getWithdrawableRewards(address);
+    expect(engagementPoints.denom).toBe("utgd");
+    expect(engagementPoints.amount).toBe("0");
   });
 
   it("Claim my own rewards", async () => {
@@ -56,12 +57,12 @@ describe("Engagement", () => {
 
     const egContract = new EngagementContract(config, PoEContractType.DISTRIBUTION, signingClient);
 
-    const totalEngagementPoints = await egContract.getTotalEngagementPoints();
-    expect(totalEngagementPoints).toBe(10000);
+    const withdrawRewardsBefore = await egContract.withdrawRewards(address);
+    expect(withdrawRewardsBefore).toBe(10000);
 
     //jest.setTimeout(30000);
-    const withdrawRewards = await egContract.withdrawRewards(address);
-    expect(withdrawRewards).toBe(10000);
+    const withdrawRewardsAfter = await egContract.withdrawRewards(address);
+    expect(withdrawRewardsAfter).toBe(10000);
   }, 25000);
 
   it.skip("Claim my own rewards and send them to another address", () => {
