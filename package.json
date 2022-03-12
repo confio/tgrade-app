@@ -96,7 +96,7 @@
     "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh && prettier --write --loglevel warn \"./src/codec/**/*.ts\"",
     "cy:open": "npx cypress open",
     "cy:run": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome",
-    "cy:load": "npx cypress run --browser chrome --env burn=4"
+    "cy:load": "npx cypress run --browser chrome --env burn=6"
   },
   "browserslist": [
     "last 2 chrome versions",

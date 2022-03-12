@@ -34,7 +34,6 @@ describe("Trusted Circle", () => {
 
   describe("create trusted circle (connect wallet first)", () => {
     beforeEach(() => {
-      // start creating TC
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();
       cy.findByPlaceholderText(/Enter Trusted Circle name/i)
@@ -70,7 +69,7 @@ describe("Trusted Circle", () => {
           cy.log("Pagination is not present");
         } else {
           cy.get("button.ant-tabs-nav-more").click();
-          cy.findByRole("option").should("contain.text", currentTime);
+          cy.get(`[data-menu-id*="${currentTime}"]`).should("be.visible");
         }
       });
       // workaround
