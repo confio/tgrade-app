@@ -6259,7 +6259,7 @@ cypress-grep@^2.13.1:
 
 cypress-repeat@^2.3.1:
   version "2.3.1"
-  resolved "https://registry.npmjs.org/cypress-repeat/-/cypress-repeat-2.3.1.tgz"
+  resolved "https://registry.yarnpkg.com/cypress-repeat/-/cypress-repeat-2.3.1.tgz#b8e9f2b5d97f6520a85ed4f7ea8512b231dcc1dd"
   integrity sha512-HXky4xB4+aI4uf1F7lVyTKRAZJQJYdHU3uM0QOtHr3Q+MlxPB152MHPHv3mmhLCRw2Hkj5r59czVJspLapxxYw==
   dependencies:
     arg "5.0.1"

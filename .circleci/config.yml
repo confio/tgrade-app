@@ -127,7 +127,7 @@ jobs:
             - ~/.cache/yarn
             - node_modules
           key: v2-dependencies-{{ checksum "yarn.lock" }}
-      - run: yarn cy:load:50
+      - run: yarn cy:load
       - store_artifacts:
           name: Uploading cypress/videos artifacts
           path: cypress/videos
