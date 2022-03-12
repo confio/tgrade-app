@@ -32,7 +32,7 @@ describe("Trusted Circle", () => {
     });
   });
 
-  describe("create trusted circle (connect wallet first)", () => {
+  describe("create 100 trusted circle", () => {
     beforeEach(() => {
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();
@@ -59,17 +59,17 @@ describe("Trusted Circle", () => {
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
-    it("show created trusted circle, open pagination drop down and verify presence of TC load_test", () => {
+    it("create Trusted Circles and checks drop downs function volume_test", () => {
       cy.get(trustedCirclesPage.getTCNameFromActiveTab())
         .should("be.visible")
         .should("contain.text", "Trusted Circle Test #");
 
       cy.findByRole("tablist").then(($btn) => {
-        if ($btn.find(".ant-tabs-nav-operations-hidden").length > 0) {
+        if ($btn.find(trustedCirclesPage.getHiddenPaginationThreeDots()).length > 0) {
           cy.log("Pagination is not present");
         } else {
-          cy.get("button.ant-tabs-nav-more").click();
-          cy.get(`[data-menu-id*="${currentTime}"]`).should("be.visible");
+          cy.get(trustedCirclesPage.getPaginationDropDown()).click();
+          cy.findByRole("listbox").should("contain.text", currentTime);
         }
       });
       // workaround

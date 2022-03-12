@@ -19,11 +19,11 @@ export class TrustedCirclesPage {
     return "h1.ant-typography";
   }
 
-  getPaginationThreeDots(): string {
-    return "ant-tabs-nav-operations";
+  getHiddenPaginationThreeDots(): string {
+    return ".ant-tabs-nav-operations-hidden";
   }
 
   getPaginationDropDown(): string {
-    return "ant-tabs-dropdown-open";
+    return "button.ant-tabs-nav-more";
   }
 }

@@ -10,6 +10,6 @@
     "runMode": 0
   },
   "env": {
-    "grep": "load_test"
+    "grep": "volume_test"
   }
 }
