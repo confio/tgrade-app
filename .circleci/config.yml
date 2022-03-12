@@ -109,17 +109,38 @@ jobs:
           command: |
             ./scripts/stop_all.sh
 
+  cypress:
+    docker:
+      - image: circleci/node:latest-browsers
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
+    working_directory: ~/app
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "yarn.lock" }}
+      - run: yarn install --frozen-lockfile
+      - save_cache:
+          paths:
+            - ~/.cache/yarn
+            - node_modules
+          key: v2-dependencies-{{ checksum "yarn.lock" }}
+      - run: yarn cy:load:50
+      - store_artifacts:
+          name: Uploading cypress/videos artifacts
+          path: cypress/videos
+      - store_artifacts:
+          name: Uploading cypress/screenshots artifacts
+          path: cypress/screenshots
+
 workflows:
   #version: 2
   build_and_test:
     jobs:
       #- lint
-      - cypress/run:
-          yarn: true
-          browser: chrome
-          post-steps:
-            - store_artifacts:
-                path: cypress/results
+      - cypress
       #- test:
           # https://circleci.com/docs/2.0/env-vars/
       #    context: Testing-Env-Vars

@@ -5,6 +5,7 @@
   "viewportHeight": 1080,
   "watchForFileChanges": false,
   "video": true,
+  "videoCompression": false,
   "screenshotOnRunFailure": true,
   "retries": {
     "runMode": 0
