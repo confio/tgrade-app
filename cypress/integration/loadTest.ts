@@ -19,7 +19,7 @@ describe("Trusted Circle", () => {
     cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
     // Workaround to except Error message
-    cy.wait(5000);
+    cy.wait(4500);
 
     // Print Wallet mnemonic
     cy.window().its("localStorage").invoke("getItem", "burner-wallet").as("burner-wallet");
@@ -52,10 +52,17 @@ describe("Trusted Circle", () => {
 
       cy.findByRole("button", {
         name: /Go to Trusted Circle details/i,
-      }).click();
+      })
+        .click()
+        .should("not.be.visible");
+      cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
     it("show created trusted circle load_test", () => {
-      cy.get(trustedCirclesPage.getTCNameFromActiveTab()).should("contain.text", "Trusted Circle Test #");
+      cy.get(trustedCirclesPage.getTCNameFromActiveTab())
+        .should("be.visible")
+        .should("contain.text", "Trusted Circle Test #");
+      // workaround to except error
+      cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
     xdescribe("add non-voting participant", () => {
