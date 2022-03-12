@@ -12,11 +12,24 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
+import cypress_grep from "cypress-grep/src/plugin";
+
 /**
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
-}
+  on("task", {
+    log(message) {
+      console.log(message);
+
+      return null;
+    },
+  });
+  // optional: register cypress-grep plugin code
+  // https://github.com/cypress-io/cypress-grep
+  require("cypress-grep/src/plugin")(config);
+  // make sure to return the config object
+  // as it might have been modified by the plugin
+  return config;
+};

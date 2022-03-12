@@ -1,5 +1,8 @@
 # https://circleci.com/docs/2.0/language-javascript/
-version: 2
+version: 2.1
+orbs:
+  cypress: cypress-io/cypress@1
+
 jobs:
   build:
     docker:
@@ -107,14 +110,20 @@ jobs:
             ./scripts/stop_all.sh
 
 workflows:
-  version: 2
+  #version: 2
   build_and_test:
     jobs:
-      - lint
-      - test:
+      #- lint
+      - cypress/run:
+          yarn: true
+          browser: chrome
+          post-steps:
+            - store_artifacts:
+                path: cypress/results
+      #- test:
           # https://circleci.com/docs/2.0/env-vars/
-          context: Testing-Env-Vars
-      - build:
-          requires:
-            - lint
-            - test
+      #    context: Testing-Env-Vars
+      #- build:
+      #    requires:
+      #      - lint
+      #      - test
