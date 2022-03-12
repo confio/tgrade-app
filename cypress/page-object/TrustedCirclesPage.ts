@@ -18,4 +18,12 @@ export class TrustedCirclesPage {
   getTCNameFromActiveTab(): string {
     return "h1.ant-typography";
   }
+
+  getPaginationThreeDots(): string {
+    return "ant-tabs-nav-operations";
+  }
+
+  getPaginationDropDown(): string {
+    return "ant-tabs-dropdown-open";
+  }
 }

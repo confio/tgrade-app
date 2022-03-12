@@ -18,7 +18,7 @@ describe("Trusted Circle", () => {
     cy.findByText("Web wallet (demo)").click();
     cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
-    // Workaround to except Error message
+    // workaround to wait for wallet connection
     cy.wait(4500);
 
     // Print Wallet mnemonic
@@ -30,12 +30,13 @@ describe("Trusted Circle", () => {
   });
 
   describe("create trusted circle (connect wallet first)", () => {
+    const currentTime = new Date().getTime();
     beforeEach(() => {
       // start creating TC
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();
       cy.findByPlaceholderText(/Enter Trusted Circle name/i)
-        .type(`Trusted Circle Test #${new Date().getTime()}`)
+        .type(`Trusted Circle Test #${currentTime}`)
         .should("contain.value", "Trusted Circle Test #");
 
       cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Start Trusted Circle");
@@ -57,12 +58,21 @@ describe("Trusted Circle", () => {
         .should("not.be.visible");
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
-    it("show created trusted circle load_test", () => {
+    it("show created trusted circle load_test and drop down pagination", () => {
       cy.get(trustedCirclesPage.getTCNameFromActiveTab())
         .should("be.visible")
         .should("contain.text", "Trusted Circle Test #");
-      // workaround to except error
+      // workaround
       cy.findByText("Your transaction was approved!").should("not.be.visible");
+
+      cy.findByRole("tablist").then(($btn) => {
+        if ($btn.hasClass(trustedCirclesPage.getPaginationThreeDots())) {
+          cy.get(trustedCirclesPage.getPaginationThreeDots()).click();
+          cy.get(trustedCirclesPage.getPaginationDropDown()).should("contain.text", currentTime);
+        } else {
+          cy.log("Pagination is not present");
+        }
+      });
     });
 
     xdescribe("add non-voting participant", () => {
