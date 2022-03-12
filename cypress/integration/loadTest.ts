@@ -1,9 +1,12 @@
 import { Random } from "@cosmjs/crypto";
 import { Bech32 } from "@cosmjs/encoding";
+import moment from "moment";
 
 import { TrustedCirclesPage } from "../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
+
+const currentTime = moment().unix();
 
 function makeRandomAddress(): string {
   return Bech32.encode("tgrade", Random.getBytes(20));
@@ -18,7 +21,7 @@ describe("Trusted Circle", () => {
     cy.findByText("Web wallet (demo)").click();
     cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
-    // workaround to wait for wallet connection
+    // workaround to wait for wallet connection (critical ~4000)
     cy.wait(4500);
 
     // Print Wallet mnemonic
@@ -30,15 +33,13 @@ describe("Trusted Circle", () => {
   });
 
   describe("create trusted circle (connect wallet first)", () => {
-    const currentTime = new Date().getTime();
     beforeEach(() => {
       // start creating TC
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();
       cy.findByPlaceholderText(/Enter Trusted Circle name/i)
-        .type(`Trusted Circle Test #${currentTime}`)
+        .type("Trusted Circle Test #" + currentTime)
         .should("contain.value", "Trusted Circle Test #");
-
       cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Start Trusted Circle");
       cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "1");
       cy.findByRole("button", { name: /Next/i }).click();
@@ -58,21 +59,22 @@ describe("Trusted Circle", () => {
         .should("not.be.visible");
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
-    it("show created trusted circle load_test and drop down pagination", () => {
+
+    it("show created trusted circle, open pagination drop down and verify presence of TC load_test", () => {
       cy.get(trustedCirclesPage.getTCNameFromActiveTab())
         .should("be.visible")
         .should("contain.text", "Trusted Circle Test #");
-      // workaround
-      cy.findByText("Your transaction was approved!").should("not.be.visible");
 
       cy.findByRole("tablist").then(($btn) => {
-        if ($btn.hasClass(trustedCirclesPage.getPaginationThreeDots())) {
-          cy.get(trustedCirclesPage.getPaginationThreeDots()).click();
-          cy.get(trustedCirclesPage.getPaginationDropDown()).should("contain.text", currentTime);
-        } else {
+        if ($btn.find(".ant-tabs-nav-operations-hidden").length > 0) {
           cy.log("Pagination is not present");
+        } else {
+          cy.get("button.ant-tabs-nav-more").click();
+          cy.findByRole("option").should("contain.text", currentTime);
         }
       });
+      // workaround
+      cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
     xdescribe("add non-voting participant", () => {
