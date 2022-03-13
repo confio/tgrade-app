@@ -115,7 +115,7 @@ jobs:
         environment:
           ## this enables colors in the output
           TERM: xterm
-    resource_class: large
+    resource_class: xlarge
     working_directory: ~/app
     steps:
       - checkout
