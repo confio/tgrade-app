@@ -26,4 +26,8 @@ export class TrustedCirclesPage {
   getPaginationDropDown(): string {
     return "button.ant-tabs-nav-more";
   }
+
+  getFirstTCbyOrderNumberInListBox(numberInList: number): string {
+    return `[role="listbox"] li:nth-child(${numberInList})`;
+  }
 }

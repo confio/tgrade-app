@@ -59,7 +59,8 @@ describe("Trusted Circle", () => {
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
-    it("create Trusted Circles and checks drop downs function volume_test", () => {
+    //Cypress._.times(20, () => {
+    it("show created Trusted Circle and select first TC in pagination volume_test", () => {
       cy.get(trustedCirclesPage.getTCNameFromActiveTab())
         .should("be.visible")
         .should("contain.text", "Trusted Circle Test #");
@@ -70,11 +71,13 @@ describe("Trusted Circle", () => {
         } else {
           cy.get(trustedCirclesPage.getPaginationDropDown()).click();
           cy.findByRole("listbox").should("contain.text", currentTime);
+          cy.get(trustedCirclesPage.getFirstTCbyOrderNumberInListBox(1)).click();
         }
       });
-      // workaround
+      // workaround should be removed
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
+    //});
 
     xdescribe("add non-voting participant", () => {
       before(() => {
