@@ -17,7 +17,10 @@ const comment = "Comment message" + new Date();
 const member = makeRandomAddress();
 
 describe("Engagement", () => {
-  it("Check Engagement points of an address without Grand Engagement proposal", async () => {
+  it("Check engagement of an address", async () => {
+    /**
+     * Check "Engagement points" until "Grand Engagement" proposal is not created
+     * */
     const mnemonic = generateMnemonic();
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
