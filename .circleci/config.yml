@@ -129,7 +129,7 @@ jobs:
           key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - ~/.cache
-      - run: cy:volume:tc
+      - run: yarn cy:volume:tc
       - store_artifacts:
           name: Uploading cypress/videos artifacts
           path: cypress/videos
@@ -157,7 +157,7 @@ jobs:
           key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - ~/.cache
-      - run: cy:volume:non-voting
+      - run: yarn cy:volume:non-voting
       - store_artifacts:
           name: Uploading cypress/videos artifacts
           path: cypress/videos
@@ -185,7 +185,7 @@ jobs:
           key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - ~/.cache
-      - run: cy:volume:asset
+      - run: yarn cy:volume:asset
       - store_artifacts:
           name: Uploading cypress/videos artifacts
           path: cypress/videos
