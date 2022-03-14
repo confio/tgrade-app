@@ -1,21 +1,14 @@
-import { Random } from "@cosmjs/crypto";
-import { Bech32 } from "@cosmjs/encoding";
 import moment from "moment";
 
-import { TrustedCirclesPage } from "../page-object/TrustedCirclesPage";
+import { TrustedCirclesPage } from "../../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
-
 const currentTime = moment().unix();
-
-function makeRandomAddress(): string {
-  return Bech32.encode("tgrade", Random.getBytes(20));
-}
 
 describe("Trusted Circle", () => {
   before(() => {
     cy.visit("/trustedcircle");
-    cy.get(trustedCirclesPage.getCookiesAcceptButton()).click();
+    //cy.get(trustedCirclesPage.getCookiesAcceptButton()).click();
     // connect demo wallet
     cy.findByText("Connect Wallet").click();
     cy.findByText("Web wallet (demo)").click();
@@ -32,7 +25,7 @@ describe("Trusted Circle", () => {
     });
   });
 
-  describe("create 100 trusted circle", () => {
+  describe("create trusted circle", () => {
     beforeEach(() => {
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();
@@ -78,33 +71,5 @@ describe("Trusted Circle", () => {
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
     //});
-
-    xdescribe("add non-voting participant", () => {
-      before(() => {
-        cy.findByText(/Add proposal/i).click();
-
-        // Assert
-        cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "New proposal");
-        cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "1");
-        cy.findAllByTitle(/Add non voting participants/i).should("be.visible");
-
-        cy.findByRole("button", { name: /Next/i }).click();
-
-        // Add participant(s)
-        cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Add participant(s)");
-        cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "2");
-        // Enter random address
-        const randomAddress = makeRandomAddress();
-        cy.findByPlaceholderText("Type or paste addresses here").type(randomAddress);
-
-        cy.findByRole("button", { name: /Next/i }).click();
-
-        cy.findByRole("button", { name: /Next/i }).click();
-        //cy.wait(15000);
-      });
-      it("show created proposal with non voting member", () => {
-        //TODO
-      });
-    });
   });
 });

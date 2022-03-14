@@ -21,7 +21,7 @@
     "strict": true,
     "strictNullChecks": true,
     "target": "ES2017",
-    "types": ["cypress", "node", "@testing-library/cypress"]
+    "types": ["cypress", "@testing-library/cypress"]
   },
   "include": ["src"]
 }
