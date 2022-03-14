@@ -121,6 +121,14 @@ export const NavSidebar: React.FC = () => {
             </TextCell>
           </Cell>
         </a>
+        <Link to="#" className="cky-banner-element">
+          <Cell>
+            <TextCell>
+              <Icon.Feedback />
+              <StyledText>Cookies</StyledText>
+            </TextCell>
+          </Cell>
+        </Link>
         {/* <Link to="#">
           <Cell>
             <Icon.Oversight />
