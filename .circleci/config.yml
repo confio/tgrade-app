@@ -1,8 +1,5 @@
 # https://circleci.com/docs/2.0/language-javascript/
 version: 2.1
-orbs:
-  cypress: cypress-io/cypress@1
-
 jobs:
   build:
     docker:
@@ -241,12 +238,11 @@ jobs:
             ./scripts/stop_all.sh
 
 workflows:
-  #version: 2
   build_and_test:
     jobs:
       - lint
       - cypress-create-tc
-      - cypress-non-voting
+      #- cypress-non-voting
       - cypress-create-assets
       #- test:
           # https://circleci.com/docs/2.0/env-vars/

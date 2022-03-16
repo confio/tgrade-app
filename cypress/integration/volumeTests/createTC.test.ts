@@ -8,7 +8,7 @@ const currentTime = moment().unix();
 describe("Trusted Circle", () => {
   before(() => {
     cy.visit("/trustedcircle");
-    //cy.get(trustedCirclesPage.getCookiesAcceptButton()).click();
+    cy.get(trustedCirclesPage.getCookiesAcceptButton()).click();
     // connect demo wallet
     cy.findByText("Connect Wallet").click();
     cy.findByText("Web wallet (demo)").click();
