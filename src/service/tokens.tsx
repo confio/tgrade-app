@@ -15,40 +15,89 @@ import { useError } from "./error";
 import { useSdk } from "./sdk";
 
 interface PaginationState {
-  // readonly initialLoadDone: boolean;
   readonly cw20PaginationKey?: Uint8Array | undefined;
   readonly trustedTokenPaginationKey?: Uint8Array | undefined;
 }
 
 type TokensState = {
-  readonly tokens: Map<string, TokenProps>;
+  readonly pinnedTokens: readonly string[];
   readonly pinToken: (tokenAddress: string) => void;
   readonly unpinToken: (tokenAddress: string) => void;
-  readonly loadNextTokens: () => Promise<void>;
+  readonly tokens: Map<string, TokenProps>;
+  readonly loadToken?: (tokenAddress: string) => Promise<void>;
+  readonly reloadTokens?: () => Promise<void>;
+  readonly reloadPinnedTokensOnly?: () => Promise<void>;
+  readonly canLoadNextTokens: boolean;
+  readonly loadNextTokens?: () => Promise<void>;
 };
 
-type TokensAction = {
-  readonly type: "setToken";
-  readonly payload: TokenProps;
-};
+type TokensAction =
+  | {
+      readonly type: "setPinnedTokens";
+      readonly payload: readonly string[];
+    }
+  | {
+      readonly type: "setTokens";
+      readonly payload: Map<string, TokenProps>;
+    }
+  | {
+      readonly type: "setToken";
+      readonly payload: TokenProps;
+    }
+  | {
+      readonly type: "setLoadToken";
+      readonly payload: (tokenAddress: string) => Promise<void>;
+    }
+  | {
+      readonly type: "setReloadTokens";
+      readonly payload: () => Promise<void>;
+    }
+  | {
+      readonly type: "setReloadPinnedTokensOnly";
+      readonly payload: () => Promise<void>;
+    }
+  | {
+      readonly type: "setCanLoadNextTokens";
+      readonly payload: boolean;
+    }
+  | {
+      readonly type: "setLoadNextTokens";
+      readonly payload: () => Promise<void>;
+    };
 
 type TokensDispatch = (action: TokensAction) => void;
 
 function tokensReducer(state: TokensState, action: TokensAction): TokensState {
   switch (action.type) {
+    case "setPinnedTokens": {
+      return { ...state, pinnedTokens: action.payload };
+    }
+    case "setTokens": {
+      return { ...state, tokens: action.payload };
+    }
     case "setToken": {
-      const tokens = new Map(state.tokens);
-      tokens.set(action.payload.address, action.payload);
-      return { ...state, tokens };
+      state.tokens.set(action.payload.address, action.payload);
+      return { ...state };
+    }
+    case "setLoadToken": {
+      return { ...state, loadToken: action.payload };
+    }
+    case "setReloadTokens": {
+      return { ...state, reloadTokens: action.payload };
+    }
+    case "setReloadPinnedTokensOnly": {
+      return { ...state, reloadPinnedTokensOnly: action.payload };
+    }
+    case "setCanLoadNextTokens": {
+      return { ...state, canLoadNextTokens: action.payload };
+    }
+    case "setLoadNextTokens": {
+      return { ...state, loadNextTokens: action.payload };
     }
     default: {
       throw new Error("Unhandled action type");
     }
   }
-}
-
-export function setToken(dispatch: TokensDispatch, token: TokenProps): void {
-  dispatch({ type: "setToken", payload: token });
 }
 
 export function tokensMapToArray(tokens: Map<string, TokenProps>): readonly TokenProps[] {
@@ -78,18 +127,45 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     sdkState: { config, client, address },
   } = useSdk();
 
-  const [pinnedTokens, setPinnedTokens] = usePinnedTokens();
-  const [tokens, setTokens] = useState<Map<string, TokenProps>>(new Map());
   const [paginationState, setPaginationState] = useState<PaginationState>({});
+  const [pinnedTokens, setPinnedTokens] = usePinnedTokens();
 
+  const pinToken = useCallback(
+    (tokenToPin: string) => {
+      setPinnedTokens((tokens) => (tokens.includes(tokenToPin) ? tokens : [...tokens, tokenToPin]));
+    },
+    [setPinnedTokens],
+  );
+
+  const unpinToken = useCallback(
+    (tokenToUnpin: string) => {
+      setPinnedTokens((tokens) => tokens.filter((token) => token !== tokenToUnpin));
+    },
+    [setPinnedTokens],
+  );
+
+  const [tokensState, tokensDispatch] = useReducer(tokensReducer, {
+    pinnedTokens,
+    pinToken,
+    unpinToken,
+    tokens: new Map(),
+    canLoadNextTokens: false,
+  });
+
+  // Wire localStorage's pinnedTokens to tokensState.pinnedTokens
+  useEffect(() => {
+    tokensDispatch({ type: "setPinnedTokens", payload: pinnedTokens });
+  }, [pinnedTokens]);
+
+  // Load initial tokens: feeDenom + pinnedTokens (those not already present in tokensState.tokens)
   useEffect(() => {
     (async function () {
       if (!client || !address) return;
 
-      const allTokenAddressesToInit = [config.feeToken, ...pinnedTokens];
+      const allTokenAddressesToInit = [config.feeToken, ...tokensState.pinnedTokens];
 
       // If pinnedTokens changes, let's filter them out to break an infinite useEffect loop
-      const tokenAddressesToInit = allTokenAddressesToInit.filter((token) => !tokens.has(token));
+      const tokenAddressesToInit = allTokenAddressesToInit.filter((token) => !tokensState.tokens.has(token));
       if (!tokenAddressesToInit.length) return;
 
       try {
@@ -110,78 +186,156 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
         }
 
         // Set new state
-        setTokens((tokens) => new Map([...tokens, ...tokensToInit]));
+        tokensDispatch({ type: "setTokens", payload: new Map([...tokensState.tokens, ...tokensToInit]) });
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
-  }, [address, client, config, handleError, pinnedTokens, tokens]);
+  }, [address, client, config, handleError, tokensState.pinnedTokens, tokensState.tokens]);
 
-  const pinToken = useCallback(
-    (tokenToPin: string) => {
-      setPinnedTokens((tokens) => (tokens.includes(tokenToPin) ? tokens : [...tokens, tokenToPin]));
-    },
-    [setPinnedTokens],
-  );
+  // Set up tokensState.loadToken
+  useEffect(() => {
+    async function loadToken(tokenAddress: string) {
+      if (!client || !address) return;
 
-  const unpinToken = useCallback(
-    (tokenToUnpin: string) => {
-      setPinnedTokens((tokens) => tokens.filter((token) => token !== tokenToUnpin));
-    },
-    [setPinnedTokens],
-  );
-
-  const loadNextTokens = useCallback(async () => {
-    if (!client || !address) return;
-
-    // Get next contract addresses
-
-    const cw20Response = await Contract20WS.getContracts(
-      config.codeIds?.cw20Tokens?.[0] ?? 0,
-      client,
-      paginationState.cw20PaginationKey,
-    );
-
-    const trustedTokenResponse = await Contract20WS.getContracts(
-      config.codeIds?.tgradeCw20?.[0] ?? 0,
-      client,
-      paginationState.trustedTokenPaginationKey,
-    );
-
-    const newTokenAddresses = [...cw20Response.contracts, ...trustedTokenResponse.contracts];
-
-    // Fill tokens map with TokenProps
-
-    const tokenPropsPromises = newTokenAddresses.map((tokenAddress) =>
-      Contract20WS.getTokenInfo(client, address, tokenAddress, config),
-    );
-
-    const tokenProps = (await Promise.allSettled(tokenPropsPromises))
-      .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
-      .map((result) => result.value);
-
-    const newTokens: Map<string, TokenProps> = new Map();
-
-    for (const tokenProp of tokenProps) {
-      newTokens.set(tokenProp.address, tokenProp);
+      const tokenProps = await Contract20WS.getTokenInfo(client, address, tokenAddress, config);
+      tokensDispatch({ type: "setToken", payload: tokenProps });
     }
 
-    // Set new state
+    tokensDispatch({ type: "setLoadToken", payload: loadToken });
+  }, [address, client, config]);
 
-    setTokens((tokens) => new Map([...tokens, ...newTokens]));
-    setPaginationState({
-      cw20PaginationKey: paginationState.cw20PaginationKey,
-      trustedTokenPaginationKey: paginationState.trustedTokenPaginationKey,
-    });
-  }, [address, client, config, paginationState.cw20PaginationKey, paginationState.trustedTokenPaginationKey]);
+  // Set up tokensState.reloadTokens
+  useEffect(() => {
+    async function reloadTokens() {
+      if (!client || !address) return;
 
-  const [tokensState, tokensDispatch] = useReducer(tokensReducer, {
-    tokens,
-    pinToken,
-    unpinToken,
-    loadNextTokens,
-  });
+      // Fill tokens map with TokenProps
+      const tokenAddresses = tokensMapToArray(tokensState.tokens).map((token) => token.address);
+
+      const tokenPropsPromises = tokenAddresses.map((tokenAddress) =>
+        Contract20WS.getTokenInfo(client, address, tokenAddress, config),
+      );
+
+      const tokenProps = (await Promise.allSettled(tokenPropsPromises))
+        .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+        .map((result) => result.value);
+
+      const tokens: Map<string, TokenProps> = new Map();
+
+      for (const tokenProp of tokenProps) {
+        tokens.set(tokenProp.address, tokenProp);
+      }
+
+      // Set new state
+      tokensDispatch({ type: "setTokens", payload: tokens });
+    }
+
+    tokensDispatch({ type: "setReloadTokens", payload: reloadTokens });
+  }, [address, client, config, tokensState.tokens]);
+
+  // Set up tokensState.reloadPinnedTokensOnly
+  useEffect(() => {
+    async function reloadPinnedTokensOnly() {
+      if (!client || !address) return;
+
+      // Fill tokens map with TokenProps
+
+      const tokenPropsPromises = tokensState.pinnedTokens.map((tokenAddress) =>
+        Contract20WS.getTokenInfo(client, address, tokenAddress, config),
+      );
+
+      const tokenProps = (await Promise.allSettled(tokenPropsPromises))
+        .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+        .map((result) => result.value);
+
+      const pinnedTokensMap: Map<string, TokenProps> = new Map();
+
+      for (const tokenProp of tokenProps) {
+        pinnedTokensMap.set(tokenProp.address, tokenProp);
+      }
+
+      // Set new state
+      tokensDispatch({ type: "setTokens", payload: new Map([...tokensState.tokens, ...pinnedTokensMap]) });
+    }
+
+    tokensDispatch({ type: "setReloadPinnedTokensOnly", payload: reloadPinnedTokensOnly });
+  }, [address, client, config, tokensState.pinnedTokens, tokensState.tokens]);
+
+  // Set up tokensState.canLoadNextTokens
+  useEffect(() => {
+    const isLoadNextTokensReady = !!tokensState.loadNextTokens;
+    const hasSomePaginationKey =
+      (paginationState.cw20PaginationKey && paginationState.cw20PaginationKey.length) ||
+      (paginationState.trustedTokenPaginationKey && paginationState.trustedTokenPaginationKey.length);
+
+    if (isLoadNextTokensReady && hasSomePaginationKey) {
+      tokensDispatch({ type: "setCanLoadNextTokens", payload: true });
+    } else {
+      tokensDispatch({ type: "setCanLoadNextTokens", payload: false });
+    }
+  }, [
+    paginationState.cw20PaginationKey,
+    paginationState.trustedTokenPaginationKey,
+    tokensState.loadNextTokens,
+  ]);
+
+  // Set up tokensState.loadNextTokens
+  useEffect(() => {
+    async function loadNextTokens() {
+      if (!client || !address) return;
+
+      // Get next contract addresses
+
+      const cw20Response = await Contract20WS.getContracts(
+        config.codeIds?.cw20Tokens?.[0] ?? 0,
+        client,
+        paginationState.cw20PaginationKey,
+      );
+
+      const trustedTokenResponse = await Contract20WS.getContracts(
+        config.codeIds?.tgradeCw20?.[0] ?? 0,
+        client,
+        paginationState.trustedTokenPaginationKey,
+      );
+
+      const newTokenAddresses = [...cw20Response.contracts, ...trustedTokenResponse.contracts];
+
+      // Fill tokens map with TokenProps
+
+      const tokenPropsPromises = newTokenAddresses.map((tokenAddress) =>
+        Contract20WS.getTokenInfo(client, address, tokenAddress, config),
+      );
+
+      const tokenProps = (await Promise.allSettled(tokenPropsPromises))
+        .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+        .map((result) => result.value);
+
+      const newTokens: Map<string, TokenProps> = new Map();
+
+      for (const tokenProp of tokenProps) {
+        newTokens.set(tokenProp.address, tokenProp);
+      }
+
+      // Set new state
+
+      tokensDispatch({ type: "setTokens", payload: new Map([...tokensState.tokens, ...newTokens]) });
+      setPaginationState({
+        cw20PaginationKey: cw20Response.pagination?.nextKey,
+        trustedTokenPaginationKey: trustedTokenResponse.pagination?.nextKey,
+      });
+    }
+
+    tokensDispatch({ type: "setLoadNextTokens", payload: loadNextTokens });
+  }, [
+    address,
+    client,
+    config,
+    paginationState.cw20PaginationKey,
+    paginationState.trustedTokenPaginationKey,
+    tokensState.tokens,
+  ]);
 
   return <TokensContext.Provider value={{ tokensState, tokensDispatch }}>{children}</TokensContext.Provider>;
 }
