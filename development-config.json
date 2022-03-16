@@ -1,0 +1,15 @@
+{
+  "baseUrl": "https://dapp.tgrade.finance/",
+  "defaultCommandTimeout": 60000,
+  "viewportWidth": 1920,
+  "viewportHeight": 1080,
+  "watchForFileChanges": false,
+  "video": true,
+  "screenshotOnRunFailure": true,
+  "retries": {
+    "runMode": 0
+  },
+  "env": {
+    "grep": "volume_test"
+  }
+}
