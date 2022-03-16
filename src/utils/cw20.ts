@@ -63,16 +63,6 @@ export interface DownloadLogoResponse {
   readonly data: string;
 }
 
-// Types for temporary getContract pagination from cosmjs-types
-interface PageResponse {
-  nextKey: Uint8Array;
-  total: Long;
-}
-interface QueryContractsByCodeResponse {
-  contracts: string[];
-  pagination?: PageResponse;
-}
-
 export class Contract20WS {
   readonly #signingClient: SigningCosmWasmClient;
 
@@ -185,35 +175,6 @@ export class Contract20WS {
     }
   }
 
-  // Workaround for exceeding CosmJS client.getContracts() limit of 100 contracts
-  static async getContracts(
-    codeId: number,
-    client: CosmWasmClient,
-    paginationKey?: Uint8Array | undefined,
-  ): Promise<QueryContractsByCodeResponse> {
-    const contractsResponse: QueryContractsByCodeResponse = await (client as any)
-      .forceGetQueryClient()
-      .wasm.listContractsByCodeId(codeId, paginationKey);
-    return contractsResponse;
-  }
-
-  static async getAllContracts(codeId: number, client: CosmWasmClient): Promise<readonly string[]> {
-    let allContracts: readonly string[] = [];
-    let paginationKey: Uint8Array | undefined = undefined;
-
-    do {
-      const { contracts, pagination }: QueryContractsByCodeResponse = await this.getContracts(
-        codeId,
-        client,
-        paginationKey,
-      );
-      allContracts = [...allContracts, ...contracts];
-      paginationKey = pagination?.nextKey;
-    } while (paginationKey?.length);
-
-    return allContracts;
-  }
-
   static async getAll(
     config: NetworkConfig,
     client: CosmWasmClient,
@@ -227,10 +188,10 @@ export class Contract20WS {
 
     // Get cw20 and tgrade token addresses
     const cw20TokensAddressesPromise = config.codeIds?.cw20Tokens?.length
-      ? this.getAllContracts(config.codeIds.cw20Tokens[0], client)
+      ? client.getContracts(config.codeIds.cw20Tokens[0])
       : Promise.resolve([]);
     const tgradeCw20AddressesPromise = config.codeIds?.tgradeCw20?.length
-      ? this.getAllContracts(config.codeIds.tgradeCw20[0], client)
+      ? client.getContracts(config.codeIds.tgradeCw20[0])
       : Promise.resolve([]);
     const tokenAddresses = (
       await Promise.all([cw20TokensAddressesPromise, tgradeCw20AddressesPromise])
