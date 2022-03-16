@@ -98,7 +98,7 @@
     "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh && prettier --write --loglevel warn \"./src/codec/**/*.ts\"",
     "cy:open": "npx cypress open",
     "cy:run": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome",
-    "cy:volume:tc": "npx cypress run --browser chrome --env burn=100 --spec --config baseUrl=https://dapp.tgrade.finance/ 'cypress/integration/volumeTests/createTC.test.ts'",
+    "cy:volume:tc": "npx cypress run --browser chrome --env burn=100 --spec --config baseUrl=https://dapp.tgrade.finance/ --spec 'cypress/integration/volumeTests/createTC.test.ts'",
     "cy:volume:non-voting": "npx cypress run --browser chrome --env burn=100 --config baseUrl=https://dapp.tgrade.finance/ --spec 'cypress/integration/volumeTests/addNonVotingMemeber.test.ts'",
     "cy:volume:asset": "npx cypress run --browser chrome --env burn=100 --config baseUrl=http://localhost:3000/ --spec 'cypress/integration/volumeTests/addAsset.test.ts'"
   },
