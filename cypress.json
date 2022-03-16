@@ -1,6 +1,5 @@
 {
   "defaultCommandTimeout": 60000,
-  "baseUrl": "https://dev.tgrade.finance/",
   "viewportWidth": 1920,
   "viewportHeight": 1080,
   "watchForFileChanges": false,

@@ -166,32 +166,79 @@ jobs:
           path: cypress/screenshots
 
   cypress-create-assets:
-    docker:
-      - image: circleci/node:latest-browsers
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    resource_class: xlarge
-    working_directory: ~/app
+    machine:
+      # We can't use a containerized environment since it requires remote docker to start custom containers.
+      # However, we can't access the remote docker's network from the primary container. This is a
+      # feature, as documented in https://circleci.com/docs/2.0/building-docker-images/#separation-of-environments
+      # As a consequence, we cannot use the circleci CLI for this job because "You cannot use the machine
+      # executor in local jobs." (https://circleci.com/docs/2.0/local-cli/#limitations-of-running-jobs-locally)
+      #
+      # Available images: https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
+      image: ubuntu-2004:202111-02
     steps:
       - checkout
+      - run:
+          name: Upgrade max watchable files to avoid ENOSPC
+          command: sudo sysctl -w fs.inotify.max_user_watches=524288
+
+      - run: # start early for less wait time below
+          name: Start tgrade and faucet
+          command: |
+            ./scripts/start_all_ci.sh
+          background: true
+      - run:
+          # The images comes with preinstalled nvm, which does not work well with non-login shells
+          name: Uninstall nvm
+          # Moving to trash is faster than deleting (gvfs-trash is not installed on this image)
+          command: |
+            nvm --version && nvm ls
+            mkdir -p ~/.local/share/Trash && mv "$NVM_DIR" ~/.npm ~/.local/share/Trash
+      - run:
+          name: Install nodejs
+          # In the current image, `sudo apt install nodejs` requires `sudo apt update` which is too slow
+          command: |
+            wget -O "$HOME/nodejs.deb" https://deb.nodesource.com/node_14.x/pool/main/n/nodejs/nodejs_14.18.0-deb-1nodesource1_amd64.deb
+            sudo dpkg -i "$HOME/nodejs.deb"
+      - run:
+          name: Install yarn
+          # without `sudo apt update` which is too slow
+          command: |
+            wget -O "$HOME/yarn.deb" https://dl.yarnpkg.com/debian/pool/main/y/yarn/yarn_1.22.15_all.deb
+            sudo dpkg -i "$HOME/yarn.deb"
+      - run:
+          name: Version information
+          command: echo "node $(node --version)"; echo "yarn $(yarn --version)"
       - restore_cache:
+          name: Restore Yarn Package Cache
           keys:
-            - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-            - v1-deps-{{ .Branch }}
-            - v1-deps
+            - v2-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn install --frozen-lockfile
+      - run: yarn cypress install
       - save_cache:
-          key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
+          name: Save Yarn Package Cache
+          key: v2-dependencies-{{ checksum "yarn.lock" }}
           paths:
-            - ~/.cache
-      - run: yarn cy:volume:asset
+            - ~/.cache/yarn
+            - node_modules
+      - run:
+          name: Wait for chains to start up
+          command: |
+            timeout 60 bash -c "until curl -s http://localhost:8000/status > /dev/null; do sleep 0.5; done"
+      - run:
+          name: Deploy contracts
+          command: |
+            cd ./scripts/tgrade/
+            ./init.sh
+      - run:
+          command: yarn cy:run
       - store_artifacts:
-          name: Uploading cypress/videos artifacts
           path: cypress/videos
       - store_artifacts:
-          name: Uploading cypress/screenshots artifacts
           path: cypress/screenshots
+      - run:
+          name: Stop chains
+          command: |
+            ./scripts/stop_all.sh
 
 workflows:
   #version: 2

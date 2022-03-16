@@ -3114,6 +3114,11 @@
   resolved "https://registry.npmjs.org/@types/q/-/q-1.5.5.tgz"
   integrity sha512-L28j2FcJfSZOnL1WBjDYp2vUHCeIFlyYI/53EwD/rKUBQ7MtUUfbQWiyKJGpcnv4/WgrhWsFKrcPstcAt/J0tQ==
 
+"@types/randomstring@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.npmjs.org/@types/randomstring/-/randomstring-1.1.8.tgz"
+  integrity sha512-NPOJcW+TTjT9Qiog0UjSoG3Sj24c7EfzZO39BU9E61D7fQtwNmBNblyQhSsK9+5s9Fm0o31rvX+ZyZkpE/c7jA==
+
 "@types/react-burger-menu@^2.8.2":
   version "2.8.2"
   resolved "https://registry.npmjs.org/@types/react-burger-menu/-/react-burger-menu-2.8.2.tgz"
@@ -3992,6 +3997,11 @@ array-union@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz"
   integrity sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==
+
+array-uniq@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/array-uniq/-/array-uniq-1.0.2.tgz"
+  integrity sha1-X8w3OSB3VyPP1k1lxkvvU7+eum0=
 
 array-uniq@^1.0.1:
   version "1.0.3"
@@ -6250,7 +6260,7 @@ cyclist@^1.0.1:
 
 cypress-grep@^2.13.1:
   version "2.13.1"
-  resolved "https://registry.yarnpkg.com/cypress-grep/-/cypress-grep-2.13.1.tgz#f9c17ba05884d61a3a1a63d4f9a66f111668abba"
+  resolved "https://registry.npmjs.org/cypress-grep/-/cypress-grep-2.13.1.tgz"
   integrity sha512-NMKqc0+Jd3AosNH2OVFN+iChC+/HnzWFukp9Bqk9hGP9TIYBHDw/chglg3jR3Gu/r05sfPzNzqzluNUVWti1QA==
   dependencies:
     debug "4.3.1"
@@ -6259,7 +6269,7 @@ cypress-grep@^2.13.1:
 
 cypress-repeat@^2.3.1:
   version "2.3.1"
-  resolved "https://registry.yarnpkg.com/cypress-repeat/-/cypress-repeat-2.3.1.tgz#b8e9f2b5d97f6520a85ed4f7ea8512b231dcc1dd"
+  resolved "https://registry.npmjs.org/cypress-repeat/-/cypress-repeat-2.3.1.tgz"
   integrity sha512-HXky4xB4+aI4uf1F7lVyTKRAZJQJYdHU3uM0QOtHr3Q+MlxPB152MHPHv3mmhLCRw2Hkj5r59czVJspLapxxYw==
   dependencies:
     arg "5.0.1"
@@ -6269,7 +6279,7 @@ cypress-repeat@^2.3.1:
 
 cypress@9.5.1:
   version "9.5.1"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-9.5.1.tgz#51162f3688cedf5ffce311b914ef49a7c1ece076"
+  resolved "https://registry.npmjs.org/cypress/-/cypress-9.5.1.tgz"
   integrity sha512-H7lUWB3Svr44gz1rNnj941xmdsCljXoJa2cDneAltjI9leKLMQLm30x6jLlpQ730tiVtIbW5HdUmBzPzwzfUQg==
   dependencies:
     "@cypress/request" "^2.88.10"
@@ -13897,6 +13907,11 @@ raf@^3.4.1:
   dependencies:
     performance-now "^2.1.0"
 
+randombytes@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npmjs.org/randombytes/-/randombytes-2.0.3.tgz"
+  integrity sha1-Z0yZdgkBw8QRJ3GjHlIdw0nMCew=
+
 randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5, randombytes@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/randombytes/-/randombytes-2.1.0.tgz"
@@ -13911,6 +13926,14 @@ randomfill@^1.0.3:
   dependencies:
     randombytes "^2.0.5"
     safe-buffer "^5.1.0"
+
+randomstring@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npmjs.org/randomstring/-/randomstring-1.2.2.tgz"
+  integrity sha512-9FByiB8guWZLbE+akdQiWE3I1I6w7Vn5El4o4y7o5bWQ6DWPcEOp+aLG7Jezc8BVRKKpgJd2ppRX0jnKu1YCfg==
+  dependencies:
+    array-uniq "1.0.2"
+    randombytes "2.0.3"
 
 range-parser@^1.2.1, range-parser@~1.2.1:
   version "1.2.1"

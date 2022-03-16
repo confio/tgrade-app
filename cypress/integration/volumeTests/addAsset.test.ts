@@ -1,9 +1,16 @@
-import moment from "moment";
+import randomstring from "randomstring";
 
 import { TrustedCirclesPage } from "../../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
-const currentTime = moment().unix();
+const tokenSymbol = randomstring.generate({
+  length: 3,
+  charset: "alphabetic",
+});
+const tokenName = randomstring.generate({
+  length: 7,
+  charset: "alphabetic",
+});
 
 describe("T-Market", () => {
   before(() => {
@@ -16,16 +23,16 @@ describe("T-Market", () => {
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
     // workaround to wait for wallet connection (critical ~4000)
     cy.wait(4500);
+    // Go to T-Market
+    cy.visit("/tmarket/exchange");
   });
 
   describe("create Asset", () => {
     beforeEach(() => {
-      // Go to T-Market
-      cy.visit("/tmarket/exchange");
       // click on Create Asset button
       cy.findByRole("button", { name: /Create Asset/i }).click();
-      cy.findByPlaceholderText("Enter token symbol").type("BNB");
-      cy.findByPlaceholderText("Enter token name").type("Binance Coin");
+      cy.findByPlaceholderText("Enter token symbol").type(tokenSymbol);
+      cy.findByPlaceholderText("Enter token name").type(tokenName);
       // TODO enter logo URL
       cy.findByPlaceholderText("Enter initial supply").type("1000");
       cy.findByPlaceholderText("Enter decimals").type("4");
@@ -40,12 +47,18 @@ describe("T-Market", () => {
       }).click();
       cy.findByText("Your transaction was approved!").should("not.be.visible");
       // Click on drop down select a token
-      cy.get("form > div:nth-child(1) button .sc-avest.ehypyc").click();
+      cy.get('form > div:nth-child(1) button [alt="Down arrow select token"]').should("be.visible").click();
+    });
+
+    afterEach(() => {
+      cy.get('[alt="Close button"]').click();
     });
 
     //Cypress._.times(20, () => {
     it("show created Asset volume_test", () => {
       // TODO
+      //cy.get("ul.ant-list-items").findByText(tokenSymbol).should("be.visible");
+      //cy.get("ul.ant-list-items").findByText(tokenName).should("be.visible");
     });
     //});
   });
