@@ -230,7 +230,7 @@ jobs:
             cd ./scripts/tgrade/
             ./init.sh
       - run:
-          command: yarn cy:run
+          command: yarn cy:volume:asset
       - store_artifacts:
           path: cypress/videos
       - store_artifacts:
