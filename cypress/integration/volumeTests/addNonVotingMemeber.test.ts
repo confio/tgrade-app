@@ -59,7 +59,7 @@ describe("Trusted Circle", () => {
       .should("contain.text", "Trusted Circle Test #");
   });
 
-  describe("add 100 non voting members", () => {
+  describe("add non voting members", () => {
     before(() => {
       cy.findByText(/Add proposal/i).click();
 
@@ -79,10 +79,9 @@ describe("Trusted Circle", () => {
       cy.findByRole("button", { name: /Next/i }).click();
     });
 
-    //Cypress._.times(20, () => {
-    it("show created proposal with non voting member volume_test", () => {
+    it("show created proposal with non voting member", () => {
       //TODO
+      // blocked by https://github.com/confio/tgrade-app/issues/477
     });
-    //});
   });
 });
