@@ -51,7 +51,7 @@ describe("T-Market", () => {
       cy.get(tMarketPage.getDropDownSelectTokenFromButton()).should("be.visible").click();
     });
 
-    it("Show created Asset", () => {
+    it("Show created Asset volume_test", () => {
       let index = 1;
       const dynamicTokenName = tokenName + "+" + ++index;
       cy.get(tMarketPage.getListOfCreatedTokens()).findByText(dynamicTokenName).should("be.visible");

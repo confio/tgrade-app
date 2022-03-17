@@ -8,5 +8,8 @@
   "screenshotOnRunFailure": true,
   "retries": {
     "runMode": 0
+  },
+  "env": {
+    "grep": "volume_test"
   }
 }

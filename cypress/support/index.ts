@@ -15,3 +15,6 @@
 
 // Import commands.ts using ES2015 syntax:
 import "./commands";
+
+const registerCypressGrep = require("cypress-grep");
+registerCypressGrep();
