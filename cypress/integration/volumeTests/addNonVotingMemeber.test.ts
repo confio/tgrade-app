@@ -37,13 +37,13 @@ describe("Trusted Circle", () => {
       .type("Trusted Circle Test #" + currentTime)
       .should("contain.value", "Trusted Circle Test #");
     cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Start Trusted Circle");
-    cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "1");
+    cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
     cy.findByRole("button", { name: /Next/i }).click();
 
-    cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "2");
+    cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
     cy.findByRole("button", { name: /Next/i }).click();
 
-    cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "3");
+    cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
     cy.findByRole("button", {
       name: /Sign transaction and pay escrow/i,
     }).click();
@@ -65,14 +65,14 @@ describe("Trusted Circle", () => {
 
       // Assert
       cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "New proposal");
-      cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "1");
+      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
       cy.findAllByTitle(/Add non voting participants/i).should("be.visible");
 
       cy.findByRole("button", { name: /Next/i }).click();
 
       // Add participant(s)
       cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Add participant(s)");
-      cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "2");
+      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
       // Enter random address
       const randomAddress = makeRandomAddress();
       cy.findByPlaceholderText("Type or paste addresses here").type(randomAddress);

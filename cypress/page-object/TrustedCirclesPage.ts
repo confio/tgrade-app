@@ -11,7 +11,7 @@ export class TrustedCirclesPage {
     return ".ant-modal-content header h1";
   }
 
-  getDialogStepNumber(): string {
+  getDialogStepActiveNumber(): string {
     return ".ant-steps-item-active .ant-steps-item-icon span";
   }
 

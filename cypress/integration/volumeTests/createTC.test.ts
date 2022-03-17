@@ -33,13 +33,13 @@ describe("Trusted Circle", () => {
         .type("Trusted Circle Test #" + currentTime)
         .should("contain.value", "Trusted Circle Test #");
       cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Start Trusted Circle");
-      cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "1");
+      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
       cy.findByRole("button", { name: /Next/i }).click();
 
-      cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "2");
+      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
       cy.findByRole("button", { name: /Next/i }).click();
 
-      cy.get(trustedCirclesPage.getDialogStepNumber()).should("have.text", "3");
+      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
       cy.findByRole("button", {
         name: /Sign transaction and pay escrow/i,
       }).click();
