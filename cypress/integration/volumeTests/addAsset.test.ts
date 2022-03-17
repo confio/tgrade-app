@@ -25,7 +25,7 @@ describe("T-Market", () => {
     beforeEach(() => {
       cy.findByRole("button", { name: /Create Asset/i }).click();
 
-      cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Create digital asset");
+      cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "Create digital asset");
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
       cy.findByPlaceholderText("Enter token symbol").type(tokenSymbol);
       cy.findByPlaceholderText("Enter token name").type(tokenName + "+" + ++index);
@@ -39,7 +39,7 @@ describe("T-Market", () => {
 
       cy.findByRole("button", { name: /Next/i }).click();
 
-      cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Create digital asset");
+      cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "Create digital asset");
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
       cy.get(tMarketPage.getModalDialogContent())
         .findByRole("button", { name: /Create asset/i })
