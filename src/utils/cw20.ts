@@ -63,6 +63,15 @@ export interface DownloadLogoResponse {
   readonly data: string;
 }
 
+interface PageResponse {
+  nextKey: Uint8Array;
+  total: Long;
+}
+interface QueryContractsByCodeResponse {
+  contracts: string[];
+  pagination?: PageResponse;
+}
+
 export class Contract20WS {
   readonly #signingClient: SigningCosmWasmClient;
 
@@ -173,6 +182,17 @@ export class Contract20WS {
       };
       return result;
     }
+  }
+
+  static async getContracts(
+    codeId: number,
+    client: CosmWasmClient,
+    paginationKey?: Uint8Array | undefined,
+  ): Promise<QueryContractsByCodeResponse> {
+    const contractsResponse: QueryContractsByCodeResponse = await (client as any)
+      .forceGetQueryClient()
+      .wasm.listContractsByCodeId(codeId, paginationKey);
+    return contractsResponse;
   }
 
   static async getAll(
