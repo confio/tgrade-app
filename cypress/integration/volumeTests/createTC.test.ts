@@ -52,7 +52,6 @@ describe("Trusted Circle", () => {
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
-    //Cypress._.times(20, () => {
     it("show created Trusted Circle and select first TC in pagination volume_test", () => {
       cy.get(trustedCirclesPage.getTCNameFromActiveTab())
         .should("be.visible")
@@ -70,6 +69,5 @@ describe("Trusted Circle", () => {
       // workaround should be removed
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
-    //});
   });
 });
