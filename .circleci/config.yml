@@ -208,12 +208,12 @@ jobs:
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
-            - v2-dependencies-{{ checksum "yarn.lock" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn install --frozen-lockfile
       - run: yarn cypress install
       - save_cache:
           name: Save Yarn Package Cache
-          key: v2-dependencies-{{ checksum "yarn.lock" }}
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - node_modules
