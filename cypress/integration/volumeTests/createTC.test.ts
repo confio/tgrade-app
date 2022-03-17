@@ -15,7 +15,7 @@ describe("Trusted Circle", () => {
     cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
     // workaround to wait for wallet connection (critical ~4000)
-    cy.wait(4500);
+    cy.wait(5500);
 
     // Print Wallet mnemonic
     cy.window().its("localStorage").invoke("getItem", "burner-wallet").as("burner-wallet");
