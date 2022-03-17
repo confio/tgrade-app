@@ -51,10 +51,12 @@ describe("T-Market", () => {
       cy.get(tMarketPage.getDropDownSelectTokenFromButton()).should("be.visible").click();
     });
 
+    Cypress._.times(100, () => {
     it("Show created Asset volume_test", () => {
       let index = 1;
       const dynamicTokenName = tokenName + "+" + ++index;
       cy.get(tMarketPage.getListOfCreatedTokens()).findByText(dynamicTokenName).should("be.visible");
+    });
     });
 
     afterEach(() => {

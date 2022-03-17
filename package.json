@@ -68,8 +68,6 @@
     "@testing-library/cypress": "^8.0.2",
     "axios": "^0.24.0",
     "cypress": "9.5.1",
-    "cypress-grep": "^2.13.1",
-    "cypress-repeat": "^2.3.1",
     "firebase-tools": "^9.21.0",
     "ts-proto": "^1.85.0",
     "wait-on": "^6.0.1"
@@ -97,9 +95,9 @@
     "cy:open:dev": "cypress open --config-file development-config.json",
     "cy:open:prod": "cypress open --config-file production-config.json",
     "cy:run": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome",
-    "cy:volume:tc": "npx cypress run --browser chrome --env burn=100 --config-file production-config.json --spec 'cypress/integration/volumeTests/createTC.test.ts'",
-    "cy:volume:non-voting": "npx cypress run --browser chrome --env burn=2 --config-file production-config.json --spec 'cypress/integration/volumeTests/addNonVotingMemeber.test.ts'",
-    "cy:volume:asset": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome --env burn=100 --config-file development-config.json --spec 'cypress/integration/volumeTests/addAsset.test.ts'"
+    "cy:volume:tc": "npx cypress run --browser chrome --config-file production-config.json --spec 'cypress/integration/volumeTests/createTC.test.ts'",
+    "cy:volume:non-voting": "npx cypress run --browser chrome --config-file production-config.json --spec 'cypress/integration/volumeTests/addNonVotingMemeber.test.ts'",
+    "cy:volume:asset": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome --config-file development-config.json --spec 'cypress/integration/volumeTests/addAsset.test.ts'"
   },
   "browserslist": [
     "last 2 chrome versions",

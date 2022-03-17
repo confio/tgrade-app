@@ -1,6 +1,6 @@
 import moment from "moment";
 
-import { TrustedCirclesPage } from "../../page-object/TrustedCirclesPage";
+import {TrustedCirclesPage} from "../../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
 const currentTime = moment().unix();
@@ -16,13 +16,6 @@ describe("Trusted Circle", () => {
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
     // workaround to wait for wallet connection (critical ~4000)
     cy.wait(5500);
-
-    // Print Wallet mnemonic
-    cy.window().its("localStorage").invoke("getItem", "burner-wallet").as("burner-wallet");
-    cy.get("@burner-wallet").then((users) => {
-      cy.log(`WALLET_MNEMONIC ${users}`);
-      cy.task("log", `WALLET_MNEMONIC: +++++ ${users} +++++`);
-    });
   });
 
   describe("create trusted circle", () => {
@@ -34,10 +27,10 @@ describe("Trusted Circle", () => {
         .should("contain.value", "Trusted Circle Test #");
       cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Start Trusted Circle");
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
-      cy.findByRole("button", { name: /Next/i }).click();
+      cy.findByRole("button", {name: /Next/i}).click();
 
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
-      cy.findByRole("button", { name: /Next/i }).click();
+      cy.findByRole("button", {name: /Next/i}).click();
 
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
       cy.findByRole("button", {
@@ -52,22 +45,24 @@ describe("Trusted Circle", () => {
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
-    it("show created Trusted Circle and select first TC in pagination volume_test", () => {
-      cy.get(trustedCirclesPage.getTCNameFromActiveTab())
-        .should("be.visible")
-        .should("contain.text", "Trusted Circle Test #");
+    Cypress._.times(100, () => {
+      it("show created Trusted Circle and select first TC in pagination volume_test", () => {
+        cy.get(trustedCirclesPage.getTCNameFromActiveTab())
+          .should("be.visible")
+          .should("contain.text", "Trusted Circle Test #");
 
-      cy.findByRole("tablist").then(($btn) => {
-        if ($btn.find(trustedCirclesPage.getHiddenPaginationThreeDots()).length > 0) {
-          cy.log("Pagination is not present");
-        } else {
-          cy.get(trustedCirclesPage.getPaginationDropDown()).click();
-          cy.findByRole("listbox").should("contain.text", currentTime);
-          cy.get(trustedCirclesPage.getFirstTCbyOrderNumberInListBox(1)).click();
-        }
+        cy.findByRole("tablist").then(($btn) => {
+          if ($btn.find(trustedCirclesPage.getHiddenPaginationThreeDots()).length > 0) {
+            cy.log("Pagination is not present");
+          } else {
+            cy.get(trustedCirclesPage.getPaginationDropDown()).click();
+            cy.findByRole("listbox").should("contain.text", currentTime);
+            cy.get(trustedCirclesPage.getFirstTCbyOrderNumberInListBox(1)).click();
+          }
+        });
+        // workaround should be removed
+        cy.findByText("Your transaction was approved!").should("not.be.visible");
       });
-      // workaround should be removed
-      cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
   });
 });
