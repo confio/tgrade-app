@@ -8,8 +8,7 @@ import { PoEContractType } from "../../../codec/confio/poe/v1beta1/poe";
 import { OcContract } from "../../../utils/oversightCommunity";
 import { EngagementContract, EngagementContractQuerier } from "../../../utils/poeEngagement";
 
-//const mnemonic_01 = process.env.SECRET_MNEMONIC || "";
-const mnemonic_01 = "bone idea foster kid item private figure victory power reflect wrong bunker";
+const mnemonic_01 = process.env.SECRET_MNEMONIC || "";
 const comment = "Comment message" + new Date();
 
 describe("Engagement", () => {
