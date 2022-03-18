@@ -1,6 +1,6 @@
 import moment from "moment";
 
-import {TrustedCirclesPage} from "../../page-object/TrustedCirclesPage";
+import { TrustedCirclesPage } from "../../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
 const currentTime = moment().unix();
@@ -27,10 +27,10 @@ describe("Trusted Circle", () => {
         .should("contain.value", "Trusted Circle Test #");
       cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Start Trusted Circle");
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
-      cy.findByRole("button", {name: /Next/i}).click();
+      cy.findByRole("button", { name: /Next/i }).click();
 
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
-      cy.findByRole("button", {name: /Next/i}).click();
+      cy.findByRole("button", { name: /Next/i }).click();
 
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
       cy.findByRole("button", {
@@ -45,8 +45,8 @@ describe("Trusted Circle", () => {
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
-    Cypress._.times(100, () => {
-      it("show created Trusted Circle and select first TC in pagination volume_test", () => {
+    Cypress._.times(100, (k) => {
+      it(`Show created Trusted Circle and select first TC in pagination ${k + 1} / 100`, () => {
         cy.get(trustedCirclesPage.getTCNameFromActiveTab())
           .should("be.visible")
           .should("contain.text", "Trusted Circle Test #");

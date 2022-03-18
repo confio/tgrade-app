@@ -79,7 +79,7 @@ describe("Trusted Circle", () => {
       cy.findByRole("button", { name: /Next/i }).click();
     });
 
-    it("Show created proposal with non voting member volume_test", () => {
+    it("Show created proposal with non voting member", () => {
       //TODO
       // blocked by https://github.com/confio/tgrade-app/issues/477
     });
