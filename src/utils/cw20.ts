@@ -221,7 +221,6 @@ export class Contract20WS {
     const tokensInfos: TokenProps[] = [];
 
     while (tokensInfos.length < tokenAddresses.length) {
-      console.log({ tokensInfoslength: tokensInfos.length });
       const nextTokensInfos = await Promise.all(
         tokenAddresses
           .slice(tokensInfos.length, 300 + tokensInfos.length)
