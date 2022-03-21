@@ -83,7 +83,7 @@ describe("Engagement", () => {
     await egContract.withdrawRewards(userWallet);
 
     // After Withdraw Rewards step
-    /* const engagementPointsAfter = await egContract.getEngagementPoints(userWallet);
+    const engagementPointsAfter = await egContract.getEngagementPoints(userWallet);
     expect(engagementPointsAfter).toBe(engagementPointsBefore);
 
     const withdrawableRewardsAfter = await egContract.getWithdrawableRewards(userWallet);
@@ -92,7 +92,7 @@ describe("Engagement", () => {
     const walletBalanceAfterWithdraw = await signingClient.getBalance(userWallet, config.feeToken);
     expect(parseInt(walletBalanceAfterWithdraw.amount)).toBeGreaterThan(
       parseInt(walletBalanceBeforeWithdraw.amount),
-    );*/
+    );
   }, 25000);
 
   it("Claim my own rewards and send them to another address", async () => {
