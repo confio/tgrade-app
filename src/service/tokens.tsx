@@ -218,12 +218,17 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     async function loadToken(tokenAddress: string) {
       if (!client || !address) return;
 
-      const tokenProps = await Contract20WS.getTokenInfo(client, address, tokenAddress, config);
-      tokensDispatch({ type: "setToken", payload: tokenProps });
+      try {
+        const tokenProps = await Contract20WS.getTokenInfo(client, address, tokenAddress, config);
+        tokensDispatch({ type: "setToken", payload: tokenProps });
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      }
     }
 
     tokensDispatch({ type: "setLoadToken", payload: loadToken });
-  }, [address, client, config]);
+  }, [address, client, config, handleError]);
 
   // Set up tokensState.reloadTokens
   useEffect(() => {
