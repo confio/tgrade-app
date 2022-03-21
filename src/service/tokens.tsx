@@ -196,6 +196,13 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
           tokensToInit.set(tokenProp.address, tokenProp);
         }
 
+        // Remove failed responses from pinnedTokens (when token address did not find token_info)
+        for (const pinnedToken of tokensState.pinnedTokens) {
+          if (!tokensToInit.has(pinnedToken)) {
+            unpinToken(pinnedToken);
+          }
+        }
+
         // Set new state
         tokensDispatch({ type: "setTokens", payload: new Map([...tokensState.tokens, ...tokensToInit]) });
       } catch (error) {
@@ -203,7 +210,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
         handleError(error);
       }
     })();
-  }, [address, client, config, handleError, tokensState.pinnedTokens, tokensState.tokens]);
+  }, [address, client, config, handleError, tokensState.pinnedTokens, tokensState.tokens, unpinToken]);
 
   // Set up tokensState.loadToken
   useEffect(() => {
