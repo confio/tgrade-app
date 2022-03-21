@@ -130,6 +130,16 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
   const [paginationState, setPaginationState] = useState<PaginationState>({});
   const [pinnedTokens, setPinnedTokens] = usePinnedTokens();
 
+  // Inserts feeToken (utgd) and removes duplicates
+  const cleanPinnedTokens = useCallback(
+    (tokens: readonly string[]) => {
+      const withFeeToken = [config.feeToken, ...tokens];
+      const withoutDuplicates = [...new Set(withFeeToken)];
+      return withoutDuplicates;
+    },
+    [config.feeToken],
+  );
+
   const pinToken = useCallback(
     (tokenToPin: string) => {
       setPinnedTokens((tokens) => (tokens.includes(tokenToPin) ? tokens : [...tokens, tokenToPin]));
@@ -145,7 +155,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
   );
 
   const [tokensState, tokensDispatch] = useReducer(tokensReducer, {
-    pinnedTokens,
+    pinnedTokens: cleanPinnedTokens(pinnedTokens),
     pinToken,
     unpinToken,
     tokens: new Map(),
@@ -154,18 +164,19 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
   // Wire localStorage's pinnedTokens to tokensState.pinnedTokens
   useEffect(() => {
-    tokensDispatch({ type: "setPinnedTokens", payload: pinnedTokens });
-  }, [pinnedTokens]);
+    tokensDispatch({
+      type: "setPinnedTokens",
+      payload: cleanPinnedTokens(pinnedTokens),
+    });
+  }, [cleanPinnedTokens, pinnedTokens]);
 
-  // Load initial tokens: feeDenom + pinnedTokens (those not already present in tokensState.tokens)
+  // Load pinnedTokens not already present in tokensState.tokens
   useEffect(() => {
     (async function () {
       if (!client || !address) return;
 
-      const allTokenAddressesToInit = [config.feeToken, ...tokensState.pinnedTokens];
-
       // If pinnedTokens changes, let's filter them out to break an infinite useEffect loop
-      const tokenAddressesToInit = allTokenAddressesToInit.filter((token) => !tokensState.tokens.has(token));
+      const tokenAddressesToInit = tokensState.pinnedTokens.filter((token) => !tokensState.tokens.has(token));
       if (!tokenAddressesToInit.length) return;
 
       try {
@@ -222,14 +233,14 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
         .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
         .map((result) => result.value);
 
-      const tokens: Map<string, TokenProps> = new Map();
+      const newTokens: Map<string, TokenProps> = new Map();
 
       for (const tokenProp of tokenProps) {
-        tokens.set(tokenProp.address, tokenProp);
+        newTokens.set(tokenProp.address, tokenProp);
       }
 
       // Set new state
-      tokensDispatch({ type: "setTokens", payload: tokens });
+      tokensDispatch({ type: "setTokens", payload: newTokens });
     }
 
     tokensDispatch({ type: "setReloadTokens", payload: reloadTokens });
