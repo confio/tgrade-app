@@ -76,8 +76,9 @@ function tokensReducer(state: TokensState, action: TokensAction): TokensState {
       return { ...state, tokens: action.payload };
     }
     case "setToken": {
-      state.tokens.set(action.payload.address, action.payload);
-      return { ...state };
+      const tokens = new Map(state.tokens);
+      tokens.set(action.payload.address, action.payload);
+      return { ...state, tokens };
     }
     case "setLoadToken": {
       return { ...state, loadToken: action.payload };
