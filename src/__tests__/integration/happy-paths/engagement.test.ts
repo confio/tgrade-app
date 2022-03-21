@@ -44,6 +44,7 @@ describe("Engagement", () => {
      * withdraw all Rewards to the same wallet address
      * assert EngagementPoints, wallet Balance, WithdrawableRewards
      * */
+
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: config.addressPrefix,
@@ -82,7 +83,7 @@ describe("Engagement", () => {
     await egContract.withdrawRewards(userWallet);
 
     // After Withdraw Rewards step
-    const engagementPointsAfter = await egContract.getEngagementPoints(userWallet);
+    /* const engagementPointsAfter = await egContract.getEngagementPoints(userWallet);
     expect(engagementPointsAfter).toBe(engagementPointsBefore);
 
     const withdrawableRewardsAfter = await egContract.getWithdrawableRewards(userWallet);
@@ -91,22 +92,77 @@ describe("Engagement", () => {
     const walletBalanceAfterWithdraw = await signingClient.getBalance(userWallet, config.feeToken);
     expect(parseInt(walletBalanceAfterWithdraw.amount)).toBeGreaterThan(
       parseInt(walletBalanceBeforeWithdraw.amount),
-    );
+    );*/
   }, 25000);
 
-  xit("Claim my own rewards and send them to another address", () => {
-    // TODO
-  });
+  it("Claim my own rewards and send them to another address", async () => {
+    const mnemonic_02 = generateMnemonic();
+    /**
+     * execute a grant engagement proposal from the OC
+     * withdraw all Rewards to the User_B wallet address
+     * send them to another address
+     * Check that balance Wallet
+     * of User_B is equal zero before withdraw
+     * of User_B is NOT equal zero after withdraw
+     *
+     * */
+    const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
 
-  xit("Set another account as my delegate", () => {
-    // TODO
-  });
+    const signingClient_01 = await createSigningClient(config, wallet_01);
+    const { address: walletUserA } = (await wallet_01.getAccounts())[0];
 
-  xit("As a delegate, claim rewards from an account that has chosen me as delegate", () => {
-    // TODO
-  });
+    const faucetClient_01 = new FaucetClient(config.faucetUrl);
+    await faucetClient_01.credit(walletUserA, config.faucetTokens?.[1] ?? config.feeToken);
 
-  xit("As a delegate, claim rewards from an account that has chosen me as delegate and send them to another address", () => {
-    // TODO
-  });
+    const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_02, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const signingClient_02 = await createSigningClient(config, wallet_02);
+    const { address: walletUserB } = (await wallet_02.getAccounts())[0];
+
+    const OcCommunity = new OcContract(config, signingClient_01);
+    const oC = await OcCommunity.propose(walletUserA, comment, {
+      grant_engagement: {
+        member: walletUserB,
+        points: parseInt("1000", 10),
+      },
+    });
+
+    if (!oC.proposalId) return;
+    const txHash = await OcCommunity.executeProposal(walletUserA, oC.proposalId);
+    expect(txHash).toBeTruthy();
+    const egContract = new EngagementContract(config, PoEContractType.ENGAGEMENT, signingClient_01);
+
+    // Before Withdraw Rewards step
+    const walletBalanceBeforeWithdraw = await signingClient_02.getBalance(walletUserB, config.feeToken);
+    expect(parseInt(walletBalanceBeforeWithdraw.amount)).toBe(0);
+
+    const walletBalanceBeforeUserA = await signingClient_01.getBalance(walletUserA, config.feeToken);
+    console.log(walletBalanceBeforeUserA);
+    expect(parseInt(walletBalanceBeforeWithdraw.amount)).toBe(0);
+
+    const withdrawableRewardsBefore = await egContract.getWithdrawableRewards(walletUserB);
+    expect(parseInt(withdrawableRewardsBefore.amount)).toBe(0);
+
+    const engagementPointsBefore = await egContract.getEngagementPoints(walletUserB);
+    expect(engagementPointsBefore).toBeGreaterThan(0);
+
+    // Withdraw Rewards
+    await egContract.withdrawRewards(walletUserA, walletUserA, walletUserB);
+
+    // After Withdraw Rewards step
+    const engagementPointsAfter = await egContract.getEngagementPoints(walletUserB);
+    expect(engagementPointsAfter).toBe(engagementPointsBefore);
+
+    const withdrawableRewardsAfter = await egContract.getWithdrawableRewards(walletUserB);
+    expect(withdrawableRewardsAfter.amount).toBe("0");
+
+    const walletBalanceAfterWithdraw = await signingClient_02.getBalance(walletUserB, config.feeToken);
+    expect(parseInt(walletBalanceAfterWithdraw.amount)).toBeGreaterThan(0);
+  }, 25000);
 });
