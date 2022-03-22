@@ -30,4 +30,8 @@ export class TrustedCirclesPage {
   getFirstTCbyOrderNumberInListBox(numberInList: number): string {
     return `[role="listbox"] li:nth-child(${numberInList})`;
   }
+
+  getYourTransactionApprovedFrame(): string {
+    return '[alt="Result icon"]+div';
+  }
 }
