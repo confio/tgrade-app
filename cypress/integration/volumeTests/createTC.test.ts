@@ -42,7 +42,7 @@ describe("Trusted Circle", () => {
         .then(($el) => (trustedCircleAddress = $el.text()))
         .then(() => {
           cy.log(trustedCircleAddress);
-          console.log(trustedCircleAddress);
+          cy.task("log", trustedCircleAddress);
         });
 
       cy.findByRole("button", {
