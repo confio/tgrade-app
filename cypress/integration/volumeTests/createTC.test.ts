@@ -37,14 +37,6 @@ describe("Trusted Circle", () => {
         name: /Sign transaction and pay escrow/i,
       }).click();
 
-      let trustedCircleAddress: string;
-      cy.get(trustedCirclesPage.getYourTransactionApprovedFrame())
-        .then(($el) => (trustedCircleAddress = $el.text()))
-        .then(() => {
-          cy.log(trustedCircleAddress);
-          cy.task("log", trustedCircleAddress);
-        });
-
       cy.findByRole("button", {
         name: /Go to Trusted Circle details/i,
       })
