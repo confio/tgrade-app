@@ -4,11 +4,15 @@ import { useFormikContext } from "formik";
 import { useState } from "react";
 import { useSdk } from "service";
 import { setIsTokenApprovedA, setIsTokenApprovedB, useProvide } from "service/provide";
+import { useTokens } from "service/tokens";
 import { Contract20WS } from "utils/cw20";
 import { ProvideFormValues } from "utils/tokens";
 
 const ApproveTokensRow = (): JSX.Element => {
   const { sdkState } = useSdk();
+  const {
+    tokensState: { loadToken },
+  } = useTokens();
   const { provideState, provideDispatch } = useProvide();
   const { values } = useFormikContext<ProvideFormValues>();
   const { isTokenApprovedA, isTokenApprovedB, selectedPair } = provideState;
@@ -20,9 +24,9 @@ const ApproveTokensRow = (): JSX.Element => {
   if (!selectedPair || !signingClient || !values.selectFrom || !values.selectTo) return <></>;
 
   const approveTokenA = async (): Promise<void> => {
-    try {
-      if (!values?.selectFrom?.address || !address) return;
+    if (!values?.selectFrom?.address || !address) return;
 
+    try {
       setApprovingTokenA(true);
       await Contract20WS.Authorized(
         signingClient,
@@ -35,14 +39,15 @@ const ApproveTokensRow = (): JSX.Element => {
       console.error(`Error when approving token ${values.selectFrom?.symbol}`);
       console.error(error);
     } finally {
+      await loadToken?.(values.selectFrom.address);
       setApprovingTokenA(false);
     }
   };
 
   const approveTokenB = async (): Promise<void> => {
-    try {
-      if (!values?.selectTo?.address || !address) return;
+    if (!values?.selectTo?.address || !address) return;
 
+    try {
       setApprovingTokenB(true);
       await Contract20WS.Authorized(
         signingClient,
@@ -55,6 +60,7 @@ const ApproveTokensRow = (): JSX.Element => {
       console.error(`Error when approving token ${values.selectTo?.symbol}`);
       console.error(error);
     } finally {
+      await loadToken?.(values.selectTo.address);
       setApprovingTokenB(false);
     }
   };

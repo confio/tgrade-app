@@ -25,8 +25,8 @@ import {
   useExchange,
 } from "service/exchange";
 import { updateToken, useTMarket } from "service/tmarket";
-import { Token } from "utils/tokens";
-import { DetailSwap, PairProps, SimulatedSwap, SwapFormValues, TokenProps } from "utils/tokens";
+import { useTokens } from "service/tokens";
+import { DetailSwap, PairProps, SimulatedSwap, SwapFormValues, Token, TokenProps } from "utils/tokens";
 
 import { ExtraInfo, FromToken, ToToken } from "./components";
 import ExchangeResultModal from "./components/ExchangeResultModal";
@@ -39,6 +39,9 @@ const initialValues: SwapFormValues = { To: 1.0, From: 1.0, selectFrom: undefine
 
 export default function Exchange(): JSX.Element {
   const { sdkState } = useSdk();
+  const {
+    tokensState: { loadToken },
+  } = useTokens();
   const { exchangeState, exchangeDispatch } = useExchange();
   const { tMarketState, tMarketDispatch } = useTMarket();
   const { pairs } = tMarketState;
@@ -79,7 +82,7 @@ export default function Exchange(): JSX.Element {
             setNewError,
           );
         }}
-        onSubmit={async (values: SwapFormValues) =>
+        onSubmit={async (values: SwapFormValues) => {
           await handleSubmit(
             values,
             signingClient,
@@ -94,8 +97,15 @@ export default function Exchange(): JSX.Element {
             history,
             refreshToken,
             setModalOpen,
-          )
-        }
+          );
+
+          if (values.selectFrom?.address) {
+            await loadToken?.(values.selectFrom.address);
+          }
+          if (values.selectTo?.address) {
+            await loadToken?.(values.selectTo.address);
+          }
+        }}
         initialValues={initialValues}
       >
         <CardCustom>

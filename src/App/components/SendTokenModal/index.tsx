@@ -46,7 +46,7 @@ export default function SendTokenModal({
     sdkState: { address, config, signingClient },
   } = useSdk();
   const {
-    tokensState: { reloadPinnedTokensOnly },
+    tokensState: { loadToken },
   } = useTokens();
 
   const [txResult, setTxResult] = useState<TxResult>();
@@ -81,7 +81,7 @@ export default function SendTokenModal({
       setTxResult({
         msg: `${amount} ${selectedToken.symbol} sent to ${recipient}. Transaction ID: ${txHash}`,
       });
-      await reloadPinnedTokensOnly?.();
+      await loadToken?.(selectedToken.address);
     } catch (error) {
       if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });
