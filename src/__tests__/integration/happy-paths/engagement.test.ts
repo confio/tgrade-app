@@ -74,7 +74,6 @@ describe("Engagement", () => {
 
     // Before Withdraw Rewards step
     const withdrawableRewardsBefore = await egContract.getWithdrawableRewards(userWallet);
-    jest.setTimeout(150000);
     expect(parseInt(withdrawableRewardsBefore.amount)).toBeGreaterThan(0);
 
     const engagementPointsBefore = await egContract.getEngagementPoints(userWallet);
