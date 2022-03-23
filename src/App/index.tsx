@@ -26,7 +26,10 @@ export default function App(): JSX.Element {
   return (
     <>
       {isMobile ? (
-        "How to style message here?"
+        <h2 style={{ padding: 70, textAlign: "center" }}>
+          "Sorry, we don't support Mobile devices at this time. Please visit our website from a non-mobile
+          device."
+        </h2>
       ) : (
         <I18nextProvider i18n={i18n}>
           <ErrorProvider>
