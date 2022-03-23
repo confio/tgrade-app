@@ -15,13 +15,19 @@ NODE_PATH="$SCRIPT_DIR/template/node0/tgrade"
 docker run --rm \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/root \
   "$REPOSITORY:$VERSION" \
-  tgrade testnet --v 1 --output-dir=/root --keyring-backend=test
+  tgrade testnet --v 1 --output-dir=/root --keyring-backend=test --chain-id=chain-JAynv8
 
 # add tokens to faucet address
 docker run --rm \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/root \
   "$REPOSITORY:$VERSION" \
   tgrade add-genesis-account tgrade1syn8janzh5t6rggtmlsuzs5w7qqfxqgld2dagk 1000000000utgd --home=/root/node0/tgrade
+
+# add tokens old system admin address
+docker run --rm \
+  --mount type=bind,source="$SCRIPT_DIR/template",target=/root \
+  "$REPOSITORY:$VERSION" \
+  tgrade add-genesis-account tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3 1000000000utgd --home=/root/node0/tgrade
 
 
 # The ./template folder is created by the docker daemon's user (root on Linux, current user
