@@ -5,6 +5,11 @@ import { TrustedCirclesPage } from "../../page-object/TrustedCirclesPage";
 const trustedCirclesPage = new TrustedCirclesPage();
 const currentTime = moment().unix();
 
+/**
+ * Volume test
+ * https://confio.slab.com/posts/volume-testing-v4yvdmuz
+ * */
+
 describe("Trusted Circle", () => {
   before(() => {
     cy.visit("/trustedcircle");
@@ -45,7 +50,8 @@ describe("Trusted Circle", () => {
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
-    Cypress._.times(100, (k) => {
+    // Set number of runs here 'Cypress._.times(100, (k) => {'
+    Cypress._.times(1, (k) => {
       it(`Show created Trusted Circle and select first TC in pagination ${k + 1} / 100`, () => {
         cy.get(trustedCirclesPage.getTCNameFromActiveTab())
           .should("be.visible")

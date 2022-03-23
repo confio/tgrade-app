@@ -6,6 +6,11 @@ const tMarketPage = new TMarketPage();
 const tokenSymbol = "BTC";
 const tokenName = "Bitcoin";
 
+/**
+ * Volume test
+ * https://confio.slab.com/posts/volume-testing-v4yvdmuz
+ * */
+
 describe("T-Market", () => {
   before(() => {
     cy.visit("/trustedcircle");
@@ -51,7 +56,8 @@ describe("T-Market", () => {
       cy.get(tMarketPage.getDropDownSelectTokenFromButton()).should("be.visible").click();
     });
 
-    Cypress._.times(100, (k) => {
+    // Set number of runs here 'Cypress._.times(100, (k) => {'
+    Cypress._.times(1, (k) => {
       it(`Show created Asset ${k + 1} / 100`, () => {
         let index = 1;
         const dynamicTokenName = tokenName + "+" + ++index;

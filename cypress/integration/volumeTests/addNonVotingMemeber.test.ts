@@ -11,6 +11,11 @@ function makeRandomAddress(): string {
   return Bech32.encode("tgrade", Random.getBytes(20));
 }
 
+/**
+ * Volume test
+ * https://confio.slab.com/posts/volume-testing-v4yvdmuz
+ * */
+
 describe("Trusted Circle", () => {
   before(() => {
     cy.visit("/trustedcircle");
