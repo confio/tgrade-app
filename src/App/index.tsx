@@ -11,8 +11,8 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-d
 import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, ThemeProvider } from "service";
 import TMarketProvider from "service/tmarket";
 
+import { InformationMessage } from "./components/InformationMessage/style";
 import LoadingSpinner from "./components/LoadingSpinner";
-import { WarningMessage } from "./components/WarningMessage/style";
 import CPoolHome from "./pages/CPoolHome";
 import DocumentationPage from "./pages/DocumentationPage";
 import ValidatorsHome from "./pages/ValidatorsHome";
@@ -27,10 +27,10 @@ export default function App(): JSX.Element {
   return (
     <>
       {isMobile ? (
-        <WarningMessage>
+        <InformationMessage>
           "Sorry, we don't support Mobile devices at this time. Please visit our website from a non-mobile
           device."
-        </WarningMessage>
+        </InformationMessage>
       ) : (
         <I18nextProvider i18n={i18n}>
           <ErrorProvider>
