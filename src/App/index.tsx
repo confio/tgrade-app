@@ -10,6 +10,7 @@ import {
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, ThemeProvider } from "service";
 import TMarketProvider from "service/tmarket";
+import styled from "styled-components";
 
 import LoadingSpinner from "./components/LoadingSpinner";
 import CPoolHome from "./pages/CPoolHome";
@@ -22,14 +23,19 @@ const Engagement = lazy(() => import("./pages/Engagement"));
 const OcHome = lazy(() => import("./pages/OcHome"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
 
+export const WarningMessage = styled.h1`
+  margin: 50px;
+  text-align: center;
+`;
+
 export default function App(): JSX.Element {
   return (
     <>
       {isMobile ? (
-        <h2 style={{ padding: 70, textAlign: "center" }}>
+        <WarningMessage>
           "Sorry, we don't support Mobile devices at this time. Please visit our website from a non-mobile
           device."
-        </h2>
+        </WarningMessage>
       ) : (
         <I18nextProvider i18n={i18n}>
           <ErrorProvider>
