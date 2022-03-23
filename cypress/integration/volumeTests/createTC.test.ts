@@ -47,6 +47,8 @@ describe("Trusted Circle", () => {
       })
         .click()
         .should("not.be.visible");
+      //workaround to don't see `Your transaction was approved!` second time
+      cy.wait(2500);
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
