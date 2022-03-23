@@ -10,9 +10,9 @@ import {
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, ThemeProvider } from "service";
 import TMarketProvider from "service/tmarket";
-import styled from "styled-components";
 
 import LoadingSpinner from "./components/LoadingSpinner";
+import { WarningMessage } from "./components/WarningMessage/style";
 import CPoolHome from "./pages/CPoolHome";
 import DocumentationPage from "./pages/DocumentationPage";
 import ValidatorsHome from "./pages/ValidatorsHome";
@@ -22,11 +22,6 @@ const Dso = lazy(() => import("./routes/Dso"));
 const Engagement = lazy(() => import("./pages/Engagement"));
 const OcHome = lazy(() => import("./pages/OcHome"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
-
-export const WarningMessage = styled.h1`
-  margin: 50px;
-  text-align: center;
-`;
 
 export default function App(): JSX.Element {
   return (
