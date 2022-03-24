@@ -14,13 +14,11 @@ describe("Trusted Circle", () => {
   before(() => {
     cy.visit("/trustedcircle");
     cy.get(trustedCirclesPage.getCookiesAcceptButton()).click();
-    // connect demo wallet
+
     cy.findByText("Connect Wallet").click();
     cy.findByText("Web wallet (demo)").click();
-    cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
-    // workaround to wait for wallet connection (critical ~4000)
-    cy.wait(5500);
+    cy.findByText("Trusted Circles").click();
   });
 
   describe("create trusted circle", () => {
@@ -38,6 +36,8 @@ describe("Trusted Circle", () => {
       cy.findByRole("button", { name: /Next/i }).click();
 
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
+
+      cy.wait(2500); //workaround should be improved
       cy.findByRole("button", {
         name: /Sign transaction and pay escrow/i,
       }).click();
