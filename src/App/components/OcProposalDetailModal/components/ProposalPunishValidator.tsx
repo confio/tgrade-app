@@ -33,7 +33,7 @@ export default function ProposalPunishValidator({
         )}
       </TextLabel>
       <TextLabel>
-        Slash Validator Percentage of Funds: <b>{proposalPunishValidator.portion}%</b>
+        Slash Validator Percentage of Funds: <b>{parseFloat(proposalPunishValidator.portion) * 100}%</b>
       </TextLabel>
       <TextLabel>Comment:</TextLabel>
     </div>

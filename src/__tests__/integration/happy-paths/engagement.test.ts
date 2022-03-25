@@ -37,7 +37,7 @@ describe("Engagement", () => {
     expect(currentWalletBalance.amount).toBe("0");
   });
 
-  it("Claim my own rewards and pay them out to my own wallet ", async () => {
+  xit("Claim my own rewards and pay them out to my own wallet ", async () => {
     /**
      * Create grant engagement proposal from the OC
      * use own wallet address as member
@@ -95,7 +95,7 @@ describe("Engagement", () => {
     );
   }, 25000);
 
-  xit("Claim my own rewards and send them to another address", async () => {
+  it("Claim my own rewards and send them to another address", async () => {
     const mnemonic_02 = generateMnemonic();
     /**
      * execute a grant engagement proposal from the OC
