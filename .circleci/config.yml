@@ -242,7 +242,7 @@ workflows:
     jobs:
       - lint
       - cypress-create-tc
-      #- cypress-non-voting
+      - cypress-non-voting
       - cypress-create-assets
       - test:
           # https://circleci.com/docs/2.0/env-vars/

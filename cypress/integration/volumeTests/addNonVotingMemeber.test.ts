@@ -16,7 +16,7 @@ function makeRandomAddress(): string {
  * https://confio.slab.com/posts/volume-testing-v4yvdmuz
  * */
 
-describe("Trusted Circle", () => {
+describe("Non Voting Member", () => {
   before(() => {
     cy.visit("/trustedcircle");
     // connect demo wallet
@@ -66,38 +66,43 @@ describe("Trusted Circle", () => {
     });
   });
 
-  describe("Add non voting members", () => {
-    const randomAddress = makeRandomAddress();
+  Cypress._.times(1, () => {
+    describe("Add non voting members", () => {
+      const randomAddress = makeRandomAddress();
 
-    before(() => {
-      cy.findByText(/Add proposal/i).click();
+      before(() => {
+        cy.findByText(/Add proposal/i).click();
 
-      cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "New proposal");
-      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
-      cy.findAllByTitle(/Add non voting participants/i).should("be.visible");
-      cy.findByRole("button", { name: /Next/i }).click();
+        cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "New proposal");
+        cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
+        cy.findAllByTitle(/Add non voting participants/i).should("be.visible");
+        cy.findByRole("button", { name: /Next/i }).click();
 
-      cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Add participant(s)");
-      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
-      cy.findByPlaceholderText("Type or paste addresses here").type(randomAddress);
-      cy.wait(2500);
-      cy.findByRole("button", { name: /Create proposal/i }).click();
+        cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Add participant(s)");
+        cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
+        cy.findByPlaceholderText("Type or paste addresses here").type(randomAddress);
+        cy.findByRole("button", { name: /Create proposal/i }).click();
 
-      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
-      cy.findByRole("button", { name: /Confirm proposal/i }).click();
-      cy.findByRole("button", {
-        name: /Go to Trusted Circle details/i,
-      })
-        .click()
-        .should("not.be.visible");
-      //workaround to don't see `Your transaction was approved!` second time
-      cy.wait(2500);
-      cy.findByText("Your transaction was approved!").should("not.be.visible");
-    });
+        cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
+        cy.findByRole("button", { name: /Confirm proposal/i }).click();
+        cy.findByRole("button", {
+          name: /Go to Trusted Circle details/i,
+        })
+          .click()
+          .should("not.be.visible");
 
-    it("Show created proposal with non voting member", () => {
-      //TODO
-      // blocked by https://github.com/confio/tgrade-app/issues/477
+        // Workaround for an issue in browser
+        Cypress.on(
+          "uncaught:exception",
+          (err) => !err.message.includes("ResizeObserver loop limit exceeded"),
+        );
+      });
+
+      it("Show created proposal with non voting member", () => {
+        cy.get("table tbody").within(($table) => {
+          cy.wrap($table).should("contain.text", "Add participants");
+        });
+      });
     });
   });
 });
