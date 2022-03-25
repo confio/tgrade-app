@@ -1,12 +1,38 @@
 import { Typography } from "antd";
 import Tooltip from "App/components/Tooltip";
-import { Input } from "formik-antd";
-import { useCallback, useMemo } from "react";
+import { Input, InputProps, TextAreaProps } from "formik-antd";
+import { useMemo } from "react";
 import { getFormItemName } from "utils/forms";
 
 import StyledField, { LabelWrapper, UnitInputContainer, UnitWrapper } from "./style";
 
 const { Text } = Typography;
+
+interface InputOrTextAreaProps {
+  readonly props: InputProps & TextAreaProps;
+  readonly onInputChange?: React.ChangeEventHandler<HTMLInputElement>;
+  readonly textArea?: boolean;
+  readonly onTextAreaChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+}
+
+function InputOrTextArea({
+  props,
+  onInputChange,
+  textArea,
+  onTextAreaChange,
+}: InputOrTextAreaProps): JSX.Element {
+  return textArea ? (
+    <Input.TextArea
+      {...props}
+      onChange={onTextAreaChange}
+      showCount
+      maxLength={500}
+      autoSize={{ minRows: 2 }}
+    />
+  ) : (
+    <Input {...props} onChange={onInputChange} />
+  );
+}
 
 interface FieldProps {
   readonly label: string;
@@ -51,22 +77,6 @@ export default function Field({
   // NOTE: using value=undefined instead of ommitting makes Formik's initialValues not work
   const controlledProps = useMemo(() => (value ? { ...baseProps, value } : baseProps), [baseProps, value]);
 
-  const InputOrTextArea = useCallback(
-    () =>
-      textArea ? (
-        <Input.TextArea
-          {...controlledProps}
-          onChange={onTextAreaChange}
-          showCount
-          maxLength={500}
-          autoSize={{ minRows: 2 }}
-        />
-      ) : (
-        <Input {...controlledProps} onChange={onInputChange} />
-      ),
-    [controlledProps, onInputChange, onTextAreaChange, textArea],
-  );
-
   return (
     <StyledField name={formItemName}>
       <LabelWrapper>
@@ -80,7 +90,12 @@ export default function Field({
             <Text>{units}</Text>
           </UnitWrapper>
         ) : null}
-        <InputOrTextArea />
+        <InputOrTextArea
+          props={controlledProps}
+          onInputChange={onInputChange}
+          textArea={textArea}
+          onTextAreaChange={onTextAreaChange}
+        />
       </UnitInputContainer>
     </StyledField>
   );
