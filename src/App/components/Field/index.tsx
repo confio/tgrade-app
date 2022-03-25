@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import Tooltip from "App/components/Tooltip";
-import { Input } from "formik-antd";
+import { Input, InputProps, TextAreaProps } from "formik-antd";
 import { useMemo } from "react";
 import { getFormItemName } from "utils/forms";
 
@@ -9,8 +9,7 @@ import StyledField, { LabelWrapper, UnitInputContainer, UnitWrapper } from "./st
 const { Text } = Typography;
 
 interface InputOrTextAreaProps {
-  // TODO: deal with type crazyness
-  readonly props: any;
+  readonly props: InputProps & TextAreaProps;
   readonly onInputChange?: React.ChangeEventHandler<HTMLInputElement>;
   readonly textArea?: boolean;
   readonly onTextAreaChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
