@@ -42,7 +42,7 @@ describe("Trusted Circle", () => {
         name: /Sign transaction and pay escrow/i,
       }).click();
 
-      cy.wait(3000);
+      cy.wait(3000); //workaround should be improved
 
       cy.findByRole("button", {
         name: /Go to Trusted Circle details/i,
