@@ -37,7 +37,7 @@ describe("Trusted Circle", () => {
 
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
 
-      cy.wait(2500); //workaround should be improved
+      cy.wait(4500); //workaround should be improved
       cy.findByRole("button", {
         name: /Sign transaction and pay escrow/i,
       }).click();
@@ -47,9 +47,6 @@ describe("Trusted Circle", () => {
       })
         .click()
         .should("not.be.visible");
-      // workaround to don't see `Your transaction was approved!` second time
-      // should be improved
-      cy.wait(2500);
     });
 
     // Set number of runs here 'Cypress._.times(100, (k) => {'
