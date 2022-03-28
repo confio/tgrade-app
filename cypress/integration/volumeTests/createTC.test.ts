@@ -37,10 +37,12 @@ describe("Trusted Circle", () => {
 
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
 
-      cy.wait(4500); //workaround should be improved
+      cy.wait(8500); //workaround should be improved
       cy.findByRole("button", {
         name: /Sign transaction and pay escrow/i,
       }).click();
+
+      cy.wait(3000);
 
       cy.findByRole("button", {
         name: /Go to Trusted Circle details/i,
