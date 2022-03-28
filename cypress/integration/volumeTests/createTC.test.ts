@@ -47,9 +47,9 @@ describe("Trusted Circle", () => {
       })
         .click()
         .should("not.be.visible");
-      //workaround to don't see `Your transaction was approved!` second time
+      // workaround to don't see `Your transaction was approved!` second time
+      // should be improved
       cy.wait(2500);
-      cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
     // Set number of runs here 'Cypress._.times(100, (k) => {'
