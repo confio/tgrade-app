@@ -12,7 +12,7 @@ export interface TokenRowProps {
   maxButton?: boolean;
   error?: string;
   position: Position;
-  tokens: Array<TokenProps>;
+  tokenFilter: "exclude-lp" | "lp-only";
   onMaxClick?: MouseEventHandler;
   hideSelectToken?: boolean;
   setToken: any;
