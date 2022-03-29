@@ -1,5 +1,4 @@
 import TokenRow from "App/pages/TMarket/components/TokenRow";
-import { getTokensList } from "App/pages/TMarket/utils";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { useSdk } from "service";
@@ -22,7 +21,7 @@ const ToToken = (): JSX.Element => {
   const { provideState, provideDispatch } = useProvide();
   const { tMarketState, tMarketDispatch } = useTMarket();
   const { client, address } = sdkState;
-  const { estimatingFromB, pairs, searchText } = tMarketState;
+  const { estimatingFromB, pairs } = tMarketState;
   const { selectedPair } = provideState;
 
   const setToken = (token: TokenProps) => {
@@ -87,11 +86,11 @@ const ToToken = (): JSX.Element => {
     //eslint-disable-next-line
   }, [estimatingFromB, values.assetB]);
 
-  const tokens: TokenProps[] = getTokensList(tMarketState.tokens, searchText);
   const onChange = (): void => setEstimatingFromB(tMarketDispatch);
+
   return (
     <TokenRow
-      tokens={tokens}
+      tokenFilter="exclude-lp"
       id="assetB"
       error={provideState.errors.to}
       setToken={setToken}

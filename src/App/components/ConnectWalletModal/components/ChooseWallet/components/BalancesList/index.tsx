@@ -3,7 +3,7 @@ import pinDarkIcon from "App/assets/icons/pin-dark.svg";
 import pinLightIcon from "App/assets/icons/pin-light.svg";
 import SendTokenModal from "App/components/SendTokenModal";
 import Stack from "App/components/Stack/style";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import { tokensMapToArray, useTokens } from "service/tokens";
 import { TokenProps } from "utils/tokens";
@@ -17,23 +17,12 @@ export function BalancesList(): JSX.Element {
     sdkState: { config },
   } = useSdk();
   const {
-    tokensState: { pinnedTokens, pinToken, unpinToken, reloadPinnedTokensOnly, tokens },
+    tokensState: { pinnedTokens, pinUnpinToken, reloadPinnedTokensOnly, tokens },
   } = useTokens();
 
   const [searchText, setSearchText] = useState("");
   const [tokenList, setTokenList] = useState<readonly TokenProps[]>([]);
   const [selectedToken, setSelectedToken] = useState<TokenProps>();
-
-  const pinUnpin = useCallback(
-    function (address: string): void {
-      if (pinnedTokens.includes(address)) {
-        unpinToken(address);
-      } else {
-        pinToken(address);
-      }
-    },
-    [pinToken, pinnedTokens, unpinToken],
-  );
 
   useEffect(() => {
     (async function () {
@@ -43,7 +32,7 @@ export function BalancesList(): JSX.Element {
   }, []);
 
   useEffect(() => {
-    const tokenList = tokensMapToArray(tokens);
+    const tokenList = tokensMapToArray(tokens, config.feeToken);
     const filteredTokensList = tokenList
       .filter((token) => pinnedTokens.includes(token.address))
       .filter((token) => token.balance !== "0")
@@ -55,7 +44,7 @@ export function BalancesList(): JSX.Element {
       );
 
     setTokenList(filteredTokensList);
-  }, [pinnedTokens, searchText, tokens]);
+  }, [config.feeToken, pinnedTokens, searchText, tokens]);
 
   return (
     <Stack gap="s1">
@@ -98,7 +87,7 @@ export function BalancesList(): JSX.Element {
                   alt={pinnedTokens.includes(token.address) ? "Unpin token" : "Pin token"}
                   onClick={(event) => {
                     event.stopPropagation();
-                    pinUnpin(token.address);
+                    pinUnpinToken?.(token.address);
                   }}
                 />
               ) : null}

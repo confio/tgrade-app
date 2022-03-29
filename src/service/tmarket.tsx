@@ -1,7 +1,6 @@
 import { UserError } from "App/pages/TMarket/utils";
-import { createContext, HTMLAttributes, useCallback, useContext, useEffect, useReducer } from "react";
+import { createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
 import { useSdk } from "service";
-import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
 import { LPToken, PairProps, PoolProps, TokenProps } from "utils/tokens";
 
@@ -179,20 +178,10 @@ export const useTMarket = (): NonNullable<tMarketContextType> => {
 
 export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
   const { sdkState } = useSdk();
-  const { client, config, address } = sdkState;
-
-  const refreshTokens = useCallback(
-    async function (): Promise<void> {
-      if (!client || !address) return;
-
-      const allTokens = await Contract20WS.getAll(config, client, address);
-      tMarketDispatch({ type: "setTokens", payload: allTokens });
-    },
-    [address, client, config],
-  );
+  const { client, config } = sdkState;
 
   const [tMarketState, tMarketDispatch] = useReducer(tMarketReducer, {
-    refreshTokens,
+    refreshTokens: () => Promise.resolve(),
     tokens: {},
     tokensFilter: "whitelist",
     lpTokens: {},
@@ -204,14 +193,6 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
   });
 
   useEffect(() => {
-    tMarketDispatch({ type: "setRefreshTokens", payload: refreshTokens });
-  }, [refreshTokens]);
-
-  useEffect(() => {
-    refreshTokens();
-  }, [refreshTokens]);
-
-  useEffect(() => {
     (async () => {
       //Gets all pairs
       if (client) {
@@ -221,19 +202,6 @@ export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGEl
     })();
   }, [client, config.factoryAddress]);
 
-  useEffect(() => {
-    (async () => {
-      if (!client || !address) return;
-      const lp_tokens = await Contract20WS.getLPTokens(
-        client,
-        address,
-        tMarketState.pairs,
-        tMarketState.tokens,
-        config,
-      );
-      tMarketDispatch({ type: "setLPTokens", payload: lp_tokens });
-    })();
-  }, [tMarketState.pairs, tMarketState.tokens, address, client, config]);
   return (
     <tMarketContext.Provider value={{ tMarketState, tMarketDispatch }}>{children}</tMarketContext.Provider>
   );

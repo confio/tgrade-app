@@ -1,0 +1,54 @@
+import Stack from "App/components/Stack/style";
+import { useEffect, useState } from "react";
+import { useSdk } from "service";
+import { useTMarket } from "service/tmarket";
+import {
+  excludeLpTokens,
+  filterTokensByText,
+  formatLpTokens,
+  includeOnlyLpTokens,
+  tokensMapToArray,
+  useTokens,
+} from "service/tokens";
+import { TokenProps } from "utils/tokens";
+
+import ListTokens from "../ListTokens";
+
+interface PinnedTokensProps {
+  readonly setToken: (t: TokenProps) => void;
+  readonly closeModal: () => void;
+  readonly tokenFilter: "exclude-lp" | "lp-only";
+}
+
+export default function PinnedTokens({ setToken, closeModal, tokenFilter }: PinnedTokensProps): JSX.Element {
+  const {
+    sdkState: { config },
+  } = useSdk();
+  const {
+    tokensState: { tokens, pinnedTokens },
+  } = useTokens();
+  const {
+    tMarketState: { pairs, searchText },
+  } = useTMarket();
+
+  const [tokensList, setTokensList] = useState<readonly TokenProps[]>([]);
+
+  useEffect(() => {
+    const tokensList = tokensMapToArray(tokens, config.feeToken);
+    const tokensListLp =
+      tokenFilter === "exclude-lp"
+        ? excludeLpTokens(tokensList)
+        : formatLpTokens(includeOnlyLpTokens(tokensList), pairs);
+    const filteredTokensList = filterTokensByText(tokensListLp, searchText).filter((token) =>
+      pinnedTokens.includes(token.address),
+    );
+
+    setTokensList(filteredTokensList);
+  }, [config.feeToken, pairs, pinnedTokens, searchText, tokenFilter, tokens]);
+
+  return (
+    <Stack>
+      <ListTokens tokensList={tokensList} closeModal={closeModal} setToken={setToken} />
+    </Stack>
+  );
+}

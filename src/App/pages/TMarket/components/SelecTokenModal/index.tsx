@@ -1,19 +1,20 @@
 import { Divider, Typography } from "antd";
 import Stack from "App/components/Stack/style";
-import { TokenProps } from "utils/tokens";
+import { useState } from "react";
 
 import backIcon from "./assets/arrow-back-icon.svg";
 import closeIcon from "./assets/cross.svg";
-import ListTokens from "./components/ListTokens";
+import AllTokens from "./components/AllTokens";
+import PinnedTokens from "./components/PinnedTokens";
 import Search from "./components/SearchToken";
-import SelectTokenFilters from "./components/SelectTokenFilters";
-import StyledSelectTokenModal, { ModalHeader } from "./style";
+import TokenDetail from "./components/TokenDetail";
+import StyledSelectTokenModal, { ModalHeader, SelectTokensMenu } from "./style";
 
 interface SelectTokenModalProps {
   readonly isModalOpen: boolean;
-  readonly tokens: readonly TokenProps[];
   readonly closeModal: () => void;
   readonly setToken: any;
+  readonly tokenFilter: "exclude-lp" | "lp-only";
 }
 const { Title } = Typography;
 
@@ -21,8 +22,10 @@ export default function SelectTokenModal({
   isModalOpen,
   closeModal,
   setToken,
-  tokens,
+  tokenFilter,
 }: SelectTokenModalProps): JSX.Element {
+  const [currentTab, setCurrentTab] = useState<"pinned" | "detail" | "all">("pinned");
+
   return (
     <StyledSelectTokenModal
       centered
@@ -52,12 +55,26 @@ export default function SelectTokenModal({
       </ModalHeader>
       <Divider />
       <Stack gap="s-1">
+        <SelectTokensMenu
+          onClick={({ key }) => setCurrentTab(key as "pinned" | "detail" | "all")}
+          selectedKeys={[currentTab]}
+          mode="horizontal"
+        >
+          <SelectTokensMenu.Item key="pinned">Pinned tokens</SelectTokensMenu.Item>
+          <SelectTokensMenu.Item key="detail">Token detail</SelectTokensMenu.Item>
+          <SelectTokensMenu.Item key="all">All tokens</SelectTokensMenu.Item>
+        </SelectTokensMenu>
         <Search />
-        <SelectTokenFilters />
       </Stack>
       <Divider style={{ margin: "5px 0" }} />
       <Stack gap="s0">
-        <ListTokens closeModal={closeModal} tokens={tokens} setToken={setToken} />
+        {currentTab === "pinned" ? (
+          <PinnedTokens setToken={setToken} closeModal={closeModal} tokenFilter={tokenFilter} />
+        ) : null}
+        {currentTab === "detail" ? <TokenDetail setToken={setToken} closeModal={closeModal} /> : null}
+        {currentTab === "all" ? (
+          <AllTokens setToken={setToken} closeModal={closeModal} tokenFilter={tokenFilter} />
+        ) : null}
       </Stack>
     </StyledSelectTokenModal>
   );
