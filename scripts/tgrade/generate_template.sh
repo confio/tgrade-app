@@ -23,7 +23,7 @@ docker run --rm \
   "$REPOSITORY:$VERSION" \
   tgrade add-genesis-account tgrade1syn8janzh5t6rggtmlsuzs5w7qqfxqgld2dagk 1000000000utgd --home=/root/node0/tgrade
 
-# add tokens old system admin address
+# add tokens to old system admin account
 docker run --rm \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/root \
   "$REPOSITORY:$VERSION" \
