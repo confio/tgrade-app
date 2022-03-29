@@ -9,7 +9,7 @@ import {
 } from "react";
 import { Contract20WS } from "utils/cw20";
 import { usePinnedTokens } from "utils/storage";
-import { TokenProps } from "utils/tokens";
+import { PairProps, TokenProps } from "utils/tokens";
 
 import { useError } from "./error";
 import { useSdk } from "./sdk";
@@ -21,13 +21,14 @@ interface PaginationState {
 
 type TokensState = {
   readonly pinnedTokens: readonly string[];
-  readonly pinToken: (tokenAddress: string) => void;
-  readonly unpinToken: (tokenAddress: string) => void;
   readonly tokens: Map<string, TokenProps>;
+  readonly canLoadNextTokens: boolean;
+  readonly pinToken?: (tokenAddress: string) => void;
+  readonly unpinToken?: (tokenAddress: string) => void;
+  readonly pinUnpinToken?: (tokenAddress: string) => void;
   readonly loadToken?: (tokenAddress: string) => Promise<void>;
   readonly reloadTokens?: () => Promise<void>;
   readonly reloadPinnedTokensOnly?: () => Promise<void>;
-  readonly canLoadNextTokens: boolean;
   readonly loadNextTokens?: () => Promise<void>;
 };
 
@@ -45,6 +46,22 @@ type TokensAction =
       readonly payload: TokenProps;
     }
   | {
+      readonly type: "setCanLoadNextTokens";
+      readonly payload: boolean;
+    }
+  | {
+      readonly type: "setPinToken";
+      readonly payload: (tokenAddress: string) => Promise<void>;
+    }
+  | {
+      readonly type: "setUnpinToken";
+      readonly payload: (tokenAddress: string) => Promise<void>;
+    }
+  | {
+      readonly type: "setPinUnpinToken";
+      readonly payload: (tokenAddress: string) => Promise<void>;
+    }
+  | {
       readonly type: "setLoadToken";
       readonly payload: (tokenAddress: string) => Promise<void>;
     }
@@ -55,10 +72,6 @@ type TokensAction =
   | {
       readonly type: "setReloadPinnedTokensOnly";
       readonly payload: () => Promise<void>;
-    }
-  | {
-      readonly type: "setCanLoadNextTokens";
-      readonly payload: boolean;
     }
   | {
       readonly type: "setLoadNextTokens";
@@ -80,6 +93,18 @@ function tokensReducer(state: TokensState, action: TokensAction): TokensState {
       tokens.set(action.payload.address, action.payload);
       return { ...state, tokens };
     }
+    case "setCanLoadNextTokens": {
+      return { ...state, canLoadNextTokens: action.payload };
+    }
+    case "setPinToken": {
+      return { ...state, pinToken: action.payload };
+    }
+    case "setUnpinToken": {
+      return { ...state, unpinToken: action.payload };
+    }
+    case "setPinUnpinToken": {
+      return { ...state, pinUnpinToken: action.payload };
+    }
     case "setLoadToken": {
       return { ...state, loadToken: action.payload };
     }
@@ -88,9 +113,6 @@ function tokensReducer(state: TokensState, action: TokensAction): TokensState {
     }
     case "setReloadPinnedTokensOnly": {
       return { ...state, reloadPinnedTokensOnly: action.payload };
-    }
-    case "setCanLoadNextTokens": {
-      return { ...state, canLoadNextTokens: action.payload };
     }
     case "setLoadNextTokens": {
       return { ...state, loadNextTokens: action.payload };
@@ -101,8 +123,63 @@ function tokensReducer(state: TokensState, action: TokensAction): TokensState {
   }
 }
 
-export function tokensMapToArray(tokens: Map<string, TokenProps>): readonly TokenProps[] {
-  return Array.from(tokens.values());
+export function tokensMapToArray(tokens: Map<string, TokenProps>, feeTokenDenom?: string): TokenProps[] {
+  function tokensComparator(a: TokenProps, b: TokenProps): -1 | 0 | 1 {
+    if (feeTokenDenom && feeTokenDenom === a.address) return -1;
+    if (feeTokenDenom && feeTokenDenom === b.address) return 1;
+
+    if (a.symbol < b.symbol) return -1;
+    if (a.symbol > b.symbol) return 1;
+
+    if (a.name < b.name) return -1;
+    if (a.name > b.name) return 1;
+
+    return 0;
+  }
+
+  return Array.from(tokens.values()).sort(tokensComparator);
+}
+
+export function excludeLpTokens(tokens: TokenProps[]): TokenProps[] {
+  return tokens.filter((token) => token.symbol !== "uLP" && token.name !== "tfi liquidity token");
+}
+
+export function includeOnlyLpTokens(tokens: TokenProps[]): TokenProps[] {
+  return tokens.filter((token) => token.symbol === "uLP" && token.name === "tfi liquidity token");
+}
+
+export function formatLpTokens(tokens: TokenProps[], pairsObj: { [key: string]: PairProps }): TokenProps[] {
+  const formattedTokens = tokens.map((token) => {
+    // Check if token is Liquidity Token
+    const pair = Object.values(pairsObj).find((pair) => pair.liquidity_token === token.address);
+    if (!pair) return token;
+
+    const tokenAddressA = pair.asset_infos[0].native || pair.asset_infos[0].token;
+    const tokenAddressB = pair.asset_infos[1].native || pair.asset_infos[1].token;
+    const tokenA = tokens.find((token) => token.address === tokenAddressA);
+    const tokenB = tokens.find((token) => token.address === tokenAddressB);
+
+    if (!tokenA || !tokenB) return token;
+
+    return {
+      ...token,
+      symbol: `LP-${tokenA.symbol}-${tokenB.symbol}`,
+      name: `${tokenA.symbol}(${tokenA.address})-${tokenB.symbol}(${tokenB.address})`,
+    };
+  });
+
+  return formattedTokens;
+}
+
+export function filterTokensByText(tokens: TokenProps[], searchText?: string | undefined): TokenProps[] {
+  if (!searchText) return tokens;
+
+  return tokens.filter(
+    (token) =>
+      token.symbol.toLowerCase().search(searchText.toLowerCase()) !== -1 ||
+      token.name.toLowerCase().search(searchText.toLowerCase()) !== -1 ||
+      token.address.toLowerCase().search(searchText.toLowerCase()) !== -1,
+  );
 }
 
 type TokensContextType = {
@@ -129,7 +206,8 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
   } = useSdk();
 
   const [paginationState, setPaginationState] = useState<PaginationState>({});
-  const [pinnedTokens, setPinnedTokens] = usePinnedTokens();
+  const [storedPinnedTokens, setStoredPinnedTokens] = usePinnedTokens();
+  const [pinnedTokensToRemove, setPinnedTokensToRemove] = useState<readonly string[]>([]);
 
   // Inserts feeToken (utgd) and removes duplicates
   const cleanPinnedTokens = useCallback(
@@ -141,43 +219,42 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     [config.feeToken],
   );
 
-  const pinToken = useCallback(
-    (tokenToPin: string) => {
-      setPinnedTokens((tokens) => (tokens.includes(tokenToPin) ? tokens : [...tokens, tokenToPin]));
-    },
-    [setPinnedTokens],
-  );
-
-  const unpinToken = useCallback(
-    (tokenToUnpin: string) => {
-      setPinnedTokens((tokens) => tokens.filter((token) => token !== tokenToUnpin));
-    },
-    [setPinnedTokens],
-  );
-
   const [tokensState, tokensDispatch] = useReducer(tokensReducer, {
-    pinnedTokens: cleanPinnedTokens(pinnedTokens),
-    pinToken,
-    unpinToken,
+    pinnedTokens: cleanPinnedTokens(storedPinnedTokens),
     tokens: new Map(),
     canLoadNextTokens: false,
   });
 
-  // Wire localStorage's pinnedTokens to tokensState.pinnedTokens
+  const { pinnedTokens, tokens, pinToken, unpinToken, loadNextTokens } = tokensState;
+
+  // Wire localStorage's storedPinnedTokens to tokensState.pinnedTokens
   useEffect(() => {
-    tokensDispatch({
-      type: "setPinnedTokens",
-      payload: cleanPinnedTokens(pinnedTokens),
-    });
-  }, [cleanPinnedTokens, pinnedTokens]);
+    const cleanedPinnedTokens = cleanPinnedTokens(pinnedTokens);
+    const isEveryPinnedTokenStored = cleanedPinnedTokens.every((token) => storedPinnedTokens.includes(token));
+    const isEveryStoredTokenPinned = storedPinnedTokens.every((token) => cleanedPinnedTokens.includes(token));
+
+    if (!isEveryPinnedTokenStored || !isEveryStoredTokenPinned) {
+      setStoredPinnedTokens(cleanedPinnedTokens);
+    }
+  }, [cleanPinnedTokens, pinnedTokens, setStoredPinnedTokens, storedPinnedTokens]);
+
+  useEffect(() => {
+    if (!unpinToken || !pinnedTokensToRemove.length) return;
+
+    for (const token of pinnedTokensToRemove) {
+      unpinToken(token);
+    }
+
+    setPinnedTokensToRemove([]);
+  }, [pinnedTokensToRemove, unpinToken]);
 
   // Load pinnedTokens not already present in tokensState.tokens
   useEffect(() => {
     (async function () {
-      if (!client || !address) return;
+      if (!client || !address || !unpinToken) return;
 
       // If pinnedTokens changes, let's filter them out to break an infinite useEffect loop
-      const tokenAddressesToInit = tokensState.pinnedTokens.filter((token) => !tokensState.tokens.has(token));
+      const tokenAddressesToInit = pinnedTokens.filter((token) => !tokens.has(token));
       if (!tokenAddressesToInit.length) return;
 
       try {
@@ -198,20 +275,73 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
         }
 
         // Remove failed responses from pinnedTokens (when token address did not find token_info)
-        for (const pinnedToken of tokensState.pinnedTokens) {
-          if (!tokensToInit.has(pinnedToken)) {
-            unpinToken(pinnedToken);
-          }
-        }
+
+        const pinnedTokensToRemove = pinnedTokens.filter((pinnedToken) => !tokensToInit.has(pinnedToken));
+        setPinnedTokensToRemove(pinnedTokensToRemove);
 
         // Set new state
-        tokensDispatch({ type: "setTokens", payload: new Map([...tokensState.tokens, ...tokensToInit]) });
+        tokensDispatch({ type: "setTokens", payload: new Map([...tokens, ...tokensToInit]) });
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
-  }, [address, client, config, handleError, tokensState.pinnedTokens, tokensState.tokens, unpinToken]);
+  }, [address, client, config, handleError, pinnedTokens, tokens, unpinToken]);
+
+  // Set up tokensState.canLoadNextTokens
+  useEffect(() => {
+    const isLoadNextTokensReady = !!loadNextTokens;
+    // A valid key is undefined (first request), or an array with length.
+    // An empty array means the last request was already made
+    const hasSomePaginationKey =
+      paginationState.cw20PaginationKey === undefined ||
+      paginationState.cw20PaginationKey.length ||
+      paginationState.trustedTokenPaginationKey === undefined ||
+      paginationState.trustedTokenPaginationKey.length;
+
+    if (isLoadNextTokensReady && hasSomePaginationKey) {
+      tokensDispatch({ type: "setCanLoadNextTokens", payload: true });
+    } else {
+      tokensDispatch({ type: "setCanLoadNextTokens", payload: false });
+    }
+  }, [loadNextTokens, paginationState.cw20PaginationKey, paginationState.trustedTokenPaginationKey]);
+
+  // Set up tokensState.pinToken
+  useEffect(() => {
+    async function pinToken(tokenAddress: string) {
+      const newPinnedTokens = cleanPinnedTokens([...pinnedTokens, tokenAddress]);
+      tokensDispatch({ type: "setPinnedTokens", payload: newPinnedTokens });
+    }
+
+    tokensDispatch({ type: "setPinToken", payload: pinToken });
+  }, [cleanPinnedTokens, pinnedTokens]);
+
+  // Set up tokensState.unpinToken
+  useEffect(() => {
+    async function unpinToken(tokenAddress: string) {
+      const newPinnedTokens = cleanPinnedTokens([...pinnedTokens.filter((token) => token !== tokenAddress)]);
+      tokensDispatch({ type: "setPinnedTokens", payload: newPinnedTokens });
+    }
+
+    tokensDispatch({ type: "setUnpinToken", payload: unpinToken });
+  }, [cleanPinnedTokens, pinnedTokens]);
+
+  // Set up tokensState.pinUnpinToken
+  useEffect(() => {
+    if (!unpinToken || !pinToken) return;
+
+    async function pinUnpinToken(tokenAddress: string) {
+      if (!unpinToken || !pinToken) return;
+
+      if (pinnedTokens.includes(tokenAddress)) {
+        unpinToken(tokenAddress);
+      } else {
+        pinToken(tokenAddress);
+      }
+    }
+
+    tokensDispatch({ type: "setPinUnpinToken", payload: pinUnpinToken });
+  }, [pinToken, pinnedTokens, unpinToken]);
 
   // Set up tokensState.loadToken
   useEffect(() => {
@@ -236,7 +366,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
       if (!client || !address) return;
 
       // Fill tokens map with TokenProps
-      const tokenAddresses = tokensMapToArray(tokensState.tokens).map((token) => token.address);
+      const tokenAddresses = tokensMapToArray(tokens).map((token) => token.address);
 
       const tokenPropsPromises = tokenAddresses.map((tokenAddress) =>
         Contract20WS.getTokenInfo(client, address, tokenAddress, config),
@@ -257,7 +387,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     }
 
     tokensDispatch({ type: "setReloadTokens", payload: reloadTokens });
-  }, [address, client, config, tokensState.tokens]);
+  }, [address, client, config, tokens]);
 
   // Set up tokensState.reloadPinnedTokensOnly
   useEffect(() => {
@@ -266,7 +396,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
       // Fill tokens map with TokenProps
 
-      const tokenPropsPromises = tokensState.pinnedTokens.map((tokenAddress) =>
+      const tokenPropsPromises = pinnedTokens.map((tokenAddress) =>
         Contract20WS.getTokenInfo(client, address, tokenAddress, config),
       );
 
@@ -281,29 +411,11 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
       }
 
       // Set new state
-      tokensDispatch({ type: "setTokens", payload: new Map([...tokensState.tokens, ...pinnedTokensMap]) });
+      tokensDispatch({ type: "setTokens", payload: new Map([...tokens, ...pinnedTokensMap]) });
     }
 
     tokensDispatch({ type: "setReloadPinnedTokensOnly", payload: reloadPinnedTokensOnly });
-  }, [address, client, config, tokensState.pinnedTokens, tokensState.tokens]);
-
-  // Set up tokensState.canLoadNextTokens
-  useEffect(() => {
-    const isLoadNextTokensReady = !!tokensState.loadNextTokens;
-    const hasSomePaginationKey =
-      (paginationState.cw20PaginationKey && paginationState.cw20PaginationKey.length) ||
-      (paginationState.trustedTokenPaginationKey && paginationState.trustedTokenPaginationKey.length);
-
-    if (isLoadNextTokensReady && hasSomePaginationKey) {
-      tokensDispatch({ type: "setCanLoadNextTokens", payload: true });
-    } else {
-      tokensDispatch({ type: "setCanLoadNextTokens", payload: false });
-    }
-  }, [
-    paginationState.cw20PaginationKey,
-    paginationState.trustedTokenPaginationKey,
-    tokensState.loadNextTokens,
-  ]);
+  }, [address, client, config, pinnedTokens, tokens]);
 
   // Set up tokensState.loadNextTokens
   useEffect(() => {
@@ -344,7 +456,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
       // Set new state
 
-      tokensDispatch({ type: "setTokens", payload: new Map([...tokensState.tokens, ...newTokens]) });
+      tokensDispatch({ type: "setTokens", payload: new Map([...tokens, ...newTokens]) });
       setPaginationState({
         cw20PaginationKey: cw20Response.pagination?.nextKey,
         trustedTokenPaginationKey: trustedTokenResponse.pagination?.nextKey,
@@ -358,7 +470,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     config,
     paginationState.cw20PaginationKey,
     paginationState.trustedTokenPaginationKey,
-    tokensState.tokens,
+    tokens,
   ]);
 
   return <TokensContext.Provider value={{ tokensState, tokensDispatch }}>{children}</TokensContext.Provider>;
