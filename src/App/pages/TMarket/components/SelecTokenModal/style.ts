@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Menu, Modal } from "antd";
 import styled from "styled-components";
 
 export default styled(Modal)`
@@ -42,5 +42,31 @@ export const ModalHeader = styled.header`
   }
   & img {
     cursor: pointer;
+  }
+`;
+
+export const SelectTokensMenu = styled(Menu)`
+  font-family: var(--ff-text);
+  font-size: var(--s0);
+  color: var(--color-text-1ary);
+  font-weight: 600;
+
+  &.ant-menu {
+    background: transparent;
+    margin-bottom: var(--s0);
+    margin-left: -20px;
+    margin-right: -20px;
+    display: flex;
+    justify-content: flex-start;
+
+    li[role="menuitem"] {
+      &.ant-menu-item-selected,
+      &.ant-menu-item-active {
+        color: var(--color-text-1ary);
+        &::after {
+          border-color: var(--color-primary);
+        }
+      }
+    }
   }
 `;
