@@ -130,7 +130,7 @@ describe("Engagement", () => {
     const oC = await OcCommunity.propose(walletUserA, comment, {
       grant_engagement: {
         member: walletUserB,
-        points: parseInt("1000", 10),
+        points: parseInt("1", 10),
       },
     });
 
@@ -148,6 +148,9 @@ describe("Engagement", () => {
 
     const engagementPointsBefore = await egContract.getEngagementPoints(walletUserB);
     expect(engagementPointsBefore).toBeGreaterThan(0);
+
+    // set default delegated address
+    await egContract.delegateWithdrawal(walletUserA, walletUserA);
 
     // Withdraw Rewards
     await egContract.withdrawRewards(walletUserA, walletUserA, walletUserB);
