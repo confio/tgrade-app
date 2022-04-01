@@ -1,6 +1,7 @@
 import { config } from "config/network";
 import { i18n } from "i18n/config";
 import { lazy, Suspense } from "react";
+import { isMobile } from "react-device-detect";
 import { I18nextProvider } from "react-i18next";
 import {
   QueryClient as ReactQueryClient,
@@ -11,6 +12,7 @@ import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, Th
 import TMarketProvider from "service/tmarket";
 import TokensProvider from "service/tokens";
 
+import { InformationMessage } from "./components/InformationMessage/style";
 import LoadingSpinner from "./components/LoadingSpinner";
 import CPoolHome from "./pages/CPoolHome";
 import DocumentationPage from "./pages/DocumentationPage";
@@ -24,57 +26,66 @@ const TMarketHome = lazy(() => import("App/pages/TMarket"));
 
 export default function App(): JSX.Element {
   return (
-    <I18nextProvider i18n={i18n}>
-      <ErrorProvider>
-        <ReactQueryClientProvider client={new ReactQueryClient()}>
-          <SdkProvider config={config}>
-            <TokensProvider>
-              <OcProvider>
-                <Suspense fallback={null}>
-                  <ThemeProvider>
-                    <Router basename={process.env.PUBLIC_URL}>
-                      <LayoutProvider>
-                        <Switch>
-                          <Suspense fallback={<LoadingSpinner fullPage />}>
-                            <Route exact path={paths.root}>
-                              <Redirect to={`${paths.dso.prefix}`} />
-                            </Route>
-                            <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
-                              <DsoProvider>
-                                <Dso />
-                              </DsoProvider>
-                            </Route>
-                            <Route path={paths.engagement.prefix}>
-                              <Engagement />
-                            </Route>
-                            <Route path={paths.validators.prefix}>
-                              <ValidatorsHome />
-                            </Route>
-                            <Route path={paths.oc.prefix}>
-                              <OcHome />
-                            </Route>
-                            <Route path={paths.cpool.prefix}>
-                              <CPoolHome />
-                            </Route>
-                            <Route path={`${paths.tmarket.prefix}`}>
-                              <TMarketProvider>
-                                <TMarketHome />
-                              </TMarketProvider>
-                            </Route>
-                            <Route path={`${paths.documentation.prefix}`}>
-                              <DocumentationPage />
-                            </Route>
-                          </Suspense>
-                        </Switch>
-                      </LayoutProvider>
-                    </Router>
-                  </ThemeProvider>
-                </Suspense>
-              </OcProvider>
-            </TokensProvider>
-          </SdkProvider>
-        </ReactQueryClientProvider>
-      </ErrorProvider>
-    </I18nextProvider>
+    <>
+      {isMobile ? (
+        <InformationMessage>
+          "Sorry, we don't support Mobile devices at this time. Please visit our website from a non-mobile
+          device."
+        </InformationMessage>
+      ) : (
+        <I18nextProvider i18n={i18n}>
+          <ErrorProvider>
+            <ReactQueryClientProvider client={new ReactQueryClient()}>
+              <SdkProvider config={config}>
+                <TokensProvider>
+                  <OcProvider>
+                    <Suspense fallback={null}>
+                      <ThemeProvider>
+                        <Router basename={process.env.PUBLIC_URL}>
+                          <LayoutProvider>
+                            <Switch>
+                              <Suspense fallback={<LoadingSpinner fullPage />}>
+                                <Route exact path={paths.root}>
+                                  <Redirect to={`${paths.dso.prefix}`} />
+                                </Route>
+                                <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
+                                  <DsoProvider>
+                                    <Dso />
+                                  </DsoProvider>
+                                </Route>
+                                <Route path={paths.engagement.prefix}>
+                                  <Engagement />
+                                </Route>
+                                <Route path={paths.validators.prefix}>
+                                  <ValidatorsHome />
+                                </Route>
+                                <Route path={paths.oc.prefix}>
+                                  <OcHome />
+                                </Route>
+                                <Route path={paths.cpool.prefix}>
+                                  <CPoolHome />
+                                </Route>
+                                <Route path={`${paths.tmarket.prefix}`}>
+                                  <TMarketProvider>
+                                    <TMarketHome />
+                                  </TMarketProvider>
+                                </Route>
+                                <Route path={`${paths.documentation.prefix}`}>
+                                  <DocumentationPage />
+                                </Route>
+                              </Suspense>
+                            </Switch>
+                          </LayoutProvider>
+                        </Router>
+                      </ThemeProvider>
+                    </Suspense>
+                  </OcProvider>
+                </TokensProvider>
+              </SdkProvider>
+            </ReactQueryClientProvider>
+          </ErrorProvider>
+        </I18nextProvider>
+      )}
+    </>
   );
 }
