@@ -1,4 +1,5 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { Decimal } from "@cosmjs/math";
 import { calculateFee, Coin, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
@@ -36,7 +37,8 @@ interface MemberResponse {
 }
 
 export interface StakedResponse {
-  readonly stake: Coin;
+  readonly liquid: Coin;
+  readonly vesting: Coin;
 }
 
 export interface Claim {
@@ -162,8 +164,25 @@ export class StakingContractQuerier {
     if (!this.stakingAddress) throw new Error("stakingAddress was not set");
 
     const query = { staked: { address } };
-    const { stake }: StakedResponse = await this.client.queryContractSmart(this.stakingAddress, query);
-    return stake;
+    try {
+      const { liquid, vesting }: StakedResponse = await this.client.queryContractSmart(
+        this.stakingAddress,
+        query,
+      );
+
+      if (liquid.denom !== vesting.denom && liquid.denom !== this.config.feeToken) {
+        throw new Error("Cannot add different coins");
+      }
+
+      const feeTokenDecimals = this.config.coinMap?.[this.config.feeToken]?.fractionalDigits ?? 0;
+      const decimalLiquid = Decimal.fromUserInput(liquid.amount, feeTokenDecimals);
+      const decimalVesting = Decimal.fromUserInput(vesting.amount, feeTokenDecimals);
+      const decimalSum = decimalLiquid.plus(decimalVesting);
+
+      return { denom: this.config.feeToken, amount: decimalSum.toString() };
+    } catch {
+      return { denom: this.config.feeToken, amount: "0" };
+    }
   }
 }
 

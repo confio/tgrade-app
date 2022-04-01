@@ -57,7 +57,7 @@ describe("Engagement", () => {
     await faucetClient.credit(userWallet, config.faucetTokens?.[0] ?? config.feeToken);
 
     const walletBalanceBeforeWithdraw = await signingClient.getBalance(userWallet, config.feeToken);
-    expect(parseInt(walletBalanceBeforeWithdraw.amount)).toBeGreaterThan(100000000000);
+    expect(parseInt(walletBalanceBeforeWithdraw.amount)).toBeGreaterThan(1000000000);
 
     const OcCommunity = new OcContract(config, signingClient);
     const oC = await OcCommunity.propose(userWallet, comment, {
@@ -229,7 +229,7 @@ describe("Engagement", () => {
 
     // Before Withdraw Rewards step
     const walletBalanceBeforeWithdraw = await signingClient_01.getBalance(walletUserA, config.feeToken);
-    expect(parseInt(walletBalanceBeforeWithdraw.amount)).toBeGreaterThan(100000000000);
+    expect(parseInt(walletBalanceBeforeWithdraw.amount)).toBeGreaterThan(1000000000);
 
     const withdrawableRewardsBefore = await egContract.getWithdrawableRewards(walletUserA);
     expect(parseInt(withdrawableRewardsBefore.amount)).toBeGreaterThan(0);
