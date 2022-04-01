@@ -94,12 +94,12 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
         values.dsoAddress,
       );
 
+      pinToken?.(contractAddress);
+      gtagTokenAction("create_token_success");
       setTxResult({
         contractAddress,
         msg: `You created token ${tokenName} (${contractAddress}).`,
       });
-      pinToken?.(contractAddress);
-      gtagTokenAction("create_token_success");
       await loadToken?.(contractAddress);
     } catch (error) {
       if (!(error instanceof Error)) return;
