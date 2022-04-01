@@ -16,7 +16,7 @@ const ToToken = (): JSX.Element => {
   return (
     <TokenRowWithdraw
       id="To"
-      tokens={[]}
+      tokenFilter="lp-only"
       hideSelectToken={true}
       setToken={setToken}
       token={values.selectTo}

@@ -63,6 +63,15 @@ export interface DownloadLogoResponse {
   readonly data: string;
 }
 
+interface PageResponse {
+  nextKey: Uint8Array;
+  total: Long;
+}
+interface QueryContractsByCodeResponse {
+  contracts: string[];
+  pagination?: PageResponse;
+}
+
 export class Contract20WS {
   readonly #signingClient: SigningCosmWasmClient;
 
@@ -175,6 +184,17 @@ export class Contract20WS {
     }
   }
 
+  static async getContracts(
+    codeId: number,
+    client: CosmWasmClient,
+    paginationKey?: Uint8Array | undefined,
+  ): Promise<QueryContractsByCodeResponse> {
+    const contractsResponse: QueryContractsByCodeResponse = await (client as any)
+      .forceGetQueryClient()
+      .wasm.listContractsByCodeId(codeId, paginationKey);
+    return contractsResponse;
+  }
+
   static async getAll(
     config: NetworkConfig,
     client: CosmWasmClient,
@@ -201,7 +221,6 @@ export class Contract20WS {
     const tokensInfos: TokenProps[] = [];
 
     while (tokensInfos.length < tokenAddresses.length) {
-      console.log({ tokensInfoslength: tokensInfos.length });
       const nextTokensInfos = await Promise.all(
         tokenAddresses
           .slice(tokensInfos.length, 300 + tokensInfos.length)
