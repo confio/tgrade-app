@@ -6,7 +6,10 @@ import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import { calculateFee, GasPrice, makeCosmoshubPath } from "@cosmjs/stargate";
+import {calculateFee, createProtobufRpcClient, GasPrice, makeCosmoshubPath, QueryClient} from "@cosmjs/stargate";
+import {QueryClientImpl} from "../../src/codec/confio/poe/v1beta1/query";
+import {Tendermint34Client} from "@cosmjs/tendermint-rpc";
+import {PoEContractType} from "../../src/codec/confio/poe/v1beta1/poe";
 
 /*
 Usage:
@@ -41,6 +44,11 @@ const localConfig = {
 
 const config = process.argv[2] === "network" ? networkConfig : localConfig;
 
+const tendermintClient = await Tendermint34Client.connect(config.rpcUrl);
+const queryClient = new QueryClient(tendermintClient);
+const rpcClient = createProtobufRpcClient(queryClient);
+const queryService = new QueryClientImpl(rpcClient);
+
 async function main() {
   // build signing client
   const mnemonic = Bip39.encode(Random.getBytes(16)).toString();
@@ -59,6 +67,10 @@ async function main() {
   console.info("...done");
 
   // Instantiate a factory
+  const { address: adminAddress } = await queryService.ContractAddress({
+    contractType: PoEContractType.VALIDATOR_VOTING,
+  });
+
   const { contractAddress: factoryAddress } = await client.instantiate(
     address,
     config.factoryCodeId,
@@ -68,7 +80,7 @@ async function main() {
     },
     "instantiate factory",
     calculateFee(config.gasLimitCreateFactory, config.gasPrice),
-    {admin: 'tgrade1rl8su3hadqqq2v86lscpuklsh2mh84cxqvjdew4jt9yd07dzekyq6xeazk'}
+    {admin: adminAddress}
   );
 
   console.info(`Factory instantiated with address: ${factoryAddress}`);
