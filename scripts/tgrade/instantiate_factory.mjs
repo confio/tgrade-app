@@ -1,15 +1,19 @@
-#!/usr/bin/env node
-/*jshint esversion: 8 */
+#!/usr/bin/env
 
-/* eslint-disable @typescript-eslint/naming-convention */
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import {calculateFee, createProtobufRpcClient, GasPrice, makeCosmoshubPath, QueryClient} from "@cosmjs/stargate";
-import {QueryClientImpl} from "../../src/codec/confio/poe/v1beta1/query";
-import {Tendermint34Client} from "@cosmjs/tendermint-rpc";
-import {PoEContractType} from "../../src/codec/confio/poe/v1beta1/poe";
+import {
+  calculateFee,
+  createProtobufRpcClient,
+  GasPrice,
+  makeCosmoshubPath,
+  QueryClient,
+} from "@cosmjs/stargate";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
+import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 
 /*
 Usage:
@@ -80,7 +84,7 @@ async function main() {
     },
     "instantiate factory",
     calculateFee(config.gasLimitCreateFactory, config.gasPrice),
-    {admin: adminAddress}
+    { admin: adminAddress },
   );
 
   console.info(`Factory instantiated with address: ${factoryAddress}`);
