@@ -103,8 +103,8 @@ describe("T-Market with Trusted Circle", () => {
 
     // Create pair
     const createPairValues: SwapFormValues = {
-      From: 1.0,
-      To: 10.0,
+      From: "1.0",
+      To: "10.0",
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };
@@ -120,8 +120,8 @@ describe("T-Market with Trusted Circle", () => {
     expect(pairs).toBeTruthy();
 
     const provideValues: ProvideFormValues = {
-      assetA: 1.0,
-      assetB: 10.0,
+      assetA: "1.0",
+      assetB: "10.0",
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };
@@ -236,8 +236,8 @@ describe("T-Market with Trusted Circle", () => {
 
     // Create pair ALPHA <-> TGN
     const createPairValues: SwapFormValues = {
-      From: 1.0,
-      To: 10.0,
+      From: "1.0",
+      To: "10.0",
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };
@@ -254,8 +254,8 @@ describe("T-Market with Trusted Circle", () => {
 
     // Provide liquidity
     const provideValues: ProvideFormValues = {
-      assetA: 1.0,
-      assetB: 10.0,
+      assetA: "1.0",
+      assetB: "10.0",
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };

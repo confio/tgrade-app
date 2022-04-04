@@ -41,7 +41,7 @@ export const handleValidation = async (
   if (!pair) return;
 
   //Check allowance A
-  if (values.selectFrom.address !== "utgd" && values.assetA) {
+  if (values.selectFrom.address !== "utgd") {
     const result = await Contract20WS.getAllowance(
       client,
       values.selectFrom.address,
@@ -79,22 +79,22 @@ export const handleValidation = async (
     to: undefined,
   };
   //Insufficient balance FROM
-  if (values.assetA && values.assetA > parseFloat(values.selectFrom.humanBalance)) {
+  if (Number(values.assetA) > Number(values.selectFrom.humanBalance)) {
     errors.from = "Insufficient Balance";
   }
 
   //Insufficient balance TO
-  if (values.assetB && values.assetB > parseFloat(values.selectTo.humanBalance)) {
+  if (Number(values.assetB) > Number(values.selectTo.humanBalance)) {
     errors.to = "Insufficient Balance";
   }
 
   //Insufficient provide FROM
-  if (!(values.assetA && values.assetA >= 0)) {
+  if (Number(values.assetA) < 0) {
     errors.from = "Must provide some liquidity";
   }
 
   //Insufficient provide TO
-  if (!(values.assetB && values.assetB >= 0)) {
+  if (Number(values.assetB) < 0) {
     errors.to = "Must provide some liquidity";
   }
 

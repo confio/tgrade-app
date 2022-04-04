@@ -45,7 +45,7 @@ const ToToken = (): JSX.Element => {
       )
         return;
 
-      if (values.assetB && values.assetB > 0 && values.assetA) {
+      if (values.assetB && Number(values.assetB) > 0 && values.assetA) {
         const val: SwapFormValues = {
           selectFrom: values.selectFrom,
           selectTo: values.selectTo,
@@ -78,7 +78,6 @@ const ToToken = (): JSX.Element => {
         if (!extraInfo) return;
         setExtraInfo(provideDispatch, extraInfo);
       } else {
-        setFieldValue("assetA", 0);
         setSimulationProvide(provideDispatch, undefined);
         setPool(provideDispatch, undefined);
       }

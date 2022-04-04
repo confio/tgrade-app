@@ -35,7 +35,7 @@ import { handleSubmit, handleValidation } from "./utils/form";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
-const initialValues: SwapFormValues = { To: 1.0, From: 1.0, selectFrom: undefined, selectTo: undefined };
+const initialValues: SwapFormValues = { To: "", From: "", selectFrom: undefined, selectTo: undefined };
 
 export default function Exchange(): JSX.Element {
   const { sdkState } = useSdk();
@@ -82,7 +82,7 @@ export default function Exchange(): JSX.Element {
             setNewError,
           );
         }}
-        onSubmit={async (values: SwapFormValues) => {
+        onSubmit={async (values: SwapFormValues, { setFieldValue }) => {
           await handleSubmit(
             values,
             signingClient,
@@ -98,6 +98,9 @@ export default function Exchange(): JSX.Element {
             refreshToken,
             setModalOpen,
           );
+
+          setFieldValue("From", "");
+          setFieldValue("To", "");
 
           if (values.selectFrom?.address) {
             await loadToken?.(values.selectFrom.address);
