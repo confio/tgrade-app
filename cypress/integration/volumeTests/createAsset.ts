@@ -57,11 +57,12 @@ describe("T-Market", () => {
     });
 
     // Set number of runs here 'Cypress._.times(100, (k) => {'
-    Cypress._.times(1, (k) => {
-      it(`Show created Asset ${k + 1} / 100`, () => {
+    Cypress._.times(2000, (k) => {
+      it(`Show created Asset ${k + 1} / 2000`, () => {
         let index = 1;
         const dynamicTokenName = tokenName + "+" + ++index;
-        cy.get(tMarketPage.getListOfCreatedTokens()).findByText(dynamicTokenName).should("be.visible");
+        //cy.get(tMarketPage.getListOfCreatedTokens()).findByText(dynamicTokenName).should("be.visible");
+        cy.wait(2000);
       });
     });
 
