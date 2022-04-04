@@ -14,6 +14,7 @@ import { lazy, useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
 import { updateLPToken, useTMarket } from "service/tmarket";
+import { useTokens } from "service/tokens";
 import { setDetailWithdraw, setLoading, setWithdrawButtonState, useWithdraw } from "service/withdraw";
 import { DetailWithdraw, LPToken, Token, WithdrawFormValues } from "utils/tokens";
 
@@ -35,6 +36,9 @@ const initialValues: WithdrawFormValues = {
 export default function Withdraw(): JSX.Element {
   const { path } = useRouteMatch();
   const { sdkState } = useSdk();
+  const {
+    tokensState: { loadToken },
+  } = useTokens();
   const { tMarketDispatch } = useTMarket();
   const { withdrawState, withdrawDispatch } = useWithdraw();
   const history = useHistory();
@@ -56,8 +60,8 @@ export default function Withdraw(): JSX.Element {
   return (
     <>
       <Formik
-        onSubmit={(values) =>
-          handleSubmit(
+        onSubmit={async (values) => {
+          await handleSubmit(
             values,
             client,
             signingClient,
@@ -70,8 +74,15 @@ export default function Withdraw(): JSX.Element {
             updateLP,
             history,
             setModalOpen,
-          )
-        }
+          );
+
+          if (values.selectFrom?.address) {
+            await loadToken?.(values.selectFrom.address);
+          }
+          if (values.selectTo?.address) {
+            await loadToken?.(values.selectTo.address);
+          }
+        }}
         initialValues={initialValues}
       >
         <CardCustom>

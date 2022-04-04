@@ -10,6 +10,7 @@ import {
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, ThemeProvider } from "service";
 import TMarketProvider from "service/tmarket";
+import TokensProvider from "service/tokens";
 
 import { InformationMessage } from "./components/InformationMessage/style";
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -36,48 +37,50 @@ export default function App(): JSX.Element {
           <ErrorProvider>
             <ReactQueryClientProvider client={new ReactQueryClient()}>
               <SdkProvider config={config}>
-                <OcProvider>
-                  <Suspense fallback={null}>
-                    <ThemeProvider>
-                      <Router basename={process.env.PUBLIC_URL}>
-                        <LayoutProvider>
-                          <Switch>
-                            <Suspense fallback={<LoadingSpinner fullPage />}>
-                              <Route exact path={paths.root}>
-                                <Redirect to={`${paths.dso.prefix}`} />
-                              </Route>
-                              <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
-                                <DsoProvider>
-                                  <Dso />
-                                </DsoProvider>
-                              </Route>
-                              <Route path={paths.engagement.prefix}>
-                                <Engagement />
-                              </Route>
-                              <Route path={paths.validators.prefix}>
-                                <ValidatorsHome />
-                              </Route>
-                              <Route path={paths.oc.prefix}>
-                                <OcHome />
-                              </Route>
-                              <Route path={paths.cpool.prefix}>
-                                <CPoolHome />
-                              </Route>
-                              <Route path={`${paths.tmarket.prefix}`}>
-                                <TMarketProvider>
-                                  <TMarketHome />
-                                </TMarketProvider>
-                              </Route>
-                              <Route path={`${paths.documentation.prefix}`}>
-                                <DocumentationPage />
-                              </Route>
-                            </Suspense>
-                          </Switch>
-                        </LayoutProvider>
-                      </Router>
-                    </ThemeProvider>
-                  </Suspense>
-                </OcProvider>
+                <TokensProvider>
+                  <OcProvider>
+                    <Suspense fallback={null}>
+                      <ThemeProvider>
+                        <Router basename={process.env.PUBLIC_URL}>
+                          <LayoutProvider>
+                            <Switch>
+                              <Suspense fallback={<LoadingSpinner fullPage />}>
+                                <Route exact path={paths.root}>
+                                  <Redirect to={`${paths.dso.prefix}`} />
+                                </Route>
+                                <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
+                                  <DsoProvider>
+                                    <Dso />
+                                  </DsoProvider>
+                                </Route>
+                                <Route path={paths.engagement.prefix}>
+                                  <Engagement />
+                                </Route>
+                                <Route path={paths.validators.prefix}>
+                                  <ValidatorsHome />
+                                </Route>
+                                <Route path={paths.oc.prefix}>
+                                  <OcHome />
+                                </Route>
+                                <Route path={paths.cpool.prefix}>
+                                  <CPoolHome />
+                                </Route>
+                                <Route path={`${paths.tmarket.prefix}`}>
+                                  <TMarketProvider>
+                                    <TMarketHome />
+                                  </TMarketProvider>
+                                </Route>
+                                <Route path={`${paths.documentation.prefix}`}>
+                                  <DocumentationPage />
+                                </Route>
+                              </Suspense>
+                            </Switch>
+                          </LayoutProvider>
+                        </Router>
+                      </ThemeProvider>
+                    </Suspense>
+                  </OcProvider>
+                </TokensProvider>
               </SdkProvider>
             </ReactQueryClientProvider>
           </ErrorProvider>

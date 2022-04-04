@@ -1,6 +1,5 @@
 import { Decimal } from "@cosmjs/math";
 import { TokenRow } from "App/pages/TMarket/components";
-import { getLPTokensList } from "App/pages/TMarket/utils";
 import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { useSdk } from "service";
@@ -14,7 +13,7 @@ const FromToken = (): JSX.Element => {
   const { tMarketState } = useTMarket();
   const { withdrawState, withdrawDispatch } = useWithdraw();
   const { sdkState } = useSdk();
-  const { lpTokens, estimatingFromA, tokens, searchText } = tMarketState;
+  const { lpTokens, estimatingFromA, tokens } = tMarketState;
   const { address, client, config } = sdkState;
   const setToken = (value: TokenProps) => {
     setValues({
@@ -102,11 +101,10 @@ const FromToken = (): JSX.Element => {
     //eslint-disable-next-line
   }, [estimatingFromA, values.From]);
 
-  const tokensArr = getLPTokensList(tMarketState.lpTokens, searchText);
   return (
     <TokenRow
       id="From"
-      tokens={tokensArr}
+      tokenFilter="lp-only"
       setToken={setToken}
       token={values.selectFrom}
       position="Top"

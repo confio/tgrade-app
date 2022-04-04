@@ -2,6 +2,7 @@ import { Col, Row } from "antd";
 import MaxButton from "App/components/MaxButton";
 import { lazy, useState } from "react";
 import { setSearchText, useTMarket } from "service/tmarket";
+import { useTokens } from "service/tokens";
 import { TokenRowProps } from "utils/tokens";
 
 import SelectTokenTrigger from "../SelectTokenTrigger";
@@ -28,12 +29,15 @@ function TokenRow({
   setToken,
   hideSelectToken,
   error,
-  tokens,
+  tokenFilter,
   onChange,
 }: TokenRowProps): JSX.Element {
+  const {
+    tokensState: { tokens },
+  } = useTokens();
   const { tMarketDispatch } = useTMarket();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const balance = token ? tokens.find((t) => t.address === token.address)?.humanBalance : "0";
+  const balance = token ? tokens.get(token.address)?.humanBalance : "0";
 
   return (
     <div>
@@ -71,13 +75,13 @@ function TokenRow({
           </Row>
         </Col>
         <SelectTokenModal
-          tokens={tokens}
+          isModalOpen={isModalOpen}
           closeModal={() => {
             setIsModalOpen(false);
             setSearchText(tMarketDispatch, "");
           }}
-          isModalOpen={isModalOpen}
           setToken={setToken}
+          tokenFilter={tokenFilter}
         />
       </TokenContainer>
       {error ? <ErrorContainer>{error}</ErrorContainer> : null}

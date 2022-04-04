@@ -35,7 +35,7 @@ async function main() {
   await faucet.credit(address, config.feeDenom);
   console.info("...done");
 
-  //CW20-base - codeid: 9
+  //CW20-base - codeid: 10
   console.info("Uploading CW20 Base wasm...");
   const cw20 = "cw20_base.wasm";
   let wasmCW20 = fs.readFileSync(path.join(process.cwd(), "contracts", cw20));
@@ -47,7 +47,7 @@ async function main() {
   );
   console.info(`Upload CW20-base Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptCW20)}`);
 
-  //Trusted token: 10
+  //Trusted token: 11
   console.info("Uploading trusted token wasm...");
   const dsoToken = "trusted_token.wasm";
   let wasmDsoToken = fs.readFileSync(path.join(process.cwd(), "contracts", dsoToken));
@@ -59,7 +59,7 @@ async function main() {
   );
   console.info(`Upload trusted token Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptDsoToken)}`);
 
-  //factory: 11
+  //factory: 12
   console.info("Uploading TFI Factory wasm...");
   const factory = "tfi_factory.wasm";
   let wasmFactory = fs.readFileSync(path.join(process.cwd(), "contracts", factory));
@@ -71,7 +71,7 @@ async function main() {
   );
   console.info(`Upload Factory Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptFactory)}`);
 
-  // Pair Contract: 12
+  // Pair Contract: 13
   console.info("Uploading TFI Pair wasm...");
   const pair = "tfi_pair.wasm";
   let wasmPair = fs.readFileSync(path.join(process.cwd(), "contracts", pair));

@@ -55,24 +55,24 @@ const local: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
-  factoryAddress: "tgrade1fventeva948ue0fzhp6xselr522rnqwger9wg7r0g9f4jemsqh6sd9g4hg",
+  factoryAddress: "tgrade1657pee2jhf4jk8pq6yq64e758ngvum45gl866knmjkd83w6jgn3smag42h",
   codeIds: {
-    // The first 8 codeIds are reserved by tgrade automatically when launched
+    // The first 9 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [2],
-    cw20Tokens: [9],
-    tgradeCw20: [10],
-    tgradeFactory: [11],
-    tgradePair: [12],
+    cw20Tokens: [10],
+    tgradeCw20: [11],
+    tgradeFactory: [12],
+    tgradePair: [13],
   },
 };
 
 const tgradeInternal: NetworkConfig = {
-  chainId: "tgrade-internal-9",
-  chainName: "Tgrade-internal-9",
+  chainId: "tgrade-internal-10",
+  chainName: "Tgrade-internal-10",
   addressPrefix: "tgrade",
-  rpcUrl: "https://rpc.internal-9.tgrade.io",
-  httpUrl: "https://lcd.internal-9.tgrade.io",
-  faucetUrl: "https://faucet.internal-9.tgrade.io",
+  rpcUrl: "https://rpc.internal-10.tgrade.confio.run",
+  httpUrl: "https://lcd.internal-10.tgrade.confio.run",
+  faucetUrl: "https://faucet.internal-10.tgrade.confio.run",
   feeToken: "utgd",
   stakingToken: "utgd",
   faucetTokens: ["utgd"],
@@ -80,14 +80,14 @@ const tgradeInternal: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
-  factoryAddress: "tgrade1fventeva948ue0fzhp6xselr522rnqwger9wg7r0g9f4jemsqh6sd9g4hg",
+  factoryAddress: "tgrade1657pee2jhf4jk8pq6yq64e758ngvum45gl866knmjkd83w6jgn3smag42h",
   codeIds: {
-    // The first 8 codeIds are reserved by tgrade automatically when launched
+    // The first 9 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [2],
-    cw20Tokens: [9],
-    tgradeCw20: [10],
-    tgradeFactory: [11],
-    tgradePair: [12],
+    cw20Tokens: [10],
+    tgradeCw20: [11],
+    tgradeFactory: [12],
+    tgradePair: [13],
   },
 };
 

@@ -1,6 +1,32 @@
 import { List } from "antd";
 import styled from "styled-components";
 
+export const StyledList = styled(List)`
+  & :not(.ant-pagination-disabled) > .ant-pagination-item-link:hover {
+    border-color: var(--color-primary);
+  }
+
+  & .ant-pagination-item-active,
+  & .ant-pagination-item:hover {
+    border-color: var(--color-primary);
+
+    & a {
+      color: var(--color-primary);
+    }
+  }
+
+  & .ant-pagination-options-size-changer:hover {
+    & .ant-select-selector {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    & .ant-select-arrow {
+      color: var(--color-primary);
+    }
+  }
+`;
+
 export const TokenListItem = styled(List.Item)`
   cursor: pointer;
   display: flex;
@@ -45,6 +71,8 @@ export const ContainerNames = styled.div`
 `;
 
 export const ContainerNumbersPin = styled.div`
+  margin-right: 14px;
+
   display: flex;
   align-items: center;
   gap: var(--s-4);

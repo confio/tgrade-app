@@ -18,7 +18,7 @@ function TokenRowWithdraw({
   setToken,
   hideSelectToken,
   error,
-  tokens,
+  tokenFilter,
   onChange,
 }: TokenRowProps): JSX.Element {
   const { tMarketDispatch } = useTMarket();
@@ -60,13 +60,13 @@ function TokenRowWithdraw({
           </Row>
         </Col>
         <SelectTokenModal
-          tokens={tokens}
+          isModalOpen={isModalOpen}
           closeModal={() => {
             setIsModalOpen(false);
             setSearchText(tMarketDispatch, "");
           }}
-          isModalOpen={isModalOpen}
           setToken={setToken}
+          tokenFilter={tokenFilter}
         />
       </TokenContainer>
       {error ? <ErrorContainer>{error}</ErrorContainer> : null}

@@ -3,11 +3,9 @@ import pinDarkIcon from "App/assets/icons/pin-dark.svg";
 import pinLightIcon from "App/assets/icons/pin-light.svg";
 import SendTokenModal from "App/components/SendTokenModal";
 import Stack from "App/components/Stack/style";
-import { getTokensList } from "App/pages/TMarket/utils";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSdk } from "service";
-import { Contract20WS } from "utils/cw20";
-import { usePinnedTokens } from "utils/storage";
+import { tokensMapToArray, useTokens } from "service/tokens";
 import { TokenProps } from "utils/tokens";
 
 import { BalancesContainer, BalancesItem, SearchToken, TokenDetailPin, TokenLogoName } from "./style";
@@ -16,52 +14,37 @@ const { Text } = Typography;
 
 export function BalancesList(): JSX.Element {
   const {
-    sdkState: { address, config, client },
+    sdkState: { config },
   } = useSdk();
+  const {
+    tokensState: { pinnedTokens, pinUnpinToken, reloadPinnedTokensOnly, tokens },
+  } = useTokens();
 
   const [searchText, setSearchText] = useState("");
   const [tokenList, setTokenList] = useState<readonly TokenProps[]>([]);
-  const [pinnedTokens, setPinnedTokens] = usePinnedTokens();
   const [selectedToken, setSelectedToken] = useState<TokenProps>();
 
-  const compareTokensWithPinned = useCallback(
-    function (a: TokenProps, b: TokenProps): -1 | 0 | 1 {
-      if (pinnedTokens.includes(a.address) && !pinnedTokens.includes(b.address)) return -1;
-      if (!pinnedTokens.includes(a.address) && pinnedTokens.includes(b.address)) return 1;
-
-      if (a.symbol < b.symbol) return -1;
-      if (a.symbol > b.symbol) return 1;
-
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return 1;
-
-      return 0;
-    },
-    [pinnedTokens],
-  );
-
-  const refreshBalances = useCallback(async () => {
-    if (!address || !client) return;
-
-    const tokens = await Contract20WS.getAll(config, client, address);
-    const tokenList = getTokensList(tokens, searchText);
-    const filteredTokensList = tokenList.filter((token) => token.balance !== "0");
-
-    const sortedTokensList = filteredTokensList.slice().sort(compareTokensWithPinned);
-    setTokenList(sortedTokensList);
-  }, [address, client, compareTokensWithPinned, config, searchText]);
+  useEffect(() => {
+    (async function () {
+      await reloadPinnedTokensOnly?.();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    refreshBalances();
-  }, [refreshBalances]);
+    const tokenList = tokensMapToArray(tokens, config.feeToken);
+    const filteredTokensList = tokenList
+      .filter((token) => pinnedTokens.includes(token.address))
+      .filter((token) => token.balance !== "0")
+      .filter(
+        (token) =>
+          token.symbol.toLowerCase().search(searchText.toLowerCase()) !== -1 ||
+          token.name.toLowerCase().search(searchText.toLowerCase()) !== -1 ||
+          token.address.toLowerCase().search(searchText.toLowerCase()) !== -1,
+      );
 
-  function pinUnpin(address: string) {
-    if (pinnedTokens.includes(address)) {
-      setPinnedTokens((tokens) => tokens.filter((token) => token !== address));
-    } else {
-      setPinnedTokens((tokens) => [...tokens, address]);
-    }
-  }
+    setTokenList(filteredTokensList);
+  }, [config.feeToken, pinnedTokens, searchText, tokens]);
 
   return (
     <Stack gap="s1">
@@ -95,17 +78,19 @@ export function BalancesList(): JSX.Element {
                     token.address === "utgd" ? false : { text: token.address, tooltips: "Copy token address" }
                   }
                 >
-                  {token.address === "utgd" ? "native" : `…${token.address.slice(-10)}`}
+                  {token.address === "utgd" ? "Tgrade token" : `…${token.address.slice(-10)}`}
                 </Text>
               </div>
-              <img
-                src={pinnedTokens.includes(token.address) ? pinDarkIcon : pinLightIcon}
-                alt={pinnedTokens.includes(token.address) ? "Unpin token" : "Pin token"}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  pinUnpin(token.address);
-                }}
-              />
+              {token.address !== config.feeToken ? (
+                <img
+                  src={pinnedTokens.includes(token.address) ? pinDarkIcon : pinLightIcon}
+                  alt={pinnedTokens.includes(token.address) ? "Unpin token" : "Pin token"}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    pinUnpinToken?.(token.address);
+                  }}
+                />
+              ) : null}
             </TokenDetailPin>
           </BalancesItem>
         ))}
@@ -116,7 +101,6 @@ export function BalancesList(): JSX.Element {
           setSelectedToken(undefined);
         }}
         selectedToken={selectedToken}
-        refreshBalances={refreshBalances}
       />
     </Stack>
   );

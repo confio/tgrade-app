@@ -8,6 +8,7 @@ import { Formik } from "formik";
 import { Form } from "formik-antd";
 import { useState } from "react";
 import { useError, useSdk } from "service";
+import { useTokens } from "service/tokens";
 import { displayAmountToNative, sendTokens } from "utils/currency";
 import { Contract20WS } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
@@ -33,19 +34,21 @@ interface SendTokenModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly selectedToken?: TokenProps;
-  readonly refreshBalances: () => Promise<void>;
 }
 
 export default function SendTokenModal({
   isModalOpen,
   closeModal,
   selectedToken,
-  refreshBalances,
 }: SendTokenModalProps): JSX.Element | null {
   const { handleError } = useError();
   const {
     sdkState: { address, config, signingClient },
   } = useSdk();
+  const {
+    tokensState: { loadToken },
+  } = useTokens();
+
   const [txResult, setTxResult] = useState<TxResult>();
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -78,7 +81,7 @@ export default function SendTokenModal({
       setTxResult({
         msg: `${amount} ${selectedToken.symbol} sent to ${recipient}. Transaction ID: ${txHash}`,
       });
-      await refreshBalances();
+      await loadToken?.(selectedToken.address);
     } catch (error) {
       if (!(error instanceof Error)) return;
       setTxResult({ error: getErrorFromStackTrace(error) });

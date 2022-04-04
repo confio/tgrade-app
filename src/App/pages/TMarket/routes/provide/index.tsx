@@ -27,6 +27,7 @@ import {
   useProvide,
 } from "service/provide";
 import { updatePairs, updateToken, useTMarket } from "service/tmarket";
+import { useTokens } from "service/tokens";
 import {
   DetailProvide,
   PairProps,
@@ -55,6 +56,9 @@ export default function Provide(): JSX.Element {
   const {
     sdkState: { config, client, address, signingClient },
   } = useSdk();
+  const {
+    tokensState: { loadToken },
+  } = useTokens();
   const history = useHistory();
   const { tMarketState, tMarketDispatch } = useTMarket();
   const { pairs } = tMarketState;
@@ -106,7 +110,7 @@ export default function Provide(): JSX.Element {
             setProvideButton,
           );
         }}
-        onSubmit={async (values: ProvideFormValues) =>
+        onSubmit={async (values: ProvideFormValues) => {
           await handleSubmit(
             values,
             signingClient,
@@ -125,8 +129,15 @@ export default function Provide(): JSX.Element {
             refreshToken,
             refreshPairs,
             setModalOpen,
-          )
-        }
+          );
+
+          if (values.selectFrom?.address) {
+            await loadToken?.(values.selectFrom.address);
+          }
+          if (values.selectTo?.address) {
+            await loadToken?.(values.selectTo.address);
+          }
+        }}
         initialValues={initialValues}
       >
         <CardCustom>
