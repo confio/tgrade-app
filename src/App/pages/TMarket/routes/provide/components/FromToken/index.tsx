@@ -37,7 +37,7 @@ const FromToken = (): JSX.Element => {
     if (values.selectFrom) {
       setValues({
         ...values,
-        assetA: parseFloat(values.selectFrom.humanBalance) - Number(sdkState.config.gasPrice.amount),
+        assetA: (Number(values.selectFrom.humanBalance) - Number(sdkState.config.gasPrice.amount)).toString(),
       });
     }
   };
@@ -55,7 +55,7 @@ const FromToken = (): JSX.Element => {
       )
         return;
 
-      if (values.assetA && values.assetA > 0 && values.assetB) {
+      if (values.assetA && Number(values.assetA) > 0 && values.assetB) {
         const pool_result: PoolProps = await Pool.queryPool(client, selectedPair?.contract_addr);
 
         if (parseFloat(pool_result.total_share) === 0) {
@@ -85,7 +85,6 @@ const FromToken = (): JSX.Element => {
         if (!extraInfo) return;
         setExtraInfo(provideDispatch, extraInfo);
       } else {
-        setFieldValue("assetB", 0);
         setSimulationProvide(provideDispatch, undefined);
         setExtraInfo(provideDispatch, undefined);
         setPool(provideDispatch, undefined);

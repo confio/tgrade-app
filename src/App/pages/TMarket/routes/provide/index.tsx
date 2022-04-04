@@ -45,8 +45,8 @@ import { handleSubmit, handleValidation } from "./utils/form";
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 
 const initialValues: ProvideFormValues = {
-  assetA: 1.0,
-  assetB: 1.0,
+  assetA: "",
+  assetB: "",
   selectFrom: undefined,
   selectTo: undefined,
 };
@@ -110,7 +110,7 @@ export default function Provide(): JSX.Element {
             setProvideButton,
           );
         }}
-        onSubmit={async (values: ProvideFormValues) => {
+        onSubmit={async (values: ProvideFormValues, { setFieldValue }) => {
           await handleSubmit(
             values,
             signingClient,
@@ -131,6 +131,9 @@ export default function Provide(): JSX.Element {
             setModalOpen,
           );
 
+          setFieldValue("assetA", "");
+          setFieldValue("assetB", "");
+
           if (values.selectFrom?.address) {
             await loadToken?.(values.selectFrom.address);
           }
@@ -140,31 +143,40 @@ export default function Provide(): JSX.Element {
         }}
         initialValues={initialValues}
       >
-        <CardCustom>
-          <MenuAMM />
-          <FormCustom>
-            <FromToken />
-            <MiddleRow>
-              <PlusIcon />
-            </MiddleRow>
-            <ToToken />
-            <Divider />
-            <EmptyPoolTip />
-            <ExtraInfo fee={calculateFee(Token.GAS_PROVIDE_LIQUIDITY, config.gasPrice)} />
-            <ApproveTokensRow />
-            <EstimatedMessage />
-            <SubmitButton
-              disabled={
-                (!isTokenApprovedA || !isTokenApprovedB || !!errors.from || !!errors.to) &&
-                selectedPair !== undefined
-              }
-              loading={loading}
-              title={provideButtonState.title}
-            />
-          </FormCustom>
-          <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
-          <ExitIcon />
-        </CardCustom>
+        {({ values }) => (
+          <CardCustom>
+            <MenuAMM />
+            <FormCustom>
+              <FromToken />
+              <MiddleRow>
+                <PlusIcon />
+              </MiddleRow>
+              <ToToken />
+              <Divider />
+              <EmptyPoolTip />
+              <ExtraInfo fee={calculateFee(Token.GAS_PROVIDE_LIQUIDITY, config.gasPrice)} />
+              <ApproveTokensRow />
+              <EstimatedMessage />
+              <SubmitButton
+                disabled={
+                  (!values.assetA ||
+                    values.assetA === "0" ||
+                    !values.assetB ||
+                    values.assetB === "0" ||
+                    !isTokenApprovedA ||
+                    !isTokenApprovedB ||
+                    !!errors.from ||
+                    !!errors.to) &&
+                  selectedPair !== undefined
+                }
+                loading={loading}
+                title={provideButtonState.title}
+              />
+            </FormCustom>
+            <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
+            <ExitIcon />
+          </CardCustom>
+        )}
       </Formik>
       <ProvideResultModal isModalOpen={!!detailProvide} />
     </>
