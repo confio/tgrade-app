@@ -95,9 +95,7 @@
     "cy:open:local": "cypress open --config-file localhost-config.json",
     "cy:open:stage": "cypress open --config-file staging-config.json",
     "cy:run": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome",
-    "cy:volume:tc": "npx cypress run --browser chrome --config-file staging-config.json --spec 'cypress/integration/volumeTests/createTC.ts'",
-    "cy:volume:non-voting": "npx cypress run --browser chrome --config-file staging-config.json --spec 'cypress/integration/volumeTests/addNonVotingMemeber.ts'",
-    "cy:volume:asset": "npx cypress run --browser chrome --config-file staging-config.json --spec 'cypress/integration/volumeTests/createAsset.ts'"
+    "cy:volume": "npx cypress run --browser chrome --config-file staging-config.json --spec 'cypress/integration/volumeTests/**.ts'"
   },
   "browserslist": [
     "last 2 chrome versions",
