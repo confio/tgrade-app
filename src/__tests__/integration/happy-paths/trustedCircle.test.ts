@@ -487,8 +487,8 @@ describe("Trusted Circle", () => {
 
     // Create pair
     const createPairValues: SwapFormValues = {
-      From: 1.0,
-      To: 10.0,
+      From: "1.0",
+      To: "10.0",
       selectFrom: tgradeToken,
       selectTo: tcTokenInfo,
     };
