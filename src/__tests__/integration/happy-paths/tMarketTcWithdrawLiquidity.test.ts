@@ -65,8 +65,8 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
 
   // Create pair
   const createPairValues: SwapFormValues = {
-    From: 1.0,
-    To: 10.0,
+    From: "1.0",
+    To: "10.0",
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
@@ -77,8 +77,8 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
 
   // Provide liquidity
   const provideValues: ProvideFormValues = {
-    assetA: 1.0,
-    assetB: 10.0,
+    assetA: "1.0",
+    assetB: "10.0",
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
@@ -98,8 +98,8 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
 
   // Swap with TGD
   const swapPairValues: SwapFormValues = {
-    From: 1.0,
-    To: 0.0, // This is simulated
+    From: "1.0",
+    To: "0.0", // This is simulated
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
@@ -113,7 +113,7 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
   expect(lpToken).toBeTruthy();
 
   const withdrawPairValues: WithdrawFormValues = {
-    From: parseFloat(lpToken.humanBalance),
+    From: lpToken.humanBalance,
     To: "1.0",
     selectFrom: lpToken,
     selectTo: undefined,
@@ -204,8 +204,8 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
 
   // Create pair
   const createPairValues: SwapFormValues = {
-    From: 1.0,
-    To: 10.0,
+    From: "1.0",
+    To: "10.0",
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
@@ -227,8 +227,8 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
 
   // Provide liquidity
   const provideValues: ProvideFormValues = {
-    assetA: 1.0,
-    assetB: 10.0,
+    assetA: "1.0",
+    assetB: "10.0",
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
@@ -245,8 +245,8 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
 
   // Swap with TGD
   const swapPairValues: SwapFormValues = {
-    From: 1.0,
-    To: 0.0, // This is simulated
+    From: "1.0",
+    To: "0.0", // This is simulated
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
@@ -260,7 +260,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
   expect(lpToken).toBeTruthy();
 
   const withdrawPairValues: WithdrawFormValues = {
-    From: parseFloat(lpToken.humanBalance),
+    From: lpToken.humanBalance,
     To: "1.0",
     selectFrom: lpToken,
     selectTo: undefined,

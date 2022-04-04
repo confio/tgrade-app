@@ -119,8 +119,8 @@ describe("T-Market", () => {
     };
 
     const createPairValues: SwapFormValues = {
-      From: 1.0,
-      To: 5.0,
+      From: "1.0",
+      To: "5.0",
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };
@@ -190,8 +190,8 @@ describe("T-Market", () => {
     };
 
     const createPairValues: SwapFormValues = {
-      From: 1.0,
-      To: 5.0,
+      From: "1.0",
+      To: "5.0",
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };
@@ -208,8 +208,8 @@ describe("T-Market", () => {
 
     // Provide liquidity
     const provideValues: ProvideFormValues = {
-      assetA: 1.0,
-      assetB: 8.0,
+      assetA: "1.0",
+      assetB: "8.0",
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };
@@ -279,8 +279,8 @@ describe("T-Market", () => {
     };
 
     const createPairValues: SwapFormValues = {
-      From: 1.0,
-      To: 5.0,
+      From: "1.0",
+      To: "5.0",
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };
@@ -297,8 +297,8 @@ describe("T-Market", () => {
 
     // Provide liquidity
     const provideValues: ProvideFormValues = {
-      assetA: 1.0,
-      assetB: 8.0,
+      assetA: "1.0",
+      assetB: "8.0",
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };
@@ -319,8 +319,8 @@ describe("T-Market", () => {
 
     // Swap with TGD
     const swapPairValues: SwapFormValues = {
-      From: 1.0,
-      To: 0.0, // This is simulated
+      From: "1.0",
+      To: "0.0", // This is simulated
       selectFrom: tgradeToken,
       selectTo: cw20tokenInfo,
     };
