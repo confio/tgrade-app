@@ -4,16 +4,21 @@ import { useFormikContext } from "formik";
 import { useEffect } from "react";
 import { useSdk } from "service";
 import { useTMarket } from "service/tmarket";
+import { useTokens } from "service/tokens";
 import { FormErrors, setDetailWithdraw, setErrors, setSelectedLP, useWithdraw } from "service/withdraw";
 import { Contract20WS } from "utils/cw20";
 import { Pool, PoolProps, TokenProps, WithdrawFormValues } from "utils/tokens";
 
 const FromToken = (): JSX.Element => {
   const { values, setValues, setFieldValue } = useFormikContext<WithdrawFormValues>();
-  const { tMarketState } = useTMarket();
+  const {
+    tokensState: { tokens },
+  } = useTokens();
+  const {
+    tMarketState: { estimatingFromA, pairs },
+  } = useTMarket();
   const { withdrawState, withdrawDispatch } = useWithdraw();
   const { sdkState } = useSdk();
-  const { lpTokens, estimatingFromA, tokens } = tMarketState;
   const { address, client, config } = sdkState;
   const setToken = (value: TokenProps) => {
     setValues({
@@ -34,12 +39,19 @@ const FromToken = (): JSX.Element => {
         to: undefined,
         from: undefined,
       };
-      if (!values.selectFrom || !client || values.From === 0) {
+      if (!address || !values.selectFrom || !client || Number(values.From) === 0) {
         setErrors(withdrawDispatch, errors);
         return;
       }
-      const lpToken = lpTokens[values.selectFrom.address];
+      //TODO wire this with new tokens
+      const lpToken = tokens.get(values.selectFrom.address);
       if (!lpToken) return;
+
+      const pair = Object.values(pairs).find((pair) => pair.liquidity_token === lpToken.address);
+      if (!pair) return;
+
+      const result: PoolProps = await Pool.queryPool(client, pair.contract_addr);
+      const total_supply = Decimal.fromAtomics(lpToken.total_supply, lpToken.decimals).toFloatApproximation();
       if (Number(values.From) > total_supply) {
         errors.from = "Insufficient liquidity for withdrawing this quantity";
         setErrors(withdrawDispatch, errors);
@@ -48,9 +60,11 @@ const FromToken = (): JSX.Element => {
       const indexA = result.assets[0].info?.native || result.assets[0].info?.token;
       const indexB = result.assets[1].info?.native || result.assets[1].info?.token;
       if (!indexA || !indexB) return;
-      const symbolA = tokens[result.assets[0].info?.native || result.assets[0].info?.token || ""].symbol;
-      const symbolB = tokens[result.assets[1].info?.native || result.assets[1].info?.token || ""].symbol;
-      if (!address) return;
+
+      const symbolA = tokens.get(indexA)?.symbol;
+      const symbolB = tokens.get(indexB)?.symbol;
+      if (!symbolA || !symbolB) return;
+
       const decimalsA = (
         await Contract20WS.getTokenInfo(
           client,
@@ -92,11 +106,21 @@ const FromToken = (): JSX.Element => {
         exchanged: `${values.From} LP`,
         fee: (Number(config.gasPrice.amount) / 2).toString(),
       });
-      setSelectedLP(withdrawDispatch, lpToken);
+      setSelectedLP(withdrawDispatch, { token: lpToken, pair });
       setErrors(withdrawDispatch, errors);
     })();
-    //eslint-disable-next-line
-  }, [estimatingFromA, values.From]);
+  }, [
+    estimatingFromA,
+    address,
+    client,
+    config,
+    pairs,
+    setFieldValue,
+    tokens,
+    values.From,
+    values.selectFrom,
+    withdrawDispatch,
+  ]);
 
   return (
     <TokenRow
