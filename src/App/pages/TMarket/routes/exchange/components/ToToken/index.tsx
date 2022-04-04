@@ -27,7 +27,7 @@ const ToToken = (): JSX.Element => {
     (async () => {
       if (!client || !address || !values.selectFrom || !values.selectTo || !pairs || !estimatingFromB) return;
 
-      if (values.To > 0 && swapButton.type === "swap" && selectedPair) {
+      if (Number(values.To) > 0 && swapButton.type === "swap" && selectedPair) {
         const simulation_result: SimulatedSwap | null = await Token.getSimulationReverse(
           client,
           selectedPair,

@@ -25,11 +25,12 @@ const FromToken = (): JSX.Element => {
 
   const setMax = (): void => {
     if (!values.selectFrom) return;
-    const humanBalance = Number(values.selectFrom.humanBalance);
-    if (humanBalance < Number(config.gasPrice.amount)) return;
+
+    const balanceMinusGas = Number(values.selectFrom.humanBalance) - Number(config.gasPrice.amount);
+    if (balanceMinusGas < 0) return;
 
     if (values.selectFrom) {
-      setValues({ ...values, From: humanBalance - Number(config.gasPrice.amount) });
+      setValues({ ...values, From: balanceMinusGas.toString() });
     }
     setEstimatingFromA(tMarketDispatch);
   };
@@ -38,7 +39,7 @@ const FromToken = (): JSX.Element => {
     (async () => {
       if (!client || !address || !values.selectFrom || !values.selectTo || !pairs || !estimatingFromA) return;
       //QUERY simulation
-      if (values.From > 0 && swapButton.type === "swap" && selectedPair) {
+      if (Number(values.From) > 0 && swapButton.type === "swap" && selectedPair) {
         const simulation_result: SimulatedSwap | null = await Token.getSimulation(
           client,
           selectedPair,
@@ -48,7 +49,7 @@ const FromToken = (): JSX.Element => {
         setSimulatedSwap(exchangeDispatch, simulation_result);
         setFieldValue("To", parseFloat(simulation_result.return_amount));
       } else {
-        setFieldValue("To", 0);
+        setFieldValue("To", "");
 
         setSimulatedSwap(exchangeDispatch, undefined);
       }

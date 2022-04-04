@@ -50,7 +50,7 @@ export const handleValidation = async (
     to: undefined,
     from: undefined,
   };
-  if (values.From > parseFloat(values.selectFrom.humanBalance)) {
+  if (Number(values.From) > Number(values.selectFrom.humanBalance)) {
     errors.from = "Insufficient Balance";
   }
 
