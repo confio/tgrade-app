@@ -126,7 +126,7 @@ jobs:
           key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - ~/.cache
-      - run: yarn cy:volume
+      - run: yarn cy:volume:dev
       - store_artifacts:
           name: Uploading cypress/videos artifacts
           path: cypress/videos
