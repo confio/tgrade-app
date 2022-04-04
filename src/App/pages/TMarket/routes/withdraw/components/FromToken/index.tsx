@@ -24,7 +24,7 @@ const FromToken = (): JSX.Element => {
 
   const setMax = (): void => {
     if (values.selectFrom) {
-      setValues({ ...values, From: parseFloat(values.selectFrom.humanBalance) });
+      setValues({ ...values, From: values.selectFrom.humanBalance });
     }
   };
 
@@ -40,10 +40,7 @@ const FromToken = (): JSX.Element => {
       }
       const lpToken = lpTokens[values.selectFrom.address];
       if (!lpToken) return;
-      const token = lpToken.token;
-      const result: PoolProps = await Pool.queryPool(client, lpToken.pair.contract_addr);
-      const total_supply = Decimal.fromAtomics(token.total_supply, token.decimals).toFloatApproximation();
-      if (values.From > total_supply) {
+      if (Number(values.From) > total_supply) {
         errors.from = "Insufficient liquidity for withdrawing this quantity";
         setErrors(withdrawDispatch, errors);
         return;
@@ -72,17 +69,17 @@ const FromToken = (): JSX.Element => {
       ).decimals;
       const amountA = Decimal.fromAtomics(result.assets[0].amount, decimalsA).toFloatApproximation();
       const amountB = Decimal.fromAtomics(result.assets[1].amount, decimalsB).toFloatApproximation();
-      const received_a = ((amountA / total_supply) * values.From).toFixed(2);
-      const received_b = ((amountB / total_supply) * values.From).toFixed(2);
-      const priceImpact = ((values.From * 100) / total_supply).toFixed(2);
+      const received_a = ((amountA / total_supply) * Number(values.From)).toFixed(2);
+      const received_b = ((amountB / total_supply) * Number(values.From)).toFixed(2);
+      const priceImpact = ((Number(values.From) * 100) / total_supply).toFixed(2);
       const shareAfterTx = (
-        ((parseFloat(values.selectFrom.humanBalance) - values.From) * 100) /
+        ((Number(values.selectFrom.humanBalance) - Number(values.From)) * 100) /
         total_supply
       ).toFixed(2);
 
       setFieldValue("To", `${symbolA} ${received_a} - ${symbolB} ${received_b}`);
 
-      if (values.From > parseFloat(values.selectFrom.humanBalance)) {
+      if (Number(values.From) > Number(values.selectFrom.humanBalance)) {
         errors.from = "Insufficient Balance";
       }
       setDetailWithdraw(withdrawDispatch, {

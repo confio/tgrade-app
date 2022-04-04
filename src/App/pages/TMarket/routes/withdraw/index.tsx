@@ -28,7 +28,7 @@ const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"
 
 const initialValues: WithdrawFormValues = {
   To: "0 - 0",
-  From: 1.0,
+  From: "",
   selectFrom: undefined,
   selectTo: undefined,
 };
@@ -60,7 +60,7 @@ export default function Withdraw(): JSX.Element {
   return (
     <>
       <Formik
-        onSubmit={async (values) => {
+        onSubmit={async (values, { setFieldValue }) => {
           await handleSubmit(
             values,
             client,
@@ -75,6 +75,9 @@ export default function Withdraw(): JSX.Element {
             history,
             setModalOpen,
           );
+
+          setFieldValue("From", "");
+          setFieldValue("To", "0 - 0");
 
           if (values.selectFrom?.address) {
             await loadToken?.(values.selectFrom.address);
