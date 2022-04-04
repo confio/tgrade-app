@@ -21,20 +21,20 @@ export interface TokenRowProps {
 }
 
 export interface SwapFormValues {
-  To: number;
-  From: number;
+  To: string;
+  From: string;
   selectFrom: TokenProps | undefined;
   selectTo: TokenProps | undefined;
 }
 export interface WithdrawFormValues {
   To: string;
-  From: number;
+  From: string;
   selectFrom: TokenProps | undefined;
   selectTo: TokenProps | undefined;
 }
 export interface ProvideFormValues {
-  assetA: number | null;
-  assetB: number | null;
+  assetA: string;
+  assetB: string;
   selectFrom: TokenProps | undefined;
   selectTo: TokenProps | undefined;
 }
@@ -86,7 +86,7 @@ export class Token {
     if (!form.selectFrom || !form.selectTo) return null;
 
     const amount = Decimal.fromUserInput(
-      form.From.toFixed(form.selectFrom?.decimals),
+      Number(form.From).toFixed(form.selectFrom?.decimals),
       form.selectFrom?.decimals,
     ).atomics;
     try {
@@ -150,7 +150,7 @@ export class Token {
     if (!form.selectFrom || !form.selectTo) return null;
 
     const amount = Decimal.fromUserInput(
-      form.To.toFixed(form.selectTo?.decimals),
+      Number(form.To).toFixed(form.selectTo?.decimals),
       form.selectTo?.decimals,
     ).atomics;
     try {
@@ -220,7 +220,7 @@ export class Token {
     //User Input-> 1
     //parsed to decimals -> 1000000
     const amount = Decimal.fromUserInput(
-      form.From.toFixed(form.selectFrom?.decimals),
+      Number(form.From).toFixed(form.selectFrom?.decimals),
       form.selectFrom.decimals,
     ).atomics;
 
@@ -356,11 +356,11 @@ export class Pool {
     const keyTokenB = values.selectTo?.address === "utgd" ? "native" : "token";
 
     const amountA = Decimal.fromUserInput(
-      values.assetA.toFixed(values.selectFrom?.decimals),
+      Number(values.assetA).toFixed(values.selectFrom?.decimals),
       values.selectFrom?.decimals,
     ).atomics;
     const amountB = Decimal.fromUserInput(
-      values.assetB.toFixed(values.selectTo?.decimals),
+      Number(values.assetB).toFixed(values.selectTo?.decimals),
       values.selectTo?.decimals,
     ).atomics;
 
@@ -408,7 +408,7 @@ export class Pool {
   ): Promise<any> {
     if (!values.selectFrom) return;
     const amount = Decimal.fromUserInput(
-      values.From.toFixed(values.selectFrom?.decimals),
+      Number(values.From).toFixed(values.selectFrom?.decimals),
       values.selectFrom?.decimals,
     ).atomics;
     const withdrawMsj: Record<string, unknown> = {
