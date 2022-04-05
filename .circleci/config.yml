@@ -97,8 +97,7 @@ jobs:
       - run:
           name: Deploy contracts
           command: |
-            cd ./scripts/tgrade/
-            ./init.sh
+            ./scripts/tgrade/init.sh
       - run:
           command: yarn craco test --watchAll=false
       - run:
