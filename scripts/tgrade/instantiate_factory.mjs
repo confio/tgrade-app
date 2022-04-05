@@ -8,7 +8,7 @@ import { FaucetClient } from "@cosmjs/faucet-client";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import {calculateFee, createProtobufRpcClient, GasPrice, makeCosmoshubPath, QueryClient} from "@cosmjs/stargate";
 import {Tendermint34Client} from "@cosmjs/tendermint-rpc";
-import {QueryClientImpl} from "../../src/codec/confio/poe/v1beta1/query";
+import {QueryClientImpl} from "src/codec/confio/poe/v1beta1/query";
 
 /*
 Usage:
