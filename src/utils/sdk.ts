@@ -138,7 +138,7 @@ export function isKeplrSigner(signer?: OfflineDirectSigner | LedgerSigner): sign
 }
 
 export function isLedgerSigner(signer?: OfflineDirectSigner | LedgerSigner): signer is LedgerSigner {
-  return !!(signer as any)?.ledger;
+  return !!(signer as any)?.connector;
 }
 
 export function isWebSigner(signer?: OfflineDirectSigner | LedgerSigner): signer is OfflineDirectSigner {
