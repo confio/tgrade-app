@@ -6,9 +6,17 @@ import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import {calculateFee, createProtobufRpcClient, GasPrice, makeCosmoshubPath, QueryClient} from "@cosmjs/stargate";
-import {Tendermint34Client} from "@cosmjs/tendermint-rpc";
-import {QueryClientImpl} from "../../src/codec/confio/poe/v1beta1/query";
+import {
+  calculateFee,
+  createProtobufRpcClient,
+  GasPrice,
+  makeCosmoshubPath,
+  QueryClient,
+} from "@cosmjs/stargate";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+
+import { PoEContractType } from "../../src/codec/confio/poe/v1beta1/poe";
+import { QueryClientImpl } from "../../src/codec/confio/poe/v1beta1/query";
 
 /*
 Usage:
@@ -43,11 +51,6 @@ const localConfig = {
 
 const config = process.argv[2] === "network" ? networkConfig : localConfig;
 
-const tendermintClient = await Tendermint34Client.connect(config.rpcUrl);
-const queryClient = new QueryClient(tendermintClient);
-const rpcClient = createProtobufRpcClient(queryClient);
-const queryService = new QueryClientImpl(rpcClient);
-
 async function main() {
   // build signing client
   const mnemonic = Bip39.encode(Random.getBytes(16)).toString();
@@ -65,9 +68,13 @@ async function main() {
   await faucet.credit(address, config.feeDenom);
   console.info("...done");
 
-  const validatorVotingType = 9;
+  const tendermintClient = await Tendermint34Client.connect(config.rpcUrl);
+  const queryClient = new QueryClient(tendermintClient);
+  const rpcClient = createProtobufRpcClient(queryClient);
+  const queryService = new QueryClientImpl(rpcClient);
+
   const { address: validatorVotingAddress } = await queryService.ContractAddress({
-    contractType: validatorVotingType,
+    contractType: PoEContractType.VALIDATOR_VOTING,
   });
 
   console.info(`Validator Voting address: ${validatorVotingAddress}`);
