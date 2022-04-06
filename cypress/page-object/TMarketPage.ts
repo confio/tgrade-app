@@ -3,6 +3,10 @@ export class TMarketPage {
     return 'form > div:nth-child(1) button [alt="Down arrow select token"]';
   }
 
+  getDropDownSelectTokenToButton(): string {
+    return '[alt="Down arrow select token"]';
+  }
+
   getCloseModalDialogButton(): string {
     return '.ant-modal-content [alt="Close button"]';
   }
@@ -21,5 +25,17 @@ export class TMarketPage {
 
   getDialogStepActiveNumber(): string {
     return ".ant-steps-item-active .ant-steps-item-icon span";
+  }
+
+  getYourTransactionWasApprovedContent(): string {
+    return "div.ant-modal-wrap.ant-modal-centered .ant-modal-content";
+  }
+
+  getTokenOnPinnedTabByName(tokenName: string): string {
+    return `[data-testid="pinned-tokens-tab"] [aria-label="${tokenName}"]`;
+  }
+
+  getListOfTokens(): string {
+    return "ul.ant-list-items";
   }
 }

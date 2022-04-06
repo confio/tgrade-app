@@ -134,7 +134,7 @@ jobs:
           name: Uploading cypress/screenshots artifacts
           path: cypress/screenshots
 
-  cypress-non-voting:
+  e2e:
     docker:
       - image: circleci/node:latest-browsers
         environment:
@@ -154,7 +154,7 @@ jobs:
           key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - ~/.cache
-      - run: yarn cy:volume:non-voting
+      - run: yarn cy:e2e
       - store_artifacts:
           name: Uploading cypress/videos artifacts
           path: cypress/videos
@@ -241,9 +241,9 @@ workflows:
   build_and_test:
     jobs:
       - lint
-      - cypress-create-tc
-      #- cypress-non-voting
+      - cypress-create-ts
       - cypress-create-assets
+      - e2e
       - test:
           # https://circleci.com/docs/2.0/env-vars/
           context: Testing-Env-Vars

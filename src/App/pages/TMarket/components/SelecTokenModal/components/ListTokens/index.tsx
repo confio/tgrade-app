@@ -55,7 +55,7 @@ export default function ListTokens({ tokensList, setToken, closeModal }: ListTok
               ) : null}
               <ContainerNames>
                 <Paragraph>{token.symbol}</Paragraph>
-                <Paragraph>{token.name}</Paragraph>
+                <Paragraph aria-label={token.name}>{token.name}</Paragraph>
               </ContainerNames>
             </ContainerLogoNames>
             <ContainerNumbersPin>
