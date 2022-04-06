@@ -6,17 +6,7 @@ import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import {
-  calculateFee,
-  createProtobufRpcClient,
-  GasPrice,
-  makeCosmoshubPath,
-  QueryClient,
-} from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-
-import { PoEContractType } from "../../src/codec/confio/poe/v1beta1/poe";
-import { QueryClientImpl } from "../../src/codec/confio/poe/v1beta1/query";
+import { calculateFee, GasPrice, makeCosmoshubPath } from "@cosmjs/stargate";
 
 /*
 Usage:
@@ -68,14 +58,7 @@ async function main() {
   await faucet.credit(address, config.feeDenom);
   console.info("...done");
 
-  const tendermintClient = await Tendermint34Client.connect(config.endpoint);
-  const queryClient = new QueryClient(tendermintClient);
-  const rpcClient = createProtobufRpcClient(queryClient);
-  const queryService = new QueryClientImpl(rpcClient);
-
-  const { address: validatorVotingAddress } = await queryService.ContractAddress({
-    contractType: PoEContractType.VALIDATOR_VOTING,
-  });
+  const validatorVotingAddress = process.env.VALIDATOR_VOTING_ADDRESS;
 
   console.info(`Validator Voting address: ${validatorVotingAddress}`);
 
