@@ -241,7 +241,7 @@ workflows:
   build_and_test:
     jobs:
       - lint
-      - cypress-create-ts
+      - cypress-create-tc
       - cypress-create-assets
       - e2e
       - test:
