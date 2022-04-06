@@ -68,7 +68,7 @@ async function main() {
   await faucet.credit(address, config.feeDenom);
   console.info("...done");
 
-  const tendermintClient = await Tendermint34Client.connect(config.rpcUrl);
+  const tendermintClient = await Tendermint34Client.connect(config.endpoint);
   const queryClient = new QueryClient(tendermintClient);
   const rpcClient = createProtobufRpcClient(queryClient);
   const queryService = new QueryClientImpl(rpcClient);
