@@ -31,7 +31,7 @@ export class TrustedCirclesPage {
     return `[role="listbox"] li:nth-child(${numberInList})`;
   }
 
-  getYourTransactionApprovedFrame(): string {
-    return '[alt="Result icon"]+div';
+  getCurrentTrustedCircleAddress(): string {
+    return ".address-actions-container";
   }
 }

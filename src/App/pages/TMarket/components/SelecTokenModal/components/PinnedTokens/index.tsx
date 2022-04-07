@@ -47,7 +47,7 @@ export default function PinnedTokens({ setToken, closeModal, tokenFilter }: Pinn
   }, [config.feeToken, pairs, pinnedTokens, searchText, tokenFilter, tokens]);
 
   return (
-    <Stack>
+    <Stack data-testid="pinned-tokens-tab">
       <ListTokens tokensList={tokensList} closeModal={closeModal} setToken={setToken} />
     </Stack>
   );
