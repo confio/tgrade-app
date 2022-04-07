@@ -97,7 +97,7 @@
     "cy:open:dev": "cypress open --config-file dev-config.json",
     "cy:run": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome",
     "cy:volume:tc": "npx cypress run --browser chrome --config-file staging-config.json --spec 'cypress/integration/volumeTests/createTC.ts'",
-    "cy:e2e": "npx cypress run --browser chrome --config-file dev-config.json --spec 'cypress/integration/tradingPair.ts'",
+    "cy:e2e": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome --config-file localhost-config.json --spec 'cypress/integration/tradingPair.ts'",
     "cy:volume:asset": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome --config-file localhost-config.json --spec 'cypress/integration/volumeTests/addAsset.ts'"
   },
   "browserslist": [
