@@ -13,12 +13,13 @@ const currentTime = moment().unix();
 describe("Trusted Circle", () => {
   before(() => {
     cy.visit("/trustedcircle");
-    cy.get(trustedCirclesPage.getCookiesAcceptButton()).click();
-
+    // connect demo wallet
     cy.findByText("Connect Wallet").click();
     cy.findByText("Web wallet (demo)").click();
+    cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
-    cy.findByText("Trusted Circles").click();
+    // workaround to wait for wallet connection (critical ~4000)
+    cy.wait(5500);
   });
 
   describe("create trusted circle", () => {
