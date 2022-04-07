@@ -58,6 +58,10 @@ async function main() {
   await faucet.credit(address, config.feeDenom);
   console.info("...done");
 
+  const validatorVotingAddress = process.env.VALIDATOR_VOTING_ADDRESS;
+
+  console.info(`Validator Voting address: ${validatorVotingAddress}`);
+
   // Instantiate a factory
   const { contractAddress: factoryAddress } = await client.instantiate(
     address,
@@ -68,6 +72,7 @@ async function main() {
     },
     "instantiate factory",
     calculateFee(config.gasLimitCreateFactory, config.gasPrice),
+    { admin: validatorVotingAddress },
   );
 
   console.info(`Factory instantiated with address: ${factoryAddress}`);
