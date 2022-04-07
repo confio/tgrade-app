@@ -20,6 +20,7 @@ describe("Trusted Circle", () => {
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
     // workaround to wait for wallet connection (critical ~4000)
     cy.wait(5500);
+    cy.findByText("Trusted Circles").click();
   });
 
   describe("create trusted circle", () => {
