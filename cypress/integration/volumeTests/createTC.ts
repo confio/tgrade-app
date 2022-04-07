@@ -13,11 +13,13 @@ const currentTime = moment().unix();
 describe("Trusted Circle", () => {
   before(() => {
     cy.visit("/trustedcircle");
-    cy.get(trustedCirclesPage.getCookiesAcceptButton()).click();
-
+    // connect demo wallet
     cy.findByText("Connect Wallet").click();
     cy.findByText("Web wallet (demo)").click();
+    cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
+    // workaround to wait for wallet connection (critical ~4000)
+    cy.wait(5500);
     cy.findByText("Trusted Circles").click();
   });
 
@@ -36,19 +38,16 @@ describe("Trusted Circle", () => {
       cy.findByRole("button", { name: /Next/i }).click();
 
       cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
-
-      cy.wait(4500); //workaround should be improved
       cy.findByRole("button", {
         name: /Sign transaction and pay escrow/i,
       }).click();
 
-      cy.wait(3000); //workaround should be improved
+      cy.findByText("Your transaction was approved!").should("be.visible");
 
       cy.findByRole("button", {
         name: /Go to Trusted Circle details/i,
-      })
-        .click()
-        .should("not.be.visible");
+      }).click();
+      cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
     // Set number of runs here 'Cypress._.times(100, (k) => {'
