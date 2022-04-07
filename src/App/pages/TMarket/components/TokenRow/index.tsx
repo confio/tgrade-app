@@ -65,6 +65,17 @@ function TokenRow({
               <StyledInput
                 style={{ width: "100%" }}
                 onChange={onChange}
+                decimalSeparator=","
+                formatter={(value) => {
+                  if (!value) return "";
+                  const replacedComma = String(value).replace(",", ".");
+                  return replacedComma;
+                }}
+                parser={(displayValue) => {
+                  if (!displayValue) return "";
+                  const replacedComma = displayValue.replace(",", ".");
+                  return replacedComma;
+                }}
                 placeholder="1.0"
                 defaultValue=""
                 bordered={false}
