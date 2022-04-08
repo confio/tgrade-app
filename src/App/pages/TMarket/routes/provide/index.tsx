@@ -131,8 +131,10 @@ export default function Provide(): JSX.Element {
             setModalOpen,
           );
 
-          setFieldValue("assetA", "");
-          setFieldValue("assetB", "");
+          if (provideButtonState.type === "provide") {
+            setFieldValue("assetA", "");
+            setFieldValue("assetB", "");
+          }
 
           if (values.selectFrom?.address) {
             await loadToken?.(values.selectFrom.address);
