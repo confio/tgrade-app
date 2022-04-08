@@ -35,12 +35,8 @@ describe("T-Market", () => {
       cy.findByPlaceholderText("Enter token symbol").type(tokenSymbol);
       cy.findByPlaceholderText("Enter token name").type(tokenName + "+" + ++index);
 
-      // TODO enter logo URL
-
       cy.findByPlaceholderText("Enter initial supply").type("1000");
       cy.findByPlaceholderText("Enter decimals").type("4");
-
-      // TODO add assertion for "Your token will look like:" value
 
       cy.findByRole("button", { name: /Next/i }).click();
 
