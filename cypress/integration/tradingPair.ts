@@ -44,11 +44,12 @@ describe("Trading Pair", () => {
         name: /Sign transaction and pay escrow/i,
       }).click();
 
+      cy.findByText("Your transaction was approved!").should("be.visible");
+
       cy.findByRole("button", {
         name: /Go to Trusted Circle details/i,
-      })
-        .click()
-        .should("not.be.visible");
+      }).click();
+      cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
     it("Show created Trusted Circle", () => {
