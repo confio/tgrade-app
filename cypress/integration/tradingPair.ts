@@ -26,7 +26,7 @@ describe("Trading Pair", () => {
   });
 
   describe("Create Trusted circle", () => {
-    beforeEach(() => {
+    before(() => {
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();
       cy.findByPlaceholderText(/Enter Trusted Circle name/i)
