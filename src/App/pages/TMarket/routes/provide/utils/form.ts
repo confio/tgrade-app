@@ -180,11 +180,11 @@ export const handleSubmit = async (
     case "create":
       try {
         gtagTokenAction("create_pair_try");
-        if (!signingClient || !address || !client || !values.assetA || !values.assetB) return;
+        if (!signingClient || !address || !client) return;
         setLoading(true);
         const swapValues: SwapFormValues = {
-          From: values.assetA,
-          To: values.assetB,
+          From: "", // unneeded for create pair
+          To: "", // unneeded for create pair
           selectFrom: values.selectFrom,
           selectTo: values.selectTo,
         };
