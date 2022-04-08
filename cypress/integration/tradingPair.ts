@@ -26,7 +26,7 @@ describe("Trading Pair", () => {
   });
 
   describe("Create Trusted circle", () => {
-    before(() => {
+    beforeEach(() => {
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();
       cy.findByPlaceholderText(/Enter Trusted Circle name/i)
@@ -44,11 +44,12 @@ describe("Trading Pair", () => {
         name: /Sign transaction and pay escrow/i,
       }).click();
 
+      cy.findByText("Your transaction was approved!").should("be.visible");
+
       cy.findByRole("button", {
         name: /Go to Trusted Circle details/i,
-      })
-        .click()
-        .should("not.be.visible");
+      }).click();
+      cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
     it("Show created Trusted Circle", () => {
