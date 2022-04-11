@@ -52,7 +52,7 @@ describe("Non Voting Member", () => {
 
       cy.findByRole("button", {
         name: /Go to Trusted Circle details/i,
-      }).click();
+      }).click({ force: true });
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
@@ -86,7 +86,7 @@ describe("Non Voting Member", () => {
         cy.findByRole("button", {
           name: /Go to Trusted Circle details/i,
         })
-          .click()
+          .click({ force: true })
           .should("not.be.visible");
 
         // Workaround for an issue in browser

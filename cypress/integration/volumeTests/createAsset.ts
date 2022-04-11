@@ -22,7 +22,14 @@ describe("T-Market", () => {
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
     // workaround to wait for wallet connection (critical ~4000)
     cy.wait(5500);
-    cy.visit("/tmarket/exchange");
+
+    cy.contains("T-Market").click();
+
+    // Workaround for an issue in browser
+    Cypress.on(
+      "uncaught:exception",
+      (err) => !err.message.includes("Query failed with (18): contract: not found: invalid request"),
+    );
   });
 
   describe("create Asset", () => {
