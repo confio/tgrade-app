@@ -27,7 +27,7 @@ xdescribe("Trusted Circle", () => {
       cy.wait(3500); // do not know what happens in 1,5s but if there is no wait it does not click on the button
       cy.findByRole("button", { name: /Sign transaction and pay escrow/i }).click();
 
-      cy.findByRole("button", { name: /Go to Trusted Circle details/i }).click();
+      cy.findByRole("button", { name: /Go to Trusted Circle details/i }).click({ force: true });
     });
     it("show that trusted circle is created", () => {
       cy.get("h1.ant-typography").should("have.text", "Trusted Circle Test #4");
