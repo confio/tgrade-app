@@ -11,8 +11,8 @@ import * as fs from "fs";
 import * as path from "path";
 
 const config = {
-  endpoint: "http://localhost:26657",
-  faucet: "http://localhost:8000",
+  endpoint: "https://rpc.internal-11.tgrade.confio.run",
+  faucet: "https://faucet.internal-11.tgrade.confio.run",
   bech32prefix: "tgrade",
   feeDenom: "utgd",
   gasPrice: GasPrice.fromString("0.05utgd"),
