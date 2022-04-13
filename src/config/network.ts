@@ -92,12 +92,12 @@ const tgradeInternal: NetworkConfig = {
 };
 
 const tgradeTestnet: NetworkConfig = {
-  chainId: "tgrade-patchnet-1",
-  chainName: "Tgrade-patchnet-1",
+  chainId: "tgrade-dryrunnet",
+  chainName: "Tgrade-dryrunnet",
   addressPrefix: "tgrade",
-  rpcUrl: "https://rpc.patchnet-1.tgrade.io",
-  httpUrl: "https://lcd.patchnet-1.tgrade.io",
-  faucetUrl: "https://faucet.patchnet-1.tgrade.io",
+  rpcUrl: "https://rpc.dryrunnet.tgrade.confio.run",
+  httpUrl: "https://lcd.dryrunnet.tgrade.confio.run",
+  faucetUrl: "https://faucet.dryrunnet.tgrade.confio.run",
   feeToken: "utgd",
   stakingToken: "utgd",
   faucetTokens: ["utgd"],
@@ -105,14 +105,14 @@ const tgradeTestnet: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
-  factoryAddress: "tgrade1fventeva948ue0fzhp6xselr522rnqwger9wg7r0g9f4jemsqh6sd9g4hg",
+  factoryAddress: "tgrade1657pee2jhf4jk8pq6yq64e758ngvum45gl866knmjkd83w6jgn3smag42h",
   codeIds: {
-    // The first 8 codeIds are reserved by tgrade automatically when launched
+    // The first 9 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [2],
-    cw20Tokens: [9],
-    tgradeCw20: [10],
-    tgradeFactory: [11],
-    tgradePair: [12],
+    cw20Tokens: [10],
+    tgradeCw20: [11],
+    tgradeFactory: [12],
+    tgradePair: [13],
   },
 };
 

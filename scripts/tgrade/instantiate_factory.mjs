@@ -15,16 +15,16 @@ Usage:
   3. Hardcode that address in src/config/network.ts.
 */
 
-const networkConfig = {
-  endpoint: "",
-  faucet: "",
-  bech32prefix: "",
-  feeDenom: "",
+const networkConfig = { // Get this information from Miguel
+  endpoint: "https://rpc.dryrunnet.tgrade.confio.run",
+  faucet: "https://faucet.dryrunnet.tgrade.confio.run",
+  bech32prefix: "tgrade",
+  feeDenom: "utgd",
   gasPrice: GasPrice.fromString("0.05utgd"),
-  gasLimitCreateFactory: 0,
-  cw20LiquidityCodeId: 0,
-  factoryCodeId: 0,
-  pairCodeId: 0,
+  gasLimitCreateFactory: 500_000,
+  cw20LiquidityCodeId: 10,
+  factoryCodeId: 12,
+  pairCodeId: 13,
 };
 
 const localConfig = {
