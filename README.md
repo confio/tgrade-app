@@ -4,11 +4,11 @@ Tgrade is a public, permissionless blockchain designed with decentralisation at 
 ## Get started
 - before you run `$ yarn start:local` make sure to have connection to blockchain via Docker or Digital Ocean
 
-### Sentry issues
+## Sentry issues
 
 When a production deployment of this app throws an error, it's captured by [Sentry](https://sentry.io/welcome/). Every captured error can be seen on this dashboard: https://sentry.io/organizations/confio/issues/?project=5647042
 
-### E2E tests
+## E2E tests
 > E2E tests is using opensource framework called Cypress https://docs.cypress.io/guides/overview/why-cypress
 
 ##### Usage
@@ -18,7 +18,10 @@ When a production deployment of this app throws an error, it's captured by [Sent
 the same rules applied for running tests in Circleci more details in workflows:
 [.circleci/config.yml](.circleci/config.yml)
 
-### Integration tests
+## Integration tests
 - `$ yarn test` // to run tests locally
 - `$ yarn test:coverage` // generate test coverage
 
+## Deployment to `*.tgrade.finance` websites
+- how to deploy "Tgrade-App" [slab.com/posts](https://confio.slab.com/posts/how-to-deploy-tgrade-app-lc40xuws)
+- how to rollback "Tgrade-App" [slab.com/posts](https://confio.slab.com/posts/how-to-rollback-tgrade-app-release-c1xr3zeb)
