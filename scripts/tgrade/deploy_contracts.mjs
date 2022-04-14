@@ -10,13 +10,23 @@ import { calculateFee, GasPrice, makeCosmoshubPath } from "@cosmjs/stargate";
 import * as fs from "fs";
 import * as path from "path";
 
-const config = {
+const networkConfig = {
   endpoint: "https://rpc.dryrunnet.tgrade.confio.run",
   faucet: "https://faucet.dryrunnet.tgrade.confio.run",
   bech32prefix: "tgrade",
   feeDenom: "utgd",
   gasPrice: GasPrice.fromString("0.05utgd"),
 };
+
+const localConfig = {
+  endpoint: "https://rpc.dryrunnet.tgrade.confio.run",
+  faucet: "https://faucet.dryrunnet.tgrade.confio.run",
+  bech32prefix: "tgrade",
+  feeDenom: "utgd",
+  gasPrice: GasPrice.fromString("0.05utgd"),
+};
+
+const config = process.argv[2] === "network" ? networkConfig : localConfig;
 
 async function main() {
   // build signing client
