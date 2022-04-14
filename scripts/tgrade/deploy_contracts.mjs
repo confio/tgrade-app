@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /*jshint esversion: 8 */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
