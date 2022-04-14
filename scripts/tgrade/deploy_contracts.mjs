@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /*jshint esversion: 8 */
 
-/* eslint-disable @typescript-eslint/naming-convention */
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Bip39, Random } from "@cosmjs/crypto";
 import { FaucetClient } from "@cosmjs/faucet-client";
@@ -10,13 +9,23 @@ import { calculateFee, GasPrice, makeCosmoshubPath } from "@cosmjs/stargate";
 import * as fs from "fs";
 import * as path from "path";
 
-const config = {
+const networkConfig = {
   endpoint: "https://rpc.dryrunnet.tgrade.confio.run",
   faucet: "https://faucet.dryrunnet.tgrade.confio.run",
   bech32prefix: "tgrade",
   feeDenom: "utgd",
   gasPrice: GasPrice.fromString("0.05utgd"),
 };
+
+const localConfig = {
+  endpoint: "http://localhost:26657",
+  faucet: "http://localhost:8000",
+  bech32prefix: "tgrade",
+  feeDenom: "utgd",
+  gasPrice: GasPrice.fromString("0.05utgd"),
+};
+
+const config = process.argv[2] === "network" ? networkConfig : localConfig;
 
 async function main() {
   // build signing client
