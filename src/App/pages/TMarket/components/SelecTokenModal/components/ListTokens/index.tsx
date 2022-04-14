@@ -61,14 +61,18 @@ export default function ListTokens({ tokensList, setToken, closeModal }: ListTok
             <ContainerNumbersPin>
               <ContainerNumbers>
                 <Paragraph>{token.humanBalance}</Paragraph>
-                <Paragraph
-                  onClick={(event) => {
-                    event?.stopPropagation();
-                  }}
-                  copyable={{ tooltips: "Copy token address" }}
-                >
-                  {token.address === config.feeToken ? "Tgrade token" : token.address}
-                </Paragraph>
+                {token.address !== config.feeToken ? (
+                  <Paragraph
+                    onClick={(event) => {
+                      event?.stopPropagation();
+                    }}
+                    copyable={{ tooltips: "Copy token address" }}
+                  >
+                    {token.address}
+                  </Paragraph>
+                ) : (
+                  <Paragraph>{"Tgrade token"}</Paragraph>
+                )}
               </ContainerNumbers>
               {token.address !== config.feeToken ? (
                 <img
