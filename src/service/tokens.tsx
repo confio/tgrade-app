@@ -229,6 +229,8 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
   // Wire localStorage's storedPinnedTokens to tokensState.pinnedTokens
   useEffect(() => {
+    if (pinnedTokensToRemove.length) return;
+
     const cleanedPinnedTokens = cleanPinnedTokens(pinnedTokens);
     const isEveryPinnedTokenStored = cleanedPinnedTokens.every((token) => storedPinnedTokens.includes(token));
     const isEveryStoredTokenPinned = storedPinnedTokens.every((token) => cleanedPinnedTokens.includes(token));
@@ -236,22 +238,29 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     if (!isEveryPinnedTokenStored || !isEveryStoredTokenPinned) {
       setStoredPinnedTokens(cleanedPinnedTokens);
     }
-  }, [cleanPinnedTokens, pinnedTokens, setStoredPinnedTokens, storedPinnedTokens]);
+  }, [
+    cleanPinnedTokens,
+    pinnedTokens,
+    pinnedTokensToRemove.length,
+    setStoredPinnedTokens,
+    storedPinnedTokens,
+  ]);
 
   useEffect(() => {
-    if (!unpinToken || !pinnedTokensToRemove.length) return;
+    if (!pinnedTokensToRemove.length) return;
 
-    for (const token of pinnedTokensToRemove) {
-      unpinToken(token);
-    }
+    const newPinnedTokens = cleanPinnedTokens([
+      ...pinnedTokens.filter((token) => !pinnedTokensToRemove.includes(token)),
+    ]);
 
     setPinnedTokensToRemove([]);
-  }, [pinnedTokensToRemove, unpinToken]);
+    tokensDispatch({ type: "setPinnedTokens", payload: newPinnedTokens });
+  }, [cleanPinnedTokens, pinnedTokens, pinnedTokensToRemove]);
 
   // Load pinnedTokens not already present in tokensState.tokens
   useEffect(() => {
     (async function () {
-      if (!client || !address || !unpinToken) return;
+      if (!client || !address) return;
 
       // If pinnedTokens changes, let's filter them out to break an infinite useEffect loop
       const tokenAddressesToInit = pinnedTokens.filter((token) => !tokens.has(token));
@@ -288,7 +297,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
         handleError(error);
       }
     })();
-  }, [address, client, config, handleError, pinnedTokens, tokens, unpinToken]);
+  }, [address, client, config, handleError, pinnedTokens, tokens]);
 
   // Set up tokensState.canLoadNextTokens
   useEffect(() => {
@@ -321,12 +330,11 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
   // Set up tokensState.unpinToken
   useEffect(() => {
     async function unpinToken(tokenAddress: string) {
-      const newPinnedTokens = cleanPinnedTokens([...pinnedTokens.filter((token) => token !== tokenAddress)]);
-      tokensDispatch({ type: "setPinnedTokens", payload: newPinnedTokens });
+      setPinnedTokensToRemove((prevTokensToRemove) => [...prevTokensToRemove, tokenAddress]);
     }
 
     tokensDispatch({ type: "setUnpinToken", payload: unpinToken });
-  }, [cleanPinnedTokens, pinnedTokens]);
+  }, []);
 
   // Set up tokensState.pinUnpinToken
   useEffect(() => {
