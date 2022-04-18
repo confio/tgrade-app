@@ -21,8 +21,6 @@ const ApproveTokensRow = (): JSX.Element => {
   const [isApprovingTokenA, setApprovingTokenA] = useState(false);
   const [isApprovingTokenB, setApprovingTokenB] = useState(false);
 
-  if (!selectedPair || !signingClient || !values.selectFrom || !values.selectTo) return <></>;
-
   const approveTokenA = async (): Promise<void> => {
     if (!values?.selectFrom?.address || !signingClient || !selectedPair || !address) return;
 
