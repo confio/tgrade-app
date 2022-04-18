@@ -5,7 +5,7 @@ import Container, { Paragraph, Title } from "./style";
 
 const EmptyPoolTip = (): JSX.Element => {
   const { provideState } = useProvide();
-  if (!provideState.isPoolEmpty) return <></>;
+  if (!provideState.selectedPair && !provideState.isPoolEmpty) return <></>;
   return (
     <Container>
       <Row justify="start">
