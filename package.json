@@ -21,8 +21,6 @@
     "@cosmjs/tendermint-rpc": "^0.28.1",
     "@craco/craco": "^6.4.0",
     "@ledgerhq/hw-transport-webusb": "^6.24.1",
-    "@sentry/react": "^6.13.3",
-    "@sentry/tracing": "^6.13.3",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
