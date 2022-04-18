@@ -276,7 +276,9 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
         // Remove failed responses from pinnedTokens (when token address did not find token_info)
 
-        const pinnedTokensToRemove = pinnedTokens.filter((pinnedToken) => !tokensToInit.has(pinnedToken));
+        const pinnedTokensToRemove = pinnedTokens.filter(
+          (pinnedToken) => !tokensToInit.has(pinnedToken) && !tokens.has(pinnedToken),
+        );
         setPinnedTokensToRemove(pinnedTokensToRemove);
 
         // Set new state
