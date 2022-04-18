@@ -18,12 +18,6 @@
 # build artifacts
 /proto
 
-# android build
-/android
-
-# ios build
-/ios
-
 # misc
 .DS_Store
 .env.local
