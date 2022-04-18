@@ -4,10 +4,6 @@ Tgrade is a public, permissionless blockchain designed with decentralisation at 
 ## Get started
 - before you run `$ yarn start:local` make sure to have connection to blockchain via Docker or Digital Ocean
 
-## Sentry issues
-
-When a production deployment of this app throws an error, it's captured by [Sentry](https://sentry.io/welcome/). Every captured error can be seen on this dashboard: https://sentry.io/organizations/confio/issues/?project=5647042
-
 ## E2E tests
 > E2E tests is using opensource framework called Cypress https://docs.cypress.io/guides/overview/why-cypress
 
