@@ -110,7 +110,7 @@ export default function Provide(): JSX.Element {
             setProvideButton,
           );
         }}
-        onSubmit={async (values: ProvideFormValues, { setFieldValue }) => {
+        onSubmit={async (values: ProvideFormValues, { setFieldValue, validateForm }) => {
           await handleSubmit(
             values,
             signingClient,
@@ -130,6 +130,11 @@ export default function Provide(): JSX.Element {
             refreshPairs,
             setModalOpen,
           );
+
+          // This makes "Approve token" button appear right after creating a pair
+          if (provideButtonState.type === "create") {
+            await validateForm();
+          }
 
           if (provideButtonState.type === "provide") {
             setFieldValue("assetA", "");
