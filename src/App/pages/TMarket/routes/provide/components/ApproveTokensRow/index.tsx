@@ -21,10 +21,8 @@ const ApproveTokensRow = (): JSX.Element => {
   const [isApprovingTokenA, setApprovingTokenA] = useState(false);
   const [isApprovingTokenB, setApprovingTokenB] = useState(false);
 
-  if (!selectedPair || !signingClient || !values.selectFrom || !values.selectTo) return <></>;
-
   const approveTokenA = async (): Promise<void> => {
-    if (!values?.selectFrom?.address || !address) return;
+    if (!values?.selectFrom?.address || !signingClient || !selectedPair || !address) return;
 
     try {
       setApprovingTokenA(true);
@@ -36,7 +34,7 @@ const ApproveTokensRow = (): JSX.Element => {
       );
       setIsTokenApprovedA(provideDispatch, true);
     } catch (error) {
-      console.error(`Error when approving token ${values.selectFrom?.symbol}`);
+      console.error(`Error when approving token ${values.selectFrom.symbol}`);
       console.error(error);
     } finally {
       await loadToken?.(values.selectFrom.address);
@@ -45,7 +43,7 @@ const ApproveTokensRow = (): JSX.Element => {
   };
 
   const approveTokenB = async (): Promise<void> => {
-    if (!values?.selectTo?.address || !address) return;
+    if (!values?.selectTo?.address || !signingClient || !selectedPair || !address) return;
 
     try {
       setApprovingTokenB(true);
@@ -57,7 +55,7 @@ const ApproveTokensRow = (): JSX.Element => {
       );
       setIsTokenApprovedB(provideDispatch, true);
     } catch (error) {
-      console.error(`Error when approving token ${values.selectTo?.symbol}`);
+      console.error(`Error when approving token ${values.selectTo.symbol}`);
       console.error(error);
     } finally {
       await loadToken?.(values.selectTo.address);
@@ -66,12 +64,12 @@ const ApproveTokensRow = (): JSX.Element => {
   };
   return (
     <Row style={{ margin: 0 }} justify="center">
-      {!isTokenApprovedA ? (
+      {selectedPair && values.selectFrom && !isTokenApprovedA ? (
         <ButtonApproved loading={isApprovingTokenA} onClick={approveTokenA}>
           Approve {values.selectFrom.symbol}
         </ButtonApproved>
       ) : null}
-      {!isTokenApprovedB ? (
+      {selectedPair && values.selectTo && !isTokenApprovedB ? (
         <ButtonApproved loading={isApprovingTokenB} onClick={approveTokenB}>
           Approve {values.selectTo.symbol}
         </ButtonApproved>

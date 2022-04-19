@@ -42,42 +42,63 @@ export const handleValidation = async (
 
   //Check allowance A
   if (values.selectFrom.address !== "utgd") {
-    const result = await Contract20WS.getAllowance(
+    const allowanceAmount = await Contract20WS.getAllowance(
       client,
       values.selectFrom.address,
       address,
       pair.contract_addr,
     );
-    const token_allowance = Number(result);
-    const assetA = Decimal.fromUserInput(
-      values.assetA.toString(),
-      values.selectFrom.decimals,
-    ).toFloatApproximation();
-    assetA > token_allowance || token_allowance === 0 ? setIsApprovedA(false) : setIsApprovedA(true);
+
+    if (allowanceAmount === "0") {
+      setIsApprovedA(false);
+    } else {
+      const tokenAmountA = Decimal.fromUserInput(
+        values.assetA.toString(),
+        values.selectFrom.decimals,
+      ).toFloatApproximation();
+
+      if (tokenAmountA > Number(allowanceAmount)) {
+        setIsApprovedA(false);
+      } else {
+        setIsApprovedA(true);
+      }
+    }
   } else {
     setIsApprovedA(true);
   }
+
   //Check allowance B
-  if (values.selectTo.address !== "utgd" && values.assetB) {
-    const result = await Contract20WS.getAllowance(
+  if (values.selectTo.address !== "utgd") {
+    const allowanceAmount = await Contract20WS.getAllowance(
       client,
       values.selectTo.address,
       address,
       pair.contract_addr,
     );
-    const token_allowance = Number(result);
-    const assetB = Decimal.fromUserInput(
-      values.assetB.toString(),
-      values.selectTo.decimals,
-    ).toFloatApproximation();
-    assetB > token_allowance || token_allowance === 0 ? setIsApprovedB(false) : setIsApprovedB(true);
+
+    if (allowanceAmount === "0") {
+      setIsApprovedB(false);
+    } else {
+      const tokenAmountB = Decimal.fromUserInput(
+        values.assetB.toString(),
+        values.selectTo.decimals,
+      ).toFloatApproximation();
+
+      if (tokenAmountB > Number(allowanceAmount)) {
+        setIsApprovedB(false);
+      } else {
+        setIsApprovedB(true);
+      }
+    }
   } else {
     setIsApprovedB(true);
   }
+
   const errors: FormErrors = {
     from: undefined,
     to: undefined,
   };
+
   //Insufficient balance FROM
   if (Number(values.assetA) > Number(values.selectFrom.humanBalance)) {
     errors.from = "Insufficient Balance";
