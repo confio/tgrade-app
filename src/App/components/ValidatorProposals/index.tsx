@@ -33,16 +33,19 @@ const columns = [
     title: "Nº",
     dataIndex: "id",
     key: "id",
+    width: "5%",
     sorter: (a: ProposalResponse, b: ProposalResponse) => a.id - b.id,
   },
   {
     title: "Type",
     dataIndex: "title",
     key: "title",
+    width: "25%",
   },
   {
     title: "Due date",
     key: "expires",
+    width: "10%",
     render: (record: ProposalResponse) => {
       const dateObj = new Date(parseInt(record.expires, 10) / 1000000);
       return (
@@ -61,6 +64,7 @@ const columns = [
   {
     title: "Status",
     key: "status",
+    width: "10%",
     render: (record: ProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
