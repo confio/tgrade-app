@@ -38,16 +38,19 @@ const columns = [
     title: "Nº",
     dataIndex: "id",
     key: "id",
+    width: "5%",
     sorter: (a: ProposalResponse, b: ProposalResponse) => a.id - b.id,
   },
   {
     title: "Type",
     key: "title",
+    width: "25%",
     render: (record: ProposalResponse) => getProposalTitle(record.proposal),
   },
   {
     title: "Due date",
     key: "expires",
+    width: "10%",
     render: (record: ProposalResponse) => {
       const expiryTime =
         Number(typeof record.expires === "string" ? record.expires : record.expires.at_time) / 1000000;
@@ -70,6 +73,7 @@ const columns = [
   {
     title: "Status",
     key: "status",
+    width: "10%",
     render: (record: ProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
