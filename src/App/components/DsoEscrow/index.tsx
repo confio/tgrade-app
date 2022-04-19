@@ -154,6 +154,7 @@ export default function DsoEscrow(): JSX.Element {
   ];
 
   const pieConfig = {
+    animation: false,
     data: data,
     style: { maxWidth: "12.5rem", maxHeight: "14rem" },
     renderer: "svg" as const,
