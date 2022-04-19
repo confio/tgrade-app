@@ -28,5 +28,5 @@ the same rules applied for running tests in Circleci more details in workflows:
 - `$ yarn test:coverage` // generate test coverage
 
 ## Deployment to `*.tgrade.finance` websites
-- how to deploy "Tgrade-App" [slab.com/posts](https://confio.slab.com/posts/how-to-deploy-tgrade-app-lc40xuws)
-- how to rollback "Tgrade-App" [slab.com/posts](https://confio.slab.com/posts/how-to-rollback-tgrade-app-release-c1xr3zeb)
+- how to deploy [slab.com/posts](https://confio.slab.com/posts/how-to-deploy-tgrade-app-lc40xuws)
+- how to rollback [slab.com/posts](https://confio.slab.com/posts/how-to-rollback-tgrade-app-release-c1xr3zeb)

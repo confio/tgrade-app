@@ -106,7 +106,7 @@ jobs:
           command: |
             ./scripts/stop_all.sh
 
-  volume-tests:
+  volume-tests-dev:
     docker:
       - image: circleci/node:latest-browsers
         environment:
@@ -134,7 +134,7 @@ jobs:
           name: Uploading cypress/screenshots artifacts
           path: cypress/screenshots
 
-  e2e:
+  e2e-local:
     machine:
       # We can't use a containerized environment since it requires remote docker to start custom containers.
       # However, we can't access the remote docker's network from the primary container. This is a
@@ -213,8 +213,8 @@ workflows:
   build_and_test:
     jobs:
       - lint
-      - volume-tests
-      - e2e
+      - volume-tests-dev
+      - e2e-local
       - test:
           # https://circleci.com/docs/2.0/env-vars/
           context: Testing-Env-Vars
