@@ -38,7 +38,7 @@ export default function ListTokens({ tokensList, setToken, closeModal }: ListTok
 
   return tokensList.length ? (
     <StyledList
-      pagination={{ pageSize: 8, hideOnSinglePage: true }}
+      pagination={{ pageSize: 8, hideOnSinglePage: true, showSizeChanger: false }}
       dataSource={[...tokensList]}
       renderItem={(item: any) => {
         const token: TokenProps = item;
