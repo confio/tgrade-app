@@ -43,6 +43,7 @@ const columns = [
     title: "ID",
     dataIndex: "mixedId",
     key: "mixedId",
+    width: "5%",
     sorter: (a: MixedProposalResponse, b: MixedProposalResponse) => {
       if (
         (isTcProposalResponse(a) && isTcProposalResponse(b)) ||
@@ -59,11 +60,13 @@ const columns = [
   {
     title: "Type",
     key: "title",
+    width: "25%",
     render: (record: MixedProposalResponse) => getProposalTitle(record.proposal),
   },
   {
     title: "Due date",
     key: "expires",
+    width: "10%",
     render: (record: MixedProposalResponse) => {
       const expiryTime =
         Number(typeof record.expires === "string" ? record.expires : record.expires.at_time) / 1000000;
@@ -86,6 +89,7 @@ const columns = [
   {
     title: "Status",
     key: "status",
+    width: "10%",
     render: (record: MixedProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
