@@ -33,25 +33,15 @@ And("I enter Trusted Circle name as {string}", (text) => {
     .should("contain.value", "My Trusted Circle #");
 });
 
-And("I click on Next button Step#1 in modal popup", () => {
+And("I click on Next button Step#1 in modal dialog", () => {
   cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Start Trusted Circle");
   cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
   cy.findByRole("button", { name: /Next/i }).click();
 });
 
-And("I click on Next button Step#2 in modal popup", () => {
+And("I click on Next button Step#2 in modal dialog", () => {
   cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
   cy.findByRole("button", { name: /Next/i }).click();
-});
-
-And("I click Connect wallet button on step#3", () => {
-  cy.findByRole("button", { name: /Connect wallet/i }).click();
-  cy.wait(1500); //should be improved
-});
-
-And("I select Web wallet demo", () => {
-  cy.contains("Web wallet (demo)").click();
-  cy.wait(1500); //should be improved
 });
 
 And("I click on Sign transaction and pay escrow button on Step#3", () => {

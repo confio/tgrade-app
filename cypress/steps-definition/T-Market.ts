@@ -77,3 +77,45 @@ And("I click on Go to T-Market button", () => {
 And("I click on Provide Liquidity tab", () => {
   cy.findByText("Provide Liquidity").click();
 });
+
+And("I select TGD token FROM drop down", () => {
+  cy.get(tMarketPage.getDropDownSelectTokenFromButton()).click();
+  cy.get(tMarketPage.getListOfTokens()).findByText("TGD").click();
+});
+
+And("I click on Provide Liquidity tab", () => {
+  cy.findByText("Provide Liquidity").click();
+});
+
+And("I select TO drop down my created token", () => {
+  cy.get(tMarketPage.getDropDownSelectTokenToButton()).click();
+  // TODO add token verification
+  cy.get(tMarketPage.getTokenOnPinnedTabByName(tokenName))
+    .last() // because there is another dialog rendered behind
+    .click({ force: true });
+});
+
+And("I click on Create Pair button", () => {
+  cy.findByText("Create Pair").click();
+  cy.findByText("Provide").should("be.visible");
+});
+
+And("I enter value for TGN token {string}", (value) => {
+  cy.get(tMarketPage.getFieldNumberFromAssetA()).type(value);
+});
+
+And("I enter value for my created token {string}", (value) => {
+  cy.get(tMarketPage.getFieldNumberFromAssetB()).type(value);
+});
+
+And("I click on Provide button", () => {
+  cy.findByText("Provide").click();
+});
+
+And("I click on Approve SUST button", () => {
+  cy.findByText("Approve SUST").click();
+});
+
+And("I do not see Approve SUST button", () => {
+  cy.findByText("Approve SUST").should("not.exist");
+});

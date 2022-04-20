@@ -8,8 +8,8 @@ Feature: Trading pair
     * I click on Add Trusted Circle button
     * I click on Create Trusted Circle button
     * I enter Trusted Circle name as "My Trusted Circle # "
-    * I click on Next button Step#1 in modal popup
-    * I click on Next button Step#2 in modal popup
+    * I click on Next button Step#1 in modal dialog
+    * I click on Next button Step#2 in modal dialog
     * I click on Sign transaction and pay escrow button on Step#3
     * I see Your transaction was approved! message
     * I click on Go to Trusted Circle details button
@@ -29,5 +29,13 @@ Feature: Trading pair
 
     # Create pair
     * I click on Provide Liquidity tab
+    * I select TGD token FROM drop down
+    * I select TO drop down my created token
+    * I click on Create Pair button
+    * I click on Provide button
+    * I enter value for TGN token "5"
+    * I enter value for my created token "1"
+    * I click on Approve SUST button
+    * I do not see Approve SUST button
 
 
