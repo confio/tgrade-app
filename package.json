@@ -59,9 +59,11 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@cypress/browserify-preprocessor": "^3.0.2",
     "@testing-library/cypress": "^8.0.2",
     "axios": "^0.24.0",
     "cypress": "9.5.3",
+    "cypress-cucumber-preprocessor": "^4.3.1",
     "firebase-tools": "^9.21.0",
     "ts-proto": "^1.85.0",
     "wait-on": "^6.0.1"
@@ -88,11 +90,14 @@
     "cy:open:local": "cypress open --config-file localhost-config.json",
     "cy:open:dev": "cypress open --config-file dev-config.json",
     "cy:volume:dev": "npx cypress run --browser chrome --config-file dev-config.json --spec 'cypress/integration/volumeTests/**.ts'",
-    "cy:e2e:local": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome --config-file localhost-config.json --spec 'cypress/integration/tradingPair.ts'"
+    "cy:e2e:local": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome --config-file localhost-config.json --spec 'cypress/integration/tradingPair.feature'"
   },
   "browserslist": [
     "last 2 chrome versions",
     "last 2 firefox versions",
     "last 2 safari versions"
-  ]
+  ],
+  "cypress-cucumber-preprocessor": {
+    "step_definitions": "cypress/steps-definition/"
+  }
 }
