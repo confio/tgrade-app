@@ -32,10 +32,34 @@ Feature: Trading pair
     * I select TGD token FROM drop down
     * I select TO drop down my created token
     * I click on Create Pair button
-    * I click on Provide button
+
+    # Create Whitelist proposal
+    * Go to Trusted Circle page
+    * I click on Add proposal button
+    * I select Whitelist Pair option
+    * I click Next button
+    * I select Trading Pair from drop down
+    * I click on Create proposal button
+    * I click Confirm proposal button
+    * I see Your transaction was approved message
+    * I click on Go to Trusted Circle details button
+    * I see created Whitelist pair proposal
+
+    # Execute Whitelist proposal
+    * I click on Whitelist pair button to open proposal
+    * I click on Execute Proposal button
+    #* I see Your transaction was approved message
+    * I click on Go to Trusted Circle details button
+    * I see proposal has change state to Executed
+
+    # Provide Liquidity
+    * Go to T-Market page
+    * I click on Provide Liquidity tab
+    * I select TGD token FROM drop down
+    * I select TO drop down my created token
     * I enter value for TGN token "5"
     * I enter value for my created token "1"
     * I click on Approve SUST button
-    * I do not see Approve SUST button
+    * I click on Provide button
 
 
