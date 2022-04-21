@@ -39,7 +39,7 @@ export default function AllTokens({ setToken, closeModal, tokenFilter }: AllToke
     const tokensListLp =
       tokenFilter === "exclude-lp"
         ? excludeLpTokens(tokensList)
-        : formatLpTokens(includeOnlyLpTokens(tokensList), pairs);
+        : includeOnlyLpTokens(formatLpTokens(tokensList, pairs));
 
     const filteredTokensList = filterTokensByText(tokensListLp, searchText);
 
