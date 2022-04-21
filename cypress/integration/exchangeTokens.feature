@@ -48,7 +48,6 @@ Feature: Trading pair
     # Execute Whitelist proposal
     * I click on Whitelist pair button to open proposal
     * I click on Execute Proposal button
-    #* I see Your transaction was approved message
     * I click on Go to Trusted Circle details button
     * I see proposal has change state to Executed
 
@@ -61,5 +60,6 @@ Feature: Trading pair
     * I enter value for my created token "1"
     * I click on Approve SUST button
     * I click on Provide button
+    * I see Complete message
 
 

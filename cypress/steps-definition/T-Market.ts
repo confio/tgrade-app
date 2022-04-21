@@ -113,6 +113,9 @@ And("I click on Provide button", () => {
 });
 
 And("I click on Approve SUST button", () => {
-  cy.findByText("Approve SUST").click();
-  cy.findByText("Approve SUST").should("not.exist");
+  cy.findByText("Approve SUST").click().should("not.exist");
+});
+
+And("I see Complete message", () => {
+  cy.findByText("Complete!").click();
 });

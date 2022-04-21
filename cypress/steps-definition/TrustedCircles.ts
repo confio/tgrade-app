@@ -63,7 +63,6 @@ And("I click on Go to Trusted Circle details button", () => {
   cy.findByRole("button", {
     name: /Go to Trusted Circle details/i,
   }).click({ force: true });
-  //cy.findByText("Your transaction was approved!").should("not.be.visible");
 });
 
 And("I see that {string} is created", (text) => {
@@ -84,17 +83,16 @@ And("I click on Add proposal button", () => {
 And("I select Whitelist Pair option", () => {
   cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "New proposal");
   cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
-  cy.get(".ant-modal-body .ant-select-selector").click();
+  cy.get(trustedCirclesPage.getProposalOptionDropDown()).click();
   cy.findByText("Whitelist Pair").click();
 });
 
 And("I select Trading Pair from drop down", () => {
   cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "Whitelist Pair");
   cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
-  cy.wait(4000);
-  cy.get(".ant-modal-body .ant-select-selector").click();
-  cy.wait(1000);
-  cy.get(".ant-select-item-option-content").click();
+  cy.wait(4000); // probably a bug
+  cy.get(trustedCirclesPage.getProposalOptionDropDown()).click();
+  cy.get(trustedCirclesPage.getFirstItemFromDropDown()).click();
 });
 
 And("I click on Create proposal button", () => {
@@ -128,11 +126,6 @@ And("I click on Execute Proposal button", () => {
   cy.findByRole("button", {
     name: /Execute Proposal/i,
   }).click();
-});
-
-And("I see Your transaction was approved message", () => {
-  cy.wait(5000);
-  cy.findByText("Your transaction was approved!").should("be.visible");
 });
 
 And("I see proposal has change state to Executed", () => {
