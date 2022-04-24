@@ -64,7 +64,6 @@ Feature: Trading pair
     * I click Ok button
 
     # Exchange tokens
-    * I click on Provide Liquidity tab
     * I click on Exchange tab
     * I select TGD token FROM drop down
     * I select TO drop down my created token
