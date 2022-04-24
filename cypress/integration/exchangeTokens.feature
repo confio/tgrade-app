@@ -61,5 +61,18 @@ Feature: Trading pair
     * I click on Approve SUST button
     * I click on Provide button
     * I see Complete message
+    * I click Ok button
+
+    # Exchange tokens
+    * I click on Provide Liquidity tab
+    * I click on Exchange tab
+    * I select TGD token FROM drop down
+    * I select TO drop down my created token
+    * I enter value for TGN token "10" Exchange tab
+    * I see amount of my token "0.7" Exchange tab
+    # TODO check fees
+    * I click on Swap button
+    * I see Complete message
+
 
 

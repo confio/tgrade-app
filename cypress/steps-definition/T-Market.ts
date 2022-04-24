@@ -57,14 +57,18 @@ And("I click on Create Asset button in modal dialog", () => {
     .findByRole("button", { name: /Create asset/i })
     .click()
     .should("not.exist");
+  extractTokenAddress();
+});
 
+const extractTokenAddress = () => {
   // Extract created token Address
+  // This function can go to support/commands.ts file
   cy.get(tMarketPage.getYourTransactionWasApprovedContent()).then((path) => {
     const extractedText = path.text();
     const getTokenAddress = extractedText.match(/\((.*)\)/g)[0].replace(/[()]/g, "");
     cy.wrap(getTokenAddress).as("tokenAddress");
   });
-});
+};
 
 And("I click on Go to T-Market button", () => {
   cy.findByRole("button", {
@@ -78,13 +82,13 @@ And("I click on Provide Liquidity tab", () => {
   cy.findByText("Provide Liquidity").click();
 });
 
+And("I click on Exchange tab", () => {
+  cy.findByText("Exchange").click();
+});
+
 And("I select TGD token FROM drop down", () => {
   cy.get(tMarketPage.getDropDownSelectTokenFromButton()).click();
   cy.get(tMarketPage.getListOfTokens()).findByText("TGD").click();
-});
-
-And("I click on Provide Liquidity tab", () => {
-  cy.findByText("Provide Liquidity").click();
 });
 
 And("I select TO drop down my created token", () => {
@@ -104,6 +108,14 @@ And("I enter value for TGN token {string}", (value) => {
   cy.get(tMarketPage.getFieldNumberFromAssetA()).type(value);
 });
 
+And("I enter value for TGN token {string} Exchange tab", (value) => {
+  cy.get(tMarketPage.getFromFieldNumber()).type(value);
+});
+
+And("I see amount of my token {string} Exchange tab", (value) => {
+  cy.get(tMarketPage.getToFieldNumber()).should("have.value", value);
+});
+
 And("I enter value for my created token {string}", (value) => {
   cy.get(tMarketPage.getFieldNumberFromAssetB()).type(value);
 });
@@ -112,10 +124,18 @@ And("I click on Provide button", () => {
   cy.findByText("Provide").click();
 });
 
+And("I click on Swap button", () => {
+  cy.findByRole("button", { name: /Swap/i }).click();
+});
+
 And("I click on Approve SUST button", () => {
   cy.findByText("Approve SUST").click().should("not.exist");
 });
 
 And("I see Complete message", () => {
   cy.findByText("Complete!").click();
+});
+
+And("I click Ok button", () => {
+  cy.get(tMarketPage.getOkButton()).click(); //Should be found
 });
