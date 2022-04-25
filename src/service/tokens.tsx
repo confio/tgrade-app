@@ -145,7 +145,12 @@ export function excludeLpTokens(tokens: TokenProps[]): TokenProps[] {
 }
 
 export function includeOnlyLpTokens(tokens: TokenProps[]): TokenProps[] {
-  return tokens.filter((token) => token.symbol === "uLP" && token.name === "tfi liquidity token");
+  return tokens.filter((token) => {
+    return (
+      (token.symbol === "uLP" && token.name === "tfi liquidity token") ||
+      (token.symbol.startsWith("LP-") && token.name.includes("-"))
+    );
+  });
 }
 
 export function formatLpTokens(tokens: TokenProps[], pairsObj: { [key: string]: PairProps }): TokenProps[] {
