@@ -48,7 +48,7 @@ jobs:
       # executor in local jobs." (https://circleci.com/docs/2.0/local-cli/#limitations-of-running-jobs-locally)
       #
       # Available images: https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
-      image: ubuntu-2004:202107-02
+      image: ubuntu-2004:202201-02
     steps:
       - checkout
       - run: # start early for less wait time below
@@ -106,7 +106,7 @@ jobs:
           command: |
             ./scripts/stop_all.sh
 
-  volume-tests-dev:
+  cy-dev:
     docker:
       - image: circleci/node:latest-browsers
         environment:
@@ -126,7 +126,7 @@ jobs:
           key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - ~/.cache
-      - run: yarn cy:volume:dev
+      - run: yarn cy:dev
       - store_artifacts:
           name: Uploading cypress/videos artifacts
           path: cypress/videos
@@ -199,7 +199,7 @@ jobs:
             cd ./scripts/tgrade/
             ./init.sh
       - run:
-          command: yarn cy:e2e:local
+          command: yarn cy:local
       - store_artifacts:
           path: cypress/videos
       - store_artifacts:
@@ -213,7 +213,7 @@ workflows:
   build_and_test:
     jobs:
       - lint
-      - volume-tests-dev
+      - cy-dev
       - e2e-local
       - test:
           # https://circleci.com/docs/2.0/env-vars/

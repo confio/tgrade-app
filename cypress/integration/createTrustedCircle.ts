@@ -1,6 +1,20 @@
-xdescribe("Trusted Circle", () => {
+import moment from "moment";
+
+import { TrustedCirclesPage } from "../page-object/TrustedCirclesPage";
+
+const trustedCirclesPage = new TrustedCirclesPage();
+const currentTime = moment().unix();
+
+describe("Trusted Circle", () => {
   beforeEach(() => {
     cy.visit("/trustedcircle");
+    // connect demo wallet
+    cy.findByText("Connect Wallet").click();
+    cy.findByText("Web wallet (demo)").click();
+    cy.findByText("Loading your Wallet").should("not.exist");
+    cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
+    // workaround to wait for wallet connection (critical ~4000)
+    cy.wait(5500);
   });
 
   describe("create trusted circle", () => {
@@ -8,55 +22,55 @@ xdescribe("Trusted Circle", () => {
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();
       cy.findByPlaceholderText(/Enter Trusted Circle name/i)
-        .type("Trusted Circle Test #4")
-        .should("have.value", "Trusted Circle Test #4");
-      cy.get(".ant-modal-content header h1").should("have.text", "Start Trusted Circle");
-      cy.get(".ant-steps-item-active .ant-steps-item-icon span").should("have.text", "1");
+        .type("Trusted Circle Test #" + currentTime)
+        .should("contain.value", "Trusted Circle Test #");
+      cy.get(trustedCirclesPage.getDialogHeaderName()).should("have.text", "Start Trusted Circle");
+      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
       cy.findByRole("button", { name: /Next/i }).click();
 
-      cy.get(".ant-steps-item-active .ant-steps-item-icon span").should("have.text", "2");
+      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
       cy.findByRole("button", { name: /Next/i }).click();
 
-      cy.get(".ant-steps-item-active .ant-steps-item-icon span").should("have.text", "3");
-      cy.findByRole("button", { name: /Connect wallet/i }).click();
+      cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
+      cy.findByRole("button", {
+        name: /Sign transaction and pay escrow/i,
+      }).click();
 
-      cy.findByText("Web wallet (demo)").click();
-      cy.findByRole("button", { name: /Try again/i }).should("not.exist");
+      cy.findByText("Your transaction was approved!").should("be.visible");
 
-      cy.get(".ant-steps-item-active .ant-steps-item-icon span").should("have.text", "3");
-      cy.wait(3500); // do not know what happens in 1,5s but if there is no wait it does not click on the button
-      cy.findByRole("button", { name: /Sign transaction and pay escrow/i }).click();
-
-      cy.findByRole("button", { name: /Go to Trusted Circle details/i }).click({ force: true });
+      cy.findByRole("button", {
+        name: /Go to Trusted Circle details/i,
+      }).click({ force: true });
+      cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
     it("show that trusted circle is created", () => {
-      cy.get("h1.ant-typography").should("have.text", "Trusted Circle Test #4");
+      cy.get(trustedCirclesPage.getTCNameFromActiveTab())
+        .should("be.visible")
+        .should("contain.text", "Trusted Circle Test #");
     });
   });
 
-  describe("add non-voting participant", () => {
+  xdescribe("add non-voting participant", () => {
     it("non-voting is created", () => {
       //TODO
     });
   });
 
-  describe("non-voting participant", () => {
+  xdescribe("non-voting participant", () => {
     it("can trade whitelisted token pair", () => {
       //TODO
     });
   });
 
-  describe("remove non-voting participant", () => {
+  xdescribe("remove non-voting participant", () => {
     it("should remove non-voting participant", () => {
       //TODO
     });
   });
 
-  describe("non-voting participant trades whitelisted token pair ", () => {
+  xdescribe("non-voting participant trades whitelisted token pair ", () => {
     it("show an unauthorised message and trade fails ", () => {
       //TODO
     });
   });
 });
-
-export {};
