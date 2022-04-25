@@ -21,7 +21,7 @@ const ToToken = (): JSX.Element => {
   const { provideState, provideDispatch } = useProvide();
   const { tMarketState, tMarketDispatch } = useTMarket();
   const { client, address } = sdkState;
-  const { estimatingFromB, pairs } = tMarketState;
+  const { estimatingFromB } = tMarketState;
   const { selectedPair } = provideState;
 
   const setToken = (token: TokenProps) => {
@@ -34,15 +34,7 @@ const ToToken = (): JSX.Element => {
 
   useEffect(() => {
     (async () => {
-      if (
-        !client ||
-        !address ||
-        !values.selectFrom ||
-        !values.selectTo ||
-        !pairs ||
-        !estimatingFromB ||
-        !selectedPair
-      )
+      if (!client || !address || !values.selectFrom || !values.selectTo || !estimatingFromB || !selectedPair)
         return;
 
       if (values.assetB && Number(values.assetB) > 0 && values.assetA) {

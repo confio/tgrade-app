@@ -43,7 +43,7 @@ export interface tokenObj {
   native?: string;
 }
 export interface PairProps {
-  asset_infos: tokenObj[];
+  asset_infos: [tokenObj, tokenObj];
   contract_addr: string;
   liquidity_token: string;
   commission: string;
@@ -263,12 +263,13 @@ export class Token {
 }
 
 export class Pair {
-  static async queryPair(client: CosmWasmClient, pairAddress: string): Promise<any> {
-    const result = await client.queryContractSmart(pairAddress, {
-      pair: {},
-    });
-
-    return result;
+  static async queryPair(client: CosmWasmClient, pairAddress: string): Promise<PairProps | undefined> {
+    try {
+      const result: PairProps = await client.queryContractSmart(pairAddress, { pair: {} });
+      return result;
+    } catch {
+      return undefined;
+    }
   }
   static getPair(
     pairs: { [key: string]: PairProps },

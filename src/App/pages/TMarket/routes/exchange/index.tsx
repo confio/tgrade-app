@@ -24,9 +24,8 @@ import {
   SwapButtonState,
   useExchange,
 } from "service/exchange";
-import { updateToken, useTMarket } from "service/tmarket";
 import { useTokens } from "service/tokens";
-import { DetailSwap, PairProps, SimulatedSwap, SwapFormValues, Token, TokenProps } from "utils/tokens";
+import { DetailSwap, PairProps, SimulatedSwap, SwapFormValues, Token } from "utils/tokens";
 
 import { ExtraInfo, FromToken, ToToken } from "./components";
 import ExchangeResultModal from "./components/ExchangeResultModal";
@@ -43,8 +42,6 @@ export default function Exchange(): JSX.Element {
     tokensState: { loadToken },
   } = useTokens();
   const { exchangeState, exchangeDispatch } = useExchange();
-  const { tMarketState, tMarketDispatch } = useTMarket();
-  const { pairs } = tMarketState;
   const { address, signingClient, client, config } = sdkState;
   const { loading, detailSwap, swapButton, selectedPair, simulatedSwap, errors } = exchangeState;
 
@@ -55,7 +52,6 @@ export default function Exchange(): JSX.Element {
     setSimulatedSwap(exchangeDispatch, simulation);
   const setDetail = (detail: DetailSwap | undefined) => setDetailSwap(exchangeDispatch, detail);
   const setNewError = (error: FormErrors) => setErrors(exchangeDispatch, error);
-  const refreshToken = (t: TokenProps) => updateToken(tMarketDispatch, { [t.address]: t });
   const history = useHistory();
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -76,7 +72,7 @@ export default function Exchange(): JSX.Element {
             client,
             address,
             swapButton,
-            pairs,
+            config.factoryAddress,
             setPair,
             setSwapButtonState,
             setNewError,
@@ -95,7 +91,6 @@ export default function Exchange(): JSX.Element {
             setSimulation,
             setDetail,
             history,
-            refreshToken,
             setModalOpen,
           );
 
