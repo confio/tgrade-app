@@ -19,10 +19,6 @@ export class TMarketPage {
     return ".ant-modal-content";
   }
 
-  getDialogHeaderName(): string {
-    return ".ant-modal-content header h1";
-  }
-
   getDialogStepActiveNumber(): string {
     return ".ant-steps-item-active .ant-steps-item-icon span";
   }
