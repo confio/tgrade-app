@@ -1,44 +1,20 @@
 import { UserError } from "App/pages/TMarket/utils";
-import { createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
-import { useSdk } from "service";
-import { Factory } from "utils/factory";
-import { LPToken, PairProps, PoolProps, TokenProps } from "utils/tokens";
+import { createContext, HTMLAttributes, useContext, useReducer } from "react";
+import { PoolProps } from "utils/tokens";
 
 export type FormErrors = {
   from: UserError | undefined;
   to: UserError | undefined;
 };
 
-export type TokensFilter = "whitelist" | "all";
-
 type tMarketAction =
   | {
-      readonly type: "setRefreshTokens";
-      readonly payload: () => Promise<void>;
-    }
-  | {
-      readonly type: "setTokens";
-      readonly payload: { [key: string]: TokenProps };
-    }
-  | {
-      readonly type: "setTokensFilter";
-      readonly payload: TokensFilter;
-    }
-  | {
-      readonly type: "setPairs";
-      readonly payload: { [key: string]: PairProps };
+      readonly type: "setSearchText";
+      readonly payload: string | undefined;
     }
   | {
       readonly type: "setPool";
       readonly payload: PoolProps | undefined;
-    }
-  | {
-      readonly type: "updateToken";
-      readonly payload: { [key: string]: TokenProps };
-    }
-  | {
-      readonly type: "updateLPToken";
-      readonly payload: { [key: string]: LPToken };
     }
   | {
       readonly type: "setEstimatingFromA";
@@ -47,25 +23,12 @@ type tMarketAction =
   | {
       readonly type: "setEstimatingFromB";
       readonly payload: boolean;
-    }
-  | {
-      readonly type: "setLPTokens";
-      readonly payload: { [key: string]: { token: TokenProps; pair: PairProps } };
-    }
-  | {
-      readonly type: "setSearchText";
-      readonly payload: string | undefined;
     };
 
 type tMarketDispatch = (action: tMarketAction) => void;
 type tMarketState = {
-  readonly refreshTokens: () => Promise<void>;
-  readonly tokens: { [key: string]: TokenProps };
-  readonly tokensFilter: TokensFilter;
-  readonly pairs: { [key: string]: PairProps };
-  readonly lpTokens: { [key: string]: { token: TokenProps; pair: PairProps } };
-  readonly pool: PoolProps | undefined;
   readonly searchText: string | undefined;
+  readonly pool: PoolProps | undefined;
   readonly estimatingFromA: boolean;
   readonly estimatingFromB: boolean;
 };
@@ -81,35 +44,8 @@ const tMarketContext = createContext<tMarketContextType>(undefined);
 
 function tMarketReducer(tMarketState: tMarketState, action: tMarketAction): tMarketState {
   switch (action.type) {
-    case "setRefreshTokens": {
-      return { ...tMarketState, refreshTokens: action.payload };
-    }
-    case "setTokens": {
-      return { ...tMarketState, tokens: action.payload };
-    }
-    case "setTokensFilter": {
-      return { ...tMarketState, tokensFilter: action.payload };
-    }
-    case "setLPTokens": {
-      return { ...tMarketState, lpTokens: action.payload };
-    }
-    case "updateToken": {
-      return { ...tMarketState, tokens: { ...tMarketState.tokens, ...action.payload } };
-    }
-    case "updateLPToken": {
-      return {
-        ...tMarketState,
-        lpTokens: {
-          ...tMarketState.lpTokens,
-          ...action.payload,
-        },
-      };
-    }
     case "setSearchText": {
       return { ...tMarketState, searchText: action.payload };
-    }
-    case "setPairs": {
-      return { ...tMarketState, pairs: action.payload };
     }
     case "setPool": {
       return { ...tMarketState, pool: action.payload };
@@ -126,29 +62,11 @@ function tMarketReducer(tMarketState: tMarketState, action: tMarketAction): tMar
   }
 }
 
-export function setPool(dispatch: tMarketDispatch, pool: PoolProps): void {
-  dispatch({ type: "setPool", payload: pool });
-}
-export function updateToken(dispatch: tMarketDispatch, token: { [key: string]: TokenProps }): void {
-  dispatch({ type: "updateToken", payload: token });
-}
-export function setLPTokens(
-  dispatch: tMarketDispatch,
-  token: { [key: string]: { token: TokenProps; pair: PairProps } },
-): void {
-  dispatch({ type: "setLPTokens", payload: token });
-}
-export function updateLPToken(dispatch: tMarketDispatch, token: { [key: string]: LPToken }): void {
-  dispatch({ type: "updateLPToken", payload: token });
-}
-export function setTokensFilter(dispatch: tMarketDispatch, filter: TokensFilter): void {
-  dispatch({ type: "setTokensFilter", payload: filter });
-}
-export function updatePairs(dispatch: tMarketDispatch, pairs: { [key: string]: PairProps }): void {
-  dispatch({ type: "setPairs", payload: pairs });
-}
 export function setSearchText(dispatch: tMarketDispatch, text: string | undefined): void {
   dispatch({ type: "setSearchText", payload: text });
+}
+export function setPool(dispatch: tMarketDispatch, pool: PoolProps): void {
+  dispatch({ type: "setPool", payload: pool });
 }
 export function setEstimatingFromA(dispatch: tMarketDispatch): void {
   dispatch({ type: "setEstimatingFromA", payload: true });
@@ -166,6 +84,7 @@ export function setEstimatingSwitch(
   dispatch({ type: "setEstimatingFromB", payload: estimatingFromA });
   dispatch({ type: "setEstimatingFromA", payload: estimatingFromB });
 }
+
 export const useTMarket = (): NonNullable<tMarketContextType> => {
   const context = useContext(tMarketContext);
 
@@ -177,30 +96,12 @@ export const useTMarket = (): NonNullable<tMarketContextType> => {
 };
 
 export default function TMarketProvider({ children }: HTMLAttributes<HTMLOrSVGElement>): JSX.Element {
-  const { sdkState } = useSdk();
-  const { client, config } = sdkState;
-
   const [tMarketState, tMarketDispatch] = useReducer(tMarketReducer, {
-    refreshTokens: () => Promise.resolve(),
-    tokens: {},
-    tokensFilter: "whitelist",
-    lpTokens: {},
     searchText: undefined,
     estimatingFromB: false,
     estimatingFromA: false,
-    pairs: {},
     pool: undefined,
   });
-
-  useEffect(() => {
-    (async () => {
-      //Gets all pairs
-      if (client) {
-        const pairs = await Factory.getPairs(client, config.factoryAddress);
-        tMarketDispatch({ type: "setPairs", payload: pairs });
-      }
-    })();
-  }, [client, config.factoryAddress]);
 
   return (
     <tMarketContext.Provider value={{ tMarketState, tMarketDispatch }}>{children}</tMarketContext.Provider>
