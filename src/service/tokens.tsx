@@ -8,8 +8,9 @@ import {
   useState,
 } from "react";
 import { Contract20WS } from "utils/cw20";
+import { Factory } from "utils/factory";
 import { usePinnedTokens } from "utils/storage";
-import { PairProps, TokenProps } from "utils/tokens";
+import { Pair, PairProps, tokenObj, TokenProps } from "utils/tokens";
 
 import { useError } from "./error";
 import { useSdk } from "./sdk";
@@ -23,6 +24,7 @@ type TokensState = {
   readonly pinnedTokens: readonly string[];
   readonly tokens: Map<string, TokenProps>;
   readonly canLoadNextTokens: boolean;
+  readonly pairs: Map<string, PairProps>;
   readonly pinToken?: (tokenAddress: string) => void;
   readonly unpinToken?: (tokenAddress: string) => void;
   readonly pinUnpinToken?: (tokenAddress: string) => void;
@@ -30,6 +32,8 @@ type TokensState = {
   readonly reloadTokens?: () => Promise<void>;
   readonly reloadPinnedTokensOnly?: () => Promise<void>;
   readonly loadNextTokens?: () => Promise<void>;
+  readonly loadPair?: (pairAddressOrAssetInfos: string | [tokenObj, tokenObj]) => Promise<void>;
+  readonly reloadPairs?: () => Promise<void>;
 };
 
 type TokensAction =
@@ -48,6 +52,14 @@ type TokensAction =
   | {
       readonly type: "setCanLoadNextTokens";
       readonly payload: boolean;
+    }
+  | {
+      readonly type: "setPairs";
+      readonly payload: Map<string, PairProps>;
+    }
+  | {
+      readonly type: "setPair";
+      readonly payload: PairProps;
     }
   | {
       readonly type: "setPinToken";
@@ -76,6 +88,14 @@ type TokensAction =
   | {
       readonly type: "setLoadNextTokens";
       readonly payload: () => Promise<void>;
+    }
+  | {
+      readonly type: "setLoadPair";
+      readonly payload: (pairAddressOrAssetInfos: string | [tokenObj, tokenObj]) => Promise<void>;
+    }
+  | {
+      readonly type: "setReloadPairs";
+      readonly payload: () => Promise<void>;
     };
 
 type TokensDispatch = (action: TokensAction) => void;
@@ -95,6 +115,14 @@ function tokensReducer(state: TokensState, action: TokensAction): TokensState {
     }
     case "setCanLoadNextTokens": {
       return { ...state, canLoadNextTokens: action.payload };
+    }
+    case "setPairs": {
+      return { ...state, pairs: action.payload };
+    }
+    case "setPair": {
+      const pairs = new Map(state.pairs);
+      pairs.set(action.payload.contract_addr, action.payload);
+      return { ...state, pairs };
     }
     case "setPinToken": {
       return { ...state, pinToken: action.payload };
@@ -116,6 +144,12 @@ function tokensReducer(state: TokensState, action: TokensAction): TokensState {
     }
     case "setLoadNextTokens": {
       return { ...state, loadNextTokens: action.payload };
+    }
+    case "setLoadPair": {
+      return { ...state, loadPair: action.payload };
+    }
+    case "setReloadPairs": {
+      return { ...state, reloadPairs: action.payload };
     }
     default: {
       throw new Error("Unhandled action type");
@@ -153,10 +187,10 @@ export function includeOnlyLpTokens(tokens: TokenProps[]): TokenProps[] {
   });
 }
 
-export function formatLpTokens(tokens: TokenProps[], pairsObj: { [key: string]: PairProps }): TokenProps[] {
+export function formatLpTokens(tokens: TokenProps[], pairs: PairProps[]): TokenProps[] {
   const formattedTokens = tokens.map((token) => {
     // Check if token is Liquidity Token
-    const pair = Object.values(pairsObj).find((pair) => pair.liquidity_token === token.address);
+    const pair = pairs.find((pair) => pair.liquidity_token === token.address);
     if (!pair) return token;
 
     const tokenAddressA = pair.asset_infos[0].native || pair.asset_infos[0].token;
@@ -228,9 +262,10 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     pinnedTokens: cleanPinnedTokens(storedPinnedTokens),
     tokens: new Map(),
     canLoadNextTokens: false,
+    pairs: new Map(),
   });
 
-  const { pinnedTokens, tokens, pinToken, unpinToken, loadNextTokens } = tokensState;
+  const { pinnedTokens, tokens, pinToken, unpinToken, loadNextTokens, reloadPairs } = tokensState;
 
   // Wire localStorage's storedPinnedTokens to tokensState.pinnedTokens
   useEffect(() => {
@@ -251,6 +286,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     storedPinnedTokens,
   ]);
 
+  // Remove pinned tokens that were marked as to remove
   useEffect(() => {
     if (!pinnedTokensToRemove.length) return;
 
@@ -303,6 +339,24 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
       }
     })();
   }, [address, client, config, handleError, pinnedTokens, tokens]);
+
+  /*
+    Load all pairs in the network
+    NOTE: this might be removed if we ever get a way to query pair from liquidity token address.
+          That way we'd only load the pairs for the loaded liquidity tokens, instead of all.
+  */
+  useEffect(() => {
+    (async function () {
+      if (!reloadPairs) return;
+
+      try {
+        await reloadPairs();
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      }
+    })();
+  }, [handleError, reloadPairs]);
 
   // Set up tokensState.canLoadNextTokens
   useEffect(() => {
@@ -487,6 +541,47 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     paginationState.trustedTokenPaginationKey,
     tokens,
   ]);
+
+  // Set up tokensState.loadPair
+  useEffect(() => {
+    async function loadPair(pairAddressOrAssetInfos: string | [tokenObj, tokenObj]) {
+      if (!client) return;
+
+      try {
+        const queryPair =
+          typeof pairAddressOrAssetInfos === "string"
+            ? () => Pair.queryPair(client, pairAddressOrAssetInfos)
+            : () => Factory.getPair(client, config.factoryAddress, pairAddressOrAssetInfos);
+
+        const pair = await queryPair();
+        if (!pair) return;
+        tokensDispatch({ type: "setPair", payload: pair });
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      }
+    }
+
+    tokensDispatch({ type: "setLoadPair", payload: loadPair });
+  }, [client, config.factoryAddress, handleError]);
+
+  // Set up tokensState.reloadPairs
+  useEffect(() => {
+    async function reloadPairs() {
+      if (!client) return;
+
+      const pairs = await Factory.getPairs(client, config.factoryAddress);
+      const pairsMap = new Map<string, PairProps>();
+
+      for (const pairAddress in pairs) {
+        pairsMap.set(pairAddress, pairs[pairAddress]);
+      }
+
+      tokensDispatch({ type: "setPairs", payload: pairsMap });
+    }
+
+    tokensDispatch({ type: "setReloadPairs", payload: reloadPairs });
+  }, [client, config.factoryAddress]);
 
   return <TokensContext.Provider value={{ tokensState, tokensDispatch }}>{children}</TokensContext.Provider>;
 }
