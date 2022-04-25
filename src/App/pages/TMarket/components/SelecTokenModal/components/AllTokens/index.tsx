@@ -26,10 +26,10 @@ export default function AllTokens({ setToken, closeModal, tokenFilter }: AllToke
     sdkState: { config },
   } = useSdk();
   const {
-    tokensState: { tokens, canLoadNextTokens, loadNextTokens },
+    tokensState: { tokens, canLoadNextTokens, loadNextTokens, pairs },
   } = useTokens();
   const {
-    tMarketState: { pairs, searchText },
+    tMarketState: { searchText },
   } = useTMarket();
 
   const [tokensList, setTokensList] = useState<readonly TokenProps[]>([]);
@@ -39,7 +39,7 @@ export default function AllTokens({ setToken, closeModal, tokenFilter }: AllToke
     const tokensListLp =
       tokenFilter === "exclude-lp"
         ? excludeLpTokens(tokensList)
-        : includeOnlyLpTokens(formatLpTokens(tokensList, pairs));
+        : includeOnlyLpTokens(formatLpTokens(tokensList, Array.from(pairs.values())));
 
     const filteredTokensList = filterTokensByText(tokensListLp, searchText);
 

@@ -2,7 +2,6 @@ import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate
 import { paths } from "App/paths";
 import { NetworkConfig } from "config/network";
 import { gtagTMarketAction } from "utils/analytics";
-import { Contract20WS } from "utils/cw20";
 import { DetailWithdraw, LPToken, Pool, WithdrawFormValues } from "utils/tokens";
 
 export const handleSubmit = async (
@@ -15,7 +14,6 @@ export const handleSubmit = async (
   detailsWithdraw: DetailWithdraw | undefined,
   setLoading: (l: boolean) => void,
   setDetail: (d: DetailWithdraw) => void,
-  updateLPtoken: (t: { [a: string]: LPToken }) => void,
   history: any,
   setModalOpen: (b: boolean) => void,
 ): Promise<void> => {
@@ -43,9 +41,7 @@ export const handleSubmit = async (
       config.gasPrice,
     );
     gtagTMarketAction("withdraw_success");
-    const token_info = await Contract20WS.getTokenInfo(client, address, values.selectFrom.address, config);
     values.To = "1.0";
-    updateLPtoken({ [lpSelected.token.address]: { token: token_info, pair: lpSelected.pair } });
     setDetail({ ...detailsWithdraw, txHash: result.transactionHash });
     setLoading(false);
     history.push(`${paths.tmarket.prefix}${paths.tmarket.withdraw.prefix}${paths.tmarket.withdraw.result}`);

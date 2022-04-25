@@ -25,10 +25,10 @@ export default function PinnedTokens({ setToken, closeModal, tokenFilter }: Pinn
     sdkState: { config },
   } = useSdk();
   const {
-    tokensState: { tokens, pinnedTokens },
+    tokensState: { tokens, pinnedTokens, pairs },
   } = useTokens();
   const {
-    tMarketState: { pairs, searchText },
+    tMarketState: { searchText },
   } = useTMarket();
 
   const [tokensList, setTokensList] = useState<readonly TokenProps[]>([]);
@@ -38,7 +38,7 @@ export default function PinnedTokens({ setToken, closeModal, tokenFilter }: Pinn
     const tokensListLp =
       tokenFilter === "exclude-lp"
         ? excludeLpTokens(tokensList)
-        : formatLpTokens(includeOnlyLpTokens(tokensList), pairs);
+        : includeOnlyLpTokens(formatLpTokens(tokensList, Array.from(pairs.values())));
     const filteredTokensList = filterTokensByText(tokensListLp, searchText).filter((token) =>
       pinnedTokens.includes(token.address),
     );

@@ -26,16 +26,8 @@ import {
   setSimulationProvide,
   useProvide,
 } from "service/provide";
-import { updatePairs, updateToken, useTMarket } from "service/tmarket";
 import { useTokens } from "service/tokens";
-import {
-  DetailProvide,
-  PairProps,
-  ProvideFormValues,
-  SimulationProvide,
-  Token,
-  TokenProps,
-} from "utils/tokens";
+import { DetailProvide, PairProps, ProvideFormValues, SimulationProvide, Token } from "utils/tokens";
 
 import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, ToToken } from "./components";
 import ProvideResultModal from "./components/ProvideResultModal";
@@ -57,11 +49,9 @@ export default function Provide(): JSX.Element {
     sdkState: { config, client, address, signingClient },
   } = useSdk();
   const {
-    tokensState: { loadToken },
+    tokensState: { loadToken, loadPair },
   } = useTokens();
   const history = useHistory();
-  const { tMarketState, tMarketDispatch } = useTMarket();
-  const { pairs } = tMarketState;
   const {
     errors,
     selectedPair,
@@ -81,8 +71,6 @@ export default function Provide(): JSX.Element {
   const setIsApproveA = (needAllowance: boolean) => setIsTokenApprovedA(provideDispatch, needAllowance);
   const setIsApproveB = (needAllowance: boolean) => setIsTokenApprovedB(provideDispatch, needAllowance);
   const setProvideButton = (state: provideButtonState) => setprovideButtonState(provideDispatch, state);
-  const refreshToken = (token: TokenProps) => updateToken(tMarketDispatch, { [token.address]: token });
-  const refreshPairs = (p: { [k: string]: PairProps }) => updatePairs(tMarketDispatch, p);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -102,7 +90,7 @@ export default function Provide(): JSX.Element {
             values,
             client,
             address,
-            pairs,
+            config.factoryAddress,
             setPair,
             setNewError,
             setIsApproveA,
@@ -126,8 +114,6 @@ export default function Provide(): JSX.Element {
             provideButtonState,
             setProvideButton,
             config.factoryAddress,
-            refreshToken,
-            refreshPairs,
             setModalOpen,
           );
 
@@ -146,6 +132,9 @@ export default function Provide(): JSX.Element {
           }
           if (values.selectTo?.address) {
             await loadToken?.(values.selectTo.address);
+          }
+          if (selectedPair) {
+            await loadPair?.(selectedPair.contract_addr);
           }
         }}
         initialValues={initialValues}
