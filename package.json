@@ -31,7 +31,6 @@
     "@types/yup": "^0.29.13",
     "antd": "^4.16.13",
     "babel-plugin-import": "^1.13.5",
-    "babel-jest": "26.6.0",
     "clipboard-copy": "^4.0.1",
     "craco-antd": "^1.19.0",
     "eslint-config-prettier": "^8.5.0",
@@ -64,9 +63,9 @@
     "@testing-library/cypress": "^8.0.2",
     "axios": "^0.26.1",
     "cypress": "^9.5.4",
+    "cypress-cucumber-preprocessor": "^4.3.1",
     "firebase-tools": "^10.7.0",
     "ts-proto": "^1.110.4",
-    "cypress-cucumber-preprocessor": "^4.3.1",
     "wait-on": "^6.0.1"
   },
   "scripts": {
