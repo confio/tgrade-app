@@ -80,7 +80,6 @@ And("I click on Go to T-Market button", () => {
 
 And("I click on Provide Liquidity tab", () => {
   cy.findByText("Provide Liquidity").click();
-  cy.url().should('include', '/tmarket/provide')
 });
 
 And("I click on Exchange tab", () => {
@@ -139,6 +138,11 @@ And("I see Complete message", () => {
 });
 
 And("I click Ok button", () => {
-  cy.get(tMarketPage.getOkButton()).click();
-  cy.get(tMarketPage.getOkButton()).should('not.exist');
+  cy.get(tMarketPage.getOkButton()).click().should('not.exist');
 });
+
+And("I redirected back to Provided Liquidity tab", () => {
+  cy.url().should('include', '/tmarket/provide')
+});
+
+
