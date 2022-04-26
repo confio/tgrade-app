@@ -73,7 +73,9 @@ export default function FormWhitelistPair({
               >
                 {tokensPerPairs.map((pair) => (
                   <Option key={pair.pairAddress} value={pair.pairAddress}>
-                    {`${pair.tokenA.name} ⇄ ${pair.tokenB.name} ${ellipsifyAddress(pair.pairAddress)}`}
+                    {`${pair.tokenA.symbol ?? ""}(${ellipsifyAddress(pair.tokenA.address)}) ⇄ ${
+                      pair.tokenB.symbol ?? ""
+                    }(${ellipsifyAddress(pair.tokenB.address)})`}
                   </Option>
                 ))}
               </StyledSelect>

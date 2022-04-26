@@ -13,7 +13,7 @@ const FromToken = (): JSX.Element => {
   const { tMarketState, tMarketDispatch } = useTMarket();
   const { config, client, address } = sdkState;
   const { swapButton, selectedPair } = exchangeState;
-  const { estimatingFromA, pairs } = tMarketState;
+  const { estimatingFromA } = tMarketState;
 
   const setToken = (token: TokenProps) => {
     setValues({
@@ -37,7 +37,7 @@ const FromToken = (): JSX.Element => {
 
   useEffect(() => {
     (async () => {
-      if (!client || !address || !values.selectFrom || !values.selectTo || !pairs || !estimatingFromA) return;
+      if (!client || !address || !values.selectFrom || !values.selectTo || !estimatingFromA) return;
       //QUERY simulation
       if (Number(values.From) > 0 && swapButton.type === "swap" && selectedPair) {
         const simulation_result: SimulatedSwap | null = await Token.getSimulation(

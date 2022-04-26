@@ -13,10 +13,9 @@ import { Formik } from "formik";
 import { lazy, useEffect, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
-import { updateLPToken, useTMarket } from "service/tmarket";
 import { useTokens } from "service/tokens";
 import { setDetailWithdraw, setLoading, setWithdrawButtonState, useWithdraw } from "service/withdraw";
-import { DetailWithdraw, LPToken, Token, WithdrawFormValues } from "utils/tokens";
+import { DetailWithdraw, Token, WithdrawFormValues } from "utils/tokens";
 
 import { FromToken, ToToken } from "./components";
 import ExtraInfo from "./components/ExtraInfo";
@@ -39,14 +38,12 @@ export default function Withdraw(): JSX.Element {
   const {
     tokensState: { loadToken },
   } = useTokens();
-  const { tMarketDispatch } = useTMarket();
   const { withdrawState, withdrawDispatch } = useWithdraw();
   const history = useHistory();
   const { loading, selected, errors, detail, buttonState } = withdrawState;
   const { address, signingClient, config, client } = sdkState;
   const setLoadingButton = (l: boolean) => setLoading(withdrawDispatch, l);
   const setDetail = (e: DetailWithdraw) => setDetailWithdraw(withdrawDispatch, e);
-  const updateLP = (e: { [key: string]: LPToken }) => updateLPToken(tMarketDispatch, e);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -71,7 +68,6 @@ export default function Withdraw(): JSX.Element {
             detail,
             setLoadingButton,
             setDetail,
-            updateLP,
             history,
             setModalOpen,
           );
