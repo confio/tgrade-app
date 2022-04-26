@@ -79,11 +79,13 @@ And("I click on Go to T-Market button", () => {
 });
 
 And("I click on Provide Liquidity tab", () => {
-  cy.findByText("Provide Liquidity").should("be.visible").click();
+  cy.findByText("Provide Liquidity").click();
+  cy.url().should('include', '/tmarket/provide')
 });
 
 And("I click on Exchange tab", () => {
-  cy.findByText("Exchange").should("be.visible").click();
+  cy.findByText("Exchange").click();
+  cy.url().should('include', '/tmarket/exchange')
 });
 
 And("I select TGD token FROM drop down", () => {
