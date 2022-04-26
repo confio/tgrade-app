@@ -15,6 +15,14 @@ export class TrustedCirclesPage {
     return ".ant-steps-item-active .ant-steps-item-icon span";
   }
 
+  getProposalOptionDropDown(): string {
+    return ".ant-modal-body .ant-select-selector";
+  }
+
+  getFirstItemFromDropDown(): string {
+    return ".ant-select-item-option-content";
+  }
+
   getTCNameFromActiveTab(): string {
     return "h1.ant-typography";
   }

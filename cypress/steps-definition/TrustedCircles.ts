@@ -10,6 +10,10 @@ Given("I visit Trusted Circle page", () => {
   cy.visit("/trustedcircle");
 });
 
+Given("Go to Trusted Circle page", () => {
+  cy.findByText("Trusted Circles").click();
+});
+
 Then("I connect to Web Demo wallet", () => {
   cy.findByText("Connect Wallet").click();
   cy.findByText("Web wallet (demo)").click();
@@ -59,8 +63,8 @@ And("I click on Go to Trusted Circle details button", () => {
   cy.findByRole("button", {
     name: /Go to Trusted Circle details/i,
   }).click({ force: true });
-  cy.findByText("Your transaction was approved!").should("not.be.visible");
 });
+
 And("I see that {string} is created", (text) => {
   cy.get(trustedCirclesPage.getTCNameFromActiveTab()).should("be.visible").should("contain.text", text);
   // workaround! should be removed
@@ -70,4 +74,60 @@ And("I see that {string} is created", (text) => {
     const tsContract = tcAddress.text();
     cy.wrap(tsContract).as("trustedCircleAddress");
   });
+});
+
+And("I click on Add proposal button", () => {
+  cy.findByText("Add proposal").click();
+});
+
+And("I select Whitelist Pair option", () => {
+  cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "New proposal");
+  cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
+  cy.get(trustedCirclesPage.getProposalOptionDropDown()).click();
+  cy.findByText("Whitelist Pair").click();
+});
+
+And("I select Trading Pair from drop down", () => {
+  cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "Whitelist Pair");
+  cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
+  cy.wait(4000); // probably a bug
+  cy.get(trustedCirclesPage.getProposalOptionDropDown()).click();
+  cy.get(trustedCirclesPage.getFirstItemFromDropDown()).click();
+});
+
+And("I click on Create proposal button", () => {
+  cy.findByText("Create proposal").click();
+  // Workaround for an issue in browser
+  Cypress.on("uncaught:exception", (err) => !err.message.includes("ResizeObserver loop limit exceeded"));
+});
+
+And("I click Confirm proposal button", () => {
+  cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "Confirmation");
+  cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "3");
+  cy.findByRole("button", {
+    name: /Confirm proposal/i,
+  }).click();
+});
+
+And("I see Your transaction was approved message", () => {
+  cy.findByText("Your transaction was approved!").should("be.visible");
+});
+
+And("I see created Whitelist pair proposal", () => {
+  cy.findByText("Whitelist pair").should("be.visible");
+});
+
+And("I click on Whitelist pair button to open proposal", () => {
+  cy.findByText("Whitelist pair").click();
+});
+
+And("I click on Execute Proposal button", () => {
+  cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", 'Nº 1 "Whitelist pair"');
+  cy.findByRole("button", {
+    name: /Execute Proposal/i,
+  }).click();
+});
+
+And("I see proposal has change state to Executed", () => {
+  cy.findByText("Executed").should("be.visible");
 });
