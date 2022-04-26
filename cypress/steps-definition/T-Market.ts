@@ -137,5 +137,6 @@ And("I see Complete message", () => {
 });
 
 And("I click Ok button", () => {
-  cy.get(tMarketPage.getOkButton()).click(); //Should be found
+  cy.get(tMarketPage.getOkButton()).click();
+  cy.get(tMarketPage.getOkButton()).should('not.exist');
 });
