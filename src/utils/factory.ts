@@ -1,12 +1,12 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, GasPrice } from "@cosmjs/stargate";
 
-import { PairProps, SwapFormValues } from "./tokens";
+import { PairProps, SwapFormValues, tokenObj } from "./tokens";
 
 export async function getPairsEager(
   client: CosmWasmClient,
   factoryAddress: string,
-  start_after?: any[],
+  start_after?: [tokenObj, tokenObj],
 ): Promise<PairProps[]> {
   const { pairs }: { pairs: PairProps[] } = await client.queryContractSmart(factoryAddress, {
     pairs: { start_after, limit: 30 },
@@ -93,5 +93,20 @@ export class Factory {
     });
 
     return pairsMap;
+  }
+
+  static async getPair(
+    client: CosmWasmClient,
+    factoryAddress: string,
+    assetInfos: [tokenObj, tokenObj],
+  ): Promise<PairProps | undefined> {
+    try {
+      const pair: PairProps = await client.queryContractSmart(factoryAddress, {
+        pair: { asset_infos: assetInfos },
+      });
+      return pair;
+    } catch {
+      return undefined;
+    }
   }
 }

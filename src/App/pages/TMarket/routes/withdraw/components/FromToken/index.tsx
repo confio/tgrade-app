@@ -12,10 +12,10 @@ import { Pool, PoolProps, TokenProps, WithdrawFormValues } from "utils/tokens";
 const FromToken = (): JSX.Element => {
   const { values, setValues, setFieldValue } = useFormikContext<WithdrawFormValues>();
   const {
-    tokensState: { tokens },
+    tokensState: { tokens, pairs },
   } = useTokens();
   const {
-    tMarketState: { estimatingFromA, pairs },
+    tMarketState: { estimatingFromA },
   } = useTMarket();
   const { withdrawState, withdrawDispatch } = useWithdraw();
   const { sdkState } = useSdk();
@@ -43,7 +43,7 @@ const FromToken = (): JSX.Element => {
         setErrors(withdrawDispatch, errors);
         return;
       }
-      //TODO wire this with new tokens
+
       const lpToken = tokens.get(values.selectFrom.address);
       if (!lpToken) return;
 

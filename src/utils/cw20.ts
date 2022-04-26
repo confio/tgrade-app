@@ -295,6 +295,22 @@ export class Contract20WS {
       return undefined;
     }
   }
+  static async isWhitelisted(
+    client: CosmWasmClient,
+    contractAddress?: string,
+    pairAddress?: string,
+  ): Promise<boolean | undefined> {
+    if (!contractAddress) return;
+
+    try {
+      const { whitelisted }: { whitelisted: boolean } = await client.queryContractSmart(contractAddress, {
+        is_whitelisted: { address: pairAddress },
+      });
+      return whitelisted;
+    } catch {
+      return false;
+    }
+  }
   static async sendTokens(
     signingClient: SigningCosmWasmClient,
     senderAddress: string,

@@ -10,30 +10,36 @@ import { getErrorFromStackTrace } from "utils/errors";
 import { Factory } from "utils/factory";
 import {
   DetailProvide,
-  Pair,
   PairProps,
   Pool,
   ProvideFormValues,
   SimulationProvide,
   SwapFormValues,
-  TokenProps,
 } from "utils/tokens";
 
 export const handleValidation = async (
   values: ProvideFormValues,
   client: CosmWasmClient | undefined,
   address: string | undefined,
-  pairs: { [key: string]: PairProps },
+  factoryAddress: string,
   setPair: (pair: PairProps | undefined) => void,
   setErrors: (errors: FormErrors) => void,
   setIsApprovedA: (needAllowance: boolean) => void,
   setIsApprovedB: (needAllowance: boolean) => void,
   setButtonState: (needAllowance: provideButtonState) => void,
 ): Promise<void> => {
-  if (!client || !address || !values.selectFrom || !values.selectTo || !pairs) return;
+  if (!client || !address || !values.selectFrom || !values.selectTo) return;
 
   //CHECK if has pair
-  const pair: PairProps | undefined = Pair.getPair(pairs, values.selectFrom.address, values.selectTo.address);
+  const tokenObjA =
+    values.selectFrom.address === "utgd"
+      ? { native: values.selectFrom.address }
+      : { token: values.selectFrom.address };
+  const tokenObjB =
+    values.selectTo.address === "utgd"
+      ? { native: values.selectTo.address }
+      : { token: values.selectTo.address };
+  const pair = await Factory.getPair(client, factoryAddress, [tokenObjA, tokenObjB]);
   pair ? setPair(pair) : setPair(undefined);
   pair
     ? setButtonState({ type: "provide", title: "Provide" })
@@ -137,8 +143,6 @@ export const handleSubmit = async (
   provideButtonState: provideButtonState,
   setProvideButtonState: (a: provideButtonState) => void,
   factoryAddress: string,
-  refreshToken: (token: TokenProps) => void,
-  refreshPairs: (pairs: { [k: string]: PairProps }) => void,
   setModalOpen: (b: boolean) => void,
 ): Promise<void> => {
   switch (provideButtonState.type) {
@@ -184,11 +188,6 @@ export const handleSubmit = async (
           });
         }
         setSimulation(undefined);
-        //Update balances
-        const tokenA = await Contract20WS.getTokenInfo(client, address, values.selectFrom.address, config);
-        const tokenB = await Contract20WS.getTokenInfo(client, address, values.selectTo.address, config);
-        refreshToken(tokenA);
-        refreshToken(tokenB);
         history.push(`${paths.tmarket.prefix}${paths.tmarket.provide.prefix}${paths.tmarket.provide.result}`);
       } catch (e) {
         if (!(e instanceof Error)) return;
@@ -212,8 +211,6 @@ export const handleSubmit = async (
         await Factory.createPair(signingClient, address, factoryAddress, swapValues, config.gasPrice);
         gtagTokenAction("create_pair_success");
         setProvideButtonState({ title: "Provide", type: "provide" });
-        const pairs = await Factory.getPairs(client, factoryAddress);
-        refreshPairs(pairs);
       } catch (e) {
         if (!(e instanceof Error)) return;
         const error = getErrorFromStackTrace(e);

@@ -5,34 +5,32 @@ import { toast } from "react-toastify";
 import { SwapButtonState } from "service/exchange";
 import { FormErrors } from "service/tmarket";
 import { gtagTMarketAction } from "utils/analytics";
-import { Contract20WS } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
-import {
-  DetailSwap,
-  Pair,
-  PairProps,
-  Pool,
-  PoolProps,
-  SimulatedSwap,
-  SwapFormValues,
-  Token,
-  TokenProps,
-} from "utils/tokens";
+import { Factory } from "utils/factory";
+import { DetailSwap, PairProps, Pool, PoolProps, SimulatedSwap, SwapFormValues, Token } from "utils/tokens";
 
 export const handleValidation = async (
   values: SwapFormValues,
   client: CosmWasmClient | undefined,
   address: string | undefined,
   swapButton: SwapButtonState,
-  pairs: { [key: string]: PairProps },
+  factoryAddress: string,
   setPair: (pair: PairProps | undefined) => void,
   setSwapButtonState: (button: SwapButtonState) => void,
   setErrors: (errors: FormErrors) => void,
 ): Promise<void> => {
-  if (!client || !address || !values.selectFrom || !values.selectTo || !pairs) return;
+  if (!client || !address || !values.selectFrom || !values.selectTo) return;
 
   //CHECK if has pair
-  const pair: PairProps | undefined = Pair.getPair(pairs, values.selectFrom.address, values.selectTo.address);
+  const tokenObjA =
+    values.selectFrom.address === "utgd"
+      ? { native: values.selectFrom.address }
+      : { token: values.selectFrom.address };
+  const tokenObjB =
+    values.selectTo.address === "utgd"
+      ? { native: values.selectTo.address }
+      : { token: values.selectTo.address };
+  const pair = await Factory.getPair(client, factoryAddress, [tokenObjA, tokenObjB]);
   //UPDATE state if not existing pair
   if (!pair && swapButton.type !== "not_exits") {
     setSwapButtonState({ title: "Pair doesn't exist", type: "not_exits" });
@@ -69,7 +67,6 @@ export const handleSubmit = async (
   setSimulation: (a: SimulatedSwap | undefined) => void,
   setDetailSwap: (a: DetailSwap | undefined) => void,
   history: any,
-  refreshToken: (t: TokenProps) => void,
   setModalOpen: (b: boolean) => void,
 ): Promise<void> => {
   gtagTMarketAction("exchange_try");
@@ -94,11 +91,6 @@ export const handleSubmit = async (
         fee: (Number(config.gasPrice.amount) / 2).toString(),
       });
       setSimulation(undefined);
-      //Update balance
-      const tokenA = await Contract20WS.getTokenInfo(client, address, values.selectFrom.address, config);
-      const tokenB = await Contract20WS.getTokenInfo(client, address, values.selectTo.address, config);
-      refreshToken(tokenA);
-      refreshToken(tokenB);
       history.push(`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}${paths.tmarket.exchange.result}`);
     } catch (e) {
       if (!(e instanceof Error)) return;
