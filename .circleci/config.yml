@@ -48,7 +48,7 @@ jobs:
       # executor in local jobs." (https://circleci.com/docs/2.0/local-cli/#limitations-of-running-jobs-locally)
       #
       # Available images: https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
-      image: ubuntu-2004:202201-02
+      image: ubuntu-2004:202107-02
     steps:
       - checkout
       - run: # start early for less wait time below
@@ -134,7 +134,7 @@ jobs:
           name: Uploading cypress/screenshots artifacts
           path: cypress/screenshots
 
-  e2e-local:
+  cy-local:
     machine:
       # We can't use a containerized environment since it requires remote docker to start custom containers.
       # However, we can't access the remote docker's network from the primary container. This is a
@@ -214,7 +214,7 @@ workflows:
     jobs:
       - lint
       - cy-dev
-      - e2e-local
+      - cy-local
       - test:
           # https://circleci.com/docs/2.0/env-vars/
           context: Testing-Env-Vars

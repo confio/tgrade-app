@@ -19,14 +19,6 @@ export class TMarketPage {
     return ".ant-modal-content";
   }
 
-  getDialogHeaderName(): string {
-    return ".ant-modal-content header h1";
-  }
-
-  getDialogStepActiveNumber(): string {
-    return ".ant-steps-item-active .ant-steps-item-icon span";
-  }
-
   getYourTransactionWasApprovedContent(): string {
     return "div.ant-modal-wrap.ant-modal-centered .ant-modal-content";
   }
@@ -40,10 +32,25 @@ export class TMarketPage {
   }
 
   getFieldNumberFromAssetA(): string {
+    // Maybe it should have generic name as [name="From"]
     return '[name="assetA"]';
   }
 
+  getFromFieldNumber(): string {
+    return '[name="From"]';
+  }
+
+  getToFieldNumber(): string {
+    return '[name="To"]';
+  }
+
   getFieldNumberFromAssetB(): string {
+    // Maybe it should have generic name as [name="To"]
     return '[name="assetB"]';
+  }
+
+  getOkButton(): string {
+    // Should be improved by adding uniq id, name, role ...
+    return ".ant-modal-body > .ant-col > .ant-btn";
   }
 }
