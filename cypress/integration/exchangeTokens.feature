@@ -62,6 +62,7 @@ Feature: Trading pair
     * I click on Provide button
     * I see Complete message
     * I click Ok button
+    * I redirected back to Provided Liquidity tab
 
     # Exchange tokens
     * I click on Exchange tab

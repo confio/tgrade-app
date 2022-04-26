@@ -84,6 +84,7 @@ And("I click on Provide Liquidity tab", () => {
 
 And("I click on Exchange tab", () => {
   cy.findByText("Exchange").click();
+  cy.url().should('include', '/tmarket/exchange')
 });
 
 And("I select TGD token FROM drop down", () => {
@@ -137,5 +138,12 @@ And("I see Complete message", () => {
 });
 
 And("I click Ok button", () => {
-  cy.get(tMarketPage.getOkButton()).click(); //Should be found
+  cy.get(tMarketPage.getOkButton()).click().should('not.exist');
 });
+
+And("I redirected back to Provided Liquidity tab", () => {
+  cy.url().should('include', '/tmarket/provide')
+  cy.wait(3000) //workaround to fix failed step
+});
+
+
