@@ -38,4 +38,12 @@ export class TMarketPage {
   getListOfTokens(): string {
     return "ul.ant-list-items";
   }
+
+  getFieldNumberFromAssetA(): string {
+    return '[name="assetA"]';
+  }
+
+  getFieldNumberFromAssetB(): string {
+    return '[name="assetB"]';
+  }
 }
