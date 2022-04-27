@@ -75,11 +75,24 @@ export default function Withdraw(): JSX.Element {
           setFieldValue("From", "");
           setFieldValue("To", "0 - 0");
 
+          // Update selected tokens
           if (values.selectFrom?.address) {
             await loadToken?.(values.selectFrom.address);
           }
           if (values.selectTo?.address) {
             await loadToken?.(values.selectTo.address);
+          }
+
+          // Update tokens associated with withdrawn Lp token
+          const assets = selected?.pair.asset_infos;
+          const assetA = assets?.[0].native || assets?.[0].token;
+          const assetB = assets?.[1].native || assets?.[1].token;
+
+          if (assetA) {
+            await loadToken?.(assetA);
+          }
+          if (assetB) {
+            await loadToken?.(assetB);
           }
         }}
         initialValues={initialValues}

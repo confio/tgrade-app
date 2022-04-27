@@ -573,8 +573,8 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
       const pairs = await Factory.getPairs(client, config.factoryAddress);
       const pairsMap = new Map<string, PairProps>();
 
-      for (const pairAddress in pairs) {
-        pairsMap.set(pairAddress, pairs[pairAddress]);
+      for (const pairKey in pairs) {
+        pairsMap.set(pairs[pairKey].contract_addr, pairs[pairKey]);
       }
 
       tokensDispatch({ type: "setPairs", payload: pairsMap });
