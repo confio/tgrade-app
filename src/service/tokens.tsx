@@ -574,7 +574,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
       const pairsMap = new Map<string, PairProps>();
 
       for (const pairAddress in pairs) {
-        pairsMap.set(pairAddress, pairs[pairAddress]);
+        pairsMap.set(pairs[pairAddress].contract_addr, pairs[pairAddress]);
       }
 
       tokensDispatch({ type: "setPairs", payload: pairsMap });
