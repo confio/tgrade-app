@@ -31,11 +31,12 @@ export const TextValue = styled(Typography.Text)`
 `;
 
 export const AddressField = styled(Typography)`
-  margin-top: var(--s-1);
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 
-  & * + * {
-    margin-left: var(--s-2);
+  & span + span {
+    margin-top: var(--s0);
   }
 `;
 
