@@ -27,7 +27,15 @@ import {
   useProvide,
 } from "service/provide";
 import { useTokens } from "service/tokens";
-import { DetailProvide, PairProps, ProvideFormValues, SimulationProvide, Token } from "utils/tokens";
+import { Factory } from "utils/factory";
+import {
+  DetailProvide,
+  PairProps,
+  ProvideFormValues,
+  SimulationProvide,
+  Token,
+  tokenObj,
+} from "utils/tokens";
 
 import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, ToToken } from "./components";
 import ProvideResultModal from "./components/ProvideResultModal";
@@ -127,14 +135,27 @@ export default function Provide(): JSX.Element {
             setFieldValue("assetB", "");
           }
 
-          if (values.selectFrom?.address) {
-            await loadToken?.(values.selectFrom.address);
-          }
-          if (values.selectTo?.address) {
-            await loadToken?.(values.selectTo.address);
-          }
-          if (selectedPair) {
-            await loadPair?.(selectedPair.contract_addr);
+          if (!values.selectFrom || !values.selectTo) return;
+
+          // Update tokens related to the created/provided pair
+          await loadToken?.(values.selectFrom.address);
+          await loadToken?.(values.selectTo.address);
+
+          // Update pair
+          if (!client) return;
+
+          const assetA: tokenObj =
+            values.selectFrom.address === config.feeToken
+              ? { native: values.selectFrom.address }
+              : { token: values.selectFrom.address };
+          const assetB: tokenObj =
+            values.selectTo.address === config.feeToken
+              ? { native: values.selectTo.address }
+              : { token: values.selectTo.address };
+
+          const pair = await Factory.getPair(client, config.factoryAddress, [assetA, assetB]);
+          if (pair) {
+            await loadPair?.(pair.contract_addr);
           }
         }}
         initialValues={initialValues}
