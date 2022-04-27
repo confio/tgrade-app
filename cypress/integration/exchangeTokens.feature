@@ -30,7 +30,7 @@ Feature: Trading pair
     # Create pair
     * I click on Provide Liquidity tab
     * I select TGD token FROM drop down
-    * I select TO drop down my created token
+    * I select my created token in TO drop down
     * I click on Create Pair button
 
     # Create Whitelist proposal
@@ -55,7 +55,7 @@ Feature: Trading pair
     * Go to T-Market page
     * I click on Provide Liquidity tab
     * I select TGD token FROM drop down
-    * I select TO drop down my created token
+    * I select my created token in TO drop down
     * I enter value for TGN token "5"
     * I enter value for my created token "1"
     * I click on Approve SUST button
@@ -67,7 +67,7 @@ Feature: Trading pair
     # Exchange tokens
     * I click on Exchange tab
     * I select TGD token FROM drop down
-    * I select TO drop down my created token
+    * I select my created token in TO drop down
     * I enter value for TGN token "1" Exchange tab
     * I see amount of my token "0.2" Exchange tab
     # TODO check fees

@@ -92,7 +92,7 @@ And("I select TGD token FROM drop down", () => {
   cy.get(tMarketPage.getListOfTokens()).findByText("TGD").click();
 });
 
-And("I select TO drop down my created token", () => {
+And("I select my created token in TO drop down", () => {
   cy.get(tMarketPage.getDropDownSelectTokenToButton()).click();
   // TODO add token verification
   cy.get(tMarketPage.getTokenOnPinnedTabByName(tokenName))
@@ -110,12 +110,14 @@ And("I enter value for TGN token {string}", (value) => {
 });
 
 And("I enter value for TGN token {string} Exchange tab", (value) => {
-  cy.get(tMarketPage.getFromFieldNumber()).type(value).blur();
+  cy.get(tMarketPage.getFromFieldNumber()).type(value).click()
+  cy.wait(12000) //workaround
 });
 
 And("I see amount of my token {string} Exchange tab", (value) => {
-  cy.findByText('Minimum Received:').should("be.visible") //workaround
+  cy.wait(12000) //workaround
   cy.get(tMarketPage.getToFieldNumber()).should("have.value", value);
+  cy.findByText('Minimum Received:').should("be.visible")
 });
 
 And("I enter value for my created token {string}", (value) => {
