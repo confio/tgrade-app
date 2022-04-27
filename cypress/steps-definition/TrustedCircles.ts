@@ -12,6 +12,7 @@ Given("I visit Trusted Circle page", () => {
 
 Given("Go to Trusted Circle page", () => {
   cy.findByText("Trusted Circles").click();
+  cy.reload()
 });
 
 Then("I connect to Web Demo wallet", () => {
@@ -90,7 +91,7 @@ And("I select Whitelist Pair option", () => {
 And("I select Trading Pair from drop down", () => {
   cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "Whitelist Pair");
   cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
-  cy.wait(4000); // probably a bug
+  //cy.wait(4000); // probably a bug
   cy.get(trustedCirclesPage.getProposalOptionDropDown()).click();
   cy.get(trustedCirclesPage.getFirstItemFromDropDown()).click();
 });
