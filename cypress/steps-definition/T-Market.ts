@@ -111,11 +111,11 @@ And("I enter value for TGN token {string}", (value) => {
 
 And("I enter value for TGN token {string} Exchange tab", (value) => {
   cy.get(tMarketPage.getFromFieldNumber()).type(value).click()
-  cy.wait(5000) //workaround
+  cy.wait(9000) //workaround
 });
 
 And("I see amount of my token {string} Exchange tab", (value) => {
-  cy.wait(5000) //workaround
+  cy.wait(9000) //workaround
   cy.get(tMarketPage.getToFieldNumber()).should("have.value", value);
   cy.findByText('Minimum Received:').should("be.visible")
 });
