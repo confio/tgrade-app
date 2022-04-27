@@ -47,7 +47,7 @@ const FromToken = (): JSX.Element => {
       const lpToken = tokens.get(values.selectFrom.address);
       if (!lpToken) return;
 
-      const pair = Object.values(pairs).find((pair) => pair.liquidity_token === lpToken.address);
+      const pair = Array.from(pairs.values()).find((pair) => pair.liquidity_token === lpToken.address);
       if (!pair) return;
 
       const result: PoolProps = await Pool.queryPool(client, pair.contract_addr);
