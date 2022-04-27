@@ -12,7 +12,6 @@ Given("I visit Trusted Circle page", () => {
 
 Given("Go to Trusted Circle page", () => {
   cy.findByText("Trusted Circles").click();
-  cy.reload()
 });
 
 Then("I connect to Web Demo wallet", () => {
