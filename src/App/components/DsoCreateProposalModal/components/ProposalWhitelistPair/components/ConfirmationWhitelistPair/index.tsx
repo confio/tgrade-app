@@ -5,8 +5,11 @@ import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import { lazy, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
+import { useTokens } from "service/tokens";
 import { getDisplayAmountFromFee } from "utils/currency";
+import { tokenObj, TokenProps } from "utils/tokens";
 import { TcContract } from "utils/trustedCircle";
+import { ellipsifyAddress } from "utils/ui";
 
 import { AddressStack, ButtonGroup, FeeGroup, FieldLabel, Separator, TextComment } from "./style";
 
@@ -32,8 +35,13 @@ export default function ConfirmationWhitelistPair({
   const {
     sdkState: { config, signer, signingClient },
   } = useSdk();
+  const {
+    tokensState: { pairs, tokens },
+  } = useTokens();
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [assetInfos, setAssetInfos] = useState<readonly [tokenObj, tokenObj]>();
+  const [tokenProps, setTokenProps] = useState<readonly [TokenProps | undefined, TokenProps | undefined]>();
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
@@ -50,11 +58,36 @@ export default function ConfirmationWhitelistPair({
     }
   }, [config, handleError, signingClient]);
 
+  useEffect(() => {
+    (async function () {
+      const pair = Array.from(pairs.values()).find((pair) => pair.contract_addr === pairAddress);
+      if (pair) {
+        const tokenA = Array.from(tokens.values()).find(
+          (token) => token.address === (pair.asset_infos[0].native || pair.asset_infos[0].token),
+        );
+        const tokenB = Array.from(tokens.values()).find(
+          (token) => token.address === (pair.asset_infos[1].native || pair.asset_infos[1].token),
+        );
+
+        setTokenProps([tokenA, tokenB]);
+        setAssetInfos(pair.asset_infos);
+      }
+    })();
+  }, [pairAddress, pairs, tokens]);
+
+  const tokenAddressA = ellipsifyAddress(assetInfos?.[0].native || assetInfos?.[0].token || "");
+  const tokenAddressB = ellipsifyAddress(assetInfos?.[1].native || assetInfos?.[1].token || "");
+  const tokenSymbolA = tokenProps?.[0]?.symbol ?? "";
+  const tokenSymbolB = tokenProps?.[1]?.symbol ?? "";
+
   return (
     <>
       <AddressStack gap="s-3">
         <FieldLabel>Pair to be whitelisted</FieldLabel>
         <AddressTag address={pairAddress} />
+        {tokenAddressA && tokenAddressB ? (
+          <FieldLabel>{`${tokenSymbolA}(${tokenAddressA}) ⇄ ${tokenSymbolB}(${tokenAddressB})`}</FieldLabel>
+        ) : null}
       </AddressStack>
       <TextComment>{comment}</TextComment>
       <Separator />
