@@ -20,7 +20,8 @@ Then("I connect to Web Demo wallet", () => {
   cy.findByText("Loading your Wallet").should("not.exist");
   cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
   // workaround to wait for wallet connection (critical ~4000)
-  cy.wait(5500);
+  // and to wait until account will be existed on chain
+  cy.wait(7000);
 });
 
 When("I click on Add Trusted Circle button", () => {
