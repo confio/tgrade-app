@@ -30,6 +30,7 @@
     "@types/styled-components": "^5.1.15",
     "@types/yup": "^0.29.13",
     "antd": "^4.16.13",
+    "babel-jest": "26.6.0",
     "babel-plugin-import": "^1.13.5",
     "clipboard-copy": "^4.0.1",
     "craco-antd": "^1.19.0",
@@ -54,14 +55,16 @@
     "react-scripts": "^4.0.3",
     "react-toastify": "^8.0.3",
     "styled-components": "^5.3.5",
-    "typescript": "^4.4.4",
+    "typescript": "4.6.3",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@cypress/browserify-preprocessor": "^3.0.2",
     "@testing-library/cypress": "^8.0.2",
     "axios": "^0.26.1",
     "cypress": "^9.5.4",
+    "cypress-cucumber-preprocessor": "^4.3.1",
     "firebase-tools": "^10.7.0",
     "ts-proto": "^1.110.4",
     "wait-on": "^6.0.1"
@@ -85,14 +88,19 @@
     "compile": "tsc",
     "format": "prettier --write --loglevel warn \"./src/**/*.ts{,x}\" --ignore-path \"./.custom-prettierignore\"",
     "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh && prettier --write --loglevel warn \"./src/codec/**/*.ts\"",
-    "cy:open:local": "cypress open --config-file localhost-config.json",
-    "cy:open:dev": "cypress open --config-file dev-config.json",
-    "cy:volume:dev": "npx cypress run --browser chrome --config-file dev-config.json --spec 'cypress/integration/volumeTests/**.ts'",
-    "cy:e2e:local": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome --config-file localhost-config.json --spec 'cypress/integration/tradingPair.ts'"
+    "cy:open:local": "cypress open --config-file cypress/localhost-config.json",
+    "cy:open:dev": "cypress open --config-file cypress/dev-config.json",
+    "cy:open:stage": "cypress open --config-file cypress/stage-config.json",
+    "cy:dev": "npx cypress run --browser chrome --config-file cypress/dev-config.json --spec 'cypress/integration/volumeTests/**.ts', 'cypress/integration/exchangeTokens.feature'",
+    "cy:stage": "npx cypress run --browser chrome --config-file cypress/stage-config.json --spec 'cypress/integration/volumeTests/**.ts', 'cypress/integration/exchangeTokens.feature'",
+    "cy:local": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome --config-file cypress/localhost-config.json --spec 'cypress/integration/volumeTests/**.ts', 'cypress/integration/exchangeTokens.feature'"
   },
   "browserslist": [
     "last 2 chrome versions",
     "last 2 firefox versions",
     "last 2 safari versions"
-  ]
+  ],
+  "cypress-cucumber-preprocessor": {
+    "step_definitions": "cypress/steps-definition/"
+  }
 }
