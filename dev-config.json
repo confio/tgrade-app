@@ -1,5 +1,5 @@
 {
-  "baseUrl": "https://staging.tgrade.finance/",
+  "baseUrl": "https://dev.tgrade.finance/",
   "defaultCommandTimeout": 25000,
   "viewportWidth": 1920,
   "viewportHeight": 1080,
