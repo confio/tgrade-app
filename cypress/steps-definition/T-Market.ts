@@ -110,12 +110,12 @@ And("I enter value for TGN token {string}", (value) => {
 });
 
 And("I enter value for TGN token {string} Exchange tab", (value) => {
-  cy.get(tMarketPage.getFromFieldNumber()).type(value).blur();
+  cy.get(tMarketPage.getFromFieldNumber()).type(value)
 });
 
 And("I see amount of my token {string} Exchange tab", (value) => {
+  cy.get(tMarketPage.getToFieldNumber()).click().should("have.value", value);
   cy.findByText('Minimum Received:').should("be.visible") //workaround
-  cy.get(tMarketPage.getToFieldNumber()).should("have.value", value);
 });
 
 And("I enter value for my created token {string}", (value) => {
