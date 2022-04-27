@@ -68,8 +68,8 @@ Feature: Trading pair
     * I click on Exchange tab
     * I select TGD token FROM drop down
     * I select TO drop down my created token
-    * I enter value for TGN token "10" Exchange tab
-    * I see amount of my token "0.7" Exchange tab
+    * I enter value for TGN token "1" Exchange tab
+    * I see amount of my token "0.2" Exchange tab
     # TODO check fees
     * I click on Swap button
     * I see Complete message

@@ -5,7 +5,7 @@ import { TrustedCirclesPage } from "../page-object/TrustedCirclesPage";
 const trustedCirclesPage = new TrustedCirclesPage();
 const currentTime = moment().unix();
 
-describe("Trusted Circle", () => {
+xdescribe("Trusted Circle", () => {
   beforeEach(() => {
     cy.visit("/trustedcircle");
     // connect demo wallet
@@ -17,7 +17,7 @@ describe("Trusted Circle", () => {
     cy.wait(5500);
   });
 
-  describe("create trusted circle", () => {
+  xdescribe("create trusted circle", () => {
     beforeEach(() => {
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();

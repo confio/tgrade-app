@@ -19,14 +19,14 @@ function makeRandomAddress(): string {
 describe("Non Voting Member", () => {
   before(() => {
     cy.visit("/trustedcircle");
-
     // connect demo wallet
     cy.findByText("Connect Wallet").click();
     cy.findByText("Web wallet (demo)").click();
     cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
     // workaround to wait for wallet connection (critical ~4000)
-    cy.wait(5500);
+    // and to wait until account will be existed on chain
+    cy.wait(6500);
   });
 
   describe("Create Trusted Circle", () => {
