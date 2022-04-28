@@ -7,6 +7,6 @@
   "video": true,
   "screenshotOnRunFailure": true,
   "retries": {
-    "runMode": 0
+    "runMode": 1
   }
 }
