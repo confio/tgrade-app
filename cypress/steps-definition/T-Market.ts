@@ -110,6 +110,7 @@ And("I enter value for TGN token {string}", (value) => {
 });
 
 And("I enter value for TGN token {string} Exchange tab", (value) => {
+  cy.wait(5000)
   cy.get(tMarketPage.getFromFieldNumber()).type(value)
 });
 
