@@ -12,6 +12,7 @@ export const ThemeLight = styled.createGlobalStyle`
 
     --color-result-success: var(--color-green-63-42);
     --color-result-failure: var(--color-red-79-63);
+    --color-warning: var(--color-yellow-74-56);
     --color-info: var(--color-blue-97-57);
 
     --color-error-alert: var(--color-red-79-63);
