@@ -22,8 +22,7 @@ export const GlobalColors = styled.createGlobalStyle`
     --color-blue-41-95: hsl(229, 41%, 95%); /* New tgrade light gray */
     --color-blue-100-74: hsl(229, 100%, 74%);
 
-    --grad-1: radial-gradient(circle at 50% 50%, hsl(0, 0%, 12%), hsl(237, 26%, 16%), hsl(239, 40%, 20%)),
-      linear-gradient(to bottom, hsl(238, 39%, 15%), hsl(238, 39%, 15%));
+    --grad-1: linear-gradient(333.19deg, #71399f 0%, #71399f 10.73%, #ec096d 79.79%, #ec096d 100%);
     --grad-2: linear-gradient(
       90deg,
       hsl(245, 89%, 68%) 0%,

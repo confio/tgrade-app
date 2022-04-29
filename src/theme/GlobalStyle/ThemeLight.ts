@@ -33,8 +33,8 @@ export const ThemeLight = styled.createGlobalStyle`
 
     --bg-body: var(--color-gray-0-98);
     --grad-primary: var(--grad-2);
-    --bg-button-1ary: var(--color-blue-19-13);
-    --bg-button-1ary-focus: var(--color-blue-19-13);
+    --bg-button-1ary: var(--grad-1);
+    --bg-button-1ary-focus: var(--grad-1);
     --color-button-2ary: var(--color-blue-15-59);
     --color-button-2ary-selected: var(--color-blue-14-16);
     --border-button-2ary: var(--color-blue-15-59);
