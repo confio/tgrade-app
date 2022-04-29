@@ -65,11 +65,11 @@ export const StatusParagraph = styled(Paragraph)<{ readonly status: string }>`
       switch (status) {
         case "executed":
         case "passed":
-          return "#0BB0B1";
+          return "var(--color-result-success)";
         case "rejected":
-          return "#FF6465";
+          return "var(--color-result-failure)";
         default:
-          return "#FFB946";
+          return "var(--color-warning)";
       }
     }};
   }

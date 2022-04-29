@@ -43,7 +43,7 @@ color: #242730;`;
 export const LightButton = Styled(Button)`
   align-items: center;
   height: 30px;
-  color: var(--color-primary);
+  color: white;
   background-color: white;
 `;
 

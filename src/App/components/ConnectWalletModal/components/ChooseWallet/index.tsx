@@ -9,7 +9,7 @@ import {
 } from "utils/sdk";
 
 import closeIcon from "../../../../assets/icons/cross.svg";
-import tgradeIcon from "../../../../assets/icons/tgrade-square.svg";
+import tgradeIcon from "../../../../assets/icons/tgradeLogo.svg";
 import keplrIcon from "../../../../assets/images/keplr-logo.png";
 import ledgerIcon from "../../../../assets/images/ledger-logo.png";
 import Stack from "../../../Stack/style";

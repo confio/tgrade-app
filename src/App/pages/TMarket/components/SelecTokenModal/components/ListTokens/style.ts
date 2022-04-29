@@ -39,7 +39,7 @@ export const TokenListItem = styled(List.Item)`
   }
 
   &:hover {
-    background-color: hsla(180, 88%, 37%, 0.6);
+    background-color: var(--color-tertiary);
   }
 `;
 

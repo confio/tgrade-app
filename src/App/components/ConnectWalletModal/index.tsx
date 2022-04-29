@@ -41,7 +41,7 @@ export default function ConnectWalletModal({
         borderRadius: "16px",
         backgroundColor: "var(--bg-body)",
       }}
-      maskStyle={{ background: "rgba(4,119,120,0.6)" }}
+      maskStyle={{ background: "rgba(26, 29, 38,0.6)" }}
     >
       {connectWalletStep === ConnectWalletSteps.Choose ? (
         <ChooseWallet

@@ -8,9 +8,11 @@ justify-content:space-between;
 flex-direction:column;
 min-height: 100vh;
 width:15.25rem;
-background: linear-gradient(0deg, rgba(1, 100, 101, 0.97), rgba(1, 100, 101, 0.97)), url(${MenuBG});
+background: url(${MenuBG});
 svg{
-    margin:1rem;
+    margin: 1rem;
+    margin-left: calc(0.5rem + 4px); /* Cell's margin + border */
+    margin-right: 2rem;
 }
 `;
 

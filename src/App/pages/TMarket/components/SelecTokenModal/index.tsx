@@ -46,7 +46,7 @@ export default function SelectTokenModal({
         padding: "var(--s1)",
         backgroundColor: "var(--bg-body)",
       }}
-      maskStyle={{ background: "rgba(4,119,120,0.6)" }}
+      maskStyle={{ background: "rgba(26, 29, 38,0.6)" }}
     >
       <ModalHeader>
         <img src={backIcon} alt="Go back" onClick={closeModal} />

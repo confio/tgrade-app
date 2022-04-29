@@ -141,7 +141,7 @@ export default function OcEscrow(): JSX.Element {
     renderer: "svg" as const,
     angleField: "value",
     colorField: "type",
-    color: ["hsl(180, 88%, 37%)", "hsl(218, 15%, 59%)"],
+    color: ["var(--color-result-success)", "var(--color-result-failure)"],
     radius: 1,
     innerRadius: 0.75,
     legend: {
@@ -172,7 +172,7 @@ export default function OcEscrow(): JSX.Element {
       title: false,
       content: {
         style: {
-          color: "hsl(180, 88%, 37%)",
+          color: "var(--color-primary)",
           fontFamily: "var(--ff-text)",
           fontWeight: 500,
         },

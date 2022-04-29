@@ -93,9 +93,9 @@ export default function LeaveOcModal(): JSX.Element {
         position: "relative",
         padding: "var(--s1)",
         borderRadius: "16px",
-        backgroundColor: txResult ? "transparent" : "var(--bg-body)",
+        backgroundColor: "var(--bg-body)",
       }}
-      maskStyle={{ background: txResult ? "rgba(4,119,120,0.9)" : "rgba(4,119,120,0.6)" }}
+      maskStyle={{ background: "rgba(26, 29, 38,0.6)" }}
     >
       {txResult ? (
         <ShowTxResult {...txResult}>

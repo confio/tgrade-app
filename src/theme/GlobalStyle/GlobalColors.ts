@@ -6,18 +6,23 @@ export const GlobalColors = styled.createGlobalStyle`
     --color-gray-0-20: hsl(0, 0%, 20%);
     --color-gray-0-51: hsl(0, 0%, 51%);
     --color-gray-0-98: hsl(0, 0%, 98%);
+    --color-red-79-63: hsl(0, 79%, 63%); /* New tgrade error */
     --color-red-100-70: hsl(0, 100%, 70%);
     --color-yellow-91-73: hsl(29, 91%, 73%);
-    --color-green-63-42: hsl(145, 63%, 42%);
+    --color-yellow-74-56: hsl(45, 74%, 56%); /* New tgrade warning */
+    --color-green-63-42: hsl(145, 63%, 42%); /* New tgrade success */
     --color-green-88-37: hsl(180, 88%, 37%);
+    --color-blue-12-47: hsl(216, 12%, 47%); /* New tgrade dark gray */
     --color-blue-15-59: hsl(218, 15%, 59%);
     --color-blue-12-90: hsl(220, 12%, 90%);
+    --color-blue-97-57: hsl(221, 97%, 57%); /* New tgrade info */
     --color-blue-30-38: hsl(222, 30%, 38%);
     --color-blue-14-16: hsl(225, 14%, 16%);
+    --color-blue-19-13: hsl(225, 19%, 13%); /* New tgrade black */
+    --color-blue-41-95: hsl(229, 41%, 95%); /* New tgrade light gray */
     --color-blue-100-74: hsl(229, 100%, 74%);
 
-    --grad-1: radial-gradient(circle at 50% 50%, hsl(0, 0%, 12%), hsl(237, 26%, 16%), hsl(239, 40%, 20%)),
-      linear-gradient(to bottom, hsl(238, 39%, 15%), hsl(238, 39%, 15%));
+    --grad-1: linear-gradient(333.19deg, #71399f 0%, #71399f 10.73%, #ec096d 79.79%, #ec096d 100%);
     --grad-2: linear-gradient(
       90deg,
       hsl(245, 89%, 68%) 0%,

@@ -18,7 +18,7 @@ export default styled(Button)`
   box-shadow: none;
 
   color: ${(props) => (props.type === "ghost" ? "var(--color-button-2ary)" : "white")};
-  background-color: ${(props) =>
+  background: ${(props) =>
     props.danger
       ? `var(--bg-button-danger)`
       : props.type === "ghost"
@@ -40,7 +40,7 @@ export default styled(Button)`
         : props.type === "ghost"
         ? "1px solid var(--border-button-2ary-selected)"
         : "1px solid var(--bg-button-1ary)"};
-    background-color: ${(props) =>
+    background: ${(props) =>
       props.danger
         ? `var(--bg-button-danger)`
         : props.type === "ghost"

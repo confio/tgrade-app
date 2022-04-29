@@ -17,7 +17,9 @@ export const Menu = styled(AntMenu)`
       &.ant-menu-item-selected,
       &.ant-menu-item-active {
         color: var(--color-text-1ary);
-        border-color: var(--color-primary);
+        &::after {
+          border-color: var(--color-primary);
+        }
       }
     }
   }

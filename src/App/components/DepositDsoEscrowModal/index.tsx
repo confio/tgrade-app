@@ -114,9 +114,9 @@ export default function DepositDsoEscrowModal({
         position: "relative",
         padding: "var(--s1)",
         borderRadius: "16px",
-        backgroundColor: txResult ? "transparent" : "var(--bg-body)",
+        backgroundColor: "var(--bg-body)",
       }}
-      maskStyle={{ background: txResult ? "rgba(4,119,120,0.9)" : "rgba(4,119,120,0.6)" }}
+      maskStyle={{ background: "rgba(26, 29, 38,0.6)" }}
     >
       {txResult ? (
         <ShowTxResult {...txResult}>
@@ -162,7 +162,7 @@ export default function DepositDsoEscrowModal({
                   <ButtonGroup>
                     <BackButtonOrLink text={"Back"} onClick={() => closeModal()} />
                     <Button
-                      style={{ backgroundColor: "#0BB0B1", border: "none" }}
+                      style={{ background: "var(--bg-button-1ary)", border: "none" }}
                       loading={isSubmitting}
                       disabled={!isValid}
                       danger={!!signer}
