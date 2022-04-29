@@ -3,6 +3,8 @@ import * as styled from "styled-components";
 export const ThemeDark = styled.createGlobalStyle`
   :root {
     --color-primary: var(--color-blue-19-13);
+    --color-secondary: var(--color-blue-12-47);
+    --color-tertiary: var(--color-blue-41-95);
     --color-text-1ary: var(--color-blue-14-16);
     --color-text-2ary: var(--color-blue-15-59);
 
