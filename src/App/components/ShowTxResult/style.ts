@@ -6,7 +6,7 @@ const { Text } = Typography;
 
 export const ResultText = styled(Text)`
   &.ant-typography {
-    color: white;
+    color: var(--color-primary);
     font-size: var(--s3);
     line-height: var(--s4);
     font-weight: 700;
@@ -15,7 +15,7 @@ export const ResultText = styled(Text)`
 
 export const ResultDescription = styled(Text)`
   &.ant-typography {
-    color: white;
+    color: var(--color-primary);
     font-size: var(--s1);
     line-height: var(--s2);
   }
