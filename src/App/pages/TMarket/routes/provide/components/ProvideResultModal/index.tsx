@@ -40,9 +40,9 @@ export default function ProvideResultModal({ isModalOpen }: ProvideResultModalPr
         position: "relative",
         padding: "var(--s1)",
         borderRadius: "16px",
-        backgroundColor: "transparent",
+        backgroundColor: "var(--bg-body)",
       }}
-      maskStyle={{ background: "rgba(4,119,120,0.9)" }}
+      maskStyle={{ background: "rgba(26, 29, 38,0.6)" }}
     >
       {detailProvide ? (
         <TransactionDetail>
