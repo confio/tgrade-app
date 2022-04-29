@@ -7,7 +7,7 @@ type TooltipProps = ComponentProps<typeof StyledTooltip>;
 
 export default function Tooltip({ ...props }: TooltipProps): JSX.Element {
   return (
-    <StyledTooltip {...props}>
+    <StyledTooltip color="var(--color-info)" {...props}>
       <img alt="Tooltip" src={questionBubbleIcon} />
     </StyledTooltip>
   );
