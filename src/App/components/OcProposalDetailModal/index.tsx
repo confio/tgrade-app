@@ -255,9 +255,9 @@ export default function OcProposalDetailModal({
         position: "relative",
         padding: "var(--s1)",
         borderRadius: "16px",
-        backgroundColor: txResult ? "transparent" : "var(--bg-body)",
+        backgroundColor: "var(--bg-body)",
       }}
-      maskStyle={{ background: txResult ? "rgba(4,119,120,0.9)" : "rgba(4,119,120,0.6)" }}
+      maskStyle={{ background: txResult ? "rgba(26, 29, 38,0.9)" : "rgba(26, 29, 38,0.6)" }}
     >
       {txResult ? (
         <ShowTxResult {...txResult}>
