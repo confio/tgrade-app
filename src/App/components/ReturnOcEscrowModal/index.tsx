@@ -122,7 +122,7 @@ export default function ReturnOcEscrowModal({
           <ButtonGroup>
             <BackButtonOrLink text={"Back"} onClick={() => closeModal()} />
             <Button
-              style={{ backgroundColor: "#0BB0B1", border: "none" }}
+              style={{ backgroundColor: "var(--color-primary)", border: "none" }}
               loading={isSubmitting}
               danger={!!signer}
               onClick={signer ? () => submitReturnEscrow() : () => setConnectWalletModalOpen(true)}
