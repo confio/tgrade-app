@@ -68,7 +68,7 @@ export default function DistributionModal({
         borderRadius: "16px",
         backgroundColor: "var(--bg-body)",
       }}
-      maskStyle={{ background: txResult ? "rgba(26, 29, 38,0.9)" : "rgba(26, 29, 38,0.6)" }}
+      maskStyle={{ background: "rgba(26, 29, 38,0.6)" }}
     >
       {txResult ? (
         <ShowTxResult {...txResult}>
