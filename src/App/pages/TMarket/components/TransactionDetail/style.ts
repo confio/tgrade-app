@@ -16,7 +16,7 @@ export const TitleContainer = styled(Row)`
   justify-content: center;
 
   & h1.ant-typography {
-    color: white;
+    color: var(--color-primary);
   }
 `;
 
@@ -40,7 +40,7 @@ export const RowContainer = styled(Row)`
 
 export const Paragraph = styled(Typography.Paragraph)`
   &.ant-typography {
-    color: white;
+    color: var(--color-primary);
     font-size: var(--s-1);
   }
 `;
