@@ -62,7 +62,7 @@ export const YesButton = styled(Button)`
   &,
   &:hover,
   &:focus {
-    background-color: var(--bg-button-1ary);
+    background-color: var(--color-result-success);
   }
 `;
 

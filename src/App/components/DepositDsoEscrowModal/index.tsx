@@ -162,7 +162,7 @@ export default function DepositDsoEscrowModal({
                   <ButtonGroup>
                     <BackButtonOrLink text={"Back"} onClick={() => closeModal()} />
                     <Button
-                      style={{ backgroundColor: "var(--color-primary)", border: "none" }}
+                      style={{ background: "var(--bg-button-1ary)", border: "none" }}
                       loading={isSubmitting}
                       disabled={!isValid}
                       danger={!!signer}

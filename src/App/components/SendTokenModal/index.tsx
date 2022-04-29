@@ -172,7 +172,7 @@ export default function SendTokenModal({
                   <Separator />
                   <ButtonGroup>
                     <Button
-                      style={{ backgroundColor: "var(--color-primary)", border: "none" }}
+                      style={{ background: "var(--bg-button-1ary)", border: "none" }}
                       loading={isSubmitting}
                       disabled={!isValid}
                       onClick={() => submitForm()}

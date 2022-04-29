@@ -160,7 +160,7 @@ export default function DsoEscrow(): JSX.Element {
     renderer: "svg" as const,
     angleField: "value",
     colorField: "type",
-    color: ["var(--color-primary)", "hsl(218, 15%, 59%)"],
+    color: ["var(--color-result-success)", "var(--color-result-failure)"],
     radius: 1,
     innerRadius: 0.75,
     legend: {
