@@ -106,12 +106,14 @@ And("I click on Create Pair button", () => {
 });
 
 And("I enter value for TGN token {string}", (value) => {
-  cy.wait(5000);
+  // workaround to prevent of failing step
+  cy.wait(4000);
   cy.get(tMarketPage.getFieldNumberFromAssetA()).type(value);
 });
 
 And("I enter value for TGN token {string} Exchange tab", (value) => {
-  cy.wait(5000);
+  // workaround to prevent of failing step
+  cy.wait(4000);
   cy.get(tMarketPage.getFromFieldNumber()).type(value);
 });
 
