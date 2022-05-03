@@ -1,3 +1,4 @@
+import ErrorBanner from "App/components/ErrorBanner";
 import { createContext, HTMLAttributes, useContext, useState } from "react";
 import { getErrorFromStackTrace } from "utils/errors";
 
@@ -36,5 +37,10 @@ export default function ErrorProvider({ children }: HTMLAttributes<HTMLOrSVGElem
     },
   };
 
-  return <ErrorContext.Provider value={context}>{children}</ErrorContext.Provider>;
+  return (
+    <ErrorContext.Provider value={context}>
+      {children}
+      <ErrorBanner />
+    </ErrorContext.Provider>
+  );
 }
