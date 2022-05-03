@@ -1,12 +1,9 @@
-import { Random } from "@cosmjs/crypto";
-import { Bech32 } from "@cosmjs/encoding";
 import { FaucetClient } from "@cosmjs/faucet-client";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
-
-import { config } from "../../../config/network";
-import { sendTokens } from "../../../utils/currency";
-import { createSigningClient, generateMnemonic } from "../../../utils/sdk";
+import { config } from "config/network";
+import { sendTokens } from "utils/currency";
+import { createSigningClient, generateMnemonic } from "utils/sdk";
 
 const mnemonic = generateMnemonic();
 const addressPrefix = "tgrade";
@@ -51,7 +48,7 @@ describe("Wallet", () => {
 
     const walletBalanceUserBAfterSend = await signingClient_02.getBalance(walletUserB, config.feeToken);
     expect(parseInt(walletBalanceUserBAfterSend.amount)).toBe(200000);
-  }, 5000);
+  }, 10000);
 
   it.skip("Send CW20 token", () => {
     //TODO
