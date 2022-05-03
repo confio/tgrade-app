@@ -84,7 +84,7 @@ And("I click on Provide Liquidity tab", () => {
 
 And("I click on Exchange tab", () => {
   cy.findByText("Exchange").click();
-  cy.url().should('include', '/tmarket/exchange')
+  cy.url().should("include", "/tmarket/exchange");
 });
 
 And("I select TGD token FROM drop down", () => {
@@ -106,17 +106,20 @@ And("I click on Create Pair button", () => {
 });
 
 And("I enter value for TGN token {string}", (value) => {
+  // workaround to prevent of failing step
+  cy.wait(4000);
   cy.get(tMarketPage.getFieldNumberFromAssetA()).type(value);
 });
 
 And("I enter value for TGN token {string} Exchange tab", (value) => {
-  cy.wait(5000)
-  cy.get(tMarketPage.getFromFieldNumber()).type(value)
+  // workaround to prevent of failing step
+  cy.wait(4000);
+  cy.get(tMarketPage.getFromFieldNumber()).type(value);
 });
 
 And("I see amount of my token {string} Exchange tab", (value) => {
   cy.get(tMarketPage.getToFieldNumber()).should("have.value", value);
-  cy.findByText('Minimum Received:').should("be.visible")
+  cy.findByText("Minimum Received:").should("be.visible");
 });
 
 And("I enter value for my created token {string}", (value) => {
@@ -140,12 +143,10 @@ And("I see Complete message", () => {
 });
 
 And("I click Ok button", () => {
-  cy.get(tMarketPage.getOkButton()).click().should('not.exist');
+  cy.get(tMarketPage.getOkButton()).click().should("not.exist");
 });
 
 And("I redirected back to Provided Liquidity tab", () => {
-  cy.url().should('include', '/tmarket/provide')
-  cy.wait(3000) //workaround to fix failed step
+  cy.url().should("include", "/tmarket/provide");
+  cy.wait(3000); //workaround to fix failed step
 });
-
-
