@@ -8,6 +8,6 @@
   "videoCompression": false,
   "screenshotOnRunFailure": true,
   "retries": {
-    "runMode": 1
+    "runMode": 0
   }
 }
