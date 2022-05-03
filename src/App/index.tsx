@@ -2,6 +2,7 @@ import { config } from "config/network";
 import { i18n } from "i18n/config";
 import { lazy, Suspense } from "react";
 import { isMobile } from "react-device-detect";
+import { ErrorBoundary } from "react-error-boundary";
 import { I18nextProvider } from "react-i18next";
 import {
   QueryClient as ReactQueryClient,
@@ -12,6 +13,7 @@ import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, Th
 import TMarketProvider from "service/tmarket";
 import TokensProvider from "service/tokens";
 
+import ErrorFallback from "./components/ErrorFallback";
 import { InformationMessage } from "./components/InformationMessage/style";
 import LoadingSpinner from "./components/LoadingSpinner";
 import CPoolHome from "./pages/CPoolHome";
@@ -25,7 +27,7 @@ const TMarketHome = lazy(() => import("App/pages/TMarket"));
 
 export default function App(): JSX.Element {
   return (
-    <>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
       {isMobile ? (
         <InformationMessage>
           "Sorry, we don't support Mobile devices at this time. Please visit our website from a non-mobile
@@ -82,6 +84,6 @@ export default function App(): JSX.Element {
           </ErrorProvider>
         </I18nextProvider>
       )}
-    </>
+    </ErrorBoundary>
   );
 }
