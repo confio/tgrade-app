@@ -10,11 +10,6 @@ const tokenName = "Test Sustainability Asset";
 
 Given("Go to T-Market page", () => {
   cy.findByText("T-Market").click();
-  // Workaround for an issue in browser
-  Cypress.on(
-    "uncaught:exception",
-    (err) => !err.message.includes("Query failed with (18): contract: not found: invalid request"),
-  );
 });
 
 And("I click on Create Asset button", () => {
