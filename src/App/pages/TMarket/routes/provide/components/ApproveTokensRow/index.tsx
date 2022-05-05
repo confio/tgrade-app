@@ -1,4 +1,4 @@
-import { Row } from "antd";
+import { Row, Typography } from "antd";
 import ButtonApproved from "App/components/ButtonApproved";
 import { useFormikContext } from "formik";
 import { useState } from "react";
@@ -8,7 +8,9 @@ import { useTokens } from "service/tokens";
 import { Contract20WS } from "utils/cw20";
 import { ProvideFormValues } from "utils/tokens";
 
-const ApproveTokensRow = (): JSX.Element => {
+const { Paragraph } = Typography;
+
+const ApproveTokensRow = (): JSX.Element | null => {
   const { sdkState } = useSdk();
   const {
     tokensState: { loadToken },
@@ -62,20 +64,27 @@ const ApproveTokensRow = (): JSX.Element => {
       setApprovingTokenB(false);
     }
   };
-  return (
-    <Row style={{ margin: 0 }} justify="center">
-      {selectedPair && values.selectFrom && !isTokenApprovedA ? (
+
+  const someTokenNotApproved = !isTokenApprovedA || !isTokenApprovedB;
+  const showRow = selectedPair && values.selectFrom && values.selectTo && someTokenNotApproved;
+
+  return showRow ? (
+    <Row style={{ margin: 0 }}>
+      <Paragraph style={{ marginBottom: "var(--s-2)", fontSize: "var(--s-1)" }}>
+        The following tokens need to be approved before being able to trade with the pair:
+      </Paragraph>
+      {!isTokenApprovedA ? (
         <ButtonApproved loading={isApprovingTokenA} onClick={approveTokenA}>
-          Approve {values.selectFrom.symbol}
+          Approve {values.selectFrom?.symbol}
         </ButtonApproved>
       ) : null}
-      {selectedPair && values.selectTo && !isTokenApprovedB ? (
+      {!isTokenApprovedB ? (
         <ButtonApproved loading={isApprovingTokenB} onClick={approveTokenB}>
-          Approve {values.selectTo.symbol}
+          Approve {values.selectTo?.symbol}
         </ButtonApproved>
       ) : null}
     </Row>
-  );
+  ) : null;
 };
 
 export default ApproveTokensRow;
