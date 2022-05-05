@@ -4,3 +4,4 @@ export { default as ExtraInfo } from "./ExtraInfo";
 export { default as FromToken } from "./FromToken";
 export { default as Tip } from "./Tip";
 export { default as ToToken } from "./ToToken";
+export { default as WhitelistHelp } from "./WhitelistHelp";
