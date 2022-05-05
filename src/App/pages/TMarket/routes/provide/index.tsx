@@ -37,7 +37,7 @@ import {
   tokenObj,
 } from "utils/tokens";
 
-import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, ToToken } from "./components";
+import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, ToToken, WhitelistHelp } from "./components";
 import ProvideResultModal from "./components/ProvideResultModal";
 import { FormCustom } from "./style";
 import { handleSubmit, handleValidation } from "./utils/form";
@@ -173,6 +173,7 @@ export default function Provide(): JSX.Element {
               <EmptyPoolTip />
               <ExtraInfo fee={calculateFee(Token.GAS_PROVIDE_LIQUIDITY, config.gasPrice)} />
               <ApproveTokensRow />
+              <WhitelistHelp />
               <EstimatedMessage />
               <SubmitButton
                 disabled={
