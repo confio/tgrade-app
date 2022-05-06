@@ -119,12 +119,12 @@ describe("Wallet", () => {
     expect(parseInt(walletBalanceUserAAfterSend.amount)).toBe(19755000);
 
     // User_B wallet after send
-    const walletBalanceAfterSend = (await Contract20WS.getBalance(
+    const walletBalanceUserBAfterSend = (await Contract20WS.getBalance(
       signingClient_02,
       cw20tokenAddress,
       walletUserB,
     )) as unknown as { balance: string };
-    expect(parseInt(walletBalanceAfterSend.balance)).toBe(2300);
+    expect(parseInt(walletBalanceUserBAfterSend.balance)).toBe(2300);
   }, 15000);
 
   it("Send Trusted token", async () => {
@@ -213,7 +213,9 @@ describe("Wallet", () => {
 
     // User_A wallet after send
     const walletBalanceUserAAfterSend = await signingClient_01.getBalance(walletUserA, config.feeToken);
-    expect(parseInt(walletBalanceUserAAfterSend.amount)).toBe(28695000);
+    expect(parseInt(walletBalanceUserAAfterSend.amount)).toBeLessThan(
+      parseInt(walletBalanceUserABeforeSend.amount),
+    );
 
     // User_B wallet after send
     const walletBalanceAfterSend = (await Contract20WS.getBalance(
