@@ -9,14 +9,14 @@ import { createSigningClient, generateMnemonic } from "utils/sdk";
 import { TcContract } from "utils/trustedCircle";
 
 const mnemonic_01 = generateMnemonic();
-const addressPrefix = "tgrade";
 const mnemonic_02 = generateMnemonic();
 const mnemonic_03 = generateMnemonic();
 const mnemonic_04 = generateMnemonic();
+const addressPrefix = "tgrade";
 
 describe("Wallet", () => {
   it("Send native token", async () => {
-    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
+    const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: addressPrefix,
     });
@@ -26,8 +26,8 @@ describe("Wallet", () => {
       prefix: config.addressPrefix,
     });
 
-    const signingClient_01 = await createSigningClient(config, wallet);
-    const { address: walletUserA } = (await wallet.getAccounts())[0];
+    const signingClient_01 = await createSigningClient(config, wallet_01);
+    const { address: walletUserA } = (await wallet_01.getAccounts())[0];
 
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(walletUserA, config.faucetTokens?.[0] ?? config.feeToken);
@@ -35,10 +35,11 @@ describe("Wallet", () => {
     const signingClient_02 = await createSigningClient(config, wallet_02);
     const { address: walletUserB } = (await wallet_02.getAccounts())[0];
 
-    // Before Send
+    // User_A wallet before send
     const walletBalanceUserABeforeSend = await signingClient_01.getBalance(walletUserA, config.feeToken);
     expect(parseInt(walletBalanceUserABeforeSend.amount)).toBe(10000000);
 
+    // User_B wallet before send
     const walletBalanceUserBBeforeSend = await signingClient_02.getBalance(walletUserB, config.feeToken);
     expect(parseInt(walletBalanceUserBBeforeSend.amount)).toBe(0);
 
@@ -47,10 +48,11 @@ describe("Wallet", () => {
       denom: "utgd",
     });
 
-    // After Send
+    // User_A wallet after send
     const walletBalanceUserAAfterSend = await signingClient_01.getBalance(walletUserA, config.feeToken);
     expect(parseInt(walletBalanceUserAAfterSend.amount)).toBe(9790000);
 
+    // User_B wallet after send
     const walletBalanceUserBAfterSend = await signingClient_02.getBalance(walletUserB, config.feeToken);
     expect(parseInt(walletBalanceUserBAfterSend.amount)).toBe(200000);
   }, 10000);
@@ -60,7 +62,7 @@ describe("Wallet", () => {
     const tokenName = "Sustainability Coin";
     const tokenDecimals = 1;
 
-    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
+    const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: addressPrefix,
     });
@@ -70,8 +72,8 @@ describe("Wallet", () => {
       prefix: config.addressPrefix,
     });
 
-    const signingClient_01 = await createSigningClient(config, wallet);
-    const { address: walletUserA } = (await wallet.getAccounts())[0];
+    const signingClient_01 = await createSigningClient(config, wallet_01);
+    const { address: walletUserA } = (await wallet_01.getAccounts())[0];
 
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(walletUserA, config.faucetTokens?.[0] ?? config.feeToken);
@@ -79,16 +81,9 @@ describe("Wallet", () => {
     const signingClient_02 = await createSigningClient(config, wallet_02);
     const { address: walletUserB } = (await wallet_02.getAccounts())[0];
 
-    // Before Send
-    const walletBalanceUserABeforeSend = await signingClient_01.getBalance(walletUserA, config.feeToken);
-    expect(parseInt(walletBalanceUserABeforeSend.amount)).toBe(19790000);
-
-    const walletBalanceUserBBeforeSend = await signingClient_02.getBalance(walletUserB, config.feeToken);
-    expect(parseInt(walletBalanceUserBBeforeSend.amount)).toBe(0);
-
     const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
 
-    const amount = Decimal.fromUserInput("11", 6).atomics;
+    const amount = Decimal.fromUserInput("1000", 6).atomics;
 
     // Create digital asset
     const cw20tokenAddress = await Contract20WS.createContract(
@@ -104,14 +99,32 @@ describe("Wallet", () => {
       undefined,
     );
 
-    await Contract20WS.sendTokens(signingClient_01, walletUserA, cw20tokenAddress, walletUserB, "1");
+    // User_A wallet before send
+    const walletBalanceUserABeforeSend = await signingClient_01.getBalance(walletUserA, config.feeToken);
+    expect(parseInt(walletBalanceUserABeforeSend.amount)).toBe(19765000);
 
-    // After Send
+    // User_B wallet before send
+    const walletBalanceUserBBeforeSend = (await Contract20WS.getBalance(
+      signingClient_02,
+      cw20tokenAddress,
+      walletUserB,
+    )) as unknown as { balance: string };
+    expect(parseInt(walletBalanceUserBBeforeSend.balance)).toBe(0);
+
+    // Send tokens
+    await Contract20WS.sendTokens(signingClient_01, walletUserA, cw20tokenAddress, walletUserB, "2300");
+
+    // User_A wallet after send
     const walletBalanceUserAAfterSend = await signingClient_01.getBalance(walletUserA, config.feeToken);
     expect(parseInt(walletBalanceUserAAfterSend.amount)).toBe(19755000);
 
-    const walletBalanceUserBAfterSend = await signingClient_02.getBalance(walletUserB, config.feeToken);
-    expect(parseInt(walletBalanceUserBAfterSend.amount)).toBe(0);
+    // User_B wallet after send
+    const walletBalanceAfterSend = (await Contract20WS.getBalance(
+      signingClient_02,
+      cw20tokenAddress,
+      walletUserB,
+    )) as unknown as { balance: string };
+    expect(parseInt(walletBalanceAfterSend.balance)).toBe(2300);
   }, 15000);
 
   it("Send Trusted token", async () => {
@@ -144,13 +157,6 @@ describe("Wallet", () => {
     const signingClient_02 = await createSigningClient(config, wallet_02);
     const { address: walletUserB } = (await wallet_02.getAccounts())[0];
 
-    // Before Send
-    const walletBalanceUserABeforeSend = await signingClient_01.getBalance(walletUserA, config.feeToken);
-    expect(parseInt(walletBalanceUserABeforeSend.amount)).toBe(29755000);
-
-    const walletBalanceUserBBeforeSend = await signingClient_02.getBalance(walletUserB, config.feeToken);
-    expect(parseInt(walletBalanceUserBBeforeSend.amount)).toBe(0);
-
     const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
 
     // Create Trusted Circle
@@ -174,7 +180,7 @@ describe("Wallet", () => {
       config.gasPrice,
     );
 
-    const amount = Decimal.fromUserInput("3", 1).atomics;
+    const amount = Decimal.fromUserInput("1000", 6).atomics;
 
     // Create digital asset
     const cw20tokenAddress = await Contract20WS.createContract(
@@ -190,13 +196,31 @@ describe("Wallet", () => {
       tcContractAddress,
     );
 
-    await Contract20WS.sendTokens(signingClient_01, walletUserA, cw20tokenAddress, walletUserB, "1");
+    // User_A wallet before send
+    const walletBalanceUserABeforeSend = await signingClient_01.getBalance(walletUserA, config.feeToken);
+    expect(parseInt(walletBalanceUserABeforeSend.amount)).toBe(28705000);
 
-    // After Send
+    // User_B wallet before send
+    const walletBalanceUserBBeforeSend = (await Contract20WS.getBalance(
+      signingClient_02,
+      cw20tokenAddress,
+      walletUserB,
+    )) as unknown as { balance: string };
+    expect(parseInt(walletBalanceUserBBeforeSend.balance)).toBe(0);
+
+    // Send tokens
+    await Contract20WS.sendTokens(signingClient_01, walletUserA, cw20tokenAddress, walletUserB, "5250");
+
+    // User_A wallet after send
     const walletBalanceUserAAfterSend = await signingClient_01.getBalance(walletUserA, config.feeToken);
     expect(parseInt(walletBalanceUserAAfterSend.amount)).toBe(28695000);
 
-    const walletBalanceUserBAfterSend = await signingClient_02.getBalance(walletUserB, config.feeToken);
-    expect(parseInt(walletBalanceUserBAfterSend.amount)).toBe(0);
+    // User_B wallet after send
+    const walletBalanceAfterSend = (await Contract20WS.getBalance(
+      signingClient_02,
+      cw20tokenAddress,
+      walletUserB,
+    )) as unknown as { balance: string };
+    expect(parseInt(walletBalanceAfterSend.balance)).toBe(5250);
   }, 20000);
 });
