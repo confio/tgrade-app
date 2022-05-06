@@ -24,12 +24,6 @@ describe("T-Market", () => {
     cy.wait(6500);
 
     cy.contains("T-Market").click();
-
-    // Workaround for an issue in browser
-    Cypress.on(
-      "uncaught:exception",
-      (err) => !err.message.includes("Query failed with (18): contract: not found: invalid request"),
-    );
   });
 
   describe("create Asset", () => {
