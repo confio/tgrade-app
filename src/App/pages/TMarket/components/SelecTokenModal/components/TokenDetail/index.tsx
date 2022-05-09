@@ -9,12 +9,11 @@ import { useTokens } from "service/tokens";
 import { Contract20WS, MarketingInfoResponse } from "utils/cw20";
 import { isValidAddress } from "utils/forms";
 import { isValidUrl } from "utils/query";
-import { TokenProps } from "utils/tokens";
 import { TcContractQuerier } from "utils/trustedCircle";
 
 import { PinTokenBalance, TcData, TokenDetailStack } from "./style";
 
-const { Text } = Typography;
+const { Text, Paragraph } = Typography;
 
 const defaultMarketingInfo: MarketingInfoResponse = {
   project: "Tgrade token",
@@ -22,12 +21,7 @@ const defaultMarketingInfo: MarketingInfoResponse = {
   marketing: "https://try.tgrade.finance/",
 };
 
-interface TokenDetailProps {
-  readonly setToken: (t: TokenProps) => void;
-  readonly closeModal: () => void;
-}
-
-export default function TokenDetail({ setToken, closeModal }: TokenDetailProps): JSX.Element | null {
+export default function TokenDetail(): JSX.Element | null {
   const {
     sdkState: { config, client },
   } = useSdk();
@@ -45,18 +39,25 @@ export default function TokenDetail({ setToken, closeModal }: TokenDetailProps):
 
   useEffect(() => {
     (async function () {
-      if (!searchText || !isValidAddress(searchText, config.addressPrefix)) return;
+      if (
+        !searchText ||
+        !isValidAddress(searchText, config.addressPrefix) ||
+        marketingInfo === defaultMarketingInfo
+      )
+        return;
 
-      await loadToken?.(searchText);
+      try {
+        await loadToken?.(searchText);
+      } catch {
+        return;
+      }
     })();
-  }, [config.addressPrefix, loadToken, searchText]);
+  }, [config.addressPrefix, loadToken, marketingInfo, searchText]);
 
   useEffect(() => {
-    const noAddressEntered = !searchText || !isValidAddress(searchText, config.addressPrefix);
-
-    const searchedToken = noAddressEntered ? tokens.get(config.feeToken) : tokens.get(searchText);
+    const searchedToken = !searchText ? tokens.get(config.feeToken) : tokens.get(searchText);
     setSearchedToken(searchedToken);
-  }, [config.addressPrefix, config.feeToken, searchText, tokens]);
+  }, [config.feeToken, searchText, tokens]);
 
   useEffect(() => {
     (async function () {
@@ -65,8 +66,12 @@ export default function TokenDetail({ setToken, closeModal }: TokenDetailProps):
         return;
       }
 
-      const tcAddress = await Contract20WS.getDsoAddress(client, searchText);
-      setTcAddress(tcAddress);
+      try {
+        const tcAddress = await Contract20WS.getDsoAddress(client, searchText);
+        setTcAddress(tcAddress);
+      } catch {
+        setTcAddress(undefined);
+      }
     })();
   }, [client, config.addressPrefix, searchText]);
 
@@ -77,9 +82,13 @@ export default function TokenDetail({ setToken, closeModal }: TokenDetailProps):
         return;
       }
 
-      const tcContract = new TcContractQuerier(tcAddress, client);
-      const { name: tcName } = await tcContract.getTc();
-      setTcName(tcName);
+      try {
+        const tcContract = new TcContractQuerier(tcAddress, client);
+        const { name: tcName } = await tcContract.getTc();
+        setTcName(tcName);
+      } catch {
+        setTcName(undefined);
+      }
     })();
   }, [client, config.addressPrefix, searchText, tcAddress]);
 
@@ -90,8 +99,12 @@ export default function TokenDetail({ setToken, closeModal }: TokenDetailProps):
         return;
       }
 
-      const marketingInfo = await Contract20WS.getMarketingInfo(client, searchText);
-      setMarketingInfo(marketingInfo);
+      try {
+        const marketingInfo = await Contract20WS.getMarketingInfo(client, searchText);
+        setMarketingInfo(marketingInfo);
+      } catch {
+        setMarketingInfo(defaultMarketingInfo);
+      }
     })();
   }, [client, config.addressPrefix, searchText]);
 
@@ -131,5 +144,7 @@ export default function TokenDetail({ setToken, closeModal }: TokenDetailProps):
         )
       ) : null}
     </TokenDetailStack>
-  ) : null;
+  ) : (
+    <Paragraph>No token found</Paragraph>
+  );
 }
