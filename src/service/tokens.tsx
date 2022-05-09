@@ -63,15 +63,15 @@ type TokensAction =
     }
   | {
       readonly type: "setPinToken";
-      readonly payload: (tokenAddress: string) => Promise<void>;
+      readonly payload: (tokenAddress: string) => void;
     }
   | {
       readonly type: "setUnpinToken";
-      readonly payload: (tokenAddress: string) => Promise<void>;
+      readonly payload: (tokenAddress: string) => void;
     }
   | {
       readonly type: "setPinUnpinToken";
-      readonly payload: (tokenAddress: string) => Promise<void>;
+      readonly payload: (tokenAddress: string) => void;
     }
   | {
       readonly type: "setLoadToken";
@@ -378,7 +378,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
   // Set up tokensState.pinToken
   useEffect(() => {
-    async function pinToken(tokenAddress: string) {
+    function pinToken(tokenAddress: string) {
       const newPinnedTokens = cleanPinnedTokens([...pinnedTokens, tokenAddress]);
       tokensDispatch({ type: "setPinnedTokens", payload: newPinnedTokens });
     }
@@ -388,7 +388,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
   // Set up tokensState.unpinToken
   useEffect(() => {
-    async function unpinToken(tokenAddress: string) {
+    function unpinToken(tokenAddress: string) {
       setPinnedTokensToRemove((prevTokensToRemove) => [...prevTokensToRemove, tokenAddress]);
     }
 
@@ -399,7 +399,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
   useEffect(() => {
     if (!unpinToken || !pinToken) return;
 
-    async function pinUnpinToken(tokenAddress: string) {
+    function pinUnpinToken(tokenAddress: string) {
       if (!unpinToken || !pinToken) return;
 
       if (pinnedTokens.includes(tokenAddress)) {
