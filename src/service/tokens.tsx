@@ -434,102 +434,115 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     async function reloadTokens() {
       if (!client || !address) return;
 
-      // Fill tokens map with TokenProps
-      const tokenAddresses = tokensMapToArray(tokens).map((token) => token.address);
+      try {
+        // Fill tokens map with TokenProps
+        const tokenAddresses = tokensMapToArray(tokens).map((token) => token.address);
 
-      const tokenPropsPromises = tokenAddresses.map((tokenAddress) =>
-        Contract20WS.getTokenInfo(client, address, tokenAddress, config),
-      );
+        const tokenPropsPromises = tokenAddresses.map((tokenAddress) =>
+          Contract20WS.getTokenInfo(client, address, tokenAddress, config),
+        );
 
-      const tokenProps = (await Promise.allSettled(tokenPropsPromises))
-        .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
-        .map((result) => result.value);
+        const tokenProps = (await Promise.allSettled(tokenPropsPromises))
+          .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+          .map((result) => result.value);
 
-      const newTokens: Map<string, TokenProps> = new Map();
+        const newTokens: Map<string, TokenProps> = new Map();
 
-      for (const tokenProp of tokenProps) {
-        newTokens.set(tokenProp.address, tokenProp);
+        for (const tokenProp of tokenProps) {
+          newTokens.set(tokenProp.address, tokenProp);
+        }
+
+        // Set new state
+        tokensDispatch({ type: "setTokens", payload: newTokens });
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
       }
-
-      // Set new state
-      tokensDispatch({ type: "setTokens", payload: newTokens });
     }
 
     tokensDispatch({ type: "setReloadTokens", payload: reloadTokens });
-  }, [address, client, config, tokens]);
+  }, [address, client, config, handleError, tokens]);
 
   // Set up tokensState.reloadPinnedTokensOnly
   useEffect(() => {
     async function reloadPinnedTokensOnly() {
       if (!client || !address) return;
 
-      // Fill tokens map with TokenProps
+      try {
+        // Fill tokens map with TokenProps
+        const tokenPropsPromises = pinnedTokens.map((tokenAddress) =>
+          Contract20WS.getTokenInfo(client, address, tokenAddress, config),
+        );
 
-      const tokenPropsPromises = pinnedTokens.map((tokenAddress) =>
-        Contract20WS.getTokenInfo(client, address, tokenAddress, config),
-      );
+        const tokenProps = (await Promise.allSettled(tokenPropsPromises))
+          .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+          .map((result) => result.value);
 
-      const tokenProps = (await Promise.allSettled(tokenPropsPromises))
-        .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
-        .map((result) => result.value);
+        const pinnedTokensMap: Map<string, TokenProps> = new Map();
 
-      const pinnedTokensMap: Map<string, TokenProps> = new Map();
+        for (const tokenProp of tokenProps) {
+          pinnedTokensMap.set(tokenProp.address, tokenProp);
+        }
 
-      for (const tokenProp of tokenProps) {
-        pinnedTokensMap.set(tokenProp.address, tokenProp);
+        // Set new state
+        tokensDispatch({ type: "setTokens", payload: new Map([...tokens, ...pinnedTokensMap]) });
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
       }
-
-      // Set new state
-      tokensDispatch({ type: "setTokens", payload: new Map([...tokens, ...pinnedTokensMap]) });
     }
 
     tokensDispatch({ type: "setReloadPinnedTokensOnly", payload: reloadPinnedTokensOnly });
-  }, [address, client, config, pinnedTokens, tokens]);
+  }, [address, client, config, handleError, pinnedTokens, tokens]);
 
   // Set up tokensState.loadNextTokens
   useEffect(() => {
     async function loadNextTokens() {
       if (!client || !address) return;
 
-      // Get next contract addresses
+      try {
+        // Get next contract addresses
+        const cw20Response = await Contract20WS.getContracts(
+          config.codeIds?.cw20Tokens?.[0] ?? 0,
+          client,
+          paginationState.cw20PaginationKey,
+        );
 
-      const cw20Response = await Contract20WS.getContracts(
-        config.codeIds?.cw20Tokens?.[0] ?? 0,
-        client,
-        paginationState.cw20PaginationKey,
-      );
+        const trustedTokenResponse = await Contract20WS.getContracts(
+          config.codeIds?.tgradeCw20?.[0] ?? 0,
+          client,
+          paginationState.trustedTokenPaginationKey,
+        );
 
-      const trustedTokenResponse = await Contract20WS.getContracts(
-        config.codeIds?.tgradeCw20?.[0] ?? 0,
-        client,
-        paginationState.trustedTokenPaginationKey,
-      );
+        const newTokenAddresses = [...cw20Response.contracts, ...trustedTokenResponse.contracts];
 
-      const newTokenAddresses = [...cw20Response.contracts, ...trustedTokenResponse.contracts];
+        // Fill tokens map with TokenProps
 
-      // Fill tokens map with TokenProps
+        const tokenPropsPromises = newTokenAddresses.map((tokenAddress) =>
+          Contract20WS.getTokenInfo(client, address, tokenAddress, config),
+        );
 
-      const tokenPropsPromises = newTokenAddresses.map((tokenAddress) =>
-        Contract20WS.getTokenInfo(client, address, tokenAddress, config),
-      );
+        const tokenProps = (await Promise.allSettled(tokenPropsPromises))
+          .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+          .map((result) => result.value);
 
-      const tokenProps = (await Promise.allSettled(tokenPropsPromises))
-        .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
-        .map((result) => result.value);
+        const newTokens: Map<string, TokenProps> = new Map();
 
-      const newTokens: Map<string, TokenProps> = new Map();
+        for (const tokenProp of tokenProps) {
+          newTokens.set(tokenProp.address, tokenProp);
+        }
 
-      for (const tokenProp of tokenProps) {
-        newTokens.set(tokenProp.address, tokenProp);
+        // Set new state
+
+        tokensDispatch({ type: "setTokens", payload: new Map([...tokens, ...newTokens]) });
+        setPaginationState({
+          cw20PaginationKey: cw20Response.pagination?.nextKey,
+          trustedTokenPaginationKey: trustedTokenResponse.pagination?.nextKey,
+        });
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
       }
-
-      // Set new state
-
-      tokensDispatch({ type: "setTokens", payload: new Map([...tokens, ...newTokens]) });
-      setPaginationState({
-        cw20PaginationKey: cw20Response.pagination?.nextKey,
-        trustedTokenPaginationKey: trustedTokenResponse.pagination?.nextKey,
-      });
     }
 
     tokensDispatch({ type: "setLoadNextTokens", payload: loadNextTokens });
@@ -537,6 +550,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     address,
     client,
     config,
+    handleError,
     paginationState.cw20PaginationKey,
     paginationState.trustedTokenPaginationKey,
     tokens,
@@ -570,18 +584,23 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     async function reloadPairs() {
       if (!client) return;
 
-      const pairs = await Factory.getPairs(client, config.factoryAddress);
-      const pairsMap = new Map<string, PairProps>();
+      try {
+        const pairs = await Factory.getPairs(client, config.factoryAddress);
+        const pairsMap = new Map<string, PairProps>();
 
-      for (const pairKey in pairs) {
-        pairsMap.set(pairs[pairKey].contract_addr, pairs[pairKey]);
+        for (const pairKey in pairs) {
+          pairsMap.set(pairs[pairKey].contract_addr, pairs[pairKey]);
+        }
+
+        tokensDispatch({ type: "setPairs", payload: pairsMap });
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
       }
-
-      tokensDispatch({ type: "setPairs", payload: pairsMap });
     }
 
     tokensDispatch({ type: "setReloadPairs", payload: reloadPairs });
-  }, [client, config.factoryAddress]);
+  }, [client, config.factoryAddress, handleError]);
 
   return <TokensContext.Provider value={{ tokensState, tokensDispatch }}>{children}</TokensContext.Provider>;
 }
