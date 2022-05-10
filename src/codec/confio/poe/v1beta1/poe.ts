@@ -1,6 +1,6 @@
 /* eslint-disable */
 import Long from "long";
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "confio.poe.v1beta1";
@@ -18,6 +18,7 @@ export enum PoEContractType {
   COMMUNITY_POOL = 8,
   VALIDATOR_VOTING = 9,
   ARBITER_POOL = 10,
+  ARBITER_POOL_VOTING = 11,
   UNRECOGNIZED = -1,
 }
 
@@ -53,6 +54,12 @@ export function poEContractTypeFromJSON(object: any): PoEContractType {
     case 9:
     case "VALIDATOR_VOTING":
       return PoEContractType.VALIDATOR_VOTING;
+    case 10:
+    case "ARBITER_POOL":
+      return PoEContractType.ARBITER_POOL;
+    case 11:
+    case "ARBITER_POOL_VOTING":
+      return PoEContractType.ARBITER_POOL_VOTING;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -82,6 +89,10 @@ export function poEContractTypeToJSON(object: PoEContractType): string {
       return "COMMUNITY_POOL";
     case PoEContractType.VALIDATOR_VOTING:
       return "VALIDATOR_VOTING";
+    case PoEContractType.ARBITER_POOL:
+      return "ARBITER_POOL";
+    case PoEContractType.ARBITER_POOL_VOTING:
+      return "ARBITER_POOL_VOTING";
     default:
       return "UNKNOWN";
   }
@@ -104,7 +115,9 @@ export interface Params {
   minDelegationAmounts: Coin[];
 }
 
-const baseParams: object = { historicalEntries: 0, initialValEngagementPoints: Long.UZERO };
+function createBaseParams(): Params {
+  return { historicalEntries: 0, initialValEngagementPoints: Long.UZERO, minDelegationAmounts: [] };
+}
 
 export const Params = {
   encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -123,8 +136,7 @@ export const Params = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    message.minDelegationAmounts = [];
+    const message = createBaseParams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -146,29 +158,21 @@ export const Params = {
   },
 
   fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.minDelegationAmounts = [];
-    if (object.historicalEntries !== undefined && object.historicalEntries !== null) {
-      message.historicalEntries = Number(object.historicalEntries);
-    } else {
-      message.historicalEntries = 0;
-    }
-    if (object.initialValEngagementPoints !== undefined && object.initialValEngagementPoints !== null) {
-      message.initialValEngagementPoints = Long.fromString(object.initialValEngagementPoints);
-    } else {
-      message.initialValEngagementPoints = Long.UZERO;
-    }
-    if (object.minDelegationAmounts !== undefined && object.minDelegationAmounts !== null) {
-      for (const e of object.minDelegationAmounts) {
-        message.minDelegationAmounts.push(Coin.fromJSON(e));
-      }
-    }
-    return message;
+    return {
+      historicalEntries: isSet(object.historicalEntries) ? Number(object.historicalEntries) : 0,
+      initialValEngagementPoints: isSet(object.initialValEngagementPoints)
+        ? Long.fromString(object.initialValEngagementPoints)
+        : Long.UZERO,
+      minDelegationAmounts: Array.isArray(object?.minDelegationAmounts)
+        ? object.minDelegationAmounts.map((e: any) => Coin.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
-    message.historicalEntries !== undefined && (obj.historicalEntries = message.historicalEntries);
+    message.historicalEntries !== undefined &&
+      (obj.historicalEntries = Math.round(message.historicalEntries));
     message.initialValEngagementPoints !== undefined &&
       (obj.initialValEngagementPoints = (message.initialValEngagementPoints || Long.UZERO).toString());
     if (message.minDelegationAmounts) {
@@ -179,27 +183,24 @@ export const Params = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
+  fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
+    const message = createBaseParams();
     message.historicalEntries = object.historicalEntries ?? 0;
-    if (object.initialValEngagementPoints !== undefined && object.initialValEngagementPoints !== null) {
-      message.initialValEngagementPoints = object.initialValEngagementPoints as Long;
-    } else {
-      message.initialValEngagementPoints = Long.UZERO;
-    }
-    message.minDelegationAmounts = [];
-    if (object.minDelegationAmounts !== undefined && object.minDelegationAmounts !== null) {
-      for (const e of object.minDelegationAmounts) {
-        message.minDelegationAmounts.push(Coin.fromPartial(e));
-      }
-    }
+    message.initialValEngagementPoints =
+      object.initialValEngagementPoints !== undefined && object.initialValEngagementPoints !== null
+        ? Long.fromValue(object.initialValEngagementPoints)
+        : Long.UZERO;
+    message.minDelegationAmounts = object.minDelegationAmounts?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -208,7 +209,16 @@ export type DeepPartial<T> = T extends Builtin
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
+
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
