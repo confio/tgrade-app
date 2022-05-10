@@ -1,6 +1,6 @@
 /* eslint-disable */
 import Long from "long";
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "tendermint.version";
 
@@ -24,7 +24,9 @@ export interface Consensus {
   app: Long;
 }
 
-const baseApp: object = { protocol: Long.UZERO, software: "" };
+function createBaseApp(): App {
+  return { protocol: Long.UZERO, software: "" };
+}
 
 export const App = {
   encode(message: App, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -40,7 +42,7 @@ export const App = {
   decode(input: _m0.Reader | Uint8Array, length?: number): App {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseApp } as App;
+    const message = createBaseApp();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -59,18 +61,10 @@ export const App = {
   },
 
   fromJSON(object: any): App {
-    const message = { ...baseApp } as App;
-    if (object.protocol !== undefined && object.protocol !== null) {
-      message.protocol = Long.fromString(object.protocol);
-    } else {
-      message.protocol = Long.UZERO;
-    }
-    if (object.software !== undefined && object.software !== null) {
-      message.software = String(object.software);
-    } else {
-      message.software = "";
-    }
-    return message;
+    return {
+      protocol: isSet(object.protocol) ? Long.fromString(object.protocol) : Long.UZERO,
+      software: isSet(object.software) ? String(object.software) : "",
+    };
   },
 
   toJSON(message: App): unknown {
@@ -80,19 +74,20 @@ export const App = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<App>): App {
-    const message = { ...baseApp } as App;
-    if (object.protocol !== undefined && object.protocol !== null) {
-      message.protocol = object.protocol as Long;
-    } else {
-      message.protocol = Long.UZERO;
-    }
+  fromPartial<I extends Exact<DeepPartial<App>, I>>(object: I): App {
+    const message = createBaseApp();
+    message.protocol =
+      object.protocol !== undefined && object.protocol !== null
+        ? Long.fromValue(object.protocol)
+        : Long.UZERO;
     message.software = object.software ?? "";
     return message;
   },
 };
 
-const baseConsensus: object = { block: Long.UZERO, app: Long.UZERO };
+function createBaseConsensus(): Consensus {
+  return { block: Long.UZERO, app: Long.UZERO };
+}
 
 export const Consensus = {
   encode(message: Consensus, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -108,7 +103,7 @@ export const Consensus = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Consensus {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseConsensus } as Consensus;
+    const message = createBaseConsensus();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -127,18 +122,10 @@ export const Consensus = {
   },
 
   fromJSON(object: any): Consensus {
-    const message = { ...baseConsensus } as Consensus;
-    if (object.block !== undefined && object.block !== null) {
-      message.block = Long.fromString(object.block);
-    } else {
-      message.block = Long.UZERO;
-    }
-    if (object.app !== undefined && object.app !== null) {
-      message.app = Long.fromString(object.app);
-    } else {
-      message.app = Long.UZERO;
-    }
-    return message;
+    return {
+      block: isSet(object.block) ? Long.fromString(object.block) : Long.UZERO,
+      app: isSet(object.app) ? Long.fromString(object.app) : Long.UZERO,
+    };
   },
 
   toJSON(message: Consensus): unknown {
@@ -148,25 +135,21 @@ export const Consensus = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Consensus>): Consensus {
-    const message = { ...baseConsensus } as Consensus;
-    if (object.block !== undefined && object.block !== null) {
-      message.block = object.block as Long;
-    } else {
-      message.block = Long.UZERO;
-    }
-    if (object.app !== undefined && object.app !== null) {
-      message.app = object.app as Long;
-    } else {
-      message.app = Long.UZERO;
-    }
+  fromPartial<I extends Exact<DeepPartial<Consensus>, I>>(object: I): Consensus {
+    const message = createBaseConsensus();
+    message.block =
+      object.block !== undefined && object.block !== null ? Long.fromValue(object.block) : Long.UZERO;
+    message.app = object.app !== undefined && object.app !== null ? Long.fromValue(object.app) : Long.UZERO;
     return message;
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -175,7 +158,16 @@ export type DeepPartial<T> = T extends Builtin
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
+
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
