@@ -103,7 +103,7 @@ export function getProposalTitle(proposal: ArbiterPoolProposal): string {
     case "text":
       return "Open Text Proposal";
     default:
-      return "Uknown proposal type";
+      return "Unknown proposal type";
   }
 }
 
