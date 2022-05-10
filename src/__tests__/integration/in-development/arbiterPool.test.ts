@@ -1,4 +1,4 @@
-describe("Arbiter Pool", () => {
+xdescribe("Arbiter Pool", () => {
   it("Creates with new Dispute", () => {
     // TODO
   });
