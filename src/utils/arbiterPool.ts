@@ -62,28 +62,6 @@ export interface EscrowStatus {
 
 export type EscrowResponse = EscrowStatus | null;
 
-export interface InstantiateMsg {
-  /// Trusted Circle Name
-  readonly name: string;
-  /// The required escrow amount, in the default denom (utgd)
-  readonly escrow_amount: string;
-  /// Voting period in days
-  readonly voting_period: number;
-  /// Default voting quorum percentage (0-100)
-  readonly quorum: string;
-  /// Default voting threshold percentage (0-100)
-  readonly threshold: string;
-  /// If true, and absolute threshold and quorum are met, we can end before voting period finished.
-  /// (Recommended value: true, unless you have special needs)
-  readonly allow_end_early: boolean;
-  /// List of non-voting members to be added to the Trusted Circle upon creation
-  readonly initial_members: readonly string[];
-  /// cw4 contract with list of addresses denied to be part of TrustedCircle
-  readonly deny_list?: string | null;
-  /// Distributed reward denom
-  readonly reward_denom: string;
-}
-
 export class ArbiterPoolResponseQuerier {
   readonly address: string;
   protected readonly client: CosmWasmClient;
