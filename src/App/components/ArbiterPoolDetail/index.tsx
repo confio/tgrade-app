@@ -19,7 +19,7 @@ import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParag
 
 const OcCreateProposalModal = lazy(() => import("App/components/OcCreateProposalModal"));
 const OcProposalDetailModal = lazy(() => import("App/components/OcProposalDetailModal"));
-const OcIdActions = lazy(() => import("App/components/OcIdActions"));
+const OcIdActions = lazy(() => import("App/components/ArbiterPoolIdActions"));
 const OcEscrow = lazy(() => import("App/components/OcEscrow"));
 const OcEngagement = lazy(() => import("App/components/OcEngagement"));
 const Table = lazy(() => import("App/components/Table"));
@@ -127,7 +127,7 @@ const columns = [
   },
 ];
 
-export default function OcDetail(): JSX.Element {
+export default function ArbiterPoolDetail(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, client, address },
@@ -168,10 +168,6 @@ export default function OcDetail(): JSX.Element {
     <>
       <Stack style={{ width: "100%" }}>
         <OcIdActions />
-        <EscrowEngagementContainer>
-          <OcEscrow />
-          <OcEngagement />
-        </EscrowEngagementContainer>
         <ProposalsContainer>
           <header>
             <Title level={2} style={{ fontSize: "var(--s1)" }}>
@@ -192,6 +188,10 @@ export default function OcDetail(): JSX.Element {
             })}
           />
         </ProposalsContainer>
+        <EscrowEngagementContainer>
+          <OcEscrow />
+          <OcEngagement />
+        </EscrowEngagementContainer>
       </Stack>
       <OcCreateProposalModal
         isModalOpen={isCreateProposalModalOpen}
