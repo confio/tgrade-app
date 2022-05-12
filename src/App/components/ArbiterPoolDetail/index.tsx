@@ -19,9 +19,9 @@ import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParag
 
 const OcCreateProposalModal = lazy(() => import("App/components/OcCreateProposalModal"));
 const OcProposalDetailModal = lazy(() => import("App/components/OcProposalDetailModal"));
-const OcIdActions = lazy(() => import("App/components/ArbiterPoolIdActions"));
-const OcEscrow = lazy(() => import("App/components/OcEscrow"));
-const OcEngagement = lazy(() => import("App/components/OcEngagement"));
+const ArbiterPoolIdActions = lazy(() => import("App/components/ArbiterPoolIdActions"));
+const ArbiterPoolEscrow = lazy(() => import("App/components/ArbiterPoolEscrow"));
+const ArbiterPoolMembers = lazy(() => import("App/components/ArbiterPoolMembers"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
@@ -167,14 +167,14 @@ export default function ArbiterPoolDetail(): JSX.Element {
   return (
     <>
       <Stack style={{ width: "100%" }}>
-        <OcIdActions />
+        <ArbiterPoolIdActions />
         <ProposalsContainer>
           <header>
             <Title level={2} style={{ fontSize: "var(--s1)" }}>
               Proposals
             </Title>
             {isVotingMember && (
-              <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
+              <ButtonAddNew text="Create proposal" onClick={() => setCreateProposalModalOpen(true)} />
             )}
           </header>
           <Table
@@ -189,8 +189,8 @@ export default function ArbiterPoolDetail(): JSX.Element {
           />
         </ProposalsContainer>
         <EscrowEngagementContainer>
-          <OcEscrow />
-          <OcEngagement />
+          <ArbiterPoolEscrow />
+          <ArbiterPoolMembers />
         </EscrowEngagementContainer>
       </Stack>
       <OcCreateProposalModal
