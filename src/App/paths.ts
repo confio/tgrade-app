@@ -26,6 +26,9 @@ export const paths = {
   engagement: {
     prefix: "/engagement",
   },
+  arbiterpool: {
+    prefix: "/arbiterpool",
+  },
   validators: {
     prefix: "/validators",
   },
