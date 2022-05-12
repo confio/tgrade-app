@@ -14,6 +14,7 @@ import {
 } from "utils/oversightCommunity";
 import { Cw3Status, isTcProposalResponse } from "utils/trustedCircle";
 
+import ArbiterPoolVotingRules from "../ArbiterPoolVotingRules";
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
@@ -187,6 +188,7 @@ export default function ArbiterPoolDetail(): JSX.Element {
               onClick: () => setClickedProposal(record.mixedId),
             })}
           />
+          <ArbiterPoolVotingRules />
         </ProposalsContainer>
         <EscrowEngagementContainer>
           <ArbiterPoolEscrow />

@@ -1,60 +1,78 @@
 import { Pie } from "@ant-design/charts";
 import { Decimal, Uint64 } from "@cosmjs/math";
 import { Typography } from "antd";
-import Button from "App/components/Button";
+import { DsoHomeParams } from "App/pages/DsoHome";
 import { lazy, useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { MemberStatus, OcContractQuerier } from "utils/oversightCommunity";
-import { EscrowResponse, EscrowStatus } from "utils/trustedCircle";
+import { MemberStatus } from "utils/oversightCommunity";
+import { EscrowResponse, EscrowStatus, TcContractQuerier } from "utils/trustedCircle";
 
 import TooltipWrapper from "../TooltipWrapper";
 import { AmountStack, StyledEscrow, TotalEscrowStack, YourEscrowStack } from "./style";
 
-const DepositOcEscrowModal = lazy(() => import("App/components/DepositOcEscrowModal"));
-const ReturnOcEscrowModal = lazy(() => import("App/components/ReturnOcEscrowModal"));
+const DepositDsoEscrowModal = lazy(() => import("App/components/DepositDsoEscrowModal"));
+const ReturnDsoEscrowModal = lazy(() => import("App/components/ReturnDsoEscrowModal"));
 const { Title, Text } = Typography;
 
-export default function OcEscrow(): JSX.Element {
+export default function ArbiterPoolEscrow(): JSX.Element {
+  const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
     sdkState: { config, client, address },
   } = useSdk();
-
   const feeDenom = config.coinMap[config.feeToken].denom;
 
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [returnModalOpen, setReturnModalOpen] = useState(false);
-
   const [userEscrow, setUserEscrow] = useState("0");
   const [requiredEscrow, setRequiredEscrow] = useState("0");
   const [exceedingEscrow, setExceedingEscrow] = useState("0");
-  const [frozenEscrowDate, setFrozenEscrowDate] = useState<Date>();
+  const [, setFrozenEscrowDate] = useState<Date>();
   const [totalRequiredEscrow, setTotalRequiredEscrow] = useState(0);
   const [totalPaidEscrow, setTotalPaidEscrow] = useState(0);
   const [pendingEscrow, setPendingEscrow] = useState<string>();
   const [gracePeriod, setGracePeriod] = useState<string>();
   const [membership, setMembership] = useState<MemberStatus>();
 
+  useEffect(() => {
+    (async function queryMembership() {
+      if (!client || !address) return;
+
+      try {
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
+        const escrowResponse = await dsoContract.getEscrow(address);
+
+        if (escrowResponse) {
+          setMembership(escrowResponse.status);
+        } else {
+          setMembership(undefined);
+        }
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      }
+    })();
+  }, [address, client, dsoAddress, handleError]);
+
   const refreshEscrows = useCallback(
     async function () {
       if (!client) return;
 
       try {
-        const ocContract = new OcContractQuerier(config, client);
+        const dsoContract = new TcContractQuerier(dsoAddress, client);
 
         // get minimum escrow required for this DSO
-        const { escrow_amount, escrow_pending } = await ocContract.getOc();
+        const { escrow_amount, escrow_pending } = await dsoContract.getTc();
         const feeDecimals = config.coinMap[config.feeToken].fractionalDigits;
 
         const requiredEscrowDecimal = Decimal.fromAtomics(escrow_amount, feeDecimals);
         setRequiredEscrow(requiredEscrowDecimal.toString());
 
         if (address) {
-          const escrowResponse = await ocContract.getEscrow(address);
+          const escrowResponse = await dsoContract.getEscrow(address);
 
           if (escrowResponse) {
-            setMembership(escrowResponse.status);
-
             const decimals = config.coinMap[config.feeToken].fractionalDigits;
             // get user deposited escrow
             const userEscrowDecimal = Decimal.fromAtomics(escrowResponse.paid, decimals);
@@ -83,9 +101,9 @@ export default function OcEscrow(): JSX.Element {
         }
 
         // get member escrows to calculate total required and total paid
-        const members = await ocContract.getAllMembers();
+        const members = await dsoContract.getAllMembers();
 
-        const memberEscrowPromises = members.map(({ addr }) => ocContract.getEscrow(addr));
+        const memberEscrowPromises = members.map(({ addr }) => dsoContract.getEscrow(addr));
         const memberEscrowResults = await Promise.allSettled(memberEscrowPromises);
         const memberEscrowStatuses = memberEscrowResults
           .filter((res): res is PromiseFulfilledResult<EscrowResponse> => res.status === "fulfilled")
@@ -116,7 +134,7 @@ export default function OcEscrow(): JSX.Element {
         handleError(error);
       }
     },
-    [address, client, config, handleError],
+    [address, client, config.coinMap, config.feeToken, dsoAddress, handleError],
   );
 
   useEffect(() => {
@@ -188,18 +206,18 @@ export default function OcEscrow(): JSX.Element {
         <Pie {...pieConfig} />
       </TotalEscrowStack>
       <YourEscrowStack gap="s1">
-        {membership !== undefined && !membership?.non_voting ? (
+        {!membership?.non_voting ? (
           <Title level={2}>Your escrow</Title>
         ) : (
-          <Title level={2}>No escrow required</Title>
+          <Title level={2}>No Escrow Required</Title>
         )}
-        {membership !== undefined && !membership?.non_voting ? (
+        {!membership?.non_voting ? (
           <AmountStack gap="s-4">
             <Text>Current paid in:</Text>
             <Text>{`${userEscrow} ${feeDenom}`}</Text>
           </AmountStack>
         ) : null}
-        {membership !== undefined && !membership?.non_voting ? (
+        {!membership?.non_voting ? (
           <AmountStack gap="s-4">
             <Text>Needed to get voting rights:</Text>
             {pendingEscrow ? (
@@ -213,33 +231,9 @@ export default function OcEscrow(): JSX.Element {
             )}
           </AmountStack>
         ) : null}
-        {!frozenEscrowDate || (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button
-            disabled={membership === undefined || !!membership?.non_voting}
-            onClick={() => setDepositModalOpen(true)}
-          >
-            Deposit escrow
-          </Button>
-        ) : null}
-        {(!frozenEscrowDate && exceedingEscrow !== "0") ||
-        (frozenEscrowDate && frozenEscrowDate < new Date()) ? (
-          <Button
-            disabled={membership === undefined || !!membership?.non_voting}
-            type="ghost"
-            onClick={() => setReturnModalOpen(true)}
-          >
-            Claim escrow
-          </Button>
-        ) : null}
-        {frozenEscrowDate && frozenEscrowDate > new Date() ? (
-          <Text>
-            Your escrow is frozen until {frozenEscrowDate.toLocaleDateString()} at{" "}
-            {frozenEscrowDate.toLocaleTimeString()}{" "}
-          </Text>
-        ) : null}
       </YourEscrowStack>
       {depositModalOpen ? (
-        <DepositOcEscrowModal
+        <DepositDsoEscrowModal
           isModalOpen={depositModalOpen}
           closeModal={() => setDepositModalOpen(false)}
           requiredEscrow={requiredEscrow}
@@ -248,7 +242,7 @@ export default function OcEscrow(): JSX.Element {
         />
       ) : null}
       {returnModalOpen ? (
-        <ReturnOcEscrowModal
+        <ReturnDsoEscrowModal
           isModalOpen={returnModalOpen}
           closeModal={() => setReturnModalOpen(false)}
           requiredEscrow={requiredEscrow}
