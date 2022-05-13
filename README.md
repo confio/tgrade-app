@@ -26,3 +26,14 @@ the same rules applied for running tests in Circleci more details in workflows:
 ## Deployment to `*.tgrade.finance` websites
 - how to deploy [slab.com/posts](https://confio.slab.com/posts/how-to-deploy-tgrade-app-lc40xuws)
 - how to rollback [slab.com/posts](https://confio.slab.com/posts/how-to-rollback-tgrade-app-release-c1xr3zeb)
+
+## Project structure:
+```
+  ├── src
+  │   ├── ...
+  │   ├── codec
+  │   └── ...
+```
+
+- all files and context inside [src/codec](/src/codec) folder generated automatically based on [scripts/proto/codegen.sh](scripts/proto/codegen.sh) script, more details see in [scripts/proto/get-proto.sh](scripts/proto/get-proto.sh)
+
