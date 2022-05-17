@@ -73,7 +73,7 @@ export default function ArbiterPoolMembers(): JSX.Element {
 
   return (
     <MembersStack>
-      <Title level={2}>Members</Title>
+      <Title level={2}>Member(s)</Title>
       {membership?.leaving ? <Text>You are in the process of leaving this Trusted Circle</Text> : null}
       {membership?.pending ? (
         <Text>You need to deposit the required escrow to gain voting rights</Text>

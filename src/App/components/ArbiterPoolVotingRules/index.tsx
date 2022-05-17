@@ -1,11 +1,9 @@
-import { Coin } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { nativeCoinToDisplay } from "utils/currency";
 import { OcContractQuerier } from "utils/oversightCommunity";
 
-import { Separator, StyledOcIdActions, VotingRules, VSeparator } from "./style";
+import { VotingRules, VSeparator } from "./style";
 
 const { Text } = Typography;
 
@@ -15,7 +13,6 @@ export default function ArbiterPoolVotingRules(): JSX.Element {
     sdkState: { config, client },
   } = useSdk();
 
-  const [minimumEscrow, setMinimumEscrow] = useState<Coin>();
   const [quorum, setQuorum] = useState<string>();
   const [threshold, setThreshold] = useState<string>();
   const [votingDuration, setVotingDuration] = useState<string>();
@@ -28,15 +25,10 @@ export default function ArbiterPoolVotingRules(): JSX.Element {
       try {
         const ocContract = new OcContractQuerier(config, client);
         const ocResponse = await ocContract.getOc();
-        const minimumEscrow = nativeCoinToDisplay(
-          { denom: config.feeToken, amount: ocResponse.escrow_amount },
-          config.coinMap,
-        );
         const quorum = (parseFloat(ocResponse.rules.quorum) * 100).toFixed(2).toString();
         const threshold = (parseFloat(ocResponse.rules.threshold) * 100).toFixed(2).toString();
         const allowEndEarly = ocResponse.rules.allow_end_early ? "Yes" : "No";
 
-        setMinimumEscrow(minimumEscrow);
         setQuorum(quorum);
         setQuorum(quorum);
         setThreshold(threshold);
@@ -50,8 +42,7 @@ export default function ArbiterPoolVotingRules(): JSX.Element {
   }, [client, config, handleError]);
 
   return (
-    <StyledOcIdActions>
-      <Separator />
+    <>
       <VotingRules>
         <Text>Voting rules:</Text>
         <Text>Quorum: {quorum}%</Text>
@@ -60,12 +51,9 @@ export default function ArbiterPoolVotingRules(): JSX.Element {
         <VSeparator />
         <Text>Voting duration: {votingDuration} days</Text>
         <VSeparator />
-        <Text>Allow voting to end early: {allowEndEarly}</Text>
+        <Text>Early passing: {allowEndEarly}</Text>
         <VSeparator />
-        <Text>
-          Minimum escrow: {minimumEscrow?.amount} {minimumEscrow?.denom}
-        </Text>
       </VotingRules>
-    </StyledOcIdActions>
+    </>
   );
 }

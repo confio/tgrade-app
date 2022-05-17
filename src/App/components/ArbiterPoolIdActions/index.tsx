@@ -3,7 +3,7 @@ import gearIcon from "App/assets/icons/gear.svg";
 import AddressTag from "App/components/AddressTag";
 import { openLeaveOcModal, useOc } from "service";
 
-import { ActionsButton, Separator, StyledOcIdActions } from "./style";
+import { ActionsButton, StyledOcIdActions } from "./style";
 
 export default function ArbiterPoolIdActions(): JSX.Element {
   const {
@@ -30,7 +30,6 @@ export default function ArbiterPoolIdActions(): JSX.Element {
           </Dropdown>
         </div>
       </header>
-      <Separator />
     </StyledOcIdActions>
   );
 }

@@ -65,9 +65,17 @@ const columns = [
     render: (record: MixedProposalResponse) => getProposalTitle(record.proposal),
   },
   {
+    title: "Description",
+    key: "description",
+    width: "45%",
+    render: (record: MixedProposalResponse) => (
+      <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>
+    ),
+  },
+  {
     title: "Due date",
     key: "expires",
-    width: "10%",
+    width: "15%",
     render: (record: MixedProposalResponse) => {
       const expiryTime =
         Number(typeof record.expires === "string" ? record.expires : record.expires.at_time) / 1000000;
@@ -90,7 +98,7 @@ const columns = [
   {
     title: "Status",
     key: "status",
-    width: "10%",
+    width: "15%",
     render: (record: MixedProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
@@ -120,11 +128,9 @@ const columns = [
     },
   },
   {
-    title: "Description",
-    key: "description",
-    render: (record: MixedProposalResponse) => (
-      <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>
-    ),
+    title: "Results",
+    key: "results",
+    width: "35%",
   },
 ];
 
