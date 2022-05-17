@@ -10,7 +10,7 @@ const { Title } = Typography;
 
 export default function ArbiterPoolHome(): JSX.Element | null {
   return (
-    <PageLayout maxwidth="100%" centered="false">
+    <PageLayout maxwidth="75rem" centered="false">
       <Stack gap="s-2" style={{ width: "100%" }}>
         <TextStack>
           <Title>Arbiter Pool</Title>

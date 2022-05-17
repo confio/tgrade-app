@@ -50,7 +50,7 @@ export default function ArbiterPoolEscrow(): JSX.Element {
         }
       } catch (error) {
         if (!(error instanceof Error)) return;
-        handleError(error);
+        //handleError(error);
       }
     })();
   }, [address, client, dsoAddress, handleError]);
