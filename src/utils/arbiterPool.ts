@@ -1,4 +1,7 @@
-import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { calculateFee, Coin, GasPrice } from "@cosmjs/stargate";
+
+import { getProposalTitle, InstantiateMsg, TcProposal, TcProposeResponse, VoteOption } from "./trustedCircle";
 
 export interface PendingEscrow {
   /// Associated proposal_id
@@ -123,5 +126,158 @@ export class ArbiterPoolResponseQuerier {
   async getEscrow(memberAddress: string): Promise<EscrowResponse> {
     const query = { escrow: { addr: memberAddress } };
     return await this.client.queryContractSmart(this.address, query);
+  }
+}
+
+export class TcContract extends ArbiterPoolResponseQuerier {
+  static readonly GAS_CREATE_TC = 500_000;
+  static readonly GAS_DEPOSIT_ESCROW = 200_000;
+  static readonly GAS_RETURN_ESCROW = 200_000;
+  static readonly GAS_CHECK_PENDING = 500_000;
+  static readonly GAS_LEAVE_TC = 200_000;
+  static readonly GAS_PROPOSE = 200_000;
+  static readonly GAS_VOTE = 200_000;
+  static readonly GAS_EXECUTE = 500_000;
+
+  readonly #signingClient: SigningCosmWasmClient;
+  readonly #gasPrice: GasPrice;
+
+  constructor(address: string, signingClient: SigningCosmWasmClient, gasPrice: GasPrice) {
+    super(address, signingClient);
+    this.#signingClient = signingClient;
+    this.#gasPrice = gasPrice;
+  }
+
+  static async createTc(
+    signingClient: SigningCosmWasmClient,
+    codeId: number,
+    creatorAddress: string,
+    tcName: string,
+    escrowAmount: string,
+    votingDuration: string,
+    quorum: string,
+    threshold: string,
+    members: readonly string[],
+    allowEndEarly: boolean,
+    funds: readonly Coin[],
+    gasPrice: GasPrice,
+  ): Promise<string> {
+    const msg: InstantiateMsg = {
+      name: tcName,
+      escrow_amount: escrowAmount,
+      voting_period: parseInt(votingDuration, 10),
+      quorum: (parseFloat(quorum) / 100).toString(),
+      threshold: (parseFloat(threshold) / 100).toString(),
+      initial_members: members,
+      allow_end_early: allowEndEarly,
+      edit_trusted_circle_disabled: false, // TODO: revisit what makes sense here
+      reward_denom: "utgd",
+    };
+
+    const { contractAddress } = await signingClient.instantiate(
+      creatorAddress,
+      codeId,
+      msg as unknown as Record<string, unknown>,
+      tcName,
+      calculateFee(TcContract.GAS_CREATE_TC, gasPrice),
+      {
+        admin: creatorAddress,
+        funds: funds,
+      },
+    );
+    return contractAddress;
+  }
+
+  async depositEscrow(senderAddress: string, funds: readonly Coin[]): Promise<string> {
+    const msg = { deposit_escrow: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.address,
+      msg,
+      calculateFee(TcContract.GAS_DEPOSIT_ESCROW, this.#gasPrice),
+      undefined,
+      funds,
+    );
+    return transactionHash;
+  }
+
+  async returnEscrow(memberAddress: string): Promise<string> {
+    const msg = { return_escrow: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      memberAddress,
+      this.address,
+      msg,
+      calculateFee(TcContract.GAS_RETURN_ESCROW, this.#gasPrice),
+    );
+    return transactionHash;
+  }
+
+  async checkPending(memberAddress: string): Promise<string> {
+    const msg = { check_pending: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      memberAddress,
+      this.address,
+      msg,
+      calculateFee(TcContract.GAS_CHECK_PENDING, this.#gasPrice),
+    );
+    return transactionHash;
+  }
+
+  async leaveTc(memberAddress: string): Promise<string> {
+    const msg = { leave_trusted_circle: {} };
+    const { transactionHash } = await this.#signingClient.execute(
+      memberAddress,
+      this.address,
+      msg,
+      calculateFee(TcContract.GAS_LEAVE_TC, this.#gasPrice),
+    );
+    return transactionHash;
+  }
+
+  async propose(
+    senderAddress: string,
+    description: string,
+    proposal: TcProposal,
+  ): Promise<TcProposeResponse> {
+    const title = getProposalTitle(proposal);
+    const msg = { propose: { title, description, proposal } };
+
+    const result = await this.#signingClient.execute(
+      senderAddress,
+      this.address,
+      msg,
+      calculateFee(TcContract.GAS_PROPOSE, this.#gasPrice),
+    );
+
+    const proposalIdAttr = result.logs
+      .flatMap((log) => log.events)
+      .flatMap((event) => event.attributes)
+      .find((attr) => attr.key === "proposal_id");
+
+    const proposalId = proposalIdAttr ? parseInt(proposalIdAttr.value, 10) : undefined;
+
+    return { txHash: result.transactionHash, proposalId };
+  }
+
+  async voteProposal(senderAddress: string, proposalId: number, vote: VoteOption): Promise<string> {
+    const msg = { vote: { proposal_id: proposalId, vote } };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.address,
+      msg,
+      calculateFee(TcContract.GAS_VOTE, this.#gasPrice),
+    );
+    return transactionHash;
+  }
+
+  async executeProposal(senderAddress: string, proposalId: number): Promise<string> {
+    const msg = { execute: { proposal_id: proposalId } };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.address,
+      msg,
+      calculateFee(TcContract.GAS_EXECUTE, this.#gasPrice),
+    );
+    return transactionHash;
   }
 }

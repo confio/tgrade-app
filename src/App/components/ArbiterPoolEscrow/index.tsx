@@ -40,8 +40,8 @@ export default function ArbiterPoolEscrow(): JSX.Element {
       if (!client || !address) return;
 
       try {
-        const dsoContract = new TcContractQuerier(dsoAddress, client);
-        const escrowResponse = await dsoContract.getEscrow(address);
+        const memberContract = new TcContractQuerier(dsoAddress, client);
+        const escrowResponse = await memberContract.getEscrow(address);
 
         if (escrowResponse) {
           setMembership(escrowResponse.status);
@@ -131,7 +131,7 @@ export default function ArbiterPoolEscrow(): JSX.Element {
         setTotalPaidEscrow(totalPaidEscrow.toFloatApproximation());
       } catch (error) {
         if (!(error instanceof Error)) return;
-        handleError(error);
+        //handleError(error);
       }
     },
     [address, client, config.coinMap, config.feeToken, dsoAddress, handleError],

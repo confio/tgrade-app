@@ -9,7 +9,7 @@ import { MemberCount, MemberCounts, MembersStack } from "./style";
 
 const { Title, Text } = Typography;
 
-export default function DsoMembers(): JSX.Element {
+export default function ArbiterPoolMembers(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
@@ -46,7 +46,7 @@ export default function DsoMembers(): JSX.Element {
         setNumNonVoters(numNonVoters);
       } catch (error) {
         if (!(error instanceof Error)) return;
-        handleError(error);
+        //handleError(error);
       }
     })();
   }, [client, dsoAddress, handleError]);
