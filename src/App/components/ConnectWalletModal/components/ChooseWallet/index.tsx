@@ -73,7 +73,7 @@ export default function ChooseWallet({
                 onClick={() => chooseLedger()}
               />
             ) : null}
-            {!isWebSigner(signer) ? (
+            {!isWebSigner(signer) && process.env.REACT_APP_NETWORK !== "tgradeMainnet" ? (
               <WalletButton
                 iconSrc={tgradeIcon}
                 iconAlt="Web logo"
@@ -106,7 +106,7 @@ export default function ChooseWallet({
                 onClick={() => chooseLedger()}
               />
             ) : null}
-            {!isWebSigner(signer) ? (
+            {!isWebSigner(signer) && process.env.REACT_APP_NETWORK !== "tgradeMainnet" ? (
               <WalletButton
                 iconSrc={tgradeIcon}
                 iconAlt="Web wallet logo"
