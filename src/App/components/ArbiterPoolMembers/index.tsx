@@ -1,22 +1,19 @@
 import { Typography } from "antd";
-import { DsoHomeParams } from "App/pages/DsoHome";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { useError, useSdk } from "service";
-import { EscrowResponse, EscrowStatus, MemberStatus, TcContractQuerier } from "utils/trustedCircle";
+import { ApContractQuerier, EscrowResponse, EscrowStatus, MemberStatus } from "utils/arbiterPool";
 
 import { MemberCount, MemberCounts, MembersStack } from "./style";
 
 const { Title, Text } = Typography;
 
 export default function ArbiterPoolMembers(): JSX.Element {
-  const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
-    sdkState: { client, address },
+    sdkState: { client, config, address },
   } = useSdk();
   const [numVoters, setNumVoters] = useState(0);
-  const [numNonVoters, setNumNonVoters] = useState(0);
+  //const [numNonVoters, setNumNonVoters] = useState(0);
   const [membership, setMembership] = useState<MemberStatus>();
 
   useEffect(() => {
@@ -24,10 +21,10 @@ export default function ArbiterPoolMembers(): JSX.Element {
       if (!client) return;
 
       try {
-        const dsoContract = new TcContractQuerier(dsoAddress, client);
-        const members = await dsoContract.getAllMembers();
+        const ApContract = new ApContractQuerier(config, client);
+        const members = await ApContract.getAllVotingMembers();
 
-        const memberEscrowPromises = members.map(({ addr }) => dsoContract.getEscrow(addr));
+        const memberEscrowPromises = members.map(({ addr }) => ApContract.getEscrow(addr));
         const memberEscrowResults = await Promise.allSettled(memberEscrowPromises);
         const memberEscrowStatuses = memberEscrowResults
           .filter((res): res is PromiseFulfilledResult<EscrowResponse> => res.status === "fulfilled")
@@ -40,23 +37,23 @@ export default function ArbiterPoolMembers(): JSX.Element {
             ++numVoters;
           }
         }
-        const numNonVoters = members.length - numVoters;
+        //const numNonVoters = members.length - numVoters;
 
         setNumVoters(numVoters);
-        setNumNonVoters(numNonVoters);
+        //setNumNonVoters(numNonVoters);
       } catch (error) {
         if (!(error instanceof Error)) return;
-        //handleError(error);
+        handleError(error);
       }
     })();
-  }, [client, dsoAddress, handleError]);
+  }, [client, config, handleError]);
 
   useEffect(() => {
     (async function queryMembership() {
       if (!client || !address) return;
 
       try {
-        const dsoContract = new TcContractQuerier(dsoAddress, client);
+        const dsoContract = new ApContractQuerier(config, client);
         const escrowResponse = await dsoContract.getEscrow(address);
 
         if (escrowResponse) {
@@ -69,7 +66,7 @@ export default function ArbiterPoolMembers(): JSX.Element {
         //handleError(error);
       }
     })();
-  }, [address, client, dsoAddress, handleError]);
+  }, [address, client]);
 
   return (
     <MembersStack>
@@ -84,11 +81,6 @@ export default function ArbiterPoolMembers(): JSX.Element {
           <Text>{numVoters}</Text>
           <Text>voting member(s)</Text>
           {membership?.voting ? <Text>(you)</Text> : null}
-        </MemberCount>
-        <MemberCount>
-          <Text>{numNonVoters}</Text>
-          <Text>non-voting member(s)</Text>
-          {membership && !membership.voting ? <Text>(you)</Text> : null}
         </MemberCount>
       </MemberCounts>
     </MembersStack>

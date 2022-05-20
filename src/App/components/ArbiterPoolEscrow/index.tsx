@@ -26,7 +26,7 @@ export default function ArbiterPoolEscrow(): JSX.Element {
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [returnModalOpen, setReturnModalOpen] = useState(false);
   const [userEscrow, setUserEscrow] = useState("0");
-  const [surplus, setSurplus] = useState("0");
+  const [surplus] = useState("0");
   const [requiredEscrow, setRequiredEscrow] = useState("0");
   const [exceedingEscrow, setExceedingEscrow] = useState("0");
   const [, setFrozenEscrowDate] = useState<Date>();
