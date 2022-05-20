@@ -9,7 +9,7 @@ import {
 } from "react";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
-import { usePinnedTokens } from "utils/storage";
+import { useLocalStorage } from "utils/storage";
 import { Pair, PairProps, tokenObj, TokenProps } from "utils/tokens";
 
 import { useError } from "./error";
@@ -19,6 +19,8 @@ interface PaginationState {
   readonly cw20PaginationKey?: Uint8Array | undefined;
   readonly trustedTokenPaginationKey?: Uint8Array | undefined;
 }
+
+type PinnedTokensByUserMap = Map<string, readonly string[]>;
 
 type TokensState = {
   readonly pinnedTokens: readonly string[];
@@ -244,8 +246,14 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
     sdkState: { config, client, address },
   } = useSdk();
 
+  const [loadedAddress, setLoadedAddress] = useState(address);
   const [paginationState, setPaginationState] = useState<PaginationState>({});
-  const [storedPinnedTokens, setStoredPinnedTokens] = usePinnedTokens();
+  const [storedPinnedTokens, setStoredPinnedTokens] = useLocalStorage<PinnedTokensByUserMap>(
+    "pinned-tokens-map",
+    new Map(),
+    (map) => JSON.stringify(Array.from(map.entries())),
+    (map) => new Map(JSON.parse(map)),
+  );
   const [pinnedTokensToRemove, setPinnedTokensToRemove] = useState<readonly string[]>([]);
 
   // Inserts feeToken (utgd) and removes duplicates
@@ -259,7 +267,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
   );
 
   const [tokensState, tokensDispatch] = useReducer(tokensReducer, {
-    pinnedTokens: cleanPinnedTokens(storedPinnedTokens),
+    pinnedTokens: [],
     tokens: new Map(),
     canLoadNextTokens: false,
     pairs: new Map(),
@@ -267,23 +275,32 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
   const { pinnedTokens, tokens, pinToken, unpinToken, loadNextTokens, reloadPairs } = tokensState;
 
-  // Wire localStorage's storedPinnedTokens to tokensState.pinnedTokens
+  // Load storedPinnedTokens into tokensState.pinnedTokens on app load
   useEffect(() => {
-    if (pinnedTokensToRemove.length) return;
+    (async function () {
+      if (loadedAddress === address || !address) return;
+
+      const myStoredPinnedTokens = storedPinnedTokens.get(address) ?? [];
+      const cleanedPinnedTokens = cleanPinnedTokens(myStoredPinnedTokens);
+      tokensDispatch({ type: "setPinnedTokens", payload: cleanedPinnedTokens });
+
+      setLoadedAddress(address);
+    })();
+  }, [address, cleanPinnedTokens, loadedAddress, storedPinnedTokens]);
+
+  // Serialize tokensState.pinnedTokens
+  useEffect(() => {
+    if (!loadedAddress || !address || loadedAddress !== address || pinnedTokensToRemove.length) return;
 
     const cleanedPinnedTokens = cleanPinnedTokens(pinnedTokens);
-    const isEveryPinnedTokenStored = cleanedPinnedTokens.every((token) => storedPinnedTokens.includes(token));
-    const isEveryStoredTokenPinned = storedPinnedTokens.every((token) => cleanedPinnedTokens.includes(token));
-
-    if (!isEveryPinnedTokenStored || !isEveryStoredTokenPinned) {
-      setStoredPinnedTokens(cleanedPinnedTokens);
-    }
+    setStoredPinnedTokens((prevMap) => prevMap.set(address, cleanedPinnedTokens));
   }, [
+    address,
     cleanPinnedTokens,
+    loadedAddress,
     pinnedTokens,
     pinnedTokensToRemove.length,
     setStoredPinnedTokens,
-    storedPinnedTokens,
   ]);
 
   // Remove pinned tokens that were marked as to remove
