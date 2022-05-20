@@ -1,7 +1,8 @@
 import { Divider, Typography } from "antd";
 import Stack from "App/components/Stack/style";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { setSearchText, useTMarket } from "service/tmarket";
+import { useTokens } from "service/tokens";
 
 import backIcon from "./assets/arrow-back-icon.svg";
 import closeIcon from "./assets/cross.svg";
@@ -25,8 +26,19 @@ export default function SelectTokenModal({
   setToken,
   tokenFilter,
 }: SelectTokenModalProps): JSX.Element {
+  const {
+    tokensState: { reloadTokens },
+  } = useTokens();
   const { tMarketDispatch } = useTMarket();
   const [currentTab, setCurrentTab] = useState<"pinned" | "detail" | "all">("pinned");
+
+  useEffect(() => {
+    (async function () {
+      if (!isModalOpen) return;
+      await reloadTokens?.();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModalOpen]);
 
   return (
     <StyledSelectTokenModal
