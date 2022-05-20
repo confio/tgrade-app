@@ -15,7 +15,7 @@ const DepositDsoEscrowModal = lazy(() => import("App/components/DepositDsoEscrow
 const ReturnDsoEscrowModal = lazy(() => import("App/components/ReturnDsoEscrowModal"));
 const { Title, Text } = Typography;
 
-export default function ArbiterPoolEscrow(): JSX.Element {
+export default function ApEscrow(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {
@@ -26,6 +26,7 @@ export default function ArbiterPoolEscrow(): JSX.Element {
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [returnModalOpen, setReturnModalOpen] = useState(false);
   const [userEscrow, setUserEscrow] = useState("0");
+  const [surplus] = useState("0");
   const [requiredEscrow, setRequiredEscrow] = useState("0");
   const [exceedingEscrow, setExceedingEscrow] = useState("0");
   const [, setFrozenEscrowDate] = useState<Date>();
@@ -40,8 +41,8 @@ export default function ArbiterPoolEscrow(): JSX.Element {
       if (!client || !address) return;
 
       try {
-        const dsoContract = new TcContractQuerier(dsoAddress, client);
-        const escrowResponse = await dsoContract.getEscrow(address);
+        const memberContract = new TcContractQuerier(dsoAddress, client);
+        const escrowResponse = await memberContract.getEscrow(address);
 
         if (escrowResponse) {
           setMembership(escrowResponse.status);
@@ -50,7 +51,7 @@ export default function ArbiterPoolEscrow(): JSX.Element {
         }
       } catch (error) {
         if (!(error instanceof Error)) return;
-        handleError(error);
+        //handleError(error);
       }
     })();
   }, [address, client, dsoAddress, handleError]);
@@ -131,7 +132,7 @@ export default function ArbiterPoolEscrow(): JSX.Element {
         setTotalPaidEscrow(totalPaidEscrow.toFloatApproximation());
       } catch (error) {
         if (!(error instanceof Error)) return;
-        handleError(error);
+        //handleError(error);
       }
     },
     [address, client, config.coinMap, config.feeToken, dsoAddress, handleError],
@@ -229,6 +230,12 @@ export default function ArbiterPoolEscrow(): JSX.Element {
             ) : (
               <Text>{`${requiredEscrow} ${feeDenom}`}</Text>
             )}
+          </AmountStack>
+        ) : null}
+        {!membership?.non_voting ? (
+          <AmountStack gap="s-4">
+            <Text>Surplus:</Text>
+            <Text>{`${surplus} ${feeDenom}`}</Text>
           </AmountStack>
         ) : null}
       </YourEscrowStack>
