@@ -15,7 +15,7 @@ const DepositDsoEscrowModal = lazy(() => import("App/components/DepositDsoEscrow
 const ReturnDsoEscrowModal = lazy(() => import("App/components/ReturnDsoEscrowModal"));
 const { Title, Text } = Typography;
 
-export default function ArbiterPoolEscrow(): JSX.Element {
+export default function ApEscrow(): JSX.Element {
   const { dsoAddress }: DsoHomeParams = useParams();
   const { handleError } = useError();
   const {

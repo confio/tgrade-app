@@ -7,7 +7,7 @@ import { MemberCount, MemberCounts, MembersStack } from "./style";
 
 const { Title, Text } = Typography;
 
-export default function ArbiterPoolMembers(): JSX.Element {
+export default function ApMembers(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { client, config, address },

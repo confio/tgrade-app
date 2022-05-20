@@ -5,10 +5,10 @@ import { lazy } from "react";
 
 import { TextStack } from "./style";
 
-const ArbiterPoolDetail = lazy(() => import("App/components/ArbiterPoolDetail"));
+const ArbiterPoolDetail = lazy(() => import("App/components/ApDetail"));
 const { Title } = Typography;
 
-export default function ArbiterPoolHome(): JSX.Element | null {
+export default function ApHome(): JSX.Element | null {
   return (
     <PageLayout maxwidth="75rem" centered="false">
       <Stack gap="s-2" style={{ width: "100%" }}>

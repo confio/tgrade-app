@@ -5,7 +5,7 @@ import { openLeaveOcModal, useOc } from "service";
 
 import { ActionsButton, StyledOcIdActions } from "./style";
 
-export default function ArbiterPoolIdActions(): JSX.Element {
+export default function ApIdActions(): JSX.Element {
   const {
     ocState: { ocAddress },
     ocDispatch,

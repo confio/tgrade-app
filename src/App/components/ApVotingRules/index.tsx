@@ -7,7 +7,7 @@ import { VotingRules, VSeparator } from "./style";
 
 const { Text } = Typography;
 
-export default function ArbiterPoolVotingRules(): JSX.Element {
+export default function ApVotingRules(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, client },
