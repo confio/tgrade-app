@@ -38,11 +38,6 @@ export function useLocalStorage<T>(
   return [storedValue, setValue];
 }
 
-export const usePinnedTokens = (): [
-  readonly string[],
-  React.Dispatch<React.SetStateAction<readonly string[]>>,
-] => useLocalStorage<readonly string[]>("pinned-tokens", [], JSON.stringify, JSON.parse);
-
 export const useOcAddress = (): [
   string | undefined,
   React.Dispatch<React.SetStateAction<string | undefined>>,
