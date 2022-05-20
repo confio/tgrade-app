@@ -13,7 +13,6 @@ export default function ApMembers(): JSX.Element {
     sdkState: { client, config, address },
   } = useSdk();
   const [numVoters, setNumVoters] = useState(0);
-  //const [numNonVoters, setNumNonVoters] = useState(0);
   const [membership, setMembership] = useState<MemberStatus>();
 
   useEffect(() => {
@@ -37,10 +36,8 @@ export default function ApMembers(): JSX.Element {
             ++numVoters;
           }
         }
-        //const numNonVoters = members.length - numVoters;
 
         setNumVoters(numVoters);
-        //setNumNonVoters(numNonVoters);
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
