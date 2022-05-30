@@ -39,7 +39,7 @@ export interface VotingRules {
   readonly allow_end_early: boolean;
 }
 
-export interface OcResponse {
+export interface ApResponse {
   readonly name: string;
   /// The required escrow amount, in the default denom (utgd)
   readonly escrow_amount: string;
@@ -121,7 +121,7 @@ export interface OcProposal extends TcProposal {
  * See https://github.com/confio/tgrade-contracts/blob/v0.5.2/contracts/tgrade-oc-proposals/src/contract.rs#L215
  * and https://github.com/confio/tgrade-contracts/blob/v0.5.2/packages/voting-contract/src/state.rs#L25-L39
  */
-export interface OcProposalResponse {
+export interface ApProposalResponse {
   readonly id: number;
   readonly title: string;
   readonly description: string;
@@ -136,7 +136,7 @@ export interface OcProposalResponse {
 
 export type MixedProposalResponseId = `${"tc" | "oc"}${number}`;
 
-export type MixedProposalResponse = (TcProposalResponse | OcProposalResponse) & {
+export type MixedProposalResponse = (TcProposalResponse | ApProposalResponse) & {
   readonly mixedId: MixedProposalResponseId;
 };
 
@@ -150,8 +150,8 @@ export function isOcProposal(proposal: TcProposal & OcProposal): proposal is OcP
 }
 
 export function isOcProposalResponse(
-  response: TcProposalResponse | OcProposalResponse,
-): response is OcProposalResponse {
+  response: TcProposalResponse | ApProposalResponse,
+): response is ApProposalResponse {
   return isOcProposal(response.proposal);
 }
 
@@ -183,7 +183,7 @@ export type Cw3Status = "pending" | "open" | "rejected" | "passed" | "executed";
  */
 
 export interface ProposalListResponse {
-  readonly proposals: readonly OcProposalResponse[];
+  readonly proposals: readonly ApProposalResponse[];
 }
 
 export interface VoteInfo {
@@ -281,9 +281,9 @@ export class ApContractQuerier {
     this.apProposalsAddress = apProposalsAddress;
   }
 
-  async getOc(): Promise<OcResponse> {
+  async getOc(): Promise<ApResponse> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const query = { trusted_circle: {} };
     return await this.client.queryContractSmart(this.apAddress, query);
@@ -292,7 +292,7 @@ export class ApContractQuerier {
   // NOTE: only gets members from Trusted Circle and not from OC Proposals
   async getMembers(startAfter?: string): Promise<readonly Member[]> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const query = { list_members: { start_after: startAfter } };
     const { members }: MemberListResponse = await this.client.queryContractSmart(this.apAddress, query);
@@ -316,7 +316,7 @@ export class ApContractQuerier {
   // NOTE: only gets voters from Trusted Circle and not from OC Proposals
   async getVotingMembers(startAfter?: string): Promise<readonly Member[]> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const query = { list_voters: { start_after: startAfter } };
     const { members }: MemberListResponse = await this.client.queryContractSmart(this.apAddress, query);
@@ -339,25 +339,25 @@ export class ApContractQuerier {
 
   async getEscrow(memberAddress: string): Promise<EscrowResponse> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const query = { escrow: { addr: memberAddress } };
     const response: EscrowResponse = await this.client.queryContractSmart(this.apAddress, query);
     return response;
   }
 
-  async getTcProposals(startAfter?: number): Promise<readonly OcProposalResponse[]> {
+  async getTcProposals(startAfter?: number): Promise<readonly ApProposalResponse[]> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const query = { list_proposals: { start_after: startAfter } };
     const { proposals }: ProposalListResponse = await this.client.queryContractSmart(this.apAddress, query);
     return proposals;
   }
 
-  async getAllTcProposals(): Promise<readonly OcProposalResponse[]> {
-    let proposals: readonly OcProposalResponse[] = [];
-    let nextProposals: readonly OcProposalResponse[] = [];
+  async getAllTcProposals(): Promise<readonly ApProposalResponse[]> {
+    let proposals: readonly ApProposalResponse[] = [];
+    let nextProposals: readonly ApProposalResponse[] = [];
 
     do {
       const lastProposalId = proposals[proposals.length - 1]?.id;
@@ -368,9 +368,9 @@ export class ApContractQuerier {
     return proposals;
   }
 
-  async getOcProposals(startAfter?: number): Promise<readonly OcProposalResponse[]> {
+  async getOcProposals(startAfter?: number): Promise<readonly ApProposalResponse[]> {
     await this.initAddress();
-    if (!this.apProposalsAddress) throw new Error("ocProposalsAddress was not set");
+    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
 
     const query = { list_proposals: { start_after: startAfter } };
     const { proposals }: ProposalListResponse = await this.client.queryContractSmart(
@@ -380,9 +380,9 @@ export class ApContractQuerier {
     return proposals;
   }
 
-  async getAllOcProposals(): Promise<readonly OcProposalResponse[]> {
-    let proposals: readonly OcProposalResponse[] = [];
-    let nextProposals: readonly OcProposalResponse[] = [];
+  async getAllOcProposals(): Promise<readonly ApProposalResponse[]> {
+    let proposals: readonly ApProposalResponse[] = [];
+    let nextProposals: readonly ApProposalResponse[] = [];
 
     do {
       const lastProposalId = proposals[proposals.length - 1]?.id;
@@ -406,21 +406,21 @@ export class ApContractQuerier {
     return flatResponsesWithId;
   }
 
-  async getTcProposal(proposalId: number): Promise<OcProposalResponse> {
+  async getTcProposal(proposalId: number): Promise<ApProposalResponse> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const query = { proposal: { proposal_id: proposalId } };
-    const proposalResponse: OcProposalResponse = await this.client.queryContractSmart(this.apAddress, query);
+    const proposalResponse: ApProposalResponse = await this.client.queryContractSmart(this.apAddress, query);
     return proposalResponse;
   }
 
-  async getOcProposal(proposalId: number): Promise<OcProposalResponse> {
+  async getOcProposal(proposalId: number): Promise<ApProposalResponse> {
     await this.initAddress();
-    if (!this.apProposalsAddress) throw new Error("ocProposalsAddress was not set");
+    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
 
     const query = { proposal: { proposal_id: proposalId } };
-    const proposalResponse: OcProposalResponse = await this.client.queryContractSmart(
+    const proposalResponse: ApProposalResponse = await this.client.queryContractSmart(
       this.apProposalsAddress,
       query,
     );
@@ -441,7 +441,7 @@ export class ApContractQuerier {
 
   async getTcVotes(proposalId: number, startAfter: string): Promise<readonly VoteInfo[]> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const query = {
       list_votes: {
@@ -468,7 +468,7 @@ export class ApContractQuerier {
 
   async getOcVotes(proposalId: number, startAfter: string): Promise<readonly VoteInfo[]> {
     await this.initAddress();
-    if (!this.apProposalsAddress) throw new Error("ocProposalsAddress was not set");
+    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
 
     const query = {
       list_votes: {
@@ -506,7 +506,7 @@ export class ApContractQuerier {
 
   async getTcVote(proposalId: number, voter: string): Promise<VoteResponse> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const query = { vote: { proposal_id: proposalId, voter } };
     const voteResponse: VoteResponse = await this.client.queryContractSmart(this.apAddress, query);
@@ -515,7 +515,7 @@ export class ApContractQuerier {
 
   async getOcVote(proposalId: number, voter: string): Promise<VoteResponse> {
     await this.initAddress();
-    if (!this.apProposalsAddress) throw new Error("ocProposalsAddress was not set");
+    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
 
     const query = { vote: { proposal_id: proposalId, voter } };
     const voteResponse: VoteResponse = await this.client.queryContractSmart(this.apProposalsAddress, query);
@@ -553,7 +553,7 @@ export class OcContract extends ApContractQuerier {
 
   async depositEscrow(senderAddress: string, funds: readonly Coin[]): Promise<string> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const msg = { deposit_escrow: {} };
     const { transactionHash } = await this.#signingClient.execute(
@@ -569,7 +569,7 @@ export class OcContract extends ApContractQuerier {
 
   async returnEscrow(memberAddress: string): Promise<string> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const msg = { return_escrow: {} };
     const { transactionHash } = await this.#signingClient.execute(
@@ -583,7 +583,7 @@ export class OcContract extends ApContractQuerier {
 
   async checkPending(memberAddress: string): Promise<string> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const msg = { check_pending: {} };
     const { transactionHash } = await this.#signingClient.execute(
@@ -597,7 +597,7 @@ export class OcContract extends ApContractQuerier {
 
   async leaveOc(memberAddress: string): Promise<string> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
 
     const msg = { leave_trusted_circle: {} };
     const { transactionHash } = await this.#signingClient.execute(
@@ -615,8 +615,8 @@ export class OcContract extends ApContractQuerier {
     proposal: TcProposal | OcProposal,
   ): Promise<OcProposeResponse> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
-    if (!this.apProposalsAddress) throw new Error("ocProposalsAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
+    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
 
     const queryAddress = isOcProposal(proposal) ? this.apProposalsAddress : this.apAddress;
 
@@ -650,8 +650,8 @@ export class OcContract extends ApContractQuerier {
     vote: VoteOption,
   ): Promise<string> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
-    if (!this.apProposalsAddress) throw new Error("ocProposalsAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
+    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
 
     const proposalIdType = mixedId.slice(0, 2);
     const proposalIdNumber = parseInt(mixedId.slice(2), 10);
@@ -669,8 +669,8 @@ export class OcContract extends ApContractQuerier {
 
   async executeProposal(senderAddress: string, mixedId: MixedProposalResponseId): Promise<string> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("ocAddress was not set");
-    if (!this.apProposalsAddress) throw new Error("ocProposalsAddress was not set");
+    if (!this.apAddress) throw new Error("apAddress was not set");
+    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
 
     const proposalIdType = mixedId.slice(0, 2);
     const proposalIdNumber = parseInt(mixedId.slice(2), 10);
