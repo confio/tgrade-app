@@ -10,10 +10,10 @@ import {
   isOcProposalResponse,
   MixedProposalResponse,
   MixedProposalResponseId,
-  OcContractQuerier,
 } from "utils/oversightCommunity";
 import { Cw3Status, isTcProposalResponse } from "utils/trustedCircle";
 
+import { ApContractQuerier } from "../../../utils/arbiterPool";
 import ApVotingRules from "../ApVotingRules";
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
@@ -151,14 +151,15 @@ export default function ArbiterPoolDetail(): JSX.Element {
     if (!client) return;
 
     try {
-      const ocContract = new OcContractQuerier(config, client);
-      const proposals = await ocContract.getAllMixedProposals();
+      const apContract = new ApContractQuerier(config, client);
+      const proposals = await apContract.getAllMixedProposals();
       setProposals(proposals);
 
-      const isVotingMember = (await ocContract.getAllVotingMembers()).some(
+      const isVotingMember = (await apContract.getAllVotingMembers()).some(
         (member) => member.addr === address,
       );
       setVotingMember(isVotingMember);
+      console.log(isVotingMember);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
