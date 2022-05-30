@@ -14,15 +14,15 @@ import {
 } from "utils/oversightCommunity";
 import { Cw3Status, isTcProposalResponse } from "utils/trustedCircle";
 
-import ArbiterPoolVotingRules from "../ArbiterPoolVotingRules";
+import ApVotingRules from "../ApVotingRules";
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
 const OcCreateProposalModal = lazy(() => import("App/components/OcCreateProposalModal"));
 const OcProposalDetailModal = lazy(() => import("App/components/OcProposalDetailModal"));
-const ArbiterPoolIdActions = lazy(() => import("App/components/ArbiterPoolIdActions"));
-const ArbiterPoolEscrow = lazy(() => import("App/components/ArbiterPoolEscrow"));
-const ArbiterPoolMembers = lazy(() => import("App/components/ArbiterPoolMembers"));
+const ArbiterPoolIdActions = lazy(() => import("App/components/ApIdActions"));
+const ArbiterPoolEscrow = lazy(() => import("App/components/ApEscrow"));
+const ArbiterPoolMembers = lazy(() => import("App/components/ApMembers"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
@@ -65,9 +65,17 @@ const columns = [
     render: (record: MixedProposalResponse) => getProposalTitle(record.proposal),
   },
   {
+    title: "Description",
+    key: "description",
+    width: "45%",
+    render: (record: MixedProposalResponse) => (
+      <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>
+    ),
+  },
+  {
     title: "Due date",
     key: "expires",
-    width: "10%",
+    width: "15%",
     render: (record: MixedProposalResponse) => {
       const expiryTime =
         Number(typeof record.expires === "string" ? record.expires : record.expires.at_time) / 1000000;
@@ -90,7 +98,7 @@ const columns = [
   {
     title: "Status",
     key: "status",
-    width: "10%",
+    width: "15%",
     render: (record: MixedProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
@@ -120,11 +128,9 @@ const columns = [
     },
   },
   {
-    title: "Description",
-    key: "description",
-    render: (record: MixedProposalResponse) => (
-      <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>
-    ),
+    title: "Results",
+    key: "results",
+    width: "35%",
   },
 ];
 
@@ -188,7 +194,7 @@ export default function ArbiterPoolDetail(): JSX.Element {
               onClick: () => setClickedProposal(record.mixedId),
             })}
           />
-          <ArbiterPoolVotingRules />
+          <ApVotingRules />
         </ProposalsContainer>
         <EscrowEngagementContainer>
           <ArbiterPoolEscrow />
