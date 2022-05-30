@@ -247,6 +247,11 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
           if (mounted) sdkDispatch({ type: "setSigner", payload: signer });
         }
         if (lastConnectedWallet === "web") {
+          if (process.env.REACT_APP_NETWORK === "tgradeMainnet") {
+            setLastConnectedWallet("");
+            return;
+          }
+
           const signer = await loadOrCreateWallet(config);
           if (mounted) sdkDispatch({ type: "setSigner", payload: signer });
         }
@@ -307,6 +312,8 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
   }, [handleError, sdkState.address, sdkState.client, sdkState.config.coinMap]);
 
   useEffect(() => {
+    if (process.env.REACT_APP_NETWORK === "tgradeMainnet") return;
+
     const faucet = new Faucet(sdkState.config);
     sdkDispatch({ type: "setFaucet", payload: faucet });
   }, [sdkState.config]);

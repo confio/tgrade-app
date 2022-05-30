@@ -3,12 +3,20 @@ import pinDarkIcon from "App/assets/icons/pin-dark.svg";
 import pinLightIcon from "App/assets/icons/pin-light.svg";
 import SendTokenModal from "App/components/SendTokenModal";
 import Stack from "App/components/Stack/style";
+import TooltipWrapper from "App/components/TooltipWrapper";
 import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import { tokensMapToArray, useTokens } from "service/tokens";
 import { TokenProps } from "utils/tokens";
 
-import { BalancesContainer, BalancesItem, SearchToken, TokenDetailPin, TokenLogoName } from "./style";
+import {
+  BalancesContainer,
+  BalancesItem,
+  SearchToken,
+  TokenDetailPin,
+  TokenLogoName,
+  TooltipStack,
+} from "./style";
 
 const { Text } = Typography;
 
@@ -48,7 +56,17 @@ export function BalancesList(): JSX.Element {
 
   return (
     <Stack gap="s1">
-      {tokenList.length ? <Text>Available balance:</Text> : <Text>No balance available</Text>}
+      <TooltipWrapper
+        title={
+          <TooltipStack gap="s-2">
+            <Text>Not seeing all your tokens?</Text>
+            <Text>You need to go to T-Market, search for the missing token, and pin it.</Text>
+            <Text>If it has some balance, it will show in your wallet.</Text>
+          </TooltipStack>
+        }
+      >
+        <Text style={{ color: "black" }}>Available</Text>
+      </TooltipWrapper>
       <SearchToken
         placeholder="Search token"
         allowClear

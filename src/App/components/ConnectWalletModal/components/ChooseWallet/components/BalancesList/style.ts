@@ -1,5 +1,18 @@
 import { Input } from "antd";
+import Stack from "App/components/Stack/style";
 import styled from "styled-components";
+
+export const TooltipStack = styled(Stack)`
+  & span.ant-typography {
+    /* Tooltip defaults */
+    color: white;
+    font-size: 14px;
+
+    &:first-child {
+      font-weight: bolder;
+    }
+  }
+`;
 
 export const SearchToken = styled(Input.Search)`
   .ant-input-wrapper {
