@@ -24,6 +24,7 @@ import { getErrorFromStackTrace } from "utils/errors";
 
 import AddressTag from "../AddressTag";
 import VotesTable from "../VotesTable";
+import WarningBanner from "../WarningBanner";
 import {
   AbstainedButton,
   AcceptButton,
@@ -358,6 +359,9 @@ export default function CPoolProposalDetailModal({
                   </AcceptButton>
                 </ButtonGroup>
               </SectionWrapper>
+              {!isVotingMember ? (
+                <WarningBanner warning="Sorry, you need some Engagement Points in order to be eligible to vote (they won't be spent)" />
+              ) : null}
             </>
           ) : null}
         </Stack>
