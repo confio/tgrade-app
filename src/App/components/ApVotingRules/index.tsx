@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { OcContractQuerier } from "utils/oversightCommunity";
+import { ApContractQuerier } from "utils/arbiterPool";
 
 import { VotingRules, VSeparator } from "./style";
 
@@ -23,16 +23,16 @@ export default function ApVotingRules(): JSX.Element {
       if (!client) return;
 
       try {
-        const ocContract = new OcContractQuerier(config, client);
-        const ocResponse = await ocContract.getOc();
-        const quorum = (parseFloat(ocResponse.rules.quorum) * 100).toFixed(2).toString();
-        const threshold = (parseFloat(ocResponse.rules.threshold) * 100).toFixed(2).toString();
-        const allowEndEarly = ocResponse.rules.allow_end_early ? "Yes" : "No";
+        const apContract = new ApContractQuerier(config, client);
+        const apResponse = await apContract.getOc();
+        const quorum = (parseFloat(apResponse.rules.quorum) * 100).toFixed(2).toString();
+        const threshold = (parseFloat(apResponse.rules.threshold) * 100).toFixed(2).toString();
+        const allowEndEarly = apResponse.rules.allow_end_early ? "Yes" : "No";
 
         setQuorum(quorum);
         setQuorum(quorum);
         setThreshold(threshold);
-        setVotingDuration(ocResponse.rules.voting_period.toString());
+        setVotingDuration(apResponse.rules.voting_period.toString());
         setAllowEndEarly(allowEndEarly);
       } catch (error) {
         if (!(error instanceof Error)) return;
