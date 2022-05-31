@@ -159,7 +159,6 @@ export default function ArbiterPoolDetail(): JSX.Element {
         (member) => member.addr === address,
       );
       setVotingMember(isVotingMember);
-      console.log(isVotingMember);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
