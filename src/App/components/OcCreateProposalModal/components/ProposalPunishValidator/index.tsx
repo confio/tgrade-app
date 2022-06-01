@@ -29,27 +29,24 @@ export default function ProposalPunishValidator({
     sdkState: { address, signingClient, config },
   } = useSdk();
 
-  const [validators, setValidators] = useState("");
+  const [validator, setValidator] = useState("");
   const [slashPortion, setSlashPortion] = useState("");
   const [comment, setComment] = useState("");
   const [jailedForever, setJailedForever] = useState("");
   const [jailedUntil, setJailedUntil] = useState("");
-  const [punishment, setPunishment] = useState("");
 
   async function submitPunishValidator({
-    validators,
+    validator,
     comment,
     slashPortion,
     jailedUntil,
     jailedForever,
-    punishment,
   }: FormPunishValidatorValues) {
-    setValidators(validators);
+    setValidator(validator);
     setSlashPortion(slashPortion);
     setComment(comment);
     setJailedUntil(jailedUntil);
     setJailedForever(jailedForever);
-    setPunishment(punishment);
     setProposalStep({ type: ProposalType.PunishValidator, confirmation: true });
   }
   async function submitCreateProposal() {
@@ -67,7 +64,7 @@ export default function ProposalPunishValidator({
 
       const { txHash } = await ocContract.propose(address, comment, {
         punish: {
-          member: validators,
+          member: validator,
           portion: nativePortion,
           jailing_duration: jailTime,
         },
@@ -89,7 +86,7 @@ export default function ProposalPunishValidator({
     <>
       {proposalStep.confirmation ? (
         <ConfirmationPunishValidator
-          validatorToPunish={validators}
+          validatorToPunish={validator}
           slashingPercentage={slashPortion}
           jail={jailedForever}
           jailedUntil={jailedUntil}
@@ -100,12 +97,11 @@ export default function ProposalPunishValidator({
         />
       ) : (
         <FormPunishValidator
-          validators={validators}
+          validator={validator}
           slashPortion={slashPortion}
           comment={comment}
           jailedForever={jailedForever}
           jailedUntil={jailedUntil}
-          punishment={punishment}
           goBack={() => setProposalStep(undefined)}
           handleSubmit={submitPunishValidator}
         />
