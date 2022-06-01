@@ -1,3 +1,4 @@
+import AddressTag from "App/components/AddressTag";
 import { ValidatorUnjail } from "utils/trustedCircle";
 
 import { TextLabel } from "../style";
@@ -12,14 +13,10 @@ export default function ProposalUnjailValidator({
   if (!proposalUnjailValidator) return null;
 
   return (
-    <div
-      style={{ height: "125px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-    >
+    <>
       <TextLabel>
-        Validator To be Unjailed: <b>{proposalUnjailValidator.member}</b>
+        Validator To be Unjailed: <AddressTag address={proposalUnjailValidator.member} />
       </TextLabel>
-
-      <TextLabel>Comment:</TextLabel>
-    </div>
+    </>
   );
 }
