@@ -70,7 +70,7 @@ export interface Engagement {
 export interface ValidatorPunishment {
   readonly member: string;
   readonly portion: string;
-  readonly jailing_duration?: { duration: number } | "forever";
+  readonly jailing_duration?: { readonly duration?: number; readonly forever?: Record<string, never> };
 }
 
 export interface ValidatorUnjail {
