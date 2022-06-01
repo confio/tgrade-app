@@ -1,5 +1,6 @@
 import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
+import AddressTag from "App/components/AddressTag";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import { lazy, useEffect, useState } from "react";
@@ -52,12 +53,10 @@ export default function ConfirmationUnjailValidator({
   return (
     <>
       <ConfirmField>
-        <Text>Validator to be unjailed: </Text>
-        <br />
-        <TextComment>{validatorToUnjail}</TextComment>
+        <Text>Validator to be punished: </Text>
+        <AddressTag address={validatorToUnjail} />
       </ConfirmField>
       <TextComment>{comment}</TextComment>
-
       <Separator />
       <ButtonGroup>
         <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />
