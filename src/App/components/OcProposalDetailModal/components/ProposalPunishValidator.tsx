@@ -1,3 +1,4 @@
+import AddressTag from "App/components/AddressTag";
 import moment from "moment";
 import { ValidatorPunishment } from "utils/trustedCircle";
 
@@ -15,28 +16,36 @@ export default function ProposalPunishValidator({
   proposalPunishValidator,
 }: ProposalPunishValidatorProps): JSX.Element | null {
   if (!proposalPunishValidator) return null;
-  const dateInSeconds = todayDate + (proposalPunishValidator?.jailing_duration as any).duration + dateOffset;
+
+  const dateInSeconds = proposalPunishValidator.jailing_duration?.duration
+    ? todayDate + proposalPunishValidator.jailing_duration.duration + dateOffset
+    : 0;
 
   return (
-    <div
-      style={{ height: "125px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-    >
+    <>
       <TextLabel>
-        Validator To be Punished: <b>{proposalPunishValidator.member}</b>
+        Validator To be Punished: <AddressTag address={proposalPunishValidator.member} />
       </TextLabel>
-      <TextLabel>
-        Validator jailed until:{" "}
-        {proposalPunishValidator.jailing_duration === "forever" ? (
-          <b style={{ color: "red" }}>Forever</b>
-        ) : (
-          <b>{moment.unix(dateInSeconds).local().format("DD/MM/YYYY")}</b>
-        )}
-      </TextLabel>
-      <TextLabel>
-        Slash Validator Percentage of Funds and Engagements points:{" "}
-        <b>{parseFloat(proposalPunishValidator.portion) * 100}%</b>
-      </TextLabel>
-      <TextLabel>Comment:</TextLabel>
-    </div>
+      {proposalPunishValidator.jailing_duration?.forever ? (
+        <TextLabel>
+          <b style={{ color: "var(--color-error-alert)" }}>Validator will be jailed forever</b>
+        </TextLabel>
+      ) : null}
+      {proposalPunishValidator.jailing_duration?.duration &&
+      proposalPunishValidator.jailing_duration.duration !== 0 ? (
+        <TextLabel>
+          Validator will be jailed until:{" "}
+          <b style={{ color: "var(--color-error-alert)" }}>
+            {moment.unix(dateInSeconds).local().format("DD/MM/YYYY")}
+          </b>
+        </TextLabel>
+      ) : null}
+      {proposalPunishValidator.portion && proposalPunishValidator.portion !== "0" ? (
+        <TextLabel>
+          Percentage to slash of funds and Distributed Points:{" "}
+          <b>{parseFloat(proposalPunishValidator.portion) * 100}%</b>
+        </TextLabel>
+      ) : null}
+    </>
   );
 }
