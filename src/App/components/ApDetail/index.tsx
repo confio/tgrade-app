@@ -158,7 +158,7 @@ export default function ArbiterPoolDetail(): JSX.Element {
       const isVotingMember = (await apContract.getAllVotingMembers()).some(
         (member) => member.addr === address,
       );
-      setVotingMember(isVotingMember);
+      setVotingMember(true);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
