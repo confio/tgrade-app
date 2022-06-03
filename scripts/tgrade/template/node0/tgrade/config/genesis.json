@@ -34,7 +34,7 @@
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
           "account_number": "0",
-          "address": "tgrade1a6cyzc5dd376287zzkfl4gksmxu0m9cyqs2e8z",
+          "address": "tgrade1qz0qv0vcc7y3wepsmdtcgyypqurptmdmvhq345",
           "pub_key": null,
           "sequence": "0"
         },
@@ -42,6 +42,13 @@
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
           "account_number": "0",
           "address": "tgrade1qvt8t4jez9rxx24vuf07pa2c09umr2ukvlc5n6",
+          "pub_key": null,
+          "sequence": "0"
+        },
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "account_number": "0",
+          "address": "tgrade1a6cyzc5dd376287zzkfl4gksmxu0m9cyqs2e8z",
           "pub_key": null,
           "sequence": "0"
         },
@@ -103,7 +110,7 @@
           ]
         },
         {
-          "address": "tgrade1a6cyzc5dd376287zzkfl4gksmxu0m9cyqs2e8z",
+          "address": "tgrade1qz0qv0vcc7y3wepsmdtcgyypqurptmdmvhq345",
           "coins": [
             {
               "amount": "1000000000",
@@ -122,6 +129,15 @@
         },
         {
           "address": "tgrade1qvt8t4jez9rxx24vuf07pa2c09umr2ukvlc5n6",
+          "coins": [
+            {
+              "amount": "1000000000",
+              "denom": "utgd"
+            }
+          ]
+        },
+        {
+          "address": "tgrade1a6cyzc5dd376287zzkfl4gksmxu0m9cyqs2e8z",
           "coins": [
             {
               "amount": "1000000000",
@@ -239,8 +255,9 @@
     "params": null,
     "poe": {
       "arbiterPoolMembers": [
-        "tgrade1a6cyzc5dd376287zzkfl4gksmxu0m9cyqs2e8z",
-        "tgrade1qvt8t4jez9rxx24vuf07pa2c09umr2ukvlc5n6"
+        "tgrade1qz0qv0vcc7y3wepsmdtcgyypqurptmdmvhq345",
+        "tgrade1qvt8t4jez9rxx24vuf07pa2c09umr2ukvlc5n6",
+        "tgrade1a6cyzc5dd376287zzkfl4gksmxu0m9cyqs2e8z"
       ],
       "arbiter_pool_contract_config": {
         "deny_list_contract_address": "",
@@ -289,11 +306,15 @@
           "points": "4"
         },
         {
-          "address": "tgrade1a6cyzc5dd376287zzkfl4gksmxu0m9cyqs2e8z",
+          "address": "tgrade1qz0qv0vcc7y3wepsmdtcgyypqurptmdmvhq345",
           "points": "3"
         },
         {
           "address": "tgrade1qvt8t4jez9rxx24vuf07pa2c09umr2ukvlc5n6",
+          "points": "2"
+        },
+        {
+          "address": "tgrade1a6cyzc5dd376287zzkfl4gksmxu0m9cyqs2e8z",
           "points": "2"
         },
         {
