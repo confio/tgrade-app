@@ -13,6 +13,7 @@ import {
 } from "utils/communityPool";
 
 import Stack from "../Stack/style";
+import TooltipWrapper from "../TooltipWrapper";
 import { ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
 const CPoolCreateProposalModal = lazy(() => import("App/components/CPoolCreateProposalModal"));
@@ -149,9 +150,18 @@ export default function CPoolDetail(): JSX.Element {
       <Stack style={{ width: "100%" }}>
         <ProposalsContainer>
           <header>
-            <Title level={2} style={{ fontSize: "var(--s1)" }}>
-              Proposals
-            </Title>
+            {isVotingMember ? (
+              <Title level={2} style={{ fontSize: "var(--s1)" }}>
+                Proposals
+              </Title>
+            ) : (
+              <TooltipWrapper title="You need some Engagement Points in order to create a proposal (they won't be spent)">
+                <Title level={2} style={{ fontSize: "var(--s1)" }}>
+                  Proposals
+                </Title>
+              </TooltipWrapper>
+            )}
+
             {isVotingMember && (
               <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
             )}

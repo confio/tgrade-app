@@ -1,3 +1,4 @@
+import { Coin } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
@@ -5,35 +6,38 @@ import Checkbox from "App/components/Checkbox";
 import { DatePicker } from "App/components/DatePicker";
 import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
+import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { useState } from "react";
-import { getFormItemName } from "utils/forms";
+import { useEffect, useState } from "react";
+import { useSdk } from "service";
+import { nativeCoinToDisplay } from "utils/currency";
+import { getFormItemName, isValidAddress } from "utils/forms";
+import { EngagementContractQuerier } from "utils/poeEngagement";
+import { StakingContractQuerier } from "utils/staking";
 import * as Yup from "yup";
 
-import { ButtonGroup, Separator, StyledRadioGroup } from "./style";
+import { ButtonGroup, Separator } from "./style";
 
-const validatorsLabel = "Addresses of validators you want to punish";
-const commentLabel = "Comments (these comments are visible on the proposal once people vote on it)";
-const slashPortionLabel = "% of stake and engagement points to slash";
-
-export type PunismentKind = "slash" | "jail" | "both";
+const validatorLabel = "Address of the validator you want to punish";
+const commentLabel = "Comment";
+const slashPortionLabel = "% of stake and distributed points to slash";
+const jailForeverLabel = "Jail validator forever";
 
 const validationSchema = Yup.object().shape({
-  [getFormItemName(commentLabel)]: Yup.string().typeError("comment should be text").required(),
-  [getFormItemName(validatorsLabel)]: Yup.string()
-    .typeError("Addresses must be alphanumeric")
-    .required("Participants are required"),
-  [getFormItemName(slashPortionLabel)]: Yup.number().typeError("Comment must be numeric"),
+  [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
+  [getFormItemName(validatorLabel)]: Yup.string()
+    .typeError("Address must be alphanumeric")
+    .required("Validator address is required"),
+  [getFormItemName(slashPortionLabel)]: Yup.number().typeError("Slashed portion must be numeric"),
 });
 
 export interface FormPunishValidatorValues {
-  readonly validators: string;
+  readonly validator: string;
   readonly slashPortion: string;
   readonly comment: string;
   readonly jailedUntil: string;
   readonly jailedForever: string;
-  readonly punishment: string;
 }
 
 interface FormPunishValidatorProps extends FormPunishValidatorValues {
@@ -43,40 +47,63 @@ interface FormPunishValidatorProps extends FormPunishValidatorValues {
 
 export default function FormPunishValidator({
   comment,
-  validators,
+  validator,
   goBack,
   handleSubmit,
 }: FormPunishValidatorProps): JSX.Element {
-  const [punishmentType, setPunishmentType] = useState<PunismentKind>("slash");
+  const {
+    sdkState: { config, client },
+  } = useSdk();
+
   const [isJailedForever, setJailedForever] = useState(false);
   const [jailedUntil, setJailedUntil] = useState("");
   const [slashPortion, setSlashPortion] = useState("0");
+
+  const [validatorAddress, setValidatorAddress] = useState("");
+  const [staked, setStaked] = useState<Coin>();
+  const [distributedPoints, setDistributedPoints] = useState<number>();
+
+  useEffect(() => {
+    (async function () {
+      if (!client || !validatorAddress || !isValidAddress(validatorAddress, config.addressPrefix)) return;
+
+      try {
+        const stakingContract = new StakingContractQuerier(config, client);
+        const nativeStakedCoin = await stakingContract.getStakedTokens(validatorAddress);
+        const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
+        setStaked(prettyStakedCoin);
+
+        const egContract = new EngagementContractQuerier(config, PoEContractType.DISTRIBUTION, client);
+        const distributedPoints = await egContract.getEngagementPoints(validatorAddress);
+        setDistributedPoints(distributedPoints);
+      } catch {
+        setStaked(undefined);
+        setDistributedPoints(undefined);
+      }
+    })();
+  }, [client, config, validatorAddress]);
 
   const handleDateChange = (d: Date): void => {
     if (!d) return;
     const date = new Date(d).toLocaleDateString("en-GB");
     setJailedUntil(date);
   };
-  const validatorsLabel = "Addresses of validators you want to punish";
-  const commentLabel = "Comments (these comments are visible on the proposal once people vote on it)";
-  const slashPortionLabel = "% of stake and engagement points to slash";
-  const jailForeverLabel = "Jail validator forever";
+
   return (
     <Formik
       initialValues={{
-        [getFormItemName(validatorsLabel)]: validators,
+        [getFormItemName(validatorLabel)]: validator,
         [getFormItemName(commentLabel)]: comment,
       }}
       enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) => {
         handleSubmit({
-          validators: values[getFormItemName(validatorsLabel)],
+          validator: values[getFormItemName(validatorLabel)],
           slashPortion: values[getFormItemName(slashPortionLabel)],
           comment: values[getFormItemName(commentLabel)],
           jailedUntil,
           jailedForever: values[getFormItemName(jailForeverLabel)],
-          punishment: punishmentType,
         });
       }}
     >
@@ -84,19 +111,14 @@ export default function FormPunishValidator({
         <>
           <Form>
             <Stack gap="s1">
-              <Field label={validatorsLabel} placeholder="Enter address" />
-
-              <StyledRadioGroup
-                onChange={({ target }) => {
-                  setPunishmentType(target.value);
+              <Field
+                label={validatorLabel}
+                placeholder="Enter address"
+                value={validatorAddress}
+                onInputChange={({ target }) => {
+                  setValidatorAddress(target.value);
                 }}
-                value={punishmentType}
-              >
-                {/*TODO: figure out of these are actually needed as it is the same call
-                <Radio value="slash">Slash</Radio>
-                <Radio value="jail">Jail</Radio>
-                <Radio value="both">Both</Radio> */}
-              </StyledRadioGroup>
+              />
               <div style={{ width: "40%" }}>
                 <Field
                   units="%"
@@ -107,8 +129,12 @@ export default function FormPunishValidator({
                     setSlashPortion(target.value);
                   }}
                 />
-                <p>Staked: </p>
-                <p>Engagement points:</p>
+                {staked ? (
+                  <p>
+                    Staked: {staked.amount} {staked.denom}
+                  </p>
+                ) : null}
+                {distributedPoints ? <p>Distributed points: {distributedPoints}</p> : null}
               </div>
               <Typography>Jailed until:</Typography>
               <div style={{ display: "flex", alignItems: "center" }}>

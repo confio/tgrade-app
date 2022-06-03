@@ -24,6 +24,7 @@ import { getErrorFromStackTrace } from "utils/errors";
 
 import AddressTag from "../AddressTag";
 import VotesTable from "../VotesTable";
+import WarningBanner from "../WarningBanner";
 import {
   AbstainedButton,
   AcceptButton,
@@ -70,9 +71,12 @@ export default function CPoolProposalDetailModal({
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
   const [proposal, setProposal] = useState<ProposalResponse>();
-  const isProposalNotExpired = proposal
-    ? new Date(parseInt(proposal.expires.at_time, 10) / 1000000) > new Date()
-    : false;
+
+  const expiryTime = proposal
+    ? Number(typeof proposal.expires === "string" ? proposal.expires : proposal.expires.at_time) / 1000000
+    : 0;
+  const isProposalNotExpired = expiryTime > Date.now();
+
   const { amount: nativeCoinToSend, to_addr: receiverAddress } = proposal?.proposal.send_proposal ?? {};
   const [isVotingMember, setVotingMember] = useState(false);
   const [coinToSend, setCoinToSend] = useState<Coin>();
@@ -358,6 +362,9 @@ export default function CPoolProposalDetailModal({
                   </AcceptButton>
                 </ButtonGroup>
               </SectionWrapper>
+              {!isVotingMember ? (
+                <WarningBanner warning="Sorry, you need some Engagement Points in order to be eligible to vote (they won't be spent)" />
+              ) : null}
             </>
           ) : null}
         </Stack>
