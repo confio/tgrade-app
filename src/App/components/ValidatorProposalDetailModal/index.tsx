@@ -1,12 +1,9 @@
 import { calculateFee } from "@cosmjs/stargate";
 import { Collapse } from "antd";
-import { ReactComponent as AbstainIcon } from "App/assets/icons/abstain-icon.svg";
 import closeIcon from "App/assets/icons/cross.svg";
-import { ReactComponent as RejectIcon } from "App/assets/icons/no-icon.svg";
 import { ReactComponent as StatusExecutedIcon } from "App/assets/icons/status-executed-icon.svg";
 import { ReactComponent as StatusOpenIcon } from "App/assets/icons/status-open-icon.svg";
 import { ReactComponent as StatusPassedIcon } from "App/assets/icons/status-passed-icon.svg";
-import { ReactComponent as AcceptIcon } from "App/assets/icons/yes-icon.svg";
 import Button from "App/components/Button";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
@@ -22,6 +19,7 @@ import {
   VoteOption,
 } from "utils/validatorVoting";
 
+import ButtonVote from "../ButtonVote";
 import VotesTable from "../VotesTable";
 import ProposalMigrateContract from "./components/ProposalMigrateContract";
 import ProposalPinCodes from "./components/ProposalPinCodes";
@@ -30,14 +28,10 @@ import ProposalUnpinCodes from "./components/ProposalUnpinCodes";
 import ProposalUpdateConsensusBlockParams from "./components/ProposalUpdateConsensusBlockParams";
 import ProposalUpdateConsensusEvidenceParams from "./components/ProposalUpdateConsensusEvidenceParams";
 import {
-  AbstainedButton,
-  AcceptButton,
   ButtonGroup,
-  ExecuteButton,
   FeeWrapper,
   ModalHeader,
   Paragraph,
-  RejectButton,
   SectionWrapper,
   Separator,
   StyledCollapse,
@@ -259,11 +253,14 @@ export default function ValidatorProposalDetailModal({
         <Stack gap="s1">
           <ModalHeader>
             {proposal ? (
-              <Stack gap="s1">
+              <div>
                 <Title>
                   Nº {proposal.id} "{proposal.title}"
                 </Title>
-              </Stack>
+                {proposal?.status === "passed" ? <StatusPassedIcon /> : null}
+                {proposal?.status === "open" ? <StatusOpenIcon /> : null}
+                {proposal?.status === "executed" ? <StatusExecutedIcon /> : null}
+              </div>
             ) : null}
             {!submitting ? <img alt="Close button" src={closeIcon} onClick={() => resetModal()} /> : null}
           </ModalHeader>
@@ -320,44 +317,40 @@ export default function ValidatorProposalDetailModal({
               </SectionWrapper>
               <Separator />
               <SectionWrapper>
-                <SectionWrapper>
-                  {proposal?.status === "passed" ? <StatusPassedIcon /> : null}
-                  {proposal?.status === "open" ? <StatusOpenIcon /> : null}
-                  {proposal?.status === "executed" ? <StatusExecutedIcon /> : null}
-
-                  {address && proposal?.status === "passed" ? (
-                    <ExecuteButton onClick={submitExecuteProposal}>Execute Proposal</ExecuteButton>
-                  ) : null}
-                </SectionWrapper>
+                {address && proposal?.status === "passed" ? (
+                  <Button onClick={submitExecuteProposal} loading={submitting === "executing"}>
+                    Execute Proposal
+                  </Button>
+                ) : null}
                 <ButtonGroup>
                   <FeeWrapper>
                     <p>Transaction fee</p>
                     <p>{`~${txFee} ${feeTokenDenom}`}</p>
                   </FeeWrapper>
-                  <AbstainedButton
-                    disabled={!canUserVote || (submitting && submitting !== "abstain")}
-                    icon={<AbstainIcon />}
+                  <ButtonVote
+                    vote="yes"
+                    disabled={!canUserVote || !!submitting}
+                    loading={submitting === "yes"}
+                    onClick={() => submitVoteProposal("yes")}
+                  >
+                    Yes
+                  </ButtonVote>
+                  <ButtonVote
+                    vote="no"
+                    disabled={!canUserVote || !!submitting}
+                    loading={submitting === "no"}
+                    onClick={() => submitVoteProposal("no")}
+                  >
+                    No
+                  </ButtonVote>
+                  <ButtonVote
+                    vote="abstain"
+                    disabled={!canUserVote || !!submitting}
                     loading={submitting === "abstain"}
                     onClick={() => submitVoteProposal("abstain")}
                   >
                     Abstain
-                  </AbstainedButton>
-                  <RejectButton
-                    icon={<RejectIcon />}
-                    loading={submitting === "no"}
-                    disabled={!canUserVote || (submitting && submitting !== "no")}
-                    onClick={() => submitVoteProposal("no")}
-                  >
-                    No
-                  </RejectButton>
-                  <AcceptButton
-                    loading={submitting === "yes"}
-                    disabled={!canUserVote || (submitting && submitting !== "yes")}
-                    onClick={() => submitVoteProposal("yes")}
-                  >
-                    {<AcceptIcon />}
-                    Yes
-                  </AcceptButton>
+                  </ButtonVote>
                 </ButtonGroup>
               </SectionWrapper>
             </>
