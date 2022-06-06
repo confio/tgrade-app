@@ -19,6 +19,13 @@
 const browserify = require("@cypress/browserify-preprocessor");
 const cucumber = require("cypress-cucumber-preprocessor").default;
 const resolve = require("resolve");
+const fs = require("fs-extra");
+const path = require("path");
+
+function getConfigurationByFile(file) {
+  const pathToConfigFile = path.resolve("..", "config", `${file}.json`);
+  return fs.readJson(pathToConfigFile);
+}
 
 module.exports = (on, config) => {
   const options = {
@@ -34,6 +41,8 @@ module.exports = (on, config) => {
       return null;
     },
   });
-};
+  // accept a configFile value or use development by default
+  const file = config.env.configFile || "stage";
 
-export {};
+  return getConfigurationByFile(file);
+};

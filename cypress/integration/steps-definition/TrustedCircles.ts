@@ -91,7 +91,7 @@ And("I select Whitelist Pair option", () => {
 And("I select Trading Pair from drop down", () => {
   cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "Whitelist Pair");
   cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
-  cy.wait(4000) //Wait to finishing fetch (probably bug)
+  cy.wait(4000); //Wait to finishing fetch (probably bug)
   cy.get(trustedCirclesPage.getProposalOptionDropDown()).click();
   cy.get(trustedCirclesPage.getFirstItemFromDropDown()).click();
 });
