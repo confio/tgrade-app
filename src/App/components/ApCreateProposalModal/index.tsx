@@ -29,22 +29,22 @@ export enum ProposalType {
 }
 
 export const proposalLabels = {
-  [ProposalType.AddOCMembers]: "Add Oversight Community members",
-  [ProposalType.PunishOCMember]: "Punish Oversight Community member",
-  [ProposalType.GrantEngagementPoints]: "Grant Engagement Points",
-  [ProposalType.PunishValidator]: "Punish Validator",
-  [ProposalType.UnjailValidator]: "Unjail Validator",
+  [ProposalType.UnjailValidator]: "Create a new Dispute",
+  [ProposalType.PunishOCMember]: "Add Arbiter Pool member(s) to hear dispute",
+  [ProposalType.GrantEngagementPoints]: "Remove Arbiter Pool members from a dispute",
+  [ProposalType.AddOCMembers]: "Add member(s)",
+  [ProposalType.PunishValidator]: "Remove member(s)",
   [ProposalType.OpenText]: "Open Text Proposal",
 };
 
 export const proposalTitles = {
   newProposal: "New proposal",
-  [ProposalType.AddOCMembers]: "Add Oversight Community members",
-  [ProposalType.PunishOCMember]: "Punish Oversight Community member",
-  [ProposalType.GrantEngagementPoints]: "Grant Engagement Points",
-  [ProposalType.PunishValidator]: "Punish Validator",
-  [ProposalType.UnjailValidator]: "Unjail Validator",
-  [ProposalType.OpenText]: "Open text proposal",
+  [ProposalType.UnjailValidator]: "Create a new Dispute",
+  [ProposalType.PunishOCMember]: "Add Arbiter Pool member(s) to hear dispute",
+  [ProposalType.GrantEngagementPoints]: "Remove Arbiter Pool members from a dispute",
+  [ProposalType.AddOCMembers]: "Add member(s)",
+  [ProposalType.PunishValidator]: "Remove member(s)",
+  [ProposalType.OpenText]: "Open Text Proposal",
   confirmation: "Confirmation",
 };
 
@@ -62,7 +62,7 @@ function getCurrentStepIndex(step?: ProposalStep): number {
   return step?.confirmation ? 2 : step?.type ? 1 : 0;
 }
 
-interface OcCreateProposalModalProps {
+interface ApCreateProposalModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly refreshProposals: () => void;
@@ -72,7 +72,7 @@ export default function OcCreateProposalModal({
   isModalOpen,
   closeModal,
   refreshProposals,
-}: OcCreateProposalModalProps): JSX.Element {
+}: ApCreateProposalModalProps): JSX.Element {
   const [proposalStep, setProposalStep] = useState<ProposalStep>();
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
@@ -123,7 +123,7 @@ export default function OcCreateProposalModal({
           <ModalHeader>
             <Typography>
               <Title>{getTitleFromStep(proposalStep)}</Title>
-              <Text>Oversight Community</Text>
+              <Text>Arbiter Pool</Text>
             </Typography>
             <Steps size="small" current={getCurrentStepIndex(proposalStep)}>
               <Step />

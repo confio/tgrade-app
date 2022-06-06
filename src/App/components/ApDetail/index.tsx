@@ -18,8 +18,8 @@ import ApVotingRules from "../ApVotingRules";
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
-const OcCreateProposalModal = lazy(() => import("App/components/OcCreateProposalModal"));
-const OcProposalDetailModal = lazy(() => import("App/components/OcProposalDetailModal"));
+const OcCreateProposalModal = lazy(() => import("App/components/ApCreateProposalModal"));
+const OcProposalDetailModal = lazy(() => import("App/components/ApProposalDetailModal"));
 const ArbiterPoolIdActions = lazy(() => import("App/components/ApIdActions"));
 const ArbiterPoolEscrow = lazy(() => import("App/components/ApEscrow"));
 const ArbiterPoolMembers = lazy(() => import("App/components/ApMembers"));
