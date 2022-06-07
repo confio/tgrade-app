@@ -33,7 +33,7 @@ export default function ChooseWallet({
   chooseWeb,
 }: ChooseWalletProps): JSX.Element {
   const {
-    sdkState: { signer, address },
+    sdkState: { config, signer, address },
     sdkDispatch,
   } = useSdk();
 
@@ -73,7 +73,7 @@ export default function ChooseWallet({
                 onClick={() => chooseLedger()}
               />
             ) : null}
-            {!isWebSigner(signer) && process.env.REACT_APP_NETWORK !== "tgradeMainnet" ? (
+            {!isWebSigner(signer) && config.faucetUrl ? (
               <WalletButton
                 iconSrc={tgradeIcon}
                 iconAlt="Web logo"
@@ -106,7 +106,7 @@ export default function ChooseWallet({
                 onClick={() => chooseLedger()}
               />
             ) : null}
-            {!isWebSigner(signer) && process.env.REACT_APP_NETWORK !== "tgradeMainnet" ? (
+            {!isWebSigner(signer) && config.faucetUrl ? (
               <WalletButton
                 iconSrc={tgradeIcon}
                 iconAlt="Web wallet logo"
