@@ -67,12 +67,12 @@ const local: NetworkConfig = {
 };
 
 const tgradeInternal: NetworkConfig = {
-  chainId: "tgrade-internal-11",
-  chainName: "Tgrade-internal-11",
+  chainId: "tgrade-internal-12",
+  chainName: "Tgrade-internal-12",
   addressPrefix: "tgrade",
-  rpcUrl: "https://rpc.internal-11.tgrade.confio.run",
-  httpUrl: "https://lcd.internal-11.tgrade.confio.run",
-  faucetUrl: "https://faucet.internal-11.tgrade.confio.run",
+  rpcUrl: "https://rpc.internal-12.tgrade.confio.run",
+  httpUrl: "https://api.internal-12.tgrade.confio.run",
+  faucetUrl: "",
   feeToken: "utgd",
   stakingToken: "utgd",
   faucetTokens: ["utgd"],
@@ -80,7 +80,7 @@ const tgradeInternal: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
-  factoryAddress: "tgrade1y8tagmy897u5z4lx4dv36sy84rhyhqqgwcghxuj7pqjnzlxkgj3sg7desw",
+  factoryAddress: "tgrade1657pee2jhf4jk8pq6yq64e758ngvum45gl866knmjkd83w6jgn3smag42h",
   codeIds: {
     // The first 9 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [2],
