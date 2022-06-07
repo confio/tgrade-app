@@ -106,62 +106,6 @@ jobs:
           command: |
             ./scripts/stop_all.sh
 
-  cy-dev:
-    docker:
-      - image: circleci/node:latest-browsers
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    resource_class: xlarge
-    working_directory: ~/app
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-            - v1-deps-{{ .Branch }}
-            - v1-deps
-      - run: yarn install --frozen-lockfile
-      - save_cache:
-          key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - ~/.cache
-      - run: yarn cy:dev
-      - store_artifacts:
-          name: Uploading cypress/videos artifacts
-          path: cypress/videos
-      - store_artifacts:
-          name: Uploading cypress/screenshots artifacts
-          path: cypress/screenshots
-
-  cy-stage:
-    docker:
-      - image: circleci/node:latest-browsers
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    resource_class: xlarge
-    working_directory: ~/app
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-            - v1-deps-{{ .Branch }}
-            - v1-deps
-      - run: yarn install --frozen-lockfile
-      - save_cache:
-          key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - ~/.cache
-      - run: yarn cy:stage
-      - store_artifacts:
-          name: Uploading cypress/videos artifacts
-          path: cypress/videos
-      - store_artifacts:
-          name: Uploading cypress/screenshots artifacts
-          path: cypress/screenshots
-
   cy-local:
     machine:
       # We can't use a containerized environment since it requires remote docker to start custom containers.
@@ -241,8 +185,6 @@ workflows:
   build_and_test:
     jobs:
       - lint
-      - cy-dev
-      - cy-stage
       - cy-local
       - test:
           # https://circleci.com/docs/2.0/env-vars/
