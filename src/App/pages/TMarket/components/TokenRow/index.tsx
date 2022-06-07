@@ -31,6 +31,7 @@ function TokenRow({
   error,
   tokenFilter,
   onChange,
+  disabledInput,
 }: TokenRowProps): JSX.Element {
   const {
     tokensState: { tokens },
@@ -81,6 +82,7 @@ function TokenRow({
                 bordered={false}
                 size="large"
                 name={id || title}
+                disabled={disabledInput}
               />
             </Col>
           </Row>

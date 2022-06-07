@@ -22,7 +22,7 @@ const FromToken = (): JSX.Element => {
   const { tMarketState, tMarketDispatch } = useTMarket();
   const { client, address } = sdkState;
   const { estimatingFromA } = tMarketState;
-  const { selectedPair } = provideState;
+  const { selectedPair, provideButtonState, isTokenApprovedA } = provideState;
 
   const setToken = (token: TokenProps) => {
     setValues({
@@ -98,6 +98,7 @@ const FromToken = (): JSX.Element => {
       title="Asset"
       onMaxClick={setMax}
       onChange={onChange}
+      disabledInput={!selectedPair || provideButtonState.type !== "provide" || !isTokenApprovedA}
     />
   );
 };
