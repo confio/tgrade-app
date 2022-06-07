@@ -23,6 +23,11 @@ export const StyledInput = styled(InputNumber)`
     border-color: var(--bg-button-1ary);
   }
 
+  &.ant-input-number-disabled {
+    cursor: not-allowed;
+    background: white;
+  }
+
   .ant-input-number-input:focus {
     color: var(--color-text-1ary);
   }

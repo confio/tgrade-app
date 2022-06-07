@@ -46,7 +46,8 @@
       function gtag() {}
     </script>
     <!-- End Dummy function if Google Analytics should not be used -->
-    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet") { %>
+    <% if (process.env.REACT_APP_NETWORK === "tgradeTestnet" || process.env.REACT_APP_NETWORK ===
+    "tgradeMainnet") { %>
     <!-- Start cookieyes banner -->
     <script
       id="cookieyes"
