@@ -63,9 +63,6 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
 
     try {
       const decimalsNumber = parseInt(decimals, 10);
-      const amount = Decimal.fromUserInput(initialSupply, decimalsNumber)
-        .multiply(Uint64.fromNumber(10 ** decimalsNumber))
-        .toString();
       const cap = mintCap
         ? Decimal.fromUserInput(mintCap, decimalsNumber)
             .multiply(Uint64.fromNumber(10 ** decimalsNumber))
@@ -88,7 +85,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
         tokenName,
         tokenSymbol,
         decimalsNumber,
-        [{ address, amount }],
+        [{ address, amount: initialSupply }],
         minter,
         marketing,
         values.dsoAddress,
