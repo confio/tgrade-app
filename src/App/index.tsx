@@ -24,6 +24,7 @@ const Dso = lazy(() => import("./routes/Dso"));
 const Engagement = lazy(() => import("./pages/Engagement"));
 const OcHome = lazy(() => import("./pages/OcHome"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
+const NotFound = lazy(() => import("App/pages/NotFound"));
 
 export default function App(): JSX.Element {
   return (
@@ -44,8 +45,8 @@ export default function App(): JSX.Element {
                       <ThemeProvider>
                         <Router basename={process.env.PUBLIC_URL}>
                           <LayoutProvider>
-                            <Switch>
-                              <Suspense fallback={<LoadingSpinner fullPage />}>
+                            <Suspense fallback={<LoadingSpinner fullPage />}>
+                              <Switch>
                                 <Route exact path={paths.root}>
                                   <Redirect to={`${paths.dso.prefix}`} />
                                 </Route>
@@ -71,8 +72,11 @@ export default function App(): JSX.Element {
                                     <TMarketHome />
                                   </TMarketProvider>
                                 </Route>
-                              </Suspense>
-                            </Switch>
+                                <Route path="*">
+                                  <NotFound />
+                                </Route>
+                              </Switch>
+                            </Suspense>
                           </LayoutProvider>
                         </Router>
                       </ThemeProvider>
