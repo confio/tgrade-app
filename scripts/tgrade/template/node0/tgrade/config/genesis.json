@@ -65,6 +65,13 @@
           "address": "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
           "pub_key": null,
           "sequence": "0"
+        },
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "account_number": "0",
+          "address": "tgrade1207lxnq9zs7spwvgj4mwxxn6jsxun0uw2qacsn",
+          "pub_key": null,
+          "sequence": "0"
         }
       ],
       "params": {
@@ -158,6 +165,15 @@
         },
         {
           "address": "tgrade1mmgt9d3y6mr4ahlkz44pxdz3thctdg2c80whz7",
+          "coins": [
+            {
+              "amount": "1000000000",
+              "denom": "utgd"
+            }
+          ]
+        },
+        {
+          "address": "tgrade1207lxnq9zs7spwvgj4mwxxn6jsxun0uw2qacsn",
           "coins": [
             {
               "amount": "1000000000",
@@ -326,6 +342,10 @@
           },
           {
             "address": "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
+            "points": "1"
+          },
+          {
+            "address": "tgrade1207lxnq9zs7spwvgj4mwxxn6jsxun0uw2qacsn",
             "points": "1"
           }
         ],
