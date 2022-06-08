@@ -69,7 +69,7 @@
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
           "account_number": "0",
-          "address": "tgrade1207lxnq9zs7spwvgj4mwxxn6jsxun0uw2qacsn",
+          "address": "tgrade183ec0e7ery592whvswu44tgcg62v7psvzw6qvc",
           "pub_key": null,
           "sequence": "0"
         }
@@ -173,7 +173,7 @@
           ]
         },
         {
-          "address": "tgrade1207lxnq9zs7spwvgj4mwxxn6jsxun0uw2qacsn",
+          "address": "tgrade183ec0e7ery592whvswu44tgcg62v7psvzw6qvc",
           "coins": [
             {
               "amount": "1000000000",
@@ -345,7 +345,7 @@
             "points": "1"
           },
           {
-            "address": "tgrade1207lxnq9zs7spwvgj4mwxxn6jsxun0uw2qacsn",
+            "address": "tgrade183ec0e7ery592whvswu44tgcg62v7psvzw6qvc",
             "points": "1"
           }
         ],
