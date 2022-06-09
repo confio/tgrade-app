@@ -3,6 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "license": "Apache-2.0",
+  "resolutions": {
+    "**/@cosmjs/tendermint-rpc": "0.28.4",
+    "**/@cosmjs/encoding": "0.28.4",
+    "**/@cosmjs/utils": "0.28.4",
+    "**/@cosmjs/stream": "0.28.4",
+    "**/@cosmjs/math": "0.28.4",
+    "**/@cosmjs/amino": "0.28.4",
+    "**/@cosmjs/proto-signing": "0.28.4"
+  },
   "dependencies": {
     "@ant-design/charts": "^1.2.14",
     "@ant-design/icons": "^4.7.0",
