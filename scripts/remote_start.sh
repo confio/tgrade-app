@@ -34,7 +34,7 @@ scp -r ./scripts/* "$REMOTE:~/scripts"
 # ssh "$REMOTE" "ls -lA ~/scripts"
 
 echo "Install npm dependencies for deployment scripts …"
-ssh -t "$REMOTE" "npm install @cosmjs/stargate @cosmjs/proto-signing @cosmjs/faucet-client @cosmjs/crypto @cosmjs/cosmwasm-stargate"
+ssh -t "$REMOTE" "npm install @cosmjs/stargate@0.28.4 @cosmjs/proto-signing@0.28.4 @cosmjs/faucet-client@0.28.4 @cosmjs/crypto@0.28.4 @cosmjs/cosmwasm-stargate@0.28.4"
 
 echo "Starting/restarting chain and faucet …"
 ssh -t "$REMOTE" "./scripts/stop_all.sh"
