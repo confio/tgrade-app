@@ -7,9 +7,12 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       return require("./e2e/plugins/index.js")(on, config);
     },
+    baseUrl: "http://localhost:3000",
     specPattern: "./e2e/features/*.feature",
     excludeSpecPattern: "**/*.{js,ts}",
     supportFile: false,
-    video: false,
+    video: true,
+    screenshotOnRunFailure: true,
+    watchForFileChanges: false,
   },
 });
