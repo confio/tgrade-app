@@ -177,7 +177,7 @@ export default function Provide(): JSX.Element {
               <EstimatedMessage />
               <SubmitButton
                 disabled={
-                  (!values.assetA ||
+                  ((!values.assetA ||
                     values.assetA === "0" ||
                     !values.assetB ||
                     values.assetB === "0" ||
@@ -185,7 +185,8 @@ export default function Provide(): JSX.Element {
                     !isTokenApprovedB ||
                     !!errors.from ||
                     !!errors.to) &&
-                  selectedPair !== undefined
+                    selectedPair !== undefined) ||
+                  (!selectedPair && provideButtonState.type === "provide")
                 }
                 loading={loading}
                 title={provideButtonState.title}

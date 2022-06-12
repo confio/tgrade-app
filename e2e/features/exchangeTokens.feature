@@ -56,9 +56,9 @@ Feature: Trading pair
     * I click on Provide Liquidity tab
     * I select TGD token FROM drop down
     * I select my created token in TO drop down
+    * I click on Approve SUST button
     * I enter value for TGN token "5"
     * I enter value for my created token "1"
-    * I click on Approve SUST button
     * I click on Provide button
     * I see Complete message
     * I click Ok button

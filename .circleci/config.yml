@@ -106,62 +106,6 @@ jobs:
           command: |
             ./scripts/stop_all.sh
 
-  cy-dev:
-    docker:
-      - image: circleci/node:latest-browsers
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    resource_class: xlarge
-    working_directory: ~/app
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-            - v1-deps-{{ .Branch }}
-            - v1-deps
-      - run: yarn install --frozen-lockfile
-      - save_cache:
-          key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - ~/.cache
-      - run: yarn cy:dev
-      - store_artifacts:
-          name: Uploading e2e/videos artifacts
-          path: e2e/videos
-      - store_artifacts:
-          name: Uploading e2e/screenshots artifacts
-          path: e2e/screenshots
-
-  cy-stage:
-    docker:
-      - image: circleci/node:latest-browsers
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    resource_class: xlarge
-    working_directory: ~/app
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-            - v1-deps-{{ .Branch }}
-            - v1-deps
-      - run: yarn install --frozen-lockfile
-      - save_cache:
-          key: v1-deps-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - ~/.cache
-      - run: yarn cy:stage
-      - store_artifacts:
-          name: Uploading e2e/videos artifacts
-          path: e2e/videos
-      - store_artifacts:
-          name: Uploading e2e/screenshots artifacts
-          path: e2e/screenshots
-
   cy-local:
     machine:
       # We can't use a containerized environment since it requires remote docker to start custom containers.
@@ -210,7 +154,7 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn install --frozen-lockfile
-      - run: yarn e2e install
+      - run: yarn cypress install
       - save_cache:
           name: Save Yarn Package Cache
           key: v1-dependencies-{{ checksum "yarn.lock" }}
@@ -229,9 +173,9 @@ jobs:
       - run:
           command: yarn cy:local
       - store_artifacts:
-          path: e2e/videos
+          path: cypress/videos
       - store_artifacts:
-          path: e2e/screenshots
+          path: cypress/screenshots
       - run:
           name: Stop chains
           command: |
@@ -241,8 +185,6 @@ workflows:
   build_and_test:
     jobs:
       - lint
-      - cy-dev
-      - cy-stage
       - cy-local
       - test:
           # https://circleci.com/docs/2.0/env-vars/

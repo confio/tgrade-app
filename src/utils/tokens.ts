@@ -18,6 +18,7 @@ export interface TokenRowProps {
   setToken: any;
   setPair?: (pair: PairProps) => void;
   onChange?: () => void;
+  disabledInput?: boolean;
 }
 
 export interface SwapFormValues {
