@@ -1,12 +1,17 @@
 import moment from "moment";
 
-import { TrustedCirclesPage } from "../page-object/TrustedCirclesPage";
+import { TrustedCirclesPage } from "../../../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
 const currentTime = moment().unix();
 
-xdescribe("Trusted Circle", () => {
-  beforeEach(() => {
+/**
+ * Volume test
+ * https://confio.slab.com/posts/volume-testing-v4yvdmuz
+ * */
+
+describe("Trusted Circle", () => {
+  before(() => {
     cy.visit("/trustedcircle");
     // connect demo wallet
     cy.findByText("Connect Wallet").click();
@@ -14,10 +19,11 @@ xdescribe("Trusted Circle", () => {
     cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
     // workaround to wait for wallet connection (critical ~4000)
-    cy.wait(5500);
+    cy.wait(6500);
+    cy.findByText("Trusted Circles").click();
   });
 
-  xdescribe("create trusted circle", () => {
+  describe("create trusted circle", () => {
     beforeEach(() => {
       cy.findByText(/Add Trusted Circle/i).click();
       cy.findByText(/Create Trusted Circle/i).click();
@@ -43,34 +49,26 @@ xdescribe("Trusted Circle", () => {
       }).click({ force: true });
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
-    it("show that trusted circle is created", () => {
-      cy.get(trustedCirclesPage.getTCNameFromActiveTab())
-        .should("be.visible")
-        .should("contain.text", "Trusted Circle Test #");
-    });
-  });
 
-  xdescribe("add non-voting participant", () => {
-    it("non-voting is created", () => {
-      //TODO
-    });
-  });
+    // Set number of runs here 'Cypress._.times(100, (k) => {'
+    Cypress._.times(1, (k) => {
+      it(`Show created Trusted Circle and select first TC in pagination ${k + 1} / 100`, () => {
+        cy.get(trustedCirclesPage.getTCNameFromActiveTab())
+          .should("be.visible")
+          .should("contain.text", "Trusted Circle Test #");
 
-  xdescribe("non-voting participant", () => {
-    it("can trade whitelisted token pair", () => {
-      //TODO
-    });
-  });
-
-  xdescribe("remove non-voting participant", () => {
-    it("should remove non-voting participant", () => {
-      //TODO
-    });
-  });
-
-  xdescribe("non-voting participant trades whitelisted token pair ", () => {
-    it("show an unauthorised message and trade fails ", () => {
-      //TODO
+        cy.findByRole("tablist").then(($btn) => {
+          if ($btn.find(trustedCirclesPage.getHiddenPaginationThreeDots()).length > 0) {
+            cy.log("Pagination is not present");
+          } else {
+            cy.get(trustedCirclesPage.getPaginationDropDown()).click();
+            cy.findByRole("listbox").should("contain.text", currentTime);
+            cy.get(trustedCirclesPage.getFirstTCbyOrderNumberInListBox(1)).click();
+          }
+        });
+        // workaround should be removed
+        cy.findByText("Your transaction was approved!").should("not.be.visible");
+      });
     });
   });
 });

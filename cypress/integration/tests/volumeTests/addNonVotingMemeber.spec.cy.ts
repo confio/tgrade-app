@@ -2,7 +2,7 @@ import { Random } from "@cosmjs/crypto";
 import { Bech32 } from "@cosmjs/encoding";
 import moment from "moment";
 
-import { TrustedCirclesPage } from "../../page-object/TrustedCirclesPage";
+import { TrustedCirclesPage } from "../../../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
 const currentTime = moment().unix();

@@ -1,5 +1,5 @@
-import { TMarketPage } from "../../page-object/TMarketPage";
-import { TrustedCirclesPage } from "../../page-object/TrustedCirclesPage";
+import { TMarketPage } from "../../../page-object/TMarketPage";
+import { TrustedCirclesPage } from "../../../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
 const tMarketPage = new TMarketPage();

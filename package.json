@@ -63,7 +63,7 @@
   "devDependencies": {
     "@cypress/browserify-preprocessor": "^3.0.2",
     "@cypress/webpack-preprocessor": "^5.12.0",
-    "@testing-library/cypress": "^8.0.2",
+    "@testing-library/cypress": "^8.0.3",
     "axios": "^0.26.1",
     "cypress": "^10.1.0",
     "cypress-cucumber-preprocessor": "^4.3.1",
@@ -93,8 +93,8 @@
     "compile": "tsc",
     "format": "prettier --write --loglevel warn \"./src/**/*.ts{,x}\" --ignore-path \"./.custom-prettierignore\"",
     "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh && prettier --write --loglevel warn \"./src/codec/**/*.ts\"",
-    "cy:open:local": "e2e open",
-    "cy:local": "yarn start:local & wait-on http://localhost:3000 && e2e run --browser chrome --spec 'e2e/integration/volumeTests/**.ts', 'e2e/integration/exchangeTokens.feature'"
+    "cy:open:local": "cypress open",
+    "cy:local": "yarn start:local & wait-on http://localhost:3000 && e2e run --browser chrome --spec 'cypress/integration/volumeTests/**.ts', 'cypress/integration/exchangeTokens.feature'"
   },
   "browserslist": [
     "last 2 chrome versions",
@@ -102,6 +102,7 @@
     "last 2 safari versions"
   ],
   "cypress-cucumber-preprocessor": {
-    "step_definitions": "e2e/steps-definition/"
+    "nonGlobalStepDefinitions": false,
+    "step_definitions": "./cypress/steps-definition/"
   }
 }

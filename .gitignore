@@ -26,8 +26,8 @@
 .env.production.local
 .eslintcache
 .idea
-e2e/videos
-e2e/screenshots
+cypress/videos
+cypress/screenshots
 
 npm-debug.log*
 yarn-debug.log*
