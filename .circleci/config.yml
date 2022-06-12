@@ -128,11 +128,11 @@ jobs:
             - ~/.cache
       - run: yarn cy:dev
       - store_artifacts:
-          name: Uploading cypress/videos artifacts
-          path: cypress/videos
+          name: Uploading e2e/videos artifacts
+          path: e2e/videos
       - store_artifacts:
-          name: Uploading cypress/screenshots artifacts
-          path: cypress/screenshots
+          name: Uploading e2e/screenshots artifacts
+          path: e2e/screenshots
 
   cy-stage:
     docker:
@@ -156,11 +156,11 @@ jobs:
             - ~/.cache
       - run: yarn cy:stage
       - store_artifacts:
-          name: Uploading cypress/videos artifacts
-          path: cypress/videos
+          name: Uploading e2e/videos artifacts
+          path: e2e/videos
       - store_artifacts:
-          name: Uploading cypress/screenshots artifacts
-          path: cypress/screenshots
+          name: Uploading e2e/screenshots artifacts
+          path: e2e/screenshots
 
   cy-local:
     machine:
@@ -210,7 +210,7 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn install --frozen-lockfile
-      - run: yarn cypress install
+      - run: yarn e2e install
       - save_cache:
           name: Save Yarn Package Cache
           key: v1-dependencies-{{ checksum "yarn.lock" }}
@@ -229,9 +229,9 @@ jobs:
       - run:
           command: yarn cy:local
       - store_artifacts:
-          path: cypress/videos
+          path: e2e/videos
       - store_artifacts:
-          path: cypress/screenshots
+          path: e2e/screenshots
       - run:
           name: Stop chains
           command: |
