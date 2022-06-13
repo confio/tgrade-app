@@ -120,6 +120,9 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
     }
   }
 
+  const stakedTokensWithLimitedDecimal = parseFloat(stakedTokens.amount).toFixed(3);
+  const votingPowerWithLimitedDecimal = votingPower.toFixed(3);
+
   return (
     <Stack>
       <Formik
@@ -137,10 +140,11 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
               <FormStack gap="s1">
                 <CurrentData>
                   <Text>
-                    You have staked <BoldText>{`${stakedTokens.amount} ${stakedTokens.denom}`}</BoldText>
+                    You have staked{" "}
+                    <BoldText>{`${stakedTokensWithLimitedDecimal} ${stakedTokens.denom}`}</BoldText>
                   </Text>
                   <Text>
-                    Your voting power is <BoldText>{votingPower}%</BoldText>
+                    Your voting power is <BoldText>{votingPowerWithLimitedDecimal}%</BoldText>
                   </Text>
                 </CurrentData>
                 <UnstakeFields>

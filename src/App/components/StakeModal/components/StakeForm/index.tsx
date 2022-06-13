@@ -106,6 +106,8 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
     }
   }
 
+  const stakedTokensWithLimitedDecimal = parseFloat(stakedTokens.amount).toFixed(3).toString();
+
   return (
     <Stack>
       <Formik
@@ -123,7 +125,8 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
               <FormStack gap="s1">
                 <CurrentData>
                   <Text>
-                    You have staked <BoldText>{`${stakedTokens.amount} ${stakedTokens.denom}`}</BoldText>
+                    You have staked{" "}
+                    <BoldText>{`${stakedTokensWithLimitedDecimal} ${stakedTokens.denom}`}</BoldText>
                   </Text>
                   <Text>
                     Your voting power is <BoldText>{votingPower.toFixed(3)}%</BoldText>
