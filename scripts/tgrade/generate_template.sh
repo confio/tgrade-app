@@ -15,7 +15,7 @@ NODE_PATH="$SCRIPT_DIR/template/node0/tgrade"
 docker run --rm \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/root \
   "$REPOSITORY:$VERSION" \
-  tgrade testnet --v 1 --output-dir=/root --keyring-backend=test --chain-id=chain-JAynv8
+  tgrade testnet --v 2 --output-dir=/root --keyring-backend=test --chain-id=chain-JAynv8
 
 # add tokens to faucet address
 docker run --rm \
@@ -24,10 +24,32 @@ docker run --rm \
   tgrade add-genesis-account tgrade1syn8janzh5t6rggtmlsuzs5w7qqfxqgld2dagk 1000000000utgd --home=/root/node0/tgrade
 
 # add tokens to old system admin account
+TEST_ACCOUNT_ADDR=tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3
 docker run --rm \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/root \
   "$REPOSITORY:$VERSION" \
-  tgrade add-genesis-account tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3 1000000000utgd --home=/root/node0/tgrade
+  tgrade add-genesis-account $TEST_ACCOUNT_ADDR 1000000000utgd --home=/root/node0/tgrade
+
+# Tweak genesis config
+# set engagement points
+content=$(cat "$NODE_PATH"/config/genesis.json | jq  ".app_state.poe.seed_contracts.engagement |= . + [{\"address\":\"$TEST_ACCOUNT_ADDR\",\"points\":\"1000\"}]")
+# set oversight community
+content=$(echo "$content" | jq  ".app_state.poe.seed_contracts.oversight_community_members |= [\"$TEST_ACCOUNT_ADDR\"]")
+# set arbiter
+content=$(echo "$content" | jq  ".app_state.poe.seed_contracts.arbiter_pool_members |= [\"$TEST_ACCOUNT_ADDR\"]")
+# set min fee
+content=$(echo "$content" | jq  ".app_state.globalfee.params.minimum_gas_prices |= [{\"denom\":\"utgd\",\"amount\":\"0.05\"}]")
+# give high EP to first validator
+FIRST_VAL_ADDR=$(echo "$content"| jq  -r ".app_state.poe.seed_contracts.gen_txs[0].body.messages[0].operator_address")
+content=$(echo "$content" | jq "(.app_state.poe.seed_contracts.engagement[] | select(.address == \"$FIRST_VAL_ADDR\") | .points) = \"1000\"")
+# keep first gentx, delete the others
+content=$(echo "$content" | jq  ".app_state.poe.seed_contracts.gen_txs |= [.[0]]")
+
+mv "$NODE_PATH"/config/genesis.json  "$NODE_PATH"/config/genesis.json_old
+echo "$content" > "$NODE_PATH/config/genesis.json"
+
+# Clear peers
+sed -i. 's/persistent_peers = \".*\"/persistent_peers = \"\"/' "$NODE_PATH/config/config.toml"
 
 
 # The ./template folder is created by the docker daemon's user (root on Linux, current user
