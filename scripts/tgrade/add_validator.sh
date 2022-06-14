@@ -29,6 +29,3 @@ docker run --rm \
       --chain-id=chain-JAynv8 \
       --node=http://host.docker.internal:26657 \
       -y -b block
-
-# print all validators
-tgrade q poe validators -o json
