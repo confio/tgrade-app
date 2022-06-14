@@ -15,7 +15,7 @@
 proxy_app = "tcp://127.0.0.1:26658"
 
 # A custom human readable name for this node
-moniker = "node0"
+moniker = "node1"
 
 # If this node is many blocks behind the tip of the chain, FastSync
 # allows them to catchup quickly by downloading blocks in parallel
@@ -93,7 +93,7 @@ laddr = "tcp://0.0.0.0:26657"
 # A list of origins a cross-domain request can be executed from
 # Default value '[]' disables cors support
 # Use '["*"]' to allow any origin
-cors_allowed_origins = ["*"]
+cors_allowed_origins = []
 
 # A list of methods the client is allowed to use with cross-domain requests
 cors_allowed_methods = ["HEAD", "GET", "POST", ]
@@ -212,7 +212,7 @@ external_address = ""
 seeds = ""
 
 # Comma separated list of nodes to keep persistent connections to
-persistent_peers = ""
+persistent_peers = "16e97c472c32c27e6f98601eab56fadc1212e2a8@192.168.0.2:26656,4d9e2621dc794f631229a0a742498db638637dbe@192.168.0.1:26656"
 
 # UPNP port forwarding
 upnp = false
@@ -356,21 +356,21 @@ version = "v0"
 wal_file = "data/cs.wal/wal"
 
 # How long we wait for a proposal block before prevoting nil
-timeout_propose = "300ms"
+timeout_propose = "3s"
 # How much timeout_propose increases with each round
-timeout_propose_delta = "100ms"
+timeout_propose_delta = "500ms"
 # How long we wait after receiving +2/3 prevotes for “anything” (ie. not a single block or nil)
-timeout_prevote = "300ms"
+timeout_prevote = "1s"
 # How much the timeout_prevote increases with each round
-timeout_prevote_delta = "100ms"
+timeout_prevote_delta = "500ms"
 # How long we wait after receiving +2/3 precommits for “anything” (ie. not a single block or nil)
-timeout_precommit = "300ms"
+timeout_precommit = "1s"
 # How much the timeout_precommit increases with each round
-timeout_precommit_delta = "100ms"
+timeout_precommit_delta = "500ms"
 # How long we wait after committing a block, before starting on the new
 # height (this gives us a chance to receive some more precommits, even
 # though we already have +2/3).
-timeout_commit = "1s"
+timeout_commit = "5s"
 
 # How many blocks to look back to check existence of the node's consensus votes before joining consensus
 # When non-zero, the node will panic upon restart
