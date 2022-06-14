@@ -12,6 +12,8 @@ PUBKEY=$(docker run --rm \
          "$REPOSITORY:$VERSION" \
           tgrade tendermint show-validator --home=/root/node1/tgrade)
 
+DOCKER_HOST_IP=$(docker run --read-only --rm alpine ip route | awk 'NR==1 {print $3}');
+
 docker run --rm \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/root \
   "$REPOSITORY:$VERSION" \
@@ -27,5 +29,5 @@ docker run --rm \
       --home=/root/node1/tgrade \
       --keyring-backend=test \
       --chain-id=chain-JAynv8 \
-      --node=http://host.docker.internal:26657 \
+      --node="http://$DOCKER_HOST_IP:26657" \
       -y -b block
