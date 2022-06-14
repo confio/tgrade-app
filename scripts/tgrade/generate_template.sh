@@ -15,7 +15,7 @@ NODE_PATH="$SCRIPT_DIR/template/node0/tgrade"
 docker run --rm \
   --mount type=bind,source="$SCRIPT_DIR/template",target=/root \
   "$REPOSITORY:$VERSION" \
-  tgrade testnet --v 2 --output-dir=/root --keyring-backend=test --chain-id=chain-JAynv8
+  tgrade testnet --v 2 --output-dir=/root --keyring-backend=test --chain-id=chain-JAynv8 --vesting-validators
 
 # add tokens to faucet address
 docker run --rm \

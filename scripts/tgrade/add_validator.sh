@@ -17,13 +17,13 @@ docker run --rm \
   "$REPOSITORY:$VERSION" \
    tgrade tx poe create-validator \
           --amount=1000utgd \
-          --vesting-amount=0utgd \
+          --vesting-amount=1000utgd \
           --from=node1 \
           --pubkey="$PUBKEY" \
           --chain-id=tgrade-patchnet-1 \
       --moniker="delme" \
       --fees=50000utgd \
-      --gas=210000 \
+      --gas=250000 \
       --home=/root/node1/tgrade \
       --keyring-backend=test \
       --chain-id=chain-JAynv8 \
