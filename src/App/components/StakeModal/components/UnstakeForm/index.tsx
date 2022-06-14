@@ -113,7 +113,7 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
         nativeTokensRemove,
       );
 
-      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${potentialVotingPower}%`);
+      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${potentialVotingPower.toFixed(3)}%`);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
@@ -121,7 +121,6 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
   }
 
   const stakedTokensWithLimitedDecimal = parseFloat(stakedTokens.amount).toFixed(3);
-  const votingPowerWithLimitedDecimal = votingPower.toFixed(3);
 
   return (
     <Stack>
@@ -144,7 +143,7 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
                     <BoldText>{`${stakedTokensWithLimitedDecimal} ${stakedTokens.denom}`}</BoldText>
                   </Text>
                   <Text>
-                    Your voting power is <BoldText>{votingPowerWithLimitedDecimal}%</BoldText>
+                    Your voting power is <BoldText>{votingPower.toFixed(3)}%</BoldText>
                   </Text>
                 </CurrentData>
                 <UnstakeFields>
