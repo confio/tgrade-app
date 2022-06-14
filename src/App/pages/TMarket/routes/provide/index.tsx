@@ -1,13 +1,6 @@
 import { calculateFee } from "@cosmjs/stargate";
 import { Divider } from "antd";
-import {
-  EstimatedMessage,
-  ExitIcon,
-  MenuAMM,
-  MiddleRow,
-  PlusIcon,
-  SubmitButton,
-} from "App/pages/TMarket/components";
+import { EstimatedMessage, MenuAMM, MiddleRow, PlusIcon, SubmitButton } from "App/pages/TMarket/components";
 import { CardCustom } from "App/pages/TMarket/style";
 import { Formik } from "formik";
 import { lazy, useEffect, useState } from "react";
@@ -193,7 +186,6 @@ export default function Provide(): JSX.Element {
               />
             </FormCustom>
             <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
-            <ExitIcon />
           </CardCustom>
         )}
       </Formik>
