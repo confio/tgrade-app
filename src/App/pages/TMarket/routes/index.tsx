@@ -31,7 +31,7 @@ export default function TMarket(): JSX.Element {
           <Withdraw />
         </WithdrawProvider>
       </Route>
-      <Route exact path={paths.tmarket.prefix}>
+      <Route path={paths.tmarket.prefix}>
         <Redirect to={`${paths.tmarket.prefix}${paths.tmarket.exchange.prefix}`} />
       </Route>
     </Switch>
