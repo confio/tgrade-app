@@ -18,8 +18,8 @@ import ApVotingRules from "../ApVotingRules";
 import Stack from "../Stack/style";
 import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
-const OcCreateProposalModal = lazy(() => import("App/components/OcCreateProposalModal"));
-const OcProposalDetailModal = lazy(() => import("App/components/OcProposalDetailModal"));
+const OcCreateProposalModal = lazy(() => import("App/components/ApCreateProposalModal"));
+const OcProposalDetailModal = lazy(() => import("App/components/ApProposalDetailModal"));
 const ArbiterPoolIdActions = lazy(() => import("App/components/ApIdActions"));
 const ArbiterPoolEscrow = lazy(() => import("App/components/ApEscrow"));
 const ArbiterPoolMembers = lazy(() => import("App/components/ApMembers"));
@@ -158,7 +158,7 @@ export default function ArbiterPoolDetail(): JSX.Element {
       const isVotingMember = (await apContract.getAllVotingMembers()).some(
         (member) => member.addr === address,
       );
-      setVotingMember(isVotingMember);
+      setVotingMember(true);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
@@ -186,7 +186,7 @@ export default function ArbiterPoolDetail(): JSX.Element {
           </header>
           <Table
             loading={isTableLoading}
-            pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
+            pagination={{ pageSize: 2, position: ["bottomCenter"], hideOnSinglePage: true }}
             columns={columns}
             dataSource={proposals}
             rowKey={(record: MixedProposalResponse) => record.mixedId}

@@ -1,13 +1,6 @@
 import { calculateFee } from "@cosmjs/stargate";
 import { Divider } from "antd";
-import {
-  ArrowIcon,
-  EstimatedMessage,
-  ExitIcon,
-  MenuAMM,
-  MiddleRow,
-  SubmitButton,
-} from "App/pages/TMarket/components";
+import { ArrowIcon, EstimatedMessage, MenuAMM, MiddleRow, SubmitButton } from "App/pages/TMarket/components";
 import { paths } from "App/paths";
 import { Formik } from "formik";
 import { lazy, useEffect, useState } from "react";
@@ -115,7 +108,6 @@ export default function Withdraw(): JSX.Element {
             />
           </FormCustom>
           <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
-          <ExitIcon />
         </CardCustom>
       </Formik>
       <WithdrawResultModal isModalOpen={path.endsWith(paths.tmarket.withdraw.result)} />

@@ -534,7 +534,7 @@ export class ApContractQuerier {
   }
 }
 
-export class OcContract extends ApContractQuerier {
+export class ApContract extends ApContractQuerier {
   static readonly GAS_CREATE_OC = 500_000;
   static readonly GAS_DEPOSIT_ESCROW = 200_000;
   static readonly GAS_RETURN_ESCROW = 200_000;
@@ -560,7 +560,7 @@ export class OcContract extends ApContractQuerier {
       senderAddress,
       this.apAddress,
       msg,
-      calculateFee(OcContract.GAS_DEPOSIT_ESCROW, this.config.gasPrice),
+      calculateFee(ApContract.GAS_DEPOSIT_ESCROW, this.config.gasPrice),
       undefined,
       funds,
     );
@@ -576,7 +576,7 @@ export class OcContract extends ApContractQuerier {
       memberAddress,
       this.apAddress,
       msg,
-      calculateFee(OcContract.GAS_RETURN_ESCROW, this.config.gasPrice),
+      calculateFee(ApContract.GAS_RETURN_ESCROW, this.config.gasPrice),
     );
     return transactionHash;
   }
@@ -590,7 +590,7 @@ export class OcContract extends ApContractQuerier {
       memberAddress,
       this.apAddress,
       msg,
-      calculateFee(OcContract.GAS_CHECK_PENDING, this.config.gasPrice),
+      calculateFee(ApContract.GAS_CHECK_PENDING, this.config.gasPrice),
     );
     return transactionHash;
   }
@@ -604,7 +604,7 @@ export class OcContract extends ApContractQuerier {
       memberAddress,
       this.apAddress,
       msg,
-      calculateFee(OcContract.GAS_LEAVE_OC, this.config.gasPrice),
+      calculateFee(ApContract.GAS_LEAVE_OC, this.config.gasPrice),
     );
     return transactionHash;
   }
@@ -627,7 +627,7 @@ export class OcContract extends ApContractQuerier {
       senderAddress,
       queryAddress,
       msg,
-      calculateFee(OcContract.GAS_PROPOSE, this.config.gasPrice),
+      calculateFee(ApContract.GAS_PROPOSE, this.config.gasPrice),
     );
 
     const proposalIdAttr = result.logs
@@ -662,7 +662,7 @@ export class OcContract extends ApContractQuerier {
       senderAddress,
       queryAddress,
       msg,
-      calculateFee(OcContract.GAS_VOTE, this.config.gasPrice),
+      calculateFee(ApContract.GAS_VOTE, this.config.gasPrice),
     );
     return transactionHash;
   }
@@ -681,7 +681,7 @@ export class OcContract extends ApContractQuerier {
       senderAddress,
       queryAddress,
       msg,
-      calculateFee(OcContract.GAS_EXECUTE, this.config.gasPrice),
+      calculateFee(ApContract.GAS_EXECUTE, this.config.gasPrice),
     );
     return transactionHash;
   }

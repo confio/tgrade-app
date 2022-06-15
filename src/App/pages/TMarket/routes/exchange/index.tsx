@@ -2,7 +2,6 @@ import { calculateFee } from "@cosmjs/stargate";
 import { Divider } from "antd";
 import {
   EstimatedMessage,
-  ExitIcon,
   MenuAMM,
   MiddleRow,
   SubmitButton,
@@ -129,7 +128,6 @@ export default function Exchange(): JSX.Element {
             />
           </FormCustom>
           <ConnectWalletModal isModalOpen={isModalOpen} closeModal={() => setModalOpen(false)} />
-          <ExitIcon />
         </CardCustom>
       </Formik>
       <ExchangeResultModal isModalOpen={!!detailSwap} />
