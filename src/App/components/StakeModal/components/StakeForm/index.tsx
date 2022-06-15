@@ -106,7 +106,9 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
     }
   }
 
-  const stakedTokensWithLimitedDecimal = parseFloat(stakedTokens.amount).toFixed(3).toString();
+  const fixedStakedTokens = parseFloat(stakedTokens.amount).toFixed(3).toString();
+  const validStakedTokens =
+    parseFloat(fixedStakedTokens) <= parseFloat("0.000") ? "~ 0.001" : fixedStakedTokens;
 
   return (
     <Stack>
@@ -125,8 +127,7 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
               <FormStack gap="s1">
                 <CurrentData>
                   <Text>
-                    You have staked{" "}
-                    <BoldText>{`${stakedTokensWithLimitedDecimal} ${stakedTokens.denom}`}</BoldText>
+                    You have staked <BoldText>{`${validStakedTokens} ${stakedTokens.denom}`}</BoldText>
                   </Text>
                   <Text>
                     Your voting power is <BoldText>{votingPower.toFixed(3)}%</BoldText>

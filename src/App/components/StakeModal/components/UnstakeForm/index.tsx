@@ -115,7 +115,7 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
 
       const fixedPotentialVotingPower = potentialVotingPower.toFixed(3).toString();
       const validPotentialVotingPower =
-        fixedPotentialVotingPower <= "0.000" ? "~ 0.001" : fixedPotentialVotingPower;
+        parseFloat(fixedPotentialVotingPower) <= parseFloat("0.000") ? "~ 0.001" : fixedPotentialVotingPower;
 
       setFieldValue(getFormItemName(potentialVotingPowerLabel), `${validPotentialVotingPower}%`);
     } catch (error) {
@@ -124,7 +124,9 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
     }
   }
 
-  const stakedTokensWithLimitedDecimal = parseFloat(stakedTokens.amount).toFixed(3);
+  const fixedStakedTokens = parseFloat(stakedTokens.amount).toFixed(3);
+  const validStakedTokens =
+    parseFloat(fixedStakedTokens) <= parseFloat("0.000") ? "~ 0.001" : fixedStakedTokens;
 
   return (
     <Stack>
@@ -143,8 +145,7 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
               <FormStack gap="s1">
                 <CurrentData>
                   <Text>
-                    You have staked{" "}
-                    <BoldText>{`${stakedTokensWithLimitedDecimal} ${stakedTokens.denom}`}</BoldText>
+                    You have staked <BoldText>{`${validStakedTokens} ${stakedTokens.denom}`}</BoldText>
                   </Text>
                   <Text>
                     Your voting power is <BoldText>{votingPower.toFixed(3)}%</BoldText>
