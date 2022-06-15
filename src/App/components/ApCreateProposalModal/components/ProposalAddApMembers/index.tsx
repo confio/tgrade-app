@@ -5,8 +5,8 @@ import { ApContract } from "utils/arbiterPool";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import { ProposalStep, ProposalType } from "../..";
-import ConfirmationAddOCMembers from "./components/ConfirmationAddApMembers";
-import FormAddOCMembers, { FormAddOCMembersValues } from "./components/FormAddApMembers";
+import ConfirmationAddApMembers from "./components/ConfirmationAddApMembers";
+import FormAddOCMembers, { FormAddApMembersValues } from "./components/FormAddApMembers";
 
 interface ProposalAddOCMembersProps {
   readonly proposalStep: ProposalStep;
@@ -16,7 +16,7 @@ interface ProposalAddOCMembersProps {
   readonly setTxResult: React.Dispatch<React.SetStateAction<TxResult | undefined>>;
 }
 
-export default function ProposalAddOCMembers({
+export default function ProposalAddApMembers({
   proposalStep,
   setProposalStep,
   isSubmitting,
@@ -31,7 +31,7 @@ export default function ProposalAddOCMembers({
   const [members, setMembers] = useState<readonly string[]>([]);
   const [comment, setComment] = useState("");
 
-  async function submitAddOCMembers({ members, comment }: FormAddOCMembersValues) {
+  async function submitAddApMembers({ members, comment }: FormAddApMembersValues) {
     setMembers(members);
     setComment(comment);
     setProposalStep({ type: ProposalType.AddOCMembers, confirmation: true });
@@ -50,7 +50,7 @@ export default function ProposalAddOCMembers({
       });
 
       setTxResult({
-        msg: `Created proposal for adding members to Oversight Community. Transaction ID: ${txHash}`,
+        msg: `Created proposal for adding members to Arbiter Pool. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -64,7 +64,7 @@ export default function ProposalAddOCMembers({
   return (
     <>
       {proposalStep.confirmation ? (
-        <ConfirmationAddOCMembers
+        <ConfirmationAddApMembers
           members={members}
           comment={comment}
           isSubmitting={isSubmitting}
@@ -76,7 +76,7 @@ export default function ProposalAddOCMembers({
           members={members}
           comment={comment}
           goBack={() => setProposalStep(undefined)}
-          handleSubmit={submitAddOCMembers}
+          handleSubmit={submitAddApMembers}
         />
       )}
     </>

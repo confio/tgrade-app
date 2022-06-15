@@ -22,14 +22,14 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
 });
 
-export interface FormAddOCMembersValues {
+export interface FormAddApMembersValues {
   readonly members: readonly string[];
   readonly comment: string;
 }
 
-interface FormAddOCMembersProps extends FormAddOCMembersValues {
+interface FormAddApMembersProps extends FormAddApMembersValues {
   readonly goBack: () => void;
-  readonly handleSubmit: (values: FormAddOCMembersValues) => void;
+  readonly handleSubmit: (values: FormAddApMembersValues) => void;
 }
 
 export default function FormAddOCMembers({
@@ -37,7 +37,7 @@ export default function FormAddOCMembers({
   comment,
   goBack,
   handleSubmit,
-}: FormAddOCMembersProps): JSX.Element {
+}: FormAddApMembersProps): JSX.Element {
   const {
     sdkState: {
       config: { addressPrefix },

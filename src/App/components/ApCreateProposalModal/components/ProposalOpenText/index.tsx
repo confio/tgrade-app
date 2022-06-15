@@ -44,7 +44,7 @@ export default function ProposalOpenText({
       const { txHash } = await ocContract.propose(address, text, { text: {} });
 
       setTxResult({
-        msg: `Created proposal for Open Text from Oversight Community Proposals. Transaction ID: ${txHash}`,
+        msg: `Created proposal for Open Text from Arbiter Pool Proposals. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

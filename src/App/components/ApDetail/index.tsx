@@ -186,7 +186,7 @@ export default function ArbiterPoolDetail(): JSX.Element {
           </header>
           <Table
             loading={isTableLoading}
-            pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
+            pagination={{ pageSize: 2, position: ["bottomCenter"], hideOnSinglePage: true }}
             columns={columns}
             dataSource={proposals}
             rowKey={(record: MixedProposalResponse) => record.mixedId}

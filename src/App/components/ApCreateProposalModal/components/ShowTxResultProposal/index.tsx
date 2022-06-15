@@ -10,7 +10,6 @@ interface ShowTxResultProposalProps {
 
 export default function ShowTxResultProposal({
   txResult,
-  setTxResult,
   tryAgain,
   resetModal,
 }: ShowTxResultProposalProps): JSX.Element {
@@ -22,7 +21,7 @@ export default function ShowTxResultProposal({
         </Button>
       ) : null}
       <Button onClick={() => resetModal()}>
-        <span>Go to Oversight Community details</span>
+        <span>Go to Arbiter Pool details</span>
       </Button>
     </ShowTxResult>
   );
