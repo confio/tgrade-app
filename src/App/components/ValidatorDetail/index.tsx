@@ -122,6 +122,9 @@ export function ValidatorDetail({
     }
   }
 
+  const fixedVotingPower = validator.power?.toFixed(3).toString();
+  const validVotingPower = fixedVotingPower === "0.000" ? "~ 0.001" : fixedVotingPower;
+
   return (
     <StyledModal
       centered
@@ -219,7 +222,7 @@ export function ValidatorDetail({
               </StyledCard>
               <StyledCard>
                 <Title>Voting power</Title>
-                <p>{validator.power} %</p>
+                <p>{validVotingPower} %</p>
               </StyledCard>
             </div>
             <div style={{ marginTop: "25px", marginBottom: "10px" }}>

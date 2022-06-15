@@ -127,7 +127,14 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Voting Power",
     key: "power",
-    render: (record: ValidatorType) => <p>{record.power || "—"} %</p>,
+    render: (record: ValidatorType) => (
+      <p>
+        {record.power?.toFixed(3).toString() === "0.000"
+          ? "~ 0.001"
+          : record.power?.toFixed(3).toString() || "—"}{" "}
+        %
+      </p>
+    ),
     sorter: (a: ValidatorType, b: ValidatorType) => (a.power ?? 0) - (b.power ?? 0),
   },
   {

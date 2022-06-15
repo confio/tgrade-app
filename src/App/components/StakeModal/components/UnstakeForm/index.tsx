@@ -113,7 +113,11 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
         nativeTokensRemove,
       );
 
-      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${potentialVotingPower.toFixed(3)}%`);
+      const fixedPotentialVotingPower = potentialVotingPower.toFixed(3).toString();
+      const validPotentialVotingPower =
+        fixedPotentialVotingPower <= "0.000" ? "~ 0.001" : fixedPotentialVotingPower;
+
+      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${validPotentialVotingPower}%`);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
