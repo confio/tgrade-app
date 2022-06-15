@@ -4,6 +4,9 @@ command -v shellcheck >/dev/null && shellcheck "$0"
 
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 
+# Deploy second validator
+"$SCRIPT_DIR/add_validator.sh"
+
 # Deploy contracts
 "$SCRIPT_DIR/deploy_contracts.mjs"
 # Query and load validator voting contract's address

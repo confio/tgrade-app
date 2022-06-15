@@ -10,7 +10,7 @@ source "$SCRIPT_DIR"/env
 export FAUCET_CONCURRENCY=2
 export FAUCET_MNEMONIC="now mesh clog card twin rather knee head fancy matrix sponsor pill"
 # address: tgrade1syn8janzh5t6rggtmlsuzs5w7qqfxqgld2dagk
-export FAUCET_GAS_PRICE=0.025utgd
+export FAUCET_GAS_PRICE=0.05utgd
 export FAUCET_ADDRESS_PREFIX=tgrade
 export FAUCET_TOKENS=utgd
 export FAUCET_GAS_LIMIT=100000
