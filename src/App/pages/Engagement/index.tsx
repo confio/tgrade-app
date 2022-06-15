@@ -1,5 +1,6 @@
 import { Typography } from "antd";
 import Button from "App/components/Button";
+import PageLayout from "App/components/PageLayout";
 import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import DelegateContainer from "App/containers/DelegateContainer";
@@ -9,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useSdk } from "service";
 import { EngagementContract, EngagementContractQuerier } from "utils/poeEngagement";
 
-import { EngagementPageLayout, TextStack, TxPageLayout } from "./style";
+import { EngagementPageLayout, TextStack } from "./style";
 
 const { Title, Text } = Typography;
 
@@ -33,13 +34,13 @@ export default function Engagement(): JSX.Element | null {
   }, [client, config, signingClient]);
 
   return txResult ? (
-    <TxPageLayout maxwidth="75rem">
+    <PageLayout maxwidth="75rem">
       <ShowTxResult {...txResult}>
         <Button onClick={() => setTxResult(undefined)}>
           <span>{txResult.error ? "Try again" : "Go to Engagement"}</span>
         </Button>
       </ShowTxResult>
-    </TxPageLayout>
+    </PageLayout>
   ) : (
     <EngagementPageLayout maxwidth="75rem" centered="false">
       <Stack gap="s4" style={{ width: "100%" }}>
