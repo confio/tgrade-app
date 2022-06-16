@@ -115,7 +115,6 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
         undefined,
         nativeTokensRemove,
       );
-      console.log({ potentialVotingPower });
       const fixedPotentialPower = potentialVotingPower.toFixed(3);
       if (fixedPotentialPower === "0.000" && validtokensRemove === "0") {
         return setFieldValue(getFormItemName(potentialVotingPowerLabel), "0%");
@@ -129,6 +128,10 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
       setFieldValue(getFormItemName(potentialVotingPowerLabel), "0%");
     }
   }
+
+  const fixedVotingPower = votingPower.toFixed(3);
+  const isSmallVotingPower = fixedVotingPower === "0.000" && votingPower !== 0;
+  const votingPowerStr = isSmallVotingPower ? "~ 0.001" : fixedVotingPower;
 
   return (
     <Stack>
@@ -147,7 +150,7 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
               <FormStack gap="s1">
                 <CurrentDataStack>
                   <Text>
-                    Your voting power is <BoldText>{votingPower.toFixed(3)}%</BoldText>.
+                    Your voting power is <BoldText>{votingPowerStr}%</BoldText>.
                   </Text>
                   <Text>
                     You have staked{" "}

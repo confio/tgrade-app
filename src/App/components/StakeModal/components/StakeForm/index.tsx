@@ -128,6 +128,10 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
       .positive("Tokens must be a positive numbers"),
   });
 
+  const fixedVotingPower = votingPower.toFixed(3);
+  const isSmallVotingPower = fixedVotingPower === "0.000" && votingPower !== 0;
+  const votingPowerStr = isSmallVotingPower ? "~ 0.001" : fixedVotingPower;
+
   return (
     <Stack>
       <Formik
@@ -145,7 +149,7 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
               <FormStack gap="s1">
                 <CurrentDataStack>
                   <Text>
-                    Your voting power is <BoldText>{votingPower.toFixed(3)}%</BoldText>.
+                    Your voting power is <BoldText>{votingPowerStr}%</BoldText>.
                   </Text>
                   <Text>
                     You have staked{" "}
