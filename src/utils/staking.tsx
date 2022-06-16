@@ -161,7 +161,7 @@ export class StakingContractQuerier {
     const totalPoints = currentTotalPoints + potentialPointsToAdd - potentialPointsToRemove;
     const potentialVotingPower = (potentialPoints / totalPoints) * 100;
 
-    return isNaN(potentialVotingPower) ? 0 : potentialVotingPower;
+    return isNaN(potentialVotingPower) || potentialVotingPower < 0 ? 0 : potentialVotingPower;
   }
 
   async getStakedTokens(address: string): Promise<StakedResponse> {
