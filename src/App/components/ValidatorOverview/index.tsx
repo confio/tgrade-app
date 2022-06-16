@@ -38,6 +38,8 @@ export interface ValidatorType extends OperatorResponse {
   rewards?: number;
   power?: number;
   staked: string;
+  liquidStaked: string;
+  vestedStaked: string;
   status?: string;
   metadata: {
     moniker: string;
@@ -176,8 +178,13 @@ export default function ValidatorOverview(): JSX.Element | null {
     const withdrawableRewards = await egContract.getWithdrawableRewards(operatorResponse.operator);
     const displayWithdrawableRewards = nativeCoinToDisplay(withdrawableRewards, config.coinMap);
     const stakingContract = new StakingContractQuerier(config, client);
-    const nativeStakedCoin = await stakingContract.getStakedTokens(operatorResponse.operator);
+    const nativeStakedCoin = await stakingContract.getStakedTokensSum(operatorResponse.operator);
     const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
+    const nativeStakedTokens = await stakingContract.getStakedTokens(operatorResponse.operator);
+    const stakedTokens = {
+      liquid: nativeCoinToDisplay(nativeStakedTokens.liquid, config.coinMap),
+      vesting: nativeCoinToDisplay(nativeStakedTokens.vesting, config.coinMap),
+    };
     const votingPower = await stakingContract.getVotingPower(operatorResponse.operator);
 
     const validator: ValidatorType = {
@@ -185,6 +192,8 @@ export default function ValidatorOverview(): JSX.Element | null {
       engagementPoints: ep,
       rewards: parseFloat(displayWithdrawableRewards.amount),
       staked: prettyStakedCoin.amount,
+      liquidStaked: stakedTokens.liquid.amount,
+      vestedStaked: stakedTokens.vesting.amount,
       status: "active",
       power: votingPower,
     };
@@ -216,8 +225,13 @@ export default function ValidatorOverview(): JSX.Element | null {
             const withdrawableRewards = await egContract.getWithdrawableRewards(operatorResponse.operator);
             const displayWithdrawableRewards = nativeCoinToDisplay(withdrawableRewards, config.coinMap);
             const stakingContract = new StakingContractQuerier(config, client);
-            const nativeStakedCoin = await stakingContract.getStakedTokens(operatorResponse.operator);
+            const nativeStakedCoin = await stakingContract.getStakedTokensSum(operatorResponse.operator);
             const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
+            const nativeStakedTokens = await stakingContract.getStakedTokens(operatorResponse.operator);
+            const stakedTokens = {
+              liquid: nativeCoinToDisplay(nativeStakedTokens.liquid, config.coinMap),
+              vesting: nativeCoinToDisplay(nativeStakedTokens.vesting, config.coinMap),
+            };
             const votingPower = await stakingContract.getVotingPower(operatorResponse.operator);
 
             const validatorItem: ValidatorType = {
@@ -225,6 +239,8 @@ export default function ValidatorOverview(): JSX.Element | null {
               engagementPoints: ep,
               rewards: parseFloat(displayWithdrawableRewards.amount),
               staked: prettyStakedCoin.amount,
+              liquidStaked: stakedTokens.liquid.amount,
+              vestedStaked: stakedTokens.vesting.amount,
               status: "active",
               power: votingPower,
             };
