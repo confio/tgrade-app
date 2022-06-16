@@ -1,4 +1,3 @@
-import { Coin } from "@cosmjs/stargate";
 import { Typography } from "antd";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
@@ -11,15 +10,15 @@ import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getFormItemName } from "utils/forms";
-import { StakingContract } from "utils/staking";
+import { StakedResponse, StakingContract } from "utils/staking";
 import { getTimeFromSeconds } from "utils/ui";
 import * as Yup from "yup";
 
-import { BoldText, CurrentData, FormStack, UnstakeFields } from "./style";
+import { BoldText, CurrentDataStack, FormStack, UnstakeFields } from "./style";
 
 const { Text } = Typography;
 
-const removeStakeTokensLabel = "Withdraw from staking";
+const removeStakeTokensLabel = "Amount to unstake";
 const potentialVotingPowerLabel = "Potential voting power";
 
 interface UnstakeFormProps {
@@ -32,11 +31,10 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
   const {
     sdkState: { config, address, signingClient },
   } = useSdk();
-  const feeTokenDenom = config.coinMap[config.feeToken].denom;
 
-  const [stakedTokens, setStakedTokens] = useState<Coin>({ denom: feeTokenDenom, amount: "0" });
+  const [stakedTokens, setStakedTokens] = useState<StakedResponse>();
   const [votingPower, setVotingPower] = useState(0);
-  const [tokensRemove, setTokensRemove] = useState("");
+  const [liquidToUnstake, setLiquidToUnstake] = useState("");
   const [unstakeTime, setUnstakeTime] = useState("");
 
   useEffect(() => {
@@ -45,9 +43,12 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
         if (!signingClient || !address) return;
 
         const stakingContract = new StakingContract(config, signingClient);
-        const nativeStakedCoin = await stakingContract.getStakedTokens(address);
-        const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
-        setStakedTokens(prettyStakedCoin);
+        const nativeStakedTokens = await stakingContract.getStakedTokens(address);
+        const stakedTokens = {
+          liquid: nativeCoinToDisplay(nativeStakedTokens.liquid, config.coinMap),
+          vesting: nativeCoinToDisplay(nativeStakedTokens.vesting, config.coinMap),
+        };
+        setStakedTokens(stakedTokens);
 
         const votingPower = await stakingContract.getVotingPower(address);
         setVotingPower(votingPower);
@@ -67,14 +68,15 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
 
     try {
       const stakingContract = new StakingContract(config, signingClient);
-      const nativeAmount = displayAmountToNative(tokensRemove, config.coinMap, config.feeToken);
+      const nativeAmount = displayAmountToNative(liquidToUnstake, config.coinMap, config.feeToken);
       const txHash = await stakingContract.unstake(address, {
         denom: config.feeToken,
         amount: nativeAmount,
       });
 
+      const feeTokenDenom = config.coinMap[config.feeToken]?.denom ?? "TGD";
       setTxResult({
-        msg: `Successfully unstaked ${tokensRemove}. Transaction ID: ${txHash}`,
+        msg: `Successfully unstaked ${liquidToUnstake ?? "0"} ${feeTokenDenom}. Transaction ID: ${txHash}`,
       });
       await reloadValidator();
     } catch (error) {
@@ -88,8 +90,7 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
     [getFormItemName(removeStakeTokensLabel)]: Yup.number()
       .typeError("Tokens must be numeric")
       .required("Tokens are required")
-      .positive("Tokens must be a positive numbers")
-      .max(parseFloat(stakedTokens.amount), "Tokens must be equal or lower than current stake"),
+      .positive("Tokens must be a positive numbers"),
   });
 
   async function updatePotentialVotingPower(
@@ -98,12 +99,14 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
     target: EventTarget & HTMLInputElement,
   ) {
     const tokensRemove = target.value.trim();
-    setTokensRemove(tokensRemove);
+    setLiquidToUnstake(tokensRemove);
 
-    if (!signingClient || !address || !isValid || isNaN(Number(tokensRemove))) return;
+    if (!signingClient || !address || !isValid) return;
+
+    const validtokensRemove = isNaN(Number(tokensRemove)) ? "0" : Number(tokensRemove).toString();
 
     try {
-      const nativeAmountRemove = displayAmountToNative(tokensRemove, config.coinMap, config.feeToken);
+      const nativeAmountRemove = displayAmountToNative(validtokensRemove, config.coinMap, config.feeToken);
       const nativeTokensRemove = { denom: config.feeToken, amount: nativeAmountRemove };
 
       const stakingContract = new StakingContract(config, signingClient);
@@ -112,13 +115,23 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
         undefined,
         nativeTokensRemove,
       );
+      const fixedPotentialPower = potentialVotingPower.toFixed(3);
+      if (fixedPotentialPower === "0.000" && validtokensRemove === "0") {
+        return setFieldValue(getFormItemName(potentialVotingPowerLabel), "0%");
+      }
+      if (fixedPotentialPower === "0.000") {
+        return setFieldValue(getFormItemName(potentialVotingPowerLabel), "~ 0.001%");
+      }
 
-      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${potentialVotingPower}%`);
-    } catch (error) {
-      if (!(error instanceof Error)) return;
-      handleError(error);
+      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${fixedPotentialPower}%`);
+    } catch {
+      setFieldValue(getFormItemName(potentialVotingPowerLabel), "0%");
     }
   }
+
+  const fixedVotingPower = votingPower.toFixed(3);
+  const isSmallVotingPower = fixedVotingPower === "0.000" && votingPower !== 0;
+  const votingPowerStr = isSmallVotingPower ? "~ 0.001" : fixedVotingPower;
 
   return (
     <Stack>
@@ -135,26 +148,38 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
           <>
             <Form>
               <FormStack gap="s1">
-                <CurrentData>
+                <CurrentDataStack>
                   <Text>
-                    You have staked <BoldText>{`${stakedTokens.amount} ${stakedTokens.denom}`}</BoldText>
+                    Your voting power is <BoldText>{votingPowerStr}%</BoldText>.
                   </Text>
                   <Text>
-                    Your voting power is <BoldText>{votingPower}%</BoldText>
+                    You have staked{" "}
+                    <BoldText>
+                      {`${stakedTokens?.liquid.amount ?? 0} ${stakedTokens?.liquid.denom ?? "tokens"}`}
+                    </BoldText>{" "}
+                    as liquid and{" "}
+                    <BoldText>
+                      {`${stakedTokens?.vesting.amount ?? 0} ${stakedTokens?.vesting.denom ?? "tokens"}`}
+                    </BoldText>{" "}
+                    as vested.
                   </Text>
-                </CurrentData>
+                </CurrentDataStack>
                 <UnstakeFields>
                   <Field
                     label={removeStakeTokensLabel}
                     placeholder="0.0"
-                    value={tokensRemove}
+                    value={liquidToUnstake}
                     onInputChange={async ({ target }) =>
                       await updatePotentialVotingPower(isValid, setFieldValue, target)
                     }
                   />
                   <Field label={potentialVotingPowerLabel} placeholder="0%" disabled />
                 </UnstakeFields>
-                {unstakeTime ? <Text>Your withdrawn tokens will be frozen for {unstakeTime}</Text> : null}
+                <Text>
+                  The withdrawal will be made from your liquid staked tokens first. Only when no liquid tokens
+                  are staked will vested tokens be withdrawn.
+                </Text>
+                {unstakeTime ? <Text>Your withdrawn tokens will be frozen for {unstakeTime}.</Text> : null}
                 <Button disabled={!isValid} loading={isSubmitting} onClick={() => submitForm()}>
                   <div>Unstake tokens</div>
                 </Button>
