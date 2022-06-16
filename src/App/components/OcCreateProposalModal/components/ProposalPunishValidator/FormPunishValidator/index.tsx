@@ -69,7 +69,7 @@ export default function FormPunishValidator({
 
       try {
         const stakingContract = new StakingContractQuerier(config, client);
-        const nativeStakedCoin = await stakingContract.getStakedTokens(validatorAddress);
+        const nativeStakedCoin = await stakingContract.getStakedTokensSum(validatorAddress);
         const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
         setStaked(prettyStakedCoin);
 
