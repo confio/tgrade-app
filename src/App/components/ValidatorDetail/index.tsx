@@ -122,6 +122,11 @@ export function ValidatorDetail({
     }
   }
 
+  const votingPowerOrZero = !validator.power || validator.power === 0 ? 0 : validator.power;
+  const fixedVotingPower = votingPowerOrZero.toFixed(3);
+  const isSmallVotingPower = fixedVotingPower === "0.000" && votingPowerOrZero !== 0;
+  const votingPower = isSmallVotingPower ? "~ 0.001" : fixedVotingPower;
+
   return (
     <StyledModal
       centered
@@ -200,9 +205,10 @@ export function ValidatorDetail({
               </StyledCard>
               <StyledCard>
                 <Title>Staked, TGD</Title>
-                <StyledInfoRow>
-                  <b>{validator.staked}</b>
-                </StyledInfoRow>
+                <Stack gap="s-4">
+                  <b>{validator.liquidStaked} as liquid</b>
+                  <b>{validator.vestedStaked} as vested</b>
+                </Stack>
                 {validator.operator === address ? (
                   <ButtonGroup>
                     <Button
@@ -219,7 +225,7 @@ export function ValidatorDetail({
               </StyledCard>
               <StyledCard>
                 <Title>Voting power</Title>
-                <p>{validator.power} %</p>
+                <p>{votingPower} %</p>
               </StyledCard>
             </div>
             <div style={{ marginTop: "25px", marginBottom: "10px" }}>

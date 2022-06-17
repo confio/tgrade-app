@@ -52,6 +52,11 @@ export interface ClaimsResponse {
   readonly claims: readonly Claim[];
 }
 
+export interface TokensToStake {
+  readonly liquid: Coin;
+  readonly vesting?: Coin;
+}
+
 export class StakingContractQuerier {
   stakingAddress?: string;
 
@@ -156,19 +161,32 @@ export class StakingContractQuerier {
     const totalPoints = currentTotalPoints + potentialPointsToAdd - potentialPointsToRemove;
     const potentialVotingPower = (potentialPoints / totalPoints) * 100;
 
-    return isNaN(potentialVotingPower) ? 0 : potentialVotingPower;
+    return isNaN(potentialVotingPower) || potentialVotingPower < 0 ? 0 : potentialVotingPower;
   }
 
-  async getStakedTokens(address: string): Promise<Coin> {
+  async getStakedTokens(address: string): Promise<StakedResponse> {
     await this.initAddress();
     if (!this.stakingAddress) throw new Error("stakingAddress was not set");
 
     const query = { staked: { address } };
     try {
-      const { liquid, vesting }: StakedResponse = await this.client.queryContractSmart(
-        this.stakingAddress,
-        query,
-      );
+      const stakedResponse: StakedResponse = await this.client.queryContractSmart(this.stakingAddress, query);
+
+      return stakedResponse;
+    } catch {
+      return {
+        liquid: { denom: this.config.feeToken, amount: "0" },
+        vesting: { denom: this.config.feeToken, amount: "0" },
+      };
+    }
+  }
+
+  async getStakedTokensSum(address: string): Promise<Coin> {
+    await this.initAddress();
+    if (!this.stakingAddress) throw new Error("stakingAddress was not set");
+
+    try {
+      const { liquid, vesting }: StakedResponse = await this.getStakedTokens(address);
 
       if (liquid.denom !== vesting.denom && liquid.denom !== this.config.feeToken) {
         throw new Error("Cannot add different coins");
@@ -194,17 +212,17 @@ export class StakingContract extends StakingContractQuerier {
     super(config, client);
   }
 
-  async stake(address: string, tokens: Coin): Promise<string> {
+  async stake(address: string, stake: TokensToStake): Promise<string> {
     await this.initAddress();
     if (!this.stakingAddress) throw new Error("stakingAddress was not set");
 
     const { transactionHash } = await this.client.execute(
       address,
       this.stakingAddress,
-      { bond: {} },
+      { bond: { vesting_tokens: stake.vesting } },
       calculateFee(StakingContract.GAS_STAKE, this.config.gasPrice),
       undefined,
-      [tokens],
+      [stake.liquid],
     );
     return transactionHash;
   }

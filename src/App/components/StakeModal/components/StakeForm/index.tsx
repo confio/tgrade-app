@@ -1,4 +1,4 @@
-import { Coin } from "@cosmjs/stargate";
+import { Decimal } from "@cosmjs/math";
 import { Typography } from "antd";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
@@ -11,14 +11,15 @@ import { useError, useSdk } from "service";
 import { displayAmountToNative, nativeCoinToDisplay } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getFormItemName } from "utils/forms";
-import { StakingContract } from "utils/staking";
+import { StakedResponse, StakingContract } from "utils/staking";
 import * as Yup from "yup";
 
-import { BoldText, CurrentData, FormStack, UnstakeFields } from "./style";
+import { BoldText, CurrentDataStack, FormStack, StakeFields } from "./style";
 
 const { Text } = Typography;
 
-const addStakeTokensLabel = "Add to staking";
+const liquidStakeTokensLabel = "Liquid amount to stake";
+const vestingStakeTokensLabel = "Vesting amount to stake";
 const potentialVotingPowerLabel = "Potential voting power";
 
 interface StakeFormProps {
@@ -31,11 +32,12 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
   const {
     sdkState: { config, address, signingClient },
   } = useSdk();
-  const feeTokenDenom = config.coinMap[config.feeToken].denom;
 
-  const [stakedTokens, setStakedTokens] = useState<Coin>({ denom: feeTokenDenom, amount: "0" });
+  const [stakedTokens, setStakedTokens] = useState<StakedResponse>();
   const [votingPower, setVotingPower] = useState(0);
-  const [tokensAdd, setTokensAdd] = useState("");
+  const [liquidToStake, setLiquidToStake] = useState("");
+  const [vestingToStake, setVestingToStake] = useState("");
+  const [potentialVotingPower, setPotentialVotingPower] = useState("0%");
 
   useEffect(() => {
     (async function () {
@@ -43,9 +45,12 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
         if (!signingClient || !address) return;
 
         const stakingContract = new StakingContract(config, signingClient);
-        const nativeStakedCoin = await stakingContract.getStakedTokens(address);
-        const prettyStakedCoin = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
-        setStakedTokens(prettyStakedCoin);
+        const nativeStakedTokens = await stakingContract.getStakedTokens(address);
+        const stakedTokens = {
+          liquid: nativeCoinToDisplay(nativeStakedTokens.liquid, config.coinMap),
+          vesting: nativeCoinToDisplay(nativeStakedTokens.vesting, config.coinMap),
+        };
+        setStakedTokens(stakedTokens);
 
         const votingPower = await stakingContract.getVotingPower(address);
         setVotingPower(votingPower);
@@ -56,16 +61,54 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
     })();
   }, [address, config, handleError, signingClient]);
 
+  useEffect(() => {
+    (async function () {
+      if (!address || !signingClient) return;
+
+      const feeTokenDecimals = config.coinMap[config.feeToken]?.fractionalDigits ?? 0;
+      const validLiquidToStake =
+        !liquidToStake || isNaN(Number(liquidToStake)) ? "0" : Number(liquidToStake).toString();
+      const validVestingToStake =
+        !vestingToStake || isNaN(Number(vestingToStake)) ? "0" : Number(vestingToStake).toString();
+
+      try {
+        const decimalLiquid = Decimal.fromUserInput(validLiquidToStake, feeTokenDecimals);
+        const decimalVesting = Decimal.fromUserInput(validVestingToStake, feeTokenDecimals);
+        const decimalSum = decimalLiquid.plus(decimalVesting).toString();
+        const coinToStake = { denom: config.feeToken, amount: decimalSum };
+
+        const stakingContract = new StakingContract(config, signingClient);
+        const potentialVotingPower = await stakingContract.getPotentialVotingPower(address, coinToStake);
+        const fixedPotentialPower = potentialVotingPower.toFixed(3);
+        if (fixedPotentialPower === "0.000" && validLiquidToStake === "0" && validVestingToStake === "0") {
+          return setPotentialVotingPower("0%");
+        }
+        if (fixedPotentialPower === "0.000") return setPotentialVotingPower("~ 0.001%");
+
+        setPotentialVotingPower(`${fixedPotentialPower}%`);
+      } catch {
+        setPotentialVotingPower("0%");
+      }
+    })();
+  }, [address, config, handleError, liquidToStake, signingClient, vestingToStake]);
+
   async function submitStakeTokens() {
     if (!signingClient || !address) return;
 
     try {
       const stakingContract = new StakingContract(config, signingClient);
-      const nativeAmount = displayAmountToNative(tokensAdd, config.coinMap, config.feeToken);
-      const txHash = await stakingContract.stake(address, { denom: config.feeToken, amount: nativeAmount });
+      const nativeLiquidToStake = displayAmountToNative(liquidToStake, config.coinMap, config.feeToken);
+      const nativeVestingToStake = displayAmountToNative(vestingToStake, config.coinMap, config.feeToken);
+      const txHash = await stakingContract.stake(address, {
+        liquid: { denom: config.feeToken, amount: nativeLiquidToStake },
+        vesting: { denom: config.feeToken, amount: nativeVestingToStake },
+      });
 
+      const feeTokenDenom = config.coinMap[config.feeToken]?.denom ?? "TGD";
       setTxResult({
-        msg: `Successfully staked ${tokensAdd}. Transaction ID: ${txHash}`,
+        msg: `Successfully staked ${liquidToStake ? liquidToStake : "0"} ${feeTokenDenom} as liquid and ${
+          vestingToStake ? vestingToStake : "0"
+        } ${feeTokenDenom} as vesting. Transaction ID: ${txHash}`,
       });
       await reloadValidator();
     } catch (error) {
@@ -76,71 +119,77 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
   }
 
   const validationSchema = Yup.object().shape({
-    [getFormItemName(addStakeTokensLabel)]: Yup.number()
+    [getFormItemName(liquidStakeTokensLabel)]: Yup.number()
       .typeError("Tokens must be numeric")
       .required("Tokens are required")
       .positive("Tokens must be a positive numbers"),
+    [getFormItemName(vestingStakeTokensLabel)]: Yup.number()
+      .typeError("Tokens must be numeric")
+      .positive("Tokens must be a positive numbers"),
   });
 
-  async function updatePotentialVotingPower(
-    isValid: boolean,
-    setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void,
-    target: EventTarget & HTMLInputElement,
-  ) {
-    const tokensAdd = target.value.trim();
-    setTokensAdd(tokensAdd);
-
-    if (!isValid || isNaN(Number(tokensAdd)) || !signingClient || !address) return;
-
-    try {
-      const nativeAmountAdd = displayAmountToNative(tokensAdd, config.coinMap, config.feeToken);
-      const nativeTokensAdd = { denom: config.feeToken, amount: nativeAmountAdd };
-
-      const stakingContract = new StakingContract(config, signingClient);
-      const potentialVotingPower = await stakingContract.getPotentialVotingPower(address, nativeTokensAdd);
-
-      setFieldValue(getFormItemName(potentialVotingPowerLabel), `${potentialVotingPower.toFixed(3)}%`);
-    } catch (error) {
-      if (!(error instanceof Error)) return;
-      handleError(error);
-    }
-  }
+  const fixedVotingPower = votingPower.toFixed(3);
+  const isSmallVotingPower = fixedVotingPower === "0.000" && votingPower !== 0;
+  const votingPowerStr = isSmallVotingPower ? "~ 0.001" : fixedVotingPower;
 
   return (
     <Stack>
       <Formik
         initialValues={{
-          [getFormItemName(addStakeTokensLabel)]: "",
+          [getFormItemName(liquidStakeTokensLabel)]: "",
           [getFormItemName(potentialVotingPowerLabel)]: "",
         }}
         enableReinitialize
         validationSchema={validationSchema}
         onSubmit={() => submitStakeTokens()}
       >
-        {({ submitForm, isValid, setFieldValue, isSubmitting }) => (
+        {({ submitForm, isValid, isSubmitting }) => (
           <>
             <Form>
               <FormStack gap="s1">
-                <CurrentData>
+                <CurrentDataStack>
                   <Text>
-                    You have staked <BoldText>{`${stakedTokens.amount} ${stakedTokens.denom}`}</BoldText>
+                    Your voting power is <BoldText>{votingPowerStr}%</BoldText>.
                   </Text>
                   <Text>
-                    Your voting power is <BoldText>{votingPower.toFixed(3)}%</BoldText>
+                    You have staked{" "}
+                    <BoldText>
+                      {`${stakedTokens?.liquid.amount ?? 0} ${stakedTokens?.liquid.denom ?? "tokens"}`}
+                    </BoldText>{" "}
+                    as liquid and{" "}
+                    <BoldText>
+                      {`${stakedTokens?.vesting.amount ?? 0} ${stakedTokens?.vesting.denom ?? "tokens"}`}
+                    </BoldText>{" "}
+                    as vested.
                   </Text>
-                </CurrentData>
-                <UnstakeFields>
+                </CurrentDataStack>
+                <StakeFields>
+                  <div>
+                    <Field
+                      label={liquidStakeTokensLabel}
+                      placeholder="0.0"
+                      value={liquidToStake}
+                      onInputChange={({ target }) => setLiquidToStake(target.value.trim())}
+                    />
+                    <Field
+                      label={vestingStakeTokensLabel}
+                      placeholder="0.0"
+                      value={vestingToStake}
+                      onInputChange={({ target }) => setVestingToStake(target.value.trim())}
+                    />
+                  </div>
                   <Field
-                    label={addStakeTokensLabel}
-                    placeholder="0.0"
-                    value={tokensAdd}
-                    onInputChange={async ({ target }) =>
-                      await updatePotentialVotingPower(isValid, setFieldValue, target)
-                    }
+                    label={potentialVotingPowerLabel}
+                    value={potentialVotingPower}
+                    placeholder="0%"
+                    disabled
                   />
-                  <Field label={potentialVotingPowerLabel} placeholder="0%" disabled />
-                </UnstakeFields>
-                <Button disabled={!isValid} loading={isSubmitting} onClick={() => submitForm()}>
+                </StakeFields>
+                <Button
+                  disabled={!isValid || !liquidToStake}
+                  loading={isSubmitting}
+                  onClick={() => submitForm()}
+                >
                   <div>Stake tokens</div>
                 </Button>
               </FormStack>

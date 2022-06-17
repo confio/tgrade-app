@@ -68,7 +68,7 @@ export default function ConfirmationPunishValidator({
 
       try {
         const stakingContract = new StakingContractQuerier(config, client);
-        const nativeStakedCoin = await stakingContract.getStakedTokens(validatorToPunish);
+        const nativeStakedCoin = await stakingContract.getStakedTokensSum(validatorToPunish);
         const staked = nativeCoinToDisplay(nativeStakedCoin, config.coinMap);
         const slashingPercentageNumber = parseFloat(slashingPercentage) / 100;
         const stakedAmountToSlash = Number(staked.amount) * slashingPercentageNumber;

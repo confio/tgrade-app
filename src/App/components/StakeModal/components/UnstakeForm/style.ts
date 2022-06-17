@@ -10,10 +10,7 @@ export const FormStack = styled(Stack)`
   }
 `;
 
-export const CurrentData = styled.div`
-  display: flex;
-  justify-content: space-between;
-
+export const CurrentDataStack = styled(Stack)`
   & span.ant-typography {
     color: black;
   }
@@ -32,6 +29,14 @@ export const UnstakeFields = styled.div`
   display: flex;
   justify-content: space-between;
   gap: var(--s2);
+
+  & .ant-form-item {
+    flex-basis: 60%;
+  }
+
+  & .ant-form-item:nth-of-type(2) {
+    flex-basis: 40%;
+  }
 
   & .ant-form-item:nth-of-type(2) .ant-form-item-control-input-content div {
     justify-content: flex-end;
