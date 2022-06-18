@@ -1,7 +1,7 @@
 import { TxResult } from "App/components/ShowTxResult";
 import { useState } from "react";
 import { useError, useSdk } from "service";
-import { CommunityPoolContract } from "utils/communityPool";
+import { ArbiterPoolContract } from "utils/arbiterPool";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import { ProposalStep, ProposalType } from "../..";
@@ -40,11 +40,11 @@ export default function ProposalOpenText({
     setSubmitting(true);
 
     try {
-      const cPoolContract = new CommunityPoolContract(config, signingClient);
+      const cPoolContract = new ArbiterPoolContract(config, signingClient);
       const { txHash } = await cPoolContract.propose(address, text, { text: {} });
 
       setTxResult({
-        msg: `Created proposal for Open Text from Oversight Community Proposals. Transaction ID: ${txHash}`,
+        msg: `Created proposal for Open Text from Arbiter Proposals. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;

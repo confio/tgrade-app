@@ -5,19 +5,14 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import {
-  CommunityPoolContractQuerier,
-  Cw3Status,
-  getProposalTitle,
-  ProposalResponse,
-} from "utils/communityPool";
+import { ArbiterPoolContractQuerier, Cw3Status, getProposalTitle, ProposalResponse } from "utils/arbiterPool";
 
 import Stack from "../Stack/style";
 import TooltipWrapper from "../TooltipWrapper";
 import { ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
-const CPoolCreateProposalModal = lazy(() => import("App/components/CPoolCreateProposalModal"));
-const CPoolProposalDetailModal = lazy(() => import("App/components/CPoolProposalDetailModal"));
+const APoolCreateProposalModal = lazy(() => import("App/components/APoolCreateProposalModal"));
+const APoolProposalDetailModal = lazy(() => import("App/components/APoolProposalDetailModal"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
@@ -127,7 +122,7 @@ export default function CPoolDetail(): JSX.Element {
     if (!client) return;
 
     try {
-      const cPoolContract = new CommunityPoolContractQuerier(config, client);
+      const cPoolContract = new ArbiterPoolContractQuerier(config, client);
       const cPoolProposals = await cPoolContract.getAllProposals();
       setProposals(cPoolProposals);
 
@@ -176,12 +171,12 @@ export default function CPoolDetail(): JSX.Element {
           />
         </ProposalsContainer>
       </Stack>
-      <CPoolCreateProposalModal
+      <APoolCreateProposalModal
         isModalOpen={isCreateProposalModalOpen}
         closeModal={() => setCreateProposalModalOpen(false)}
         refreshProposals={refreshProposals}
       />
-      <CPoolProposalDetailModal
+      <APoolProposalDetailModal
         isModalOpen={!!clickedProposal}
         closeModal={() => setClickedProposal(undefined)}
         proposalId={clickedProposal}

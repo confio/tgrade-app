@@ -45,17 +45,17 @@ function getCurrentStepIndex(step?: ProposalStep): number {
   return step?.confirmation ? 2 : step?.type ? 1 : 0;
 }
 
-interface CPoolCreateProposalModalProps {
+interface APoolCreateProposalModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly refreshProposals: () => void;
 }
 
-export default function CPoolCreateProposalModal({
+export default function APoolCreateProposalModal({
   isModalOpen,
   closeModal,
   refreshProposals,
-}: CPoolCreateProposalModalProps): JSX.Element {
+}: APoolCreateProposalModalProps): JSX.Element {
   const [proposalStep, setProposalStep] = useState<ProposalStep>();
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
