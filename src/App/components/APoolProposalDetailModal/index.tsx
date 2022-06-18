@@ -10,21 +10,19 @@ import Stack from "App/components/Stack/style";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import {
-  CommunityPoolContract,
-  CommunityPoolContractQuerier,
+  ArbiterPoolContract,
+  ArbiterPoolContractQuerier,
   ProposalResponse,
   VoteInfo,
   VoteOption,
-} from "utils/communityPool";
-import { getDisplayAmountFromFee, nativeCoinToDisplay } from "utils/currency";
+} from "utils/arbiterPool";
+import { getDisplayAmountFromFee } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
 
-import AddressTag from "../AddressTag";
 import ButtonVote from "../ButtonVote";
 import VotesTable from "../VotesTable";
 import WarningBanner from "../WarningBanner";
 import {
-  AddressField,
   ButtonGroup,
   FeeWrapper,
   ModalHeader,
@@ -34,24 +32,22 @@ import {
   StyledCollapse,
   StyledModal,
   Text,
-  TextLabel,
-  TextValue,
   Title,
 } from "./style";
 
-interface CPoolProposalDetailModalProps {
+interface APoolProposalDetailModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly proposalId: number | undefined;
   readonly refreshProposals: () => void;
 }
 
-export default function CPoolProposalDetailModal({
+export default function APoolProposalDetailModal({
   isModalOpen,
   closeModal,
   proposalId,
   refreshProposals,
-}: CPoolProposalDetailModalProps): JSX.Element {
+}: APoolProposalDetailModalProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, client, address, signingClient },
@@ -71,7 +67,6 @@ export default function CPoolProposalDetailModal({
     : 0;
   const isProposalNotExpired = expiryTime > Date.now();
 
-  const { amount: nativeCoinToSend, to_addr: receiverAddress } = proposal?.proposal.send_proposal ?? {};
   const [isVotingMember, setVotingMember] = useState(false);
   const [coinToSend, setCoinToSend] = useState<Coin>();
 
@@ -82,7 +77,7 @@ export default function CPoolProposalDetailModal({
       if (!client || !proposalId) return;
 
       try {
-        const tcContract = new CommunityPoolContractQuerier(config, client);
+        const tcContract = new ArbiterPoolContractQuerier(config, client);
         setTableLoading(true);
         const votes = await tcContract.getAllVotes(proposalId);
         setVotes(votes);
@@ -99,7 +94,7 @@ export default function CPoolProposalDetailModal({
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(CommunityPoolContract.GAS_PROPOSE, config.gasPrice);
+      const fee = calculateFee(ArbiterPoolContract.GAS_PROPOSE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
@@ -113,7 +108,7 @@ export default function CPoolProposalDetailModal({
       if (!client || !proposalId) return;
 
       try {
-        const cPoolContract = new CommunityPoolContractQuerier(config, client);
+        const cPoolContract = new ArbiterPoolContractQuerier(config, client);
         const proposal = await cPoolContract.getProposal(proposalId);
         setProposal(proposal);
       } catch (error) {
@@ -128,7 +123,7 @@ export default function CPoolProposalDetailModal({
       if (!address || !client || !proposalId) return;
 
       try {
-        const cPoolContract = new CommunityPoolContractQuerier(config, client);
+        const cPoolContract = new ArbiterPoolContractQuerier(config, client);
         const voter = await cPoolContract.getVote(proposalId, address);
         setHasVoted(voter.vote?.voter === address);
       } catch (error) {
@@ -139,25 +134,11 @@ export default function CPoolProposalDetailModal({
   }, [address, client, config, handleError, proposalId]);
 
   useEffect(() => {
-    (async function formatCoin() {
-      if (!nativeCoinToSend) return;
-
-      try {
-        const coinToSend = nativeCoinToDisplay(nativeCoinToSend, config.coinMap);
-        setCoinToSend(coinToSend);
-      } catch (error) {
-        if (!(error instanceof Error)) return;
-        handleError(error);
-      }
-    })();
-  }, [config.coinMap, handleError, nativeCoinToSend]);
-
-  useEffect(() => {
     (async function queryMembership() {
       if (!client || !address) return;
 
       try {
-        const cPoolContract = new CommunityPoolContractQuerier(config, client);
+        const cPoolContract = new ArbiterPoolContractQuerier(config, client);
         const isVotingMember = (await cPoolContract.getVoters()).some((voter) => voter.addr === address);
         setVotingMember(isVotingMember);
       } catch (error) {
@@ -178,7 +159,7 @@ export default function CPoolProposalDetailModal({
     setSubmitting(chosenVote);
 
     try {
-      const cPoolContract = new CommunityPoolContract(config, signingClient);
+      const cPoolContract = new ArbiterPoolContract(config, signingClient);
       const transactionHash = await cPoolContract.voteProposal(address, proposalId, chosenVote);
 
       setTxResult({
@@ -202,7 +183,7 @@ export default function CPoolProposalDetailModal({
     setSubmitting("executing");
 
     try {
-      const cPoolContract = new CommunityPoolContract(config, signingClient);
+      const cPoolContract = new ArbiterPoolContract(config, signingClient);
       const transactionHash = await cPoolContract.executeProposal(address, proposalId);
 
       setTxResult({
@@ -274,17 +255,6 @@ export default function CPoolProposalDetailModal({
           <Separator />
           {proposal ? (
             <>
-              <Stack gap="s1">
-                {coinToSend && receiverAddress ? (
-                  <AddressField>
-                    <TextLabel>
-                      Send {coinToSend.amount} {coinToSend.denom} to:
-                    </TextLabel>
-                    <AddressTag address={receiverAddress} />
-                  </AddressField>
-                ) : null}
-                <TextValue>{proposal.description}</TextValue>
-              </Stack>
               <Separator />
               <SectionWrapper>
                 <StyledCollapse ghost>

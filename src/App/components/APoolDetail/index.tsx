@@ -5,12 +5,7 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import {
-  CommunityPoolContractQuerier,
-  Cw3Status,
-  getProposalTitle,
-  ProposalResponse,
-} from "utils/arbiterPool";
+import { ArbiterPoolContractQuerier, Cw3Status, getProposalTitle, ProposalResponse } from "utils/arbiterPool";
 
 import Stack from "../Stack/style";
 import TooltipWrapper from "../TooltipWrapper";
@@ -110,7 +105,7 @@ const columns = [
   },
 ];
 
-export default function CPoolDetail(): JSX.Element {
+export default function APoolDetail(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, client, address },
@@ -127,7 +122,7 @@ export default function CPoolDetail(): JSX.Element {
     if (!client) return;
 
     try {
-      const cPoolContract = new CommunityPoolContractQuerier(config, client);
+      const cPoolContract = new ArbiterPoolContractQuerier(config, client);
       const cPoolProposals = await cPoolContract.getAllProposals();
       setProposals(cPoolProposals);
 

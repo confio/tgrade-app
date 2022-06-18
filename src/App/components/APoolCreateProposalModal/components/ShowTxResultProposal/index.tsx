@@ -22,7 +22,7 @@ export default function ShowTxResultProposal({
         </Button>
       ) : null}
       <Button onClick={() => resetModal()}>
-        <span>Go to Oversight Community details</span>
+        <span>Go to Arbiter Pool details</span>
       </Button>
     </ShowTxResult>
   );

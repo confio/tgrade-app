@@ -4,8 +4,8 @@ import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import { lazy, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
+import { ArbiterPoolContract } from "utils/arbiterPool";
 import { getDisplayAmountFromFee } from "utils/currency";
-import { OcContract } from "utils/oversightCommunity";
 
 import { ButtonGroup, FeeGroup, ProposalText, Separator } from "./style";
 
@@ -38,7 +38,7 @@ export default function ConfirmationOpenText({
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(OcContract.GAS_PROPOSE, config.gasPrice);
+      const fee = calculateFee(ArbiterPoolContract.GAS_PROPOSE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {

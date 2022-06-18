@@ -1,5 +1,5 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { calculateFee, Coin, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { calculateFee, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
@@ -27,13 +27,7 @@ export interface VoterListResponse {
 
 export type VoteOption = "yes" | "no" | "abstain";
 
-export interface SendProposal {
-  readonly to_addr: string;
-  readonly amount: Coin;
-}
-
-export interface CpoolProposal {
-  readonly send_proposal?: SendProposal;
+export interface ApoolProposal {
   readonly text?: Record<string, never>;
 }
 
@@ -58,7 +52,7 @@ export interface ProposalResponse {
   readonly id: number;
   readonly title: string;
   readonly description: string;
-  readonly proposal: CpoolProposal;
+  readonly proposal: ApoolProposal;
   readonly status: "pending" | "open" | "rejected" | "passed" | "executed";
   readonly expires: Expiration;
   /// This is the threshold that is applied to this proposal. Both the rules of the voting contract,
@@ -74,7 +68,7 @@ export interface ProposalListResponse {
   readonly proposals: readonly ProposalResponse[];
 }
 
-export interface CPoolProposeResponse {
+export interface APoolProposeResponse {
   readonly txHash: string;
   readonly proposalId?: number;
 }
@@ -94,7 +88,7 @@ export interface VoteListResponse {
   readonly votes: readonly VoteInfo[];
 }
 
-export function getProposalTitle(proposal: CpoolProposal): string {
+export function getProposalTitle(proposal: ApoolProposal): string {
   const proposalProp = Object.keys(proposal)[0];
 
   switch (proposalProp) {
@@ -107,40 +101,27 @@ export function getProposalTitle(proposal: CpoolProposal): string {
   }
 }
 
-export class CommunityPoolContractQuerier {
-  communityPoolAddress?: string;
+export class ArbiterPoolContractQuerier {
+  arbiterPoolAddress?: string;
 
   constructor(readonly config: NetworkConfig, protected readonly client: CosmWasmClient) {}
-  protected async initAddress(): Promise<void> {
-    if (this.communityPoolAddress) return;
-
-    const tendermintClient = await Tendermint34Client.connect(this.config.rpcUrl);
-    const queryClient = new QueryClient(tendermintClient);
-    const rpcClient = createProtobufRpcClient(queryClient);
-    const queryService = new QueryClientImpl(rpcClient);
-
-    const { address } = await queryService.ContractAddress({
-      contractType: PoEContractType.COMMUNITY_POOL,
-    });
-    this.communityPoolAddress = address;
-  }
 
   async getRules(): Promise<VotingRules> {
     await this.initAddress();
-    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
 
     const query = { rules: {} };
-    const rules: VotingRules = await this.client.queryContractSmart(this.communityPoolAddress, query);
+    const rules: VotingRules = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
     return rules;
   }
 
   async getProposals(startAfter?: number): Promise<readonly ProposalResponse[]> {
     await this.initAddress();
-    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
 
     const query = { list_proposals: { start_after: startAfter } };
     const { proposals }: ProposalListResponse = await this.client.queryContractSmart(
-      this.communityPoolAddress,
+      this.arbiterPoolAddress,
       query,
     );
     return proposals;
@@ -161,11 +142,11 @@ export class CommunityPoolContractQuerier {
 
   async getProposal(proposalId: number): Promise<ProposalResponse> {
     await this.initAddress();
-    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
     const query = { proposal: { proposal_id: proposalId } };
     const proposalResponse: ProposalResponse = await this.client.queryContractSmart(
-      this.communityPoolAddress,
+      this.arbiterPoolAddress,
       query,
     );
     return proposalResponse;
@@ -173,7 +154,7 @@ export class CommunityPoolContractQuerier {
 
   async getVotes(proposalId: number, startAfter?: string): Promise<readonly VoteInfo[]> {
     await this.initAddress();
-    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
 
     const query = {
       list_votes: {
@@ -181,10 +162,7 @@ export class CommunityPoolContractQuerier {
         start_after: startAfter,
       },
     };
-    const { votes }: VoteListResponse = await this.client.queryContractSmart(
-      this.communityPoolAddress,
-      query,
-    );
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
     return votes;
   }
 
@@ -203,20 +181,20 @@ export class CommunityPoolContractQuerier {
 
   async getVote(proposalId: number, voter: string): Promise<VoteResponse> {
     await this.initAddress();
-    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
 
     const query = { vote: { proposal_id: proposalId, voter } };
-    const voteResponse: VoteResponse = await this.client.queryContractSmart(this.communityPoolAddress, query);
+    const voteResponse: VoteResponse = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
     return voteResponse;
   }
 
   async getVoters(startAfter?: string): Promise<readonly VoterDetail[]> {
     await this.initAddress();
-    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
     const query = { list_voters: { start_after: startAfter } };
     const { voters }: VoterListResponse = await this.client.queryContractSmart(
-      this.communityPoolAddress,
+      this.arbiterPoolAddress,
       query,
     );
     return voters;
@@ -234,9 +212,23 @@ export class CommunityPoolContractQuerier {
 
     return voters;
   }
+
+  protected async initAddress(): Promise<void> {
+    if (this.arbiterPoolAddress) return;
+
+    const tendermintClient = await Tendermint34Client.connect(this.config.rpcUrl);
+    const queryClient = new QueryClient(tendermintClient);
+    const rpcClient = createProtobufRpcClient(queryClient);
+    const queryService = new QueryClientImpl(rpcClient);
+
+    const { address } = await queryService.ContractAddress({
+      contractType: PoEContractType.ARBITER_POOL_VOTING,
+    });
+    this.arbiterPoolAddress = address;
+  }
 }
 
-export class CommunityPoolContract extends CommunityPoolContractQuerier {
+export class ArbiterPoolContract extends ArbiterPoolContractQuerier {
   static readonly GAS_PROPOSE = 200_000;
   static readonly GAS_VOTE = 200_000;
   static readonly GAS_EXECUTE = 500_000;
@@ -252,19 +244,19 @@ export class CommunityPoolContract extends CommunityPoolContractQuerier {
   async propose(
     senderAddress: string,
     description: string,
-    proposal: CpoolProposal,
-  ): Promise<CPoolProposeResponse> {
+    proposal: ApoolProposal,
+  ): Promise<APoolProposeResponse> {
     await this.initAddress();
-    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
 
     const title = getProposalTitle(proposal);
     const msg = { propose: { title, description, proposal } };
 
     const result = await this.#signingClient.execute(
       senderAddress,
-      this.communityPoolAddress,
+      this.arbiterPoolAddress,
       msg,
-      calculateFee(CommunityPoolContract.GAS_PROPOSE, this.config.gasPrice),
+      calculateFee(ArbiterPoolContract.GAS_PROPOSE, this.config.gasPrice),
     );
 
     const proposalIdAttr = result.logs
@@ -279,28 +271,28 @@ export class CommunityPoolContract extends CommunityPoolContractQuerier {
 
   async voteProposal(senderAddress: string, proposalId: number, vote: VoteOption): Promise<string> {
     await this.initAddress();
-    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
     const msg = { vote: { proposal_id: proposalId, vote } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      this.communityPoolAddress,
+      this.arbiterPoolAddress,
       msg,
-      calculateFee(CommunityPoolContract.GAS_VOTE, this.config.gasPrice),
+      calculateFee(ArbiterPoolContract.GAS_VOTE, this.config.gasPrice),
     );
     return transactionHash;
   }
 
   async executeProposal(senderAddress: string, proposalId: number): Promise<string> {
     await this.initAddress();
-    if (!this.communityPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
     const msg = { execute: { proposal_id: proposalId } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      this.communityPoolAddress,
+      this.arbiterPoolAddress,
       msg,
-      calculateFee(CommunityPoolContract.GAS_EXECUTE, this.config.gasPrice),
+      calculateFee(ArbiterPoolContract.GAS_EXECUTE, this.config.gasPrice),
     );
     return transactionHash;
   }
