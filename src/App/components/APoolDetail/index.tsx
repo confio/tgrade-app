@@ -5,14 +5,19 @@ import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { ArbiterPoolContractQuerier, Cw3Status, getProposalTitle, ProposalResponse } from "utils/arbiterPool";
+import {
+  CommunityPoolContractQuerier,
+  Cw3Status,
+  getProposalTitle,
+  ProposalResponse,
+} from "utils/communityPool";
 
 import Stack from "../Stack/style";
 import TooltipWrapper from "../TooltipWrapper";
 import { ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
 
-const APoolCreateProposalModal = lazy(() => import("App/components/APoolCreateProposalModal"));
-const APoolProposalDetailModal = lazy(() => import("App/components/APoolProposalDetailModal"));
+const CPoolCreateProposalModal = lazy(() => import("App/components/CPoolCreateProposalModal"));
+const CPoolProposalDetailModal = lazy(() => import("App/components/CPoolProposalDetailModal"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
@@ -105,7 +110,7 @@ const columns = [
   },
 ];
 
-export default function APoolDetail(): JSX.Element {
+export default function CPoolDetail(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, client, address },
@@ -122,7 +127,7 @@ export default function APoolDetail(): JSX.Element {
     if (!client) return;
 
     try {
-      const cPoolContract = new ArbiterPoolContractQuerier(config, client);
+      const cPoolContract = new CommunityPoolContractQuerier(config, client);
       const cPoolProposals = await cPoolContract.getAllProposals();
       setProposals(cPoolProposals);
 
@@ -171,12 +176,12 @@ export default function APoolDetail(): JSX.Element {
           />
         </ProposalsContainer>
       </Stack>
-      <APoolCreateProposalModal
+      <CPoolCreateProposalModal
         isModalOpen={isCreateProposalModalOpen}
         closeModal={() => setCreateProposalModalOpen(false)}
         refreshProposals={refreshProposals}
       />
-      <APoolProposalDetailModal
+      <CPoolProposalDetailModal
         isModalOpen={!!clickedProposal}
         closeModal={() => setClickedProposal(undefined)}
         proposalId={clickedProposal}

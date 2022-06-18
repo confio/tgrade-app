@@ -1,16 +1,15 @@
 import { TxResult } from "App/components/ShowTxResult";
 import { useState } from "react";
 import { useError, useSdk } from "service";
+import { CommunityPoolContract } from "utils/communityPool";
 import { getErrorFromStackTrace } from "utils/errors";
 
-import { ArbiterPoolContract } from "../../../../../utils/arbiterPool";
-import { CommunityPoolContract } from "../../../../../utils/communityPool";
 import { ProposalStep, ProposalType } from "../..";
 import ConfirmationOpenText from "./components/ConfirmationOpenText";
 import FormOpenText, { FormOpenTextValues } from "./components/FormOpenText";
 
 interface ProposalOpenTextProps {
-  readonly proposalStep: ProposalStep | undefined;
+  readonly proposalStep: ProposalStep;
   readonly setProposalStep: React.Dispatch<React.SetStateAction<ProposalStep | undefined>>;
   readonly isSubmitting: boolean;
   readonly setSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,11 +40,11 @@ export default function ProposalOpenText({
     setSubmitting(true);
 
     try {
-      const arbiterPoolContract = new ArbiterPoolContract(config, signingClient);
-      const { txHash } = await arbiterPoolContract.propose(address, text, { text: {} });
+      const cPoolContract = new CommunityPoolContract(config, signingClient);
+      const { txHash } = await cPoolContract.propose(address, text, { text: {} });
 
       setTxResult({
-        msg: `Created proposal for Open Text from Arbiter Pool Proposals. Transaction ID: ${txHash}`,
+        msg: `Created proposal for Open Text from Oversight Community Proposals. Transaction ID: ${txHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -58,7 +57,7 @@ export default function ProposalOpenText({
 
   return (
     <>
-      {proposalStep?.confirmation ? (
+      {proposalStep.confirmation ? (
         <ConfirmationOpenText
           text={text}
           isSubmitting={isSubmitting}

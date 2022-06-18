@@ -5,19 +5,23 @@ import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
 import { lazy, useState } from "react";
 
+import SelectProposal from "./components/SelectProposal";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
 
+const ProposalSendTokens = lazy(() => import("./components/ProposalSendTokens"));
 const ProposalOpenText = lazy(() => import("./components/ProposalOpenText"));
 
 const { Title, Text } = Typography;
 const { Step } = Steps;
 
 export enum ProposalType {
+  SendTokens = "send-tokens",
   OpenText = "open-text",
 }
 
 export const proposalLabels = {
+  [ProposalType.SendTokens]: "Send tokens",
   [ProposalType.OpenText]: "Open text proposal",
 };
 
@@ -41,17 +45,17 @@ function getCurrentStepIndex(step?: ProposalStep): number {
   return step?.confirmation ? 2 : step?.type ? 1 : 0;
 }
 
-interface APoolCreateProposalModalProps {
+interface CPoolCreateProposalModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly refreshProposals: () => void;
 }
 
-export default function APoolCreateProposalModal({
+export default function CPoolCreateProposalModal({
   isModalOpen,
   closeModal,
   refreshProposals,
-}: APoolCreateProposalModalProps): JSX.Element {
+}: CPoolCreateProposalModalProps): JSX.Element {
   const [proposalStep, setProposalStep] = useState<ProposalStep>();
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
@@ -102,7 +106,7 @@ export default function APoolCreateProposalModal({
           <ModalHeader>
             <Typography>
               <Title>{getTitleFromStep(proposalStep)}</Title>
-              <Text>Arbiter Pool</Text>
+              <Text>Community Pool</Text>
             </Typography>
             <Steps size="small" current={getCurrentStepIndex(proposalStep)}>
               <Step />
@@ -112,13 +116,25 @@ export default function APoolCreateProposalModal({
             {!isSubmitting ? <img alt="Close button" src={closeIcon} onClick={() => closeModal()} /> : null}
           </ModalHeader>
           <Separator />
-          <ProposalOpenText
-            proposalStep={proposalStep}
-            setProposalStep={setProposalStep}
-            isSubmitting={isSubmitting}
-            setSubmitting={setSubmitting}
-            setTxResult={setTxResult}
-          />
+          {!proposalStep ? (
+            <SelectProposal setProposalStep={setProposalStep} />
+          ) : proposalStep.type === ProposalType.SendTokens ? (
+            <ProposalSendTokens
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : proposalStep.type === ProposalType.OpenText ? (
+            <ProposalOpenText
+              proposalStep={proposalStep}
+              setProposalStep={setProposalStep}
+              isSubmitting={isSubmitting}
+              setSubmitting={setSubmitting}
+              setTxResult={setTxResult}
+            />
+          ) : null}
         </Stack>
       )}
     </StyledModal>

@@ -1,30 +1,35 @@
 import { calculateFee } from "@cosmjs/stargate";
 import { Typography } from "antd";
+import AddressTag from "App/components/AddressTag";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import { lazy, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
+import { CommunityPoolContract } from "utils/communityPool";
 import { getDisplayAmountFromFee } from "utils/currency";
-import { OcContract } from "utils/oversightCommunity";
 
-import { ButtonGroup, FeeGroup, ProposalText, Separator } from "./style";
+import { ButtonGroup, ConfirmField, FeeGroup, Separator, TextComment } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
-const { Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 
-interface ConfirmationOpenTextProps {
-  readonly text: string;
+interface ConfirmationSendTokensProps {
+  readonly receiver: string;
+  readonly tokensAmount: string;
+  readonly comment: string;
   readonly isSubmitting: boolean;
   readonly goBack: () => void;
   readonly submitForm: () => void;
 }
 
-export default function ConfirmationOpenText({
-  text,
+export default function ConfirmationSendTokens({
+  receiver,
+  tokensAmount,
+  comment,
   isSubmitting,
   goBack,
   submitForm,
-}: ConfirmationOpenTextProps): JSX.Element {
+}: ConfirmationSendTokensProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, signer, signingClient },
@@ -38,7 +43,7 @@ export default function ConfirmationOpenText({
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(OcContract.GAS_PROPOSE, config.gasPrice);
+      const fee = calculateFee(CommunityPoolContract.GAS_PROPOSE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
@@ -49,7 +54,15 @@ export default function ConfirmationOpenText({
 
   return (
     <>
-      <ProposalText>{text}</ProposalText>
+      <ConfirmField>
+        <Text>Member to be sent tokens: </Text>
+        <AddressTag address={receiver} />
+      </ConfirmField>
+      <ConfirmField>
+        <Text>Amount of tokens to be sent: </Text>
+        <Text>{tokensAmount}</Text>
+      </ConfirmField>
+      <TextComment>{comment}</TextComment>
       <Separator />
       <ButtonGroup>
         <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />

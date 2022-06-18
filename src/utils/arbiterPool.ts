@@ -92,8 +92,6 @@ export function getProposalTitle(proposal: ApoolProposal): string {
   const proposalProp = Object.keys(proposal)[0];
 
   switch (proposalProp) {
-    case "send_proposal":
-      return "Send tokens";
     case "text":
       return "Open Text Proposal";
     default:
@@ -106,18 +104,9 @@ export class ArbiterPoolContractQuerier {
 
   constructor(readonly config: NetworkConfig, protected readonly client: CosmWasmClient) {}
 
-  async getRules(): Promise<VotingRules> {
-    await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
-
-    const query = { rules: {} };
-    const rules: VotingRules = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
-    return rules;
-  }
-
   async getProposals(startAfter?: number): Promise<readonly ProposalResponse[]> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
     const query = { list_proposals: { start_after: startAfter } };
     const { proposals }: ProposalListResponse = await this.client.queryContractSmart(
@@ -154,7 +143,7 @@ export class ArbiterPoolContractQuerier {
 
   async getVotes(proposalId: number, startAfter?: string): Promise<readonly VoteInfo[]> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
     const query = {
       list_votes: {
@@ -181,7 +170,7 @@ export class ArbiterPoolContractQuerier {
 
   async getVote(proposalId: number, voter: string): Promise<VoteResponse> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
     const query = { vote: { proposal_id: proposalId, voter } };
     const voteResponse: VoteResponse = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
