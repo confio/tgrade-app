@@ -75,6 +75,13 @@ export const NavSidebar: React.FC = () => {
                 </TextCell>
               </Cell>
             </Link>
+            <Link to={paths.arbiterpool.prefix}>
+              <Cell>
+                <TextCell>
+                  <StyledText>Arbiter Pool</StyledText>
+                </TextCell>
+              </Cell>
+            </Link>
             <Link to={paths.cpool.prefix}>
               <Cell>
                 <TextCell>

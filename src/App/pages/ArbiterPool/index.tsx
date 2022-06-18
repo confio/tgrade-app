@@ -5,8 +5,8 @@ import { lazy } from "react";
 
 import { TextStack } from "./style";
 
-const CPoolDetail = lazy(() => import("App/components/CPoolDetail"));
-const { Title, Text } = Typography;
+const APoolDetail = lazy(() => import("App/components/APoolDetail"));
+const { Title } = Typography;
 
 export default function ArbiterPool(): JSX.Element | null {
   return (
@@ -15,7 +15,7 @@ export default function ArbiterPool(): JSX.Element | null {
         <TextStack>
           <Title>Arbiter Pool</Title>
         </TextStack>
-        <CPoolDetail />
+        <APoolDetail />
       </Stack>
     </PageLayout>
   );

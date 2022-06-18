@@ -16,6 +16,7 @@ import TokensProvider from "service/tokens";
 import ErrorFallback from "./components/ErrorFallback";
 import { InformationMessage } from "./components/InformationMessage/style";
 import LoadingSpinner from "./components/LoadingSpinner";
+import ArbiterPool from "./pages/ArbiterPool";
 import CPoolHome from "./pages/CPoolHome";
 import ValidatorsHome from "./pages/ValidatorsHome";
 import { paths } from "./paths";
@@ -63,6 +64,9 @@ export default function App(): JSX.Element {
                                 </Route>
                                 <Route path={paths.oc.prefix}>
                                   <OcHome />
+                                </Route>
+                                <Route path={paths.arbiterpool.prefix}>
+                                  <ArbiterPool />
                                 </Route>
                                 <Route path={paths.cpool.prefix}>
                                   <CPoolHome />
