@@ -154,8 +154,12 @@ export class StakingContractQuerier {
 
     const { tokens_per_point } = await this.getConfiguration();
     const tokensPerPointNumber = parseFloat(tokens_per_point);
-    const potentialPointsToAdd = tokensAdd ? parseFloat(tokensAdd.amount) * tokensPerPointNumber : 0;
-    const potentialPointsToRemove = tokensRemove ? parseFloat(tokensRemove.amount) * tokensPerPointNumber : 0;
+    const potentialPointsToAdd = tokensAdd
+      ? parseFloat(tokensAdd.amount) * (tokensPerPointNumber / 1000000)
+      : 0;
+    const potentialPointsToRemove = tokensRemove
+      ? parseFloat(tokensRemove.amount) * (tokensPerPointNumber / 1000000000000)
+      : 0;
 
     const potentialPoints = currentPoints + potentialPointsToAdd - potentialPointsToRemove;
     const totalPoints = currentTotalPoints + potentialPointsToAdd - potentialPointsToRemove;

@@ -6,42 +6,42 @@
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
           "account_number": "0",
-          "address": "tgrade19n7pg550l3nyytvs76etgtgyjqwg8f5p7542au",
+          "address": "tgrade1vl76n4q0pfk2ek07tz2cd5vnlvkuf5tnznqed5",
           "pub_key": null,
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
           "account_number": "0",
-          "address": "tgrade1fr4vsuy0uf73y96d92rntf4y8hjtgwefaq0m8g",
+          "address": "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl",
           "pub_key": null,
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
           "account_number": "0",
-          "address": "tgrade1zxxmtghpmphudmd8kajnue9hfy86jgp44df7t7",
+          "address": "tgrade1kwh2efsmue7pms3930gsclr224k8c7uwke5jvd",
           "pub_key": null,
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
           "account_number": "0",
-          "address": "tgrade19rgtrgg76p64nweyttq8245hjtlqs7j4thmre5",
+          "address": "tgrade10jdqrtm46xsxtdmuyt2zfcrhupvycrpv80r7nh",
           "pub_key": null,
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
           "account_number": "0",
-          "address": "tgrade1xmr6vvgrkzk5x279hranlknlex49pml5lg463j",
+          "address": "tgrade1kjeuxlg02ku900mzddhrvpc2cjgaaen90czgg8",
           "pub_key": null,
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
           "account_number": "0",
-          "address": "tgrade1kwvdc60de6tdtnxrxqwl863ck5n4aa73xjgmsz",
+          "address": "tgrade1dzav7m7r42sg02sqdvqelazsg0mu5ef0qjpq5e",
           "pub_key": null,
           "sequence": "0"
         },
@@ -50,13 +50,13 @@
           "base_vesting_account": {
             "base_account": {
               "account_number": "0",
-              "address": "tgrade19daklccsfy6kv3zmarh32xwpwwyrzqyj5yprgs",
+              "address": "tgrade1tsg4wldpwyehhkqx3za78ygkzatncxxup96k7h",
               "pub_key": null,
               "sequence": "0"
             },
             "delegated_free": [],
             "delegated_vesting": [],
-            "end_time": "1701850703",
+            "end_time": "1702115712",
             "original_vesting": [
               {
                 "amount": "600000000",
@@ -64,20 +64,20 @@
               }
             ]
           },
-          "start_time": "1657786703"
+          "start_time": "1658051712"
         },
         {
           "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
           "base_vesting_account": {
             "base_account": {
               "account_number": "0",
-              "address": "tgrade1yyqq8cjvrrp8ajnzas0vsha5ytf4qsaz2rkxr9",
+              "address": "tgrade12ty7w05kswvuvvzzdxdv8w4tf7g6y9xexy5rzj",
               "pub_key": null,
               "sequence": "0"
             },
             "delegated_free": [],
             "delegated_vesting": [],
-            "end_time": "1701850703",
+            "end_time": "1702115712",
             "original_vesting": [
               {
                 "amount": "600000000",
@@ -85,7 +85,7 @@
               }
             ]
           },
-          "start_time": "1657786703"
+          "start_time": "1658051712"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
@@ -116,16 +116,7 @@
     "bank": {
       "balances": [
         {
-          "address": "tgrade1zxxmtghpmphudmd8kajnue9hfy86jgp44df7t7",
-          "coins": [
-            {
-              "amount": "1000000000",
-              "denom": "utgd"
-            }
-          ]
-        },
-        {
-          "address": "tgrade1yyqq8cjvrrp8ajnzas0vsha5ytf4qsaz2rkxr9",
+          "address": "tgrade12ty7w05kswvuvvzzdxdv8w4tf7g6y9xexy5rzj",
           "coins": [
             {
               "amount": "100000000",
@@ -138,16 +129,7 @@
           ]
         },
         {
-          "address": "tgrade19rgtrgg76p64nweyttq8245hjtlqs7j4thmre5",
-          "coins": [
-            {
-              "amount": "1000000000",
-              "denom": "utgd"
-            }
-          ]
-        },
-        {
-          "address": "tgrade19daklccsfy6kv3zmarh32xwpwwyrzqyj5yprgs",
+          "address": "tgrade1tsg4wldpwyehhkqx3za78ygkzatncxxup96k7h",
           "coins": [
             {
               "amount": "100000000",
@@ -160,7 +142,7 @@
           ]
         },
         {
-          "address": "tgrade19n7pg550l3nyytvs76etgtgyjqwg8f5p7542au",
+          "address": "tgrade1vl76n4q0pfk2ek07tz2cd5vnlvkuf5tnznqed5",
           "coins": [
             {
               "amount": "100000000000",
@@ -169,7 +151,7 @@
           ]
         },
         {
-          "address": "tgrade1xmr6vvgrkzk5x279hranlknlex49pml5lg463j",
+          "address": "tgrade1dzav7m7r42sg02sqdvqelazsg0mu5ef0qjpq5e",
           "coins": [
             {
               "amount": "1000000000",
@@ -178,7 +160,7 @@
           ]
         },
         {
-          "address": "tgrade1fr4vsuy0uf73y96d92rntf4y8hjtgwefaq0m8g",
+          "address": "tgrade10jdqrtm46xsxtdmuyt2zfcrhupvycrpv80r7nh",
           "coins": [
             {
               "amount": "1000000000",
@@ -196,7 +178,16 @@
           ]
         },
         {
-          "address": "tgrade1kwvdc60de6tdtnxrxqwl863ck5n4aa73xjgmsz",
+          "address": "tgrade1kwh2efsmue7pms3930gsclr224k8c7uwke5jvd",
+          "coins": [
+            {
+              "amount": "1000000000",
+              "denom": "utgd"
+            }
+          ]
+        },
+        {
+          "address": "tgrade1kjeuxlg02ku900mzddhrvpc2cjgaaen90czgg8",
           "coins": [
             {
               "amount": "1000000000",
@@ -206,6 +197,15 @@
         },
         {
           "address": "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
+          "coins": [
+            {
+              "amount": "1000000000",
+              "denom": "utgd"
+            }
+          ]
+        },
+        {
+          "address": "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl",
           "coins": [
             {
               "amount": "1000000000",
@@ -243,9 +243,6 @@
         "amount": "1000",
         "denom": "utgd"
       }
-    },
-    "evidence": {
-      "evidence": []
     },
     "feegrant": {
       "allowances": []
@@ -343,7 +340,7 @@
           "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3"
         ],
         "bond_denom": "utgd",
-        "bootstrap_account_address": "tgrade19n7pg550l3nyytvs76etgtgyjqwg8f5p7542au",
+        "bootstrap_account_address": "tgrade1vl76n4q0pfk2ek07tz2cd5vnlvkuf5tnznqed5",
         "community_pool_contract_config": {
           "voting_rules": {
             "allow_end_early": true,
@@ -354,35 +351,35 @@
         },
         "engagement": [
           {
-            "address": "tgrade19n7pg550l3nyytvs76etgtgyjqwg8f5p7542au",
+            "address": "tgrade1vl76n4q0pfk2ek07tz2cd5vnlvkuf5tnznqed5",
             "points": "8"
           },
           {
-            "address": "tgrade1fr4vsuy0uf73y96d92rntf4y8hjtgwefaq0m8g",
+            "address": "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl",
             "points": "7"
           },
           {
-            "address": "tgrade1zxxmtghpmphudmd8kajnue9hfy86jgp44df7t7",
+            "address": "tgrade1kwh2efsmue7pms3930gsclr224k8c7uwke5jvd",
             "points": "6"
           },
           {
-            "address": "tgrade19rgtrgg76p64nweyttq8245hjtlqs7j4thmre5",
+            "address": "tgrade10jdqrtm46xsxtdmuyt2zfcrhupvycrpv80r7nh",
             "points": "5"
           },
           {
-            "address": "tgrade1xmr6vvgrkzk5x279hranlknlex49pml5lg463j",
+            "address": "tgrade1kjeuxlg02ku900mzddhrvpc2cjgaaen90czgg8",
             "points": "4"
           },
           {
-            "address": "tgrade1kwvdc60de6tdtnxrxqwl863ck5n4aa73xjgmsz",
+            "address": "tgrade1dzav7m7r42sg02sqdvqelazsg0mu5ef0qjpq5e",
             "points": "3"
           },
           {
-            "address": "tgrade19daklccsfy6kv3zmarh32xwpwwyrzqyj5yprgs",
+            "address": "tgrade1tsg4wldpwyehhkqx3za78ygkzatncxxup96k7h",
             "points": "1000"
           },
           {
-            "address": "tgrade1yyqq8cjvrrp8ajnzas0vsha5ytf4qsaz2rkxr9",
+            "address": "tgrade12ty7w05kswvuvvzzdxdv8w4tf7g6y9xexy5rzj",
             "points": "1"
           },
           {
@@ -411,7 +408,7 @@
                   },
                   "public_key": {
                     "@type": "/cosmos.crypto.secp256k1.PubKey",
-                    "key": "Aiz444g53QY5u0jx5O4o+VK3vxPvOB+D/tYtdE+k0YGf"
+                    "key": "Ay/6Ppf9Qf88FEo0MWXCTIlRbmjoY/tUB3QV9bEuOMd6"
                   },
                   "sequence": "0"
                 }
@@ -419,7 +416,7 @@
             },
             "body": {
               "extension_options": [],
-              "memo": "4d9e2621dc794f631229a0a742498db638637dbe@192.168.0.1:26656",
+              "memo": "ce9669fc2ce6d2c00a859b971f0631ebd5cf313c@192.168.0.1:26656",
               "messages": [
                 {
                   "@type": "/confio.poe.v1beta1.MsgCreateValidator",
@@ -434,10 +431,10 @@
                     "security_contact": "",
                     "website": ""
                   },
-                  "operator_address": "tgrade19daklccsfy6kv3zmarh32xwpwwyrzqyj5yprgs",
+                  "operator_address": "tgrade1tsg4wldpwyehhkqx3za78ygkzatncxxup96k7h",
                   "pubkey": {
                     "@type": "/cosmos.crypto.ed25519.PubKey",
-                    "key": "3SWJNnie5qnlx7v20ixs3T+hYu2gGXlu/P17cvalkz4="
+                    "key": "fCGoQs3G9v7E3UpkXNfQChxvP6IcYfoPJ6ubG4YmDcA="
                   },
                   "vesting_amount": {
                     "amount": "600000000",
@@ -449,10 +446,17 @@
               "timeout_height": "0"
             },
             "signatures": [
-              "rpq9tl/WDl5fgnhOtgZUWcDsIWvcqgXjgJ8sTIEXrEVcG8GErZ9NdybetAU1u4V51RzJMdgUmXvymVDGAXyKgQ=="
+              "kPck/L5mpEQq18kwjfq2jTLoCfCVVYxgu5qCtlgU2R0neQvW5TYu597c8S7GZMubTQPldTAedd5fbC2Meh3LEg=="
             ]
           }
         ],
+        "mixer_contract_config": {
+          "sigmoid": {
+            "max_points": "1000000",
+            "p": "0.620000000000000000",
+            "s": "0.000010000000000000"
+          }
+        },
         "oversight_committee_contract_config": {
           "deny_list_contract_address": "",
           "escrow_amount": {
@@ -473,7 +477,7 @@
         "stake_contract_config": {
           "claim_autoreturn_limit": 20,
           "min_bond": "1",
-          "tokens_per_point": "1",
+          "tokens_per_point": "1000000",
           "unbonding_period": "1814400s"
         },
         "validator_voting_contract_config": {
@@ -497,9 +501,10 @@
           "fee_percentage": "50.000000000000000000",
           "max_validators": 100,
           "min_points": "1",
+          "offlineJailDuration": "86400s",
           "scaling": 1,
           "validator_reward_ratio": "47.500000000000000000",
-          "verify_validators": true
+          "verify_validators": false
         }
       }
     },
@@ -548,6 +553,6 @@
     },
     "version": {}
   },
-  "genesis_time": "2022-06-14T08:18:24.0998496Z",
+  "genesis_time": "2022-06-17T09:55:13.209216Z",
   "initial_height": "1"
 }
