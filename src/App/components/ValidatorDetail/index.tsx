@@ -76,33 +76,14 @@ export function ValidatorDetail({
 
   if (!validator) return null;
 
-  const todayDateInSeconds = Math.round(new Date().getTime() / 1000);
-  // Offset required due to inaccuracy in actual release time. Twelve hours in seconds
-  const dateOffset = 12 * 60 * 60;
-  const isJailed = !!validator.jailed_until;
-  const jailedUntilInMilliseconds = isJailed
-    ? Math.round(
-        (todayDateInSeconds +
-          parseInt((validator.jailed_until as { until: string }).until, 10) +
-          dateOffset) /
-          1000000,
-      )
+  const isJailedWithExpiry = !!validator.jailed_until?.end?.until;
+  const isJailedForever = validator.jailed_until?.end?.forever ? true : false;
+  const jailedUntilInMilliseconds = validator.jailed_until?.end?.until
+    ? Number(validator.jailed_until?.end?.until) / 1000000
     : 0;
-  const jailedUntilDate = isJailed
-    ? validator.jailed_until === "forever"
-      ? "Jailed forever"
-      : `Jailed until ${new Date(jailedUntilInMilliseconds).toLocaleDateString()}`
-    : undefined;
+  const jailedUntilDate = new Date(jailedUntilInMilliseconds);
 
-  // TODO: properly detect when can unjail. Once we have several validators in a local network.
-  /* const canUnjailSelf =
-    // Current user is the validator
-    address === validator.operator &&
-    // Validator is jailed but expiration date has been reached
-    isJailed &&
-    validator.jailed_until !== "forever" &&
-    new Date(jailedUntilInMilliseconds) < new Date(); */
-  const canUnjailSelf = address === validator.operator;
+  const canUnjailSelf = address === validator.operator && isJailedWithExpiry && jailedUntilDate < new Date();
 
   async function submitUnjailSelf() {
     if (!signingClient || !address) return;
@@ -170,7 +151,10 @@ export function ValidatorDetail({
               </div>
               {validator.jailed_until ? (
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--s0)" }}>
-                  <p style={{ color: "red" }}>{jailedUntilDate || "not jailed"}</p>
+                  <p style={{ color: "var(--color-error-alert)" }}>
+                    {isJailedForever ? "Jailed forever" : null}
+                    {isJailedWithExpiry ? `Jailed until ${jailedUntilDate.toLocaleDateString()}` : null}
+                  </p>
                   {canUnjailSelf ? (
                     <Button onClick={submitUnjailSelf} loading={isUnjailing}>
                       Try unjail
