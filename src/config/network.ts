@@ -67,11 +67,11 @@ const local: NetworkConfig = {
 };
 
 const tgradeInternal: NetworkConfig = {
-  chainId: "tgrade-internal-12",
-  chainName: "Tgrade-internal-12",
+  chainId: "tgrade-internal-13",
+  chainName: "Tgrade-internal-13",
   addressPrefix: "tgrade",
-  rpcUrl: "https://rpc.internal-12.tgrade.confio.run",
-  httpUrl: "https://api.internal-12.tgrade.confio.run",
+  rpcUrl: "https://rpc.internal-13.tgrade.confio.run",
+  httpUrl: "https://api.internal-13.tgrade.confio.run",
   faucetUrl: "",
   feeToken: "utgd",
   stakingToken: "utgd",
