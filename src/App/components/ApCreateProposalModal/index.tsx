@@ -15,12 +15,10 @@ const { Title, Text } = Typography;
 const { Step } = Steps;
 
 export enum ProposalType {
-  SendTokens = "send-tokens",
   OpenText = "open-text",
 }
 
 export const proposalLabels = {
-  [ProposalType.SendTokens]: "Send tokens",
   [ProposalType.OpenText]: "Open text proposal",
 };
 

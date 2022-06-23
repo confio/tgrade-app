@@ -47,6 +47,12 @@ const columns = [
     render: (record: ProposalResponse) => getProposalTitle(record.proposal),
   },
   {
+    title: "Description",
+    key: "description",
+    width: "45%",
+    render: (record: ProposalResponse) => <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>,
+  },
+  {
     title: "Due date",
     key: "expires",
     width: "10%",
@@ -102,9 +108,9 @@ const columns = [
     },
   },
   {
-    title: "Description",
-    key: "description",
-    render: (record: ProposalResponse) => <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>,
+    title: "Results",
+    key: "results",
+    width: "35%",
   },
 ];
 

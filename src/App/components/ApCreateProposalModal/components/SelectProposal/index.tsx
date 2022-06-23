@@ -17,7 +17,7 @@ interface SelectProposalProps {
 }
 
 export default function SelectProposal({ setProposalStep }: SelectProposalProps): JSX.Element {
-  const [selectedProposal, setSelectedProposal] = useState(ProposalType.SendTokens);
+  const [selectedProposal, setSelectedProposal] = useState(ProposalType.OpenText);
 
   return (
     <>
