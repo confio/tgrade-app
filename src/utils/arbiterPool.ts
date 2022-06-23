@@ -1,32 +1,9 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { calculateFee, Coin, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { calculateFee, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { NetworkConfig } from "config/network";
-
-import { TcProposal, TcProposalResponse } from "./trustedCircle";
-
-/**
- * A point in time in nanosecond precision (uint64).
- */
-export type CosmWasmTimestamp = string;
-
-/**
- * See https://github.com/confio/tgrade-contracts/blob/v0.5.2/packages/utils/src/time.rs#L29-L30
- */
-export type TgExpiration = CosmWasmTimestamp;
-
-export type VoteOption = "yes" | "no" | "abstain";
-
-export interface PendingEscrow {
-  /// Associated proposal_id
-  readonly proposal_id: number;
-  /// Pending escrow amount
-  readonly amount: string;
-  /// Timestamp (seconds) when the pending escrow is enforced
-  readonly grace_ends_at: number;
-}
 
 export interface VotingRules {
   /// Length of voting period in days
@@ -39,132 +16,30 @@ export interface VotingRules {
   readonly allow_end_early: boolean;
 }
 
-export interface ApResponse {
-  readonly name: string;
-  /// The required escrow amount, in the default denom (utgd)
-  readonly escrow_amount: string;
-  readonly escrow_pending?: PendingEscrow | null;
-  readonly rules: VotingRules;
-}
-
-export type Punishment = {
-  readonly distribute_escrow?: {
-    readonly member: string;
-    readonly slashing_percentage: string;
-    readonly distribution_list: readonly string[];
-    readonly kick_out: boolean;
-  };
-} & {
-  readonly burn_escrow?: {
-    readonly member: string;
-    readonly slashing_percentage: string;
-    readonly kick_out: boolean;
-  };
-};
-
-export interface ApAdjustements {
-  /// Length of voting period in days
-  readonly name?: string | null;
-  /// Length of voting period in days
-  readonly escrow_amount?: string | null;
-  /// Length of voting period in days
-  readonly voting_period?: number | null;
-  /// quorum requirement (0.0-1.0)
-  readonly quorum?: string | null;
-  /// threshold requirement (0.5-1.0)
-  readonly threshold?: string | null;
-  /// If true, and absolute threshold and quorum are met, we can end before voting period finished
-  readonly allow_end_early?: boolean | null;
-}
-
-export interface Engagement {
-  readonly member: string;
+export interface VoterDetail {
+  readonly addr: string;
   readonly points: number;
 }
 
-export interface ValidatorPunishment {
-  readonly member: string;
-  readonly portion: string;
-  readonly jailing_duration?: { duration: number } | "forever";
+export interface VoterListResponse {
+  readonly voters: readonly VoterDetail[];
 }
 
-/**
- * See https://github.com/confio/tgrade-contracts/blob/v0.5.2/packages/utils/src/jailing.rs#L25-L30
- */
-export type JailingDuration = any;
+export type VoteOption = "yes" | "no" | "abstain";
 
-/**
- * See https://github.com/confio/tgrade-contracts/blob/v0.5.2/contracts/tgrade-oc-proposals/src/state.rs#L9-L21
- */
-export interface OcProposal extends TcProposal {
-  readonly grant_engagement?: {
-    /** address of the member to grant points to */
-    readonly member: string;
-    readonly points: number;
-  };
-  readonly punish?: {
-    /** address of the member to be punished */
-    readonly member: string;
-    /** A Decimal */
-    readonly portion: string;
-    readonly jailing_duration: JailingDuration | null;
-  };
-  readonly unjail?: {
-    /** address of the member to unjail */
-    readonly member: string;
-    readonly comment: string;
-  };
+export interface ApoolProposal {
   readonly text?: Record<string, never>;
 }
 
-/**
- * See https://github.com/confio/tgrade-contracts/blob/v0.5.2/contracts/tgrade-oc-proposals/src/contract.rs#L215
- * and https://github.com/confio/tgrade-contracts/blob/v0.5.2/packages/voting-contract/src/state.rs#L25-L39
- */
-export interface ApProposalResponse {
-  readonly id: number;
-  readonly title: string;
-  readonly description: string;
-  readonly proposal: OcProposal;
-  readonly status: Cw3Status;
-  readonly expires: TgExpiration;
-  readonly rules: VotingRules;
-  readonly total_points: number;
-  /// This is a running tally of all votes cast on this proposal so far.
-  readonly votes: Votes;
-}
-
-export type MixedProposalResponseId = `${"tc" | "oc"}${number}`;
-
-export type MixedProposalResponse = (TcProposalResponse | ApProposalResponse) & {
-  readonly mixedId: MixedProposalResponseId;
+export type Expiration = {
+  readonly at_height: number;
+} & {
+  readonly at_time: string;
+} & {
+  readonly never: Record<string, unknown>;
 };
 
-export interface OcProposeResponse {
-  readonly txHash: string;
-  readonly proposalId?: MixedProposalResponseId;
-}
-
-export function isOcProposal(proposal: TcProposal & OcProposal): proposal is OcProposal {
-  return !!proposal.grant_engagement || !!proposal.punish || !!proposal.unjail || !!proposal.text;
-}
-
-export function isOcProposalResponse(
-  response: TcProposalResponse | ApProposalResponse,
-): response is ApProposalResponse {
-  return isOcProposal(response.proposal);
-}
-
-export type Expiration =
-  | {
-      readonly at_height: number;
-    }
-  | {
-      readonly at_time: string;
-    }
-  | {
-      readonly never: Record<string, unknown>;
-    };
+export type Cw3Status = "pending" | "open" | "rejected" | "passed" | "executed";
 
 export interface Votes {
   readonly yes: number;
@@ -173,17 +48,29 @@ export interface Votes {
   readonly veto: number;
 }
 
-/**
- * https://github.com/CosmWasm/cw-plus/blob/v0.11.1/packages/cw3/src/query.rs#L72-L86
- */
-export type Cw3Status = "pending" | "open" | "rejected" | "passed" | "executed";
-
-/**
- * See https://github.com/confio/tgrade-contracts/blob/v0.5.2/contracts/tgrade-trusted-circle/src/msg.rs#L139-L154
- */
+export interface ProposalResponse {
+  readonly id: number;
+  readonly title: string;
+  readonly description: string;
+  readonly proposal: ApoolProposal;
+  readonly status: "pending" | "open" | "rejected" | "passed" | "executed";
+  readonly expires: Expiration;
+  /// This is the threshold that is applied to this proposal. Both the rules of the voting contract,
+  /// as well as the total_points of the voting group may have changed since this time. That means
+  /// that the generic `Threshold{}` query does not provide valid information for existing proposals.
+  readonly rules: VotingRules;
+  readonly total_points: number;
+  /// This is a running tally of all votes cast on this proposal so far.
+  readonly votes: Votes;
+}
 
 export interface ProposalListResponse {
-  readonly proposals: readonly ApProposalResponse[];
+  readonly proposals: readonly ProposalResponse[];
+}
+
+export interface APoolProposeResponse {
+  readonly txHash: string;
+  readonly proposalId?: number;
 }
 
 export interface VoteInfo {
@@ -194,62 +81,17 @@ export interface VoteInfo {
 }
 
 export interface VoteResponse {
-  readonly vote?: VoteInfo | null;
+  readonly vote: VoteInfo | null;
 }
 
 export interface VoteListResponse {
   readonly votes: readonly VoteInfo[];
 }
 
-export interface Member {
-  readonly addr: string;
-  readonly points: number;
-}
-
-export interface MemberListResponse {
-  readonly members: readonly Member[];
-}
-
-export type MemberStatus = {
-  /// Normal member, not allowed to vote
-  readonly non_voting?: Record<string, unknown>;
-} & {
-  /// Approved for voting, need to pay in
-  readonly pending?: { readonly batch_id: number };
-} & {
-  /// Approved for voting, and paid in. Waiting for rest of batch
-  readonly pending_paid?: { readonly batch_id: number };
-} & {
-  /// Full-fledged voting member
-  readonly voting?: Record<string, unknown>;
-} & {
-  /// Marked as leaving. Escrow frozen until `claim_at`
-  readonly leaving?: { readonly claim_at: number };
-};
-
-export interface EscrowStatus {
-  /// how much escrow they have paid
-  readonly paid: string;
-  /// voter status. we check this to see what functionality are allowed for this member
-  readonly status: MemberStatus;
-}
-
-export type EscrowResponse = EscrowStatus | null;
-
-export function getProposalTitle(proposal: TcProposal | OcProposal): string {
+export function getProposalTitle(proposal: ApoolProposal): string {
   const proposalProp = Object.keys(proposal)[0];
 
   switch (proposalProp) {
-    case "add_voting_members":
-      return "Add Oversight Community members";
-    case "punish_members":
-      return "Punish Oversight Community member";
-    case "grant_engagement":
-      return "Grant Engagement Points";
-    case "punish":
-      return "Punish Validator";
-    case "unjail":
-      return "Unjail Validator";
     case "text":
       return "Open Text Proposal";
     default:
@@ -258,291 +100,128 @@ export function getProposalTitle(proposal: TcProposal | OcProposal): string {
 }
 
 export class ApContractQuerier {
-  apAddress?: string;
-  apProposalsAddress?: string;
+  arbiterPoolAddress?: string;
 
   constructor(readonly config: NetworkConfig, protected readonly client: CosmWasmClient) {}
+
+  async getProposals(startAfter?: number): Promise<readonly ProposalResponse[]> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const query = { list_proposals: { start_after: startAfter } };
+    const { proposals }: ProposalListResponse = await this.client.queryContractSmart(
+      this.arbiterPoolAddress,
+      query,
+    );
+    return proposals;
+  }
+
+  async getAllProposals(): Promise<readonly ProposalResponse[]> {
+    let proposals: readonly ProposalResponse[] = [];
+    let nextProposals: readonly ProposalResponse[] = [];
+
+    do {
+      const lastProposalId = proposals[proposals.length - 1]?.id;
+      nextProposals = await this.getProposals(lastProposalId);
+      proposals = [...proposals, ...nextProposals];
+    } while (nextProposals.length);
+
+    return proposals;
+  }
+
+  async getProposal(proposalId: number): Promise<ProposalResponse> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const query = { proposal: { proposal_id: proposalId } };
+    const proposalResponse: ProposalResponse = await this.client.queryContractSmart(
+      this.arbiterPoolAddress,
+      query,
+    );
+    return proposalResponse;
+  }
+
+  async getVotes(proposalId: number, startAfter?: string): Promise<readonly VoteInfo[]> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const query = {
+      list_votes: {
+        proposal_id: proposalId,
+        start_after: startAfter,
+      },
+    };
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
+    return votes;
+  }
+
+  async getAllVotes(proposalId: number): Promise<readonly VoteInfo[]> {
+    let votes: readonly VoteInfo[] = [];
+    let nextVotes: readonly VoteInfo[] = [];
+
+    do {
+      const lastVoterAddress = votes[votes.length - 1]?.voter;
+      nextVotes = await this.getVotes(proposalId, lastVoterAddress);
+      votes = [...votes, ...nextVotes];
+    } while (nextVotes.length);
+
+    return votes;
+  }
+
+  async getVote(proposalId: number, voter: string): Promise<VoteResponse> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const query = { vote: { proposal_id: proposalId, voter } };
+    const voteResponse: VoteResponse = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
+    return voteResponse;
+  }
+
+  async getVoters(startAfter?: string): Promise<readonly VoterDetail[]> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const query = { list_voters: { start_after: startAfter } };
+    const { voters }: VoterListResponse = await this.client.queryContractSmart(
+      this.arbiterPoolAddress,
+      query,
+    );
+    return voters;
+  }
+
+  async getAllVoters(): Promise<readonly VoterDetail[]> {
+    let voters: readonly VoterDetail[] = [];
+    let nextVoters: readonly VoterDetail[] = [];
+
+    do {
+      const lastVoterAddress = voters[voters.length - 1]?.addr;
+      nextVoters = await this.getVoters(lastVoterAddress);
+      voters = [...voters, ...nextVoters];
+    } while (nextVoters.length);
+
+    return voters;
+  }
+
   protected async initAddress(): Promise<void> {
-    if (this.apAddress && this.apProposalsAddress) return;
+    if (this.arbiterPoolAddress) return;
 
     const tendermintClient = await Tendermint34Client.connect(this.config.rpcUrl);
     const queryClient = new QueryClient(tendermintClient);
     const rpcClient = createProtobufRpcClient(queryClient);
     const queryService = new QueryClientImpl(rpcClient);
 
-    const { address: apAddress } = await queryService.ContractAddress({
-      contractType: PoEContractType.ARBITER_POOL,
-    });
-    const { address: apProposalsAddress } = await queryService.ContractAddress({
+    const { address } = await queryService.ContractAddress({
       contractType: PoEContractType.ARBITER_POOL_VOTING,
     });
-
-    this.apAddress = apAddress;
-    this.apProposalsAddress = apProposalsAddress;
-  }
-
-  async getOc(): Promise<ApResponse> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const query = { trusted_circle: {} };
-    return await this.client.queryContractSmart(this.apAddress, query);
-  }
-
-  // NOTE: only gets members from Trusted Circle and not from OC Proposals
-  async getMembers(startAfter?: string): Promise<readonly Member[]> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const query = { list_members: { start_after: startAfter } };
-    const { members }: MemberListResponse = await this.client.queryContractSmart(this.apAddress, query);
-    return members;
-  }
-
-  // NOTE: only gets voters from Trusted Circle and not from OC Proposals
-  async getAllMembers(): Promise<readonly Member[]> {
-    let members: readonly Member[] = [];
-    let nextMembers: readonly Member[] = [];
-
-    do {
-      const lastMemberAddress = members[members.length - 1]?.addr;
-      nextMembers = await this.getMembers(lastMemberAddress);
-      members = [...members, ...nextMembers];
-    } while (nextMembers.length);
-
-    return members;
-  }
-
-  // NOTE: only gets voters from Trusted Circle and not from OC Proposals
-  async getVotingMembers(startAfter?: string): Promise<readonly Member[]> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const query = { list_voters: { start_after: startAfter } };
-    const { members }: MemberListResponse = await this.client.queryContractSmart(this.apAddress, query);
-    return members;
-  }
-
-  // NOTE: only gets voters from Trusted Circle and not from OC Proposals
-  async getAllVotingMembers(): Promise<readonly Member[]> {
-    let votingMembers: readonly Member[] = [];
-    let nextVotingMembers: readonly Member[] = [];
-
-    do {
-      const lastVotingMemberAddress = votingMembers[votingMembers.length - 1]?.addr;
-      nextVotingMembers = await this.getVotingMembers(lastVotingMemberAddress);
-      votingMembers = [...votingMembers, ...nextVotingMembers];
-    } while (nextVotingMembers.length);
-
-    return votingMembers;
-  }
-
-  async getEscrow(memberAddress: string): Promise<EscrowResponse> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const query = { escrow: { addr: memberAddress } };
-    const response: EscrowResponse = await this.client.queryContractSmart(this.apAddress, query);
-    return response;
-  }
-
-  async getTcProposals(startAfter?: number): Promise<readonly ApProposalResponse[]> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const query = { list_proposals: { start_after: startAfter } };
-    const { proposals }: ProposalListResponse = await this.client.queryContractSmart(this.apAddress, query);
-    return proposals;
-  }
-
-  async getAllTcProposals(): Promise<readonly ApProposalResponse[]> {
-    let proposals: readonly ApProposalResponse[] = [];
-    let nextProposals: readonly ApProposalResponse[] = [];
-
-    do {
-      const lastProposalId = proposals[proposals.length - 1]?.id;
-      nextProposals = await this.getTcProposals(lastProposalId);
-      proposals = [...proposals, ...nextProposals];
-    } while (nextProposals.length);
-
-    return proposals;
-  }
-
-  async getOcProposals(startAfter?: number): Promise<readonly ApProposalResponse[]> {
-    await this.initAddress();
-    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
-
-    const query = { list_proposals: { start_after: startAfter } };
-    const { proposals }: ProposalListResponse = await this.client.queryContractSmart(
-      this.apProposalsAddress,
-      query,
-    );
-    return proposals;
-  }
-
-  async getAllOcProposals(): Promise<readonly ApProposalResponse[]> {
-    let proposals: readonly ApProposalResponse[] = [];
-    let nextProposals: readonly ApProposalResponse[] = [];
-
-    do {
-      const lastProposalId = proposals[proposals.length - 1]?.id;
-      nextProposals = await this.getOcProposals(lastProposalId);
-      proposals = [...proposals, ...nextProposals];
-    } while (nextProposals.length);
-
-    return proposals;
-  }
-
-  async getAllMixedProposals(): Promise<readonly MixedProposalResponse[]> {
-    const responsesTuple = await Promise.all([this.getAllTcProposals(), this.getAllOcProposals()]);
-
-    const flatResponsesWithId: readonly MixedProposalResponse[] = responsesTuple.flat().map((res) => {
-      const mixedId: MixedProposalResponseId = `${isOcProposalResponse(res) ? "oc" : "tc"}${res.id}`;
-      const mixedResponse: MixedProposalResponse = { ...res, mixedId };
-
-      return mixedResponse;
-    });
-
-    return flatResponsesWithId;
-  }
-
-  async getTcProposal(proposalId: number): Promise<ApProposalResponse> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const query = { proposal: { proposal_id: proposalId } };
-    const proposalResponse: ApProposalResponse = await this.client.queryContractSmart(this.apAddress, query);
-    return proposalResponse;
-  }
-
-  async getOcProposal(proposalId: number): Promise<ApProposalResponse> {
-    await this.initAddress();
-    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
-
-    const query = { proposal: { proposal_id: proposalId } };
-    const proposalResponse: ApProposalResponse = await this.client.queryContractSmart(
-      this.apProposalsAddress,
-      query,
-    );
-    return proposalResponse;
-  }
-
-  async getMixedProposal(mixedId: MixedProposalResponseId): Promise<MixedProposalResponse> {
-    const proposalIdType = mixedId.slice(0, 2);
-    const proposalIdNumber = parseInt(mixedId.slice(2), 10);
-
-    const proposalResponse = await (proposalIdType === "tc"
-      ? this.getTcProposal(proposalIdNumber)
-      : this.getOcProposal(proposalIdNumber));
-    const mixedResponse: MixedProposalResponse = { ...proposalResponse, mixedId };
-
-    return mixedResponse;
-  }
-
-  async getTcVotes(proposalId: number, startAfter: string): Promise<readonly VoteInfo[]> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const query = {
-      list_votes: {
-        proposal_id: proposalId,
-        start_after: startAfter,
-      },
-    };
-    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.apAddress, query);
-    return votes;
-  }
-
-  async getAllTcVotes(proposalId: number): Promise<readonly VoteInfo[]> {
-    let votes: readonly VoteInfo[] = [];
-    let nextVotes: readonly VoteInfo[] = [];
-
-    do {
-      const lastVoterAddress = votes[votes.length - 1]?.voter;
-      nextVotes = await this.getTcVotes(proposalId, lastVoterAddress);
-      votes = [...votes, ...nextVotes];
-    } while (nextVotes.length);
-
-    return votes;
-  }
-
-  async getOcVotes(proposalId: number, startAfter: string): Promise<readonly VoteInfo[]> {
-    await this.initAddress();
-    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
-
-    const query = {
-      list_votes: {
-        proposal_id: proposalId,
-        start_after: startAfter,
-      },
-    };
-    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.apProposalsAddress, query);
-    return votes;
-  }
-
-  async getAllOcVotes(proposalId: number): Promise<readonly VoteInfo[]> {
-    let votes: readonly VoteInfo[] = [];
-    let nextVotes: readonly VoteInfo[] = [];
-
-    do {
-      const lastVoterAddress = votes[votes.length - 1]?.voter;
-      nextVotes = await this.getOcVotes(proposalId, lastVoterAddress);
-      votes = [...votes, ...nextVotes];
-    } while (nextVotes.length);
-
-    return votes;
-  }
-
-  async getAllMixedVotes(mixedId: MixedProposalResponseId): Promise<readonly VoteInfo[]> {
-    const proposalIdType = mixedId.slice(0, 2);
-    const proposalIdNumber = parseInt(mixedId.slice(2), 10);
-
-    const votes = await (proposalIdType === "tc"
-      ? this.getAllTcVotes(proposalIdNumber)
-      : this.getAllOcVotes(proposalIdNumber));
-
-    return votes;
-  }
-
-  async getTcVote(proposalId: number, voter: string): Promise<VoteResponse> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const query = { vote: { proposal_id: proposalId, voter } };
-    const voteResponse: VoteResponse = await this.client.queryContractSmart(this.apAddress, query);
-    return voteResponse;
-  }
-
-  async getOcVote(proposalId: number, voter: string): Promise<VoteResponse> {
-    await this.initAddress();
-    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
-
-    const query = { vote: { proposal_id: proposalId, voter } };
-    const voteResponse: VoteResponse = await this.client.queryContractSmart(this.apProposalsAddress, query);
-    return voteResponse;
-  }
-
-  async getMixedVote(mixedId: MixedProposalResponseId, voter: string): Promise<VoteResponse> {
-    const proposalIdType = mixedId.slice(0, 2);
-    const proposalIdNumber = parseInt(mixedId.slice(2), 10);
-
-    const voteResponse = await (proposalIdType === "tc"
-      ? this.getTcVote(proposalIdNumber, voter)
-      : this.getOcVote(proposalIdNumber, voter));
-
-    return voteResponse;
+    this.arbiterPoolAddress = address;
   }
 }
 
 export class ApContract extends ApContractQuerier {
-  static readonly GAS_CREATE_OC = 500_000;
-  static readonly GAS_DEPOSIT_ESCROW = 200_000;
-  static readonly GAS_RETURN_ESCROW = 200_000;
-  static readonly GAS_CHECK_PENDING = 500_000;
-  static readonly GAS_LEAVE_OC = 200_000;
   static readonly GAS_PROPOSE = 200_000;
   static readonly GAS_VOTE = 200_000;
   static readonly GAS_EXECUTE = 500_000;
+  static readonly GAS_CLOSE = 500_000;
 
   readonly #signingClient: SigningCosmWasmClient;
 
@@ -551,81 +230,20 @@ export class ApContract extends ApContractQuerier {
     this.#signingClient = signingClient;
   }
 
-  async depositEscrow(senderAddress: string, funds: readonly Coin[]): Promise<string> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const msg = { deposit_escrow: {} };
-    const { transactionHash } = await this.#signingClient.execute(
-      senderAddress,
-      this.apAddress,
-      msg,
-      calculateFee(ApContract.GAS_DEPOSIT_ESCROW, this.config.gasPrice),
-      undefined,
-      funds,
-    );
-    return transactionHash;
-  }
-
-  async returnEscrow(memberAddress: string): Promise<string> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const msg = { return_escrow: {} };
-    const { transactionHash } = await this.#signingClient.execute(
-      memberAddress,
-      this.apAddress,
-      msg,
-      calculateFee(ApContract.GAS_RETURN_ESCROW, this.config.gasPrice),
-    );
-    return transactionHash;
-  }
-
-  async checkPending(memberAddress: string): Promise<string> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const msg = { check_pending: {} };
-    const { transactionHash } = await this.#signingClient.execute(
-      memberAddress,
-      this.apAddress,
-      msg,
-      calculateFee(ApContract.GAS_CHECK_PENDING, this.config.gasPrice),
-    );
-    return transactionHash;
-  }
-
-  async leaveOc(memberAddress: string): Promise<string> {
-    await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-
-    const msg = { leave_trusted_circle: {} };
-    const { transactionHash } = await this.#signingClient.execute(
-      memberAddress,
-      this.apAddress,
-      msg,
-      calculateFee(ApContract.GAS_LEAVE_OC, this.config.gasPrice),
-    );
-    return transactionHash;
-  }
-
   async propose(
     senderAddress: string,
     description: string,
-    proposal: TcProposal | OcProposal,
-  ): Promise<OcProposeResponse> {
+    proposal: ApoolProposal,
+  ): Promise<APoolProposeResponse> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
-
-    const queryAddress = isOcProposal(proposal) ? this.apProposalsAddress : this.apAddress;
+    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
 
     const title = getProposalTitle(proposal);
     const msg = { propose: { title, description, proposal } };
 
     const result = await this.#signingClient.execute(
       senderAddress,
-      queryAddress,
+      this.arbiterPoolAddress,
       msg,
       calculateFee(ApContract.GAS_PROPOSE, this.config.gasPrice),
     );
@@ -635,51 +253,33 @@ export class ApContract extends ApContractQuerier {
       .flatMap((event) => event.attributes)
       .find((attr) => attr.key === "proposal_id");
 
-    const proposalPrefix = isOcProposal(proposal) ? "oc" : "tc";
-
-    const proposalId: MixedProposalResponseId | undefined = proposalIdAttr
-      ? `${proposalPrefix}${parseInt(proposalIdAttr.value, 10)}`
-      : undefined;
+    const proposalId = proposalIdAttr ? parseInt(proposalIdAttr.value, 10) : undefined;
 
     return { txHash: result.transactionHash, proposalId };
   }
 
-  async voteProposal(
-    senderAddress: string,
-    mixedId: MixedProposalResponseId,
-    vote: VoteOption,
-  ): Promise<string> {
+  async voteProposal(senderAddress: string, proposalId: number, vote: VoteOption): Promise<string> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
-    const proposalIdType = mixedId.slice(0, 2);
-    const proposalIdNumber = parseInt(mixedId.slice(2), 10);
-    const queryAddress = proposalIdType === "oc" ? this.apProposalsAddress : this.apAddress;
-
-    const msg = { vote: { proposal_id: proposalIdNumber, vote } };
+    const msg = { vote: { proposal_id: proposalId, vote } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      queryAddress,
+      this.arbiterPoolAddress,
       msg,
       calculateFee(ApContract.GAS_VOTE, this.config.gasPrice),
     );
     return transactionHash;
   }
 
-  async executeProposal(senderAddress: string, mixedId: MixedProposalResponseId): Promise<string> {
+  async executeProposal(senderAddress: string, proposalId: number): Promise<string> {
     await this.initAddress();
-    if (!this.apAddress) throw new Error("apAddress was not set");
-    if (!this.apProposalsAddress) throw new Error("apProposalsAddress was not set");
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
-    const proposalIdType = mixedId.slice(0, 2);
-    const proposalIdNumber = parseInt(mixedId.slice(2), 10);
-    const queryAddress = proposalIdType === "oc" ? this.apProposalsAddress : this.apAddress;
-
-    const msg = { execute: { proposal_id: proposalIdNumber } };
+    const msg = { execute: { proposal_id: proposalId } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      queryAddress,
+      this.arbiterPoolAddress,
       msg,
       calculateFee(ApContract.GAS_EXECUTE, this.config.gasPrice),
     );

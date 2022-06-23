@@ -1,4 +1,4 @@
-import { calculateFee } from "@cosmjs/stargate";
+import { calculateFee, Coin } from "@cosmjs/stargate";
 import { Collapse } from "antd";
 import closeIcon from "App/assets/icons/cross.svg";
 import { ReactComponent as StatusExecutedIcon } from "App/assets/icons/status-executed-icon.svg";
@@ -9,26 +9,13 @@ import ShowTxResult, { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
+import { ApContract, ApContractQuerier, ProposalResponse, VoteInfo, VoteOption } from "utils/arbiterPool";
 import { getDisplayAmountFromFee } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
-import {
-  getProposalTitle,
-  isOcProposalResponse,
-  MixedProposalResponse,
-  MixedProposalResponseId,
-  OcContract,
-  OcContractQuerier,
-  VoteInfo,
-} from "utils/oversightCommunity";
-import { isTcProposalResponse, VoteOption } from "utils/trustedCircle";
 
 import ButtonVote from "../ButtonVote";
 import VotesTable from "../VotesTable";
-import ProposalAddOCMembers from "./components/ProposalAddOCMembers";
-import ProposalGrantEngagementPoints from "./components/ProposalGrantEngagementPoints";
-import ProposalPunishOCMember from "./components/ProposalPunishOCMember";
-import ProposalPunishValidator from "./components/ProposalPunishValidator";
-import ProposalUnjailValidator from "./components/ProposalUnjailValidator";
+import WarningBanner from "../WarningBanner";
 import {
   ButtonGroup,
   FeeWrapper,
@@ -39,23 +26,22 @@ import {
   StyledCollapse,
   StyledModal,
   Text,
-  TextValue,
   Title,
 } from "./style";
 
-interface OcProposalDetailModalProps {
+interface APoolProposalDetailModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
-  readonly mixedProposalId?: MixedProposalResponseId;
+  readonly proposalId: number | undefined;
   readonly refreshProposals: () => void;
 }
 
-export default function OcProposalDetailModal({
+export default function APoolProposalDetailModal({
   isModalOpen,
   closeModal,
-  mixedProposalId,
+  proposalId,
   refreshProposals,
-}: OcProposalDetailModalProps): JSX.Element {
+}: APoolProposalDetailModalProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, client, address, signingClient },
@@ -63,44 +49,32 @@ export default function OcProposalDetailModal({
 
   const [submitting, setSubmitting] = useState<VoteOption | "executing">();
   const [txResult, setTxResult] = useState<TxResult>();
-
   const [hasVoted, setHasVoted] = useState(false);
 
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 
-  const [proposal, setProposal] = useState<MixedProposalResponse>();
+  const [proposal, setProposal] = useState<ProposalResponse>();
+
   const expiryTime = proposal
     ? Number(typeof proposal.expires === "string" ? proposal.expires : proposal.expires.at_time) / 1000000
     : 0;
   const isProposalNotExpired = expiryTime > Date.now();
 
-  // DSO proposals
-  const proposalAddOCMembers =
-    proposal && isTcProposalResponse(proposal) ? proposal.proposal.add_voting_members?.voters : undefined;
-  const proposalPunishOCMember =
-    proposal && isTcProposalResponse(proposal) ? proposal.proposal.punish_members?.[0] : undefined;
-  // OC proposals
-  const proposalGrantEngagementPoints =
-    proposal && isOcProposalResponse(proposal) ? proposal.proposal.grant_engagement : undefined;
-  const proposalPunishValidator =
-    proposal && isOcProposalResponse(proposal) ? proposal.proposal.punish : undefined;
-
-  const proposalUnjailValidator =
-    proposal && isOcProposalResponse(proposal) ? proposal.proposal.unjail : undefined;
-
-  const [membership, setMembership] = useState<"participant" | "pending" | "voting">("participant");
+  //const { amount: nativeCoinToSend, to_addr: receiverAddress } = proposal?.proposal.send_proposal ?? {};
+  const [isVotingMember, setVotingMember] = useState(false);
+  const [coinToSend, setCoinToSend] = useState<Coin>();
 
   const [isTableLoading, setTableLoading] = useState(false);
   const [votes, setVotes] = useState<readonly VoteInfo[]>([]);
   useEffect(() => {
     (async function queryVotes() {
-      if (!client || !mixedProposalId) return;
+      if (!client || !proposalId) return;
 
       try {
-        const ocContract = new OcContractQuerier(config, client);
+        const tcContract = new ApContractQuerier(config, client);
         setTableLoading(true);
-        const votes = await ocContract.getAllMixedVotes(mixedProposalId);
+        const votes = await tcContract.getAllVotes(proposalId);
         setVotes(votes);
       } catch (error) {
         if (!(error instanceof Error)) return;
@@ -109,13 +83,13 @@ export default function OcProposalDetailModal({
         setTableLoading(false);
       }
     })();
-  }, [client, config, handleError, mixedProposalId]);
+  }, [client, config, handleError, proposalId]);
 
   useEffect(() => {
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(OcContract.GAS_VOTE, config.gasPrice);
+      const fee = calculateFee(ApContract.GAS_PROPOSE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
@@ -126,48 +100,44 @@ export default function OcProposalDetailModal({
 
   useEffect(() => {
     (async function queryProposal() {
-      if (!client || !mixedProposalId) return;
+      if (!client || !proposalId) return;
 
       try {
-        const ocContract = new OcContractQuerier(config, client);
-        const proposal = await ocContract.getMixedProposal(mixedProposalId);
+        const arbiterPoolContractQuerier = new ApContractQuerier(config, client);
+        const proposal = await arbiterPoolContractQuerier.getProposal(proposalId);
         setProposal(proposal);
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
-  }, [client, config, handleError, mixedProposalId]);
+  }, [client, config, handleError, proposalId]);
 
   useEffect(() => {
     (async function queryVoter() {
-      if (!client || !mixedProposalId || !address) return;
+      if (!address || !client || !proposalId) return;
 
       try {
-        const ocContract = new OcContractQuerier(config, client);
-        const voteResponse = await ocContract.getMixedVote(mixedProposalId, address);
-        setHasVoted(voteResponse.vote?.voter === address);
+        const arbiterPoolContractQuerier = new ApContractQuerier(config, client);
+        const voter = await arbiterPoolContractQuerier.getVote(proposalId, address);
+        setHasVoted(voter.vote?.voter === address);
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
       }
     })();
-  }, [address, client, config, handleError, mixedProposalId]);
+  }, [address, client, config, handleError, proposalId]);
 
   useEffect(() => {
     (async function queryMembership() {
       if (!client || !address) return;
 
       try {
-        const ocContract = new OcContractQuerier(config, client);
-        const escrowResponse = await ocContract.getEscrow(address);
-
-        if (escrowResponse) {
-          const membership = escrowResponse.status.voting ? "voting" : "pending";
-          setMembership(membership);
-        } else {
-          setMembership("participant");
-        }
+        const arbiterPoolContractQuerier = new ApContractQuerier(config, client);
+        const isVotingMember = (await arbiterPoolContractQuerier.getVoters()).some(
+          (voter) => voter.addr === address,
+        );
+        setVotingMember(isVotingMember);
       } catch (error) {
         if (!(error instanceof Error)) return;
         handleError(error);
@@ -182,15 +152,15 @@ export default function OcProposalDetailModal({
   }
 
   async function submitVoteProposal(chosenVote: VoteOption) {
-    if (!signingClient || !address || !mixedProposalId) return;
+    if (!signingClient || !address || !proposalId) return;
     setSubmitting(chosenVote);
 
     try {
-      const ocContract = new OcContract(config, signingClient);
-      const transactionHash = await ocContract.voteProposal(address, mixedProposalId, chosenVote);
+      const cPoolContract = new ApContract(config, signingClient);
+      const transactionHash = await cPoolContract.voteProposal(address, proposalId, chosenVote);
 
       setTxResult({
-        msg: `Voted proposal with ID ${mixedProposalId}. Transaction ID: ${transactionHash}`,
+        msg: `Voted proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -206,15 +176,15 @@ export default function OcProposalDetailModal({
   }
 
   async function submitExecuteProposal() {
-    if (!signingClient || !address || !mixedProposalId) return;
+    if (!signingClient || !address || !proposalId) return;
     setSubmitting("executing");
 
     try {
-      const ocContract = new OcContract(config, signingClient);
-      const transactionHash = await ocContract.executeProposal(address, mixedProposalId);
+      const arbiterPoolContract = new ApContract(config, signingClient);
+      const transactionHash = await arbiterPoolContract.executeProposal(address, proposalId);
 
       setTxResult({
-        msg: `Executed proposal with ID ${mixedProposalId}. Transaction ID: ${transactionHash}`,
+        msg: `Executed proposal with ID ${proposalId}. Transaction ID: ${transactionHash}`,
       });
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -229,7 +199,7 @@ export default function OcProposalDetailModal({
     address &&
     !hasVoted &&
     isProposalNotExpired &&
-    membership === "voting" &&
+    isVotingMember &&
     (proposal?.status === "open" || proposal?.status === "passed");
 
   return (
@@ -270,7 +240,7 @@ export default function OcProposalDetailModal({
             {proposal ? (
               <div>
                 <Title>
-                  ID {proposal.mixedId} "{getProposalTitle(proposal.proposal)}"
+                  Nº {proposal.id} "{proposal.title}"
                 </Title>
                 {proposal?.status === "passed" ? <StatusPassedIcon /> : null}
                 {proposal?.status === "open" ? <StatusOpenIcon /> : null}
@@ -282,14 +252,6 @@ export default function OcProposalDetailModal({
           <Separator />
           {proposal ? (
             <>
-              <Stack gap="s1">
-                <ProposalAddOCMembers proposalAddVotingMembers={proposalAddOCMembers} />
-                <ProposalPunishOCMember proposalPunishVotingMember={proposalPunishOCMember} />
-                <ProposalGrantEngagementPoints proposalGrantEngagement={proposalGrantEngagementPoints} />
-                <ProposalPunishValidator proposalPunishValidator={proposalPunishValidator} />
-                <ProposalUnjailValidator proposalUnjailValidator={proposalUnjailValidator} />
-                <TextValue>{proposal.description}</TextValue>
-              </Stack>
               <Separator />
               <SectionWrapper>
                 <StyledCollapse ghost>
@@ -360,6 +322,9 @@ export default function OcProposalDetailModal({
                   </ButtonVote>
                 </ButtonGroup>
               </SectionWrapper>
+              {!isVotingMember ? (
+                <WarningBanner warning="Sorry, you need some Engagement Points in order to be eligible to vote (they won't be spent)" />
+              ) : null}
             </>
           ) : null}
         </Stack>
