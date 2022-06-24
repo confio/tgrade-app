@@ -1,4 +1,4 @@
-import { CopyBlock, monokai } from "react-code-blocks";
+import { anOldHope, CopyBlock } from "react-code-blocks";
 import { isMobile } from "react-device-detect";
 
 import {
@@ -71,7 +71,7 @@ tgrade query bank balances <address> --node=<node_url>
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>Example:</Text>
@@ -92,7 +92,7 @@ $
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Subtitle id="Get_vesting_detail">Get vesting detail</Subtitle>
@@ -103,7 +103,7 @@ tgrade query account <address> --node=<node_url>
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>Example:</Text>
@@ -138,7 +138,7 @@ $
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>
@@ -159,7 +159,7 @@ $
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Subtitle id="Stake_liquid">Stake liquid</Subtitle>
@@ -173,7 +173,7 @@ tgrade tx wasm execute <staking_contract_address> "{ \\"bond\\": { } }" --amount
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>Example:</Text>
@@ -193,7 +193,7 @@ $
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>This stakes 1 liquid and 0 vesting TGD into the staking contract.</Text>
@@ -205,7 +205,7 @@ tgrade tx wasm execute <staking_contract_address> "{ \\"bond\\": { \\"vesting_to
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>Example:</Text>
@@ -224,7 +224,7 @@ $
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>This then stakes 0 liquid and 1 vesting TGD into the staking contract.</Text>
@@ -241,7 +241,7 @@ $
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Subtitle id="List_Engagement_members">List Engagement members</Subtitle>
@@ -252,7 +252,7 @@ tgrade query wasm contract-state smart <engagement_address> "{\\"list_members\\"
   `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>Example:</Text>
@@ -294,7 +294,7 @@ $
   `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Subtitle id="Query_member_EP">Query member EP</Subtitle>
@@ -305,7 +305,7 @@ tgrade query wasm contract-state smart <engagement_address> "{ \\"member\\": { \
   `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>Example:</Text>
@@ -322,7 +322,7 @@ $
   `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
 
@@ -337,7 +337,7 @@ $
           `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Subtitle id="List_Staking_members">List Staking members</Subtitle>
@@ -348,7 +348,7 @@ tgrade query wasm contract-state smart <staking_address> "{\\"list_members\\": {
   `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>Example:</Text>
@@ -385,7 +385,7 @@ $
   `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Subtitle id="Query_member_staking">Query member staking</Subtitle>
@@ -396,7 +396,7 @@ tgrade query wasm contract-state smart <staking_address> "{\\"staked\\": { \\"ad
   `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
         <Text>Example:</Text>
@@ -419,7 +419,7 @@ $
   `}
           language={"shell"}
           showLineNumbers={false}
-          theme={monokai}
+          theme={anOldHope}
           wrapLines
         />
       </ContentWrapper>
