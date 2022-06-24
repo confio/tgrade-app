@@ -4,8 +4,6 @@ import { isMobile } from "react-device-detect";
 import {
   ContentWrapper,
   PageWrapper,
-  ReferenceList,
-  RequirementList,
   StyledItemGroup,
   StyledMenu,
   StyledMenuItem,
@@ -20,295 +18,405 @@ export default function DocumentationPage(): JSX.Element | null {
     <PageWrapper>
       {isMobile ? null : (
         <StyledMenu defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode="inline">
-          <StyledSubmenu key="sub1" icon={undefined} title="Introduction">
-            <StyledItemGroup key="g1" title="Smart Contracts">
+          <StyledSubmenu key="sub1" icon={undefined} title="Balances">
+            <StyledItemGroup key="g1">
               <StyledMenuItem key="1">
-                <a href="#requirements">Hardware Requirements</a>
+                <a href="#Get_total">Get total</a>
               </StyledMenuItem>
               <StyledMenuItem key="2">
-                <a href="#installation">Installation</a>
+                <a href="#Get_vesting_detail">Get vesting detail</a>
               </StyledMenuItem>
               <StyledMenuItem key="3">
-                <a href="#environment">Setting Up the Environment</a>
+                <a href="#Get_Staking_address_1">Get Staking address</a>
               </StyledMenuItem>
               <StyledMenuItem key="4">
-                <a href="#compiling">Optimizing the Compilation</a>
+                <a href="#Stake_liquid">Stake liquid</a>
               </StyledMenuItem>
               <StyledMenuItem key="5">
-                <a href="#uploading">Uploading and Verifying</a>
+                <a href="#Stake_vesting">Stake vesting</a>
+              </StyledMenuItem>
+            </StyledItemGroup>
+          </StyledSubmenu>
+          <StyledSubmenu key="sub2" icon={undefined} title="Proof of Engagement">
+            <StyledItemGroup key="g2">
+              <StyledMenuItem key="6">
+                <a href="#Get_Engagement_address">Get Engagement address</a>
+              </StyledMenuItem>
+              <StyledMenuItem key="7">
+                <a href="#List_Engagement_members">List Engagement members</a>
+              </StyledMenuItem>
+              <StyledMenuItem key="8">
+                <a href="#Query_member_EP">Query member EP</a>
+              </StyledMenuItem>
+              <StyledMenuItem key="9">
+                <a href="#Get_Staking_address_2">Get Staking address</a>
+              </StyledMenuItem>
+              <StyledMenuItem key="10">
+                <a href="#List_Staking_members">List Staking members</a>
+              </StyledMenuItem>
+              <StyledMenuItem key="11">
+                <a href="#Query_member_staking">Query member staking</a>
               </StyledMenuItem>
             </StyledItemGroup>
           </StyledSubmenu>
         </StyledMenu>
       )}
       <ContentWrapper isMobile={isMobile}>
-        <Title id="requirements">Hardware Requirements</Title>
-        <Text>For deploying smart contracts. We tested successfully with the following Architecture:</Text>
-        <RequirementList>
-          <li>Ubuntu 20.04 LTS</li>
-          <li>go version 1.16.5 [1]</li>
-          <li>Installed packages make and build-essential [2] [3]</li>
-          <li>2 or more CPU cores Intel or AMD chipset</li>
-          <li>At least 40GB of disk storage</li>
-          <li>At least 4GB of memory (RAM)</li>
-        </RequirementList>
-        <ReferenceList>
-          <li>
-            <a href="https://github.com/golang/go/wiki/Ubuntu" target="_blank" rel="noopener noreferrer">
-              https://github.com/golang/go/wiki/Ubuntu
-            </a>
-          </li>
-          <li>
-            <a href="https://packages.ubuntu.com/focal/make" target="_blank" rel="noopener noreferrer">
-              https://packages.ubuntu.com/focal/make
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://packages.ubuntu.com/focal/build-essential"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              https://packages.ubuntu.com/focal/build-essential
-            </a>
-          </li>
-        </ReferenceList>
-        <Text>
-          You can use a physical infrastructure (baremetal) or wellknown cloud providers like: DigitalOcean,
-          AWS, Google Cloud Platform, among others
-        </Text>
-        <Title id="installation">Installation</Title>
-        <Text>
-          In this section, we will gear up your workhorse for developing, deploying and, enjoying smart
-          contracts on Tgrade network.
-        </Text>
-        <Subtitle>Go</Subtitle>
-        <Text>
-          You can setup golang following{" "}
-          <a
-            href="https://github.com/golang/go/wiki#working-with-go"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            official documentation
-          </a>
-          . The latest versions of wasmd require go version v1.15.
-        </Text>
-        <Subtitle>Rust</Subtitle>
-        <Text>
-          Assuming you have never worked with rust, you will first need to install some tooling. The standard
-          approach is to use rustup to maintain dependencies and handle updating multiple versions of cargo
-          and rustc, which you will be using.
-        </Text>
-        <Subtitle>Installing Rust</Subtitle>
-        <Text>
-          First,{" "}
-          <a href="https://rustup.rs/" target="_blank" rel="noopener noreferrer">
-            install rustup
-          </a>
-          . Once installed, make sure you have the wasm32 target:
-        </Text>
+        <Title style={{ margin: 0 }}>Balances</Title>
+        <Subtitle id="Get_total">Get total</Subtitle>
+        <Text>Total balances can be obtained with:</Text>
         <CopyBlock
           text={`
-rustup default stable
-cargo version
-rustup update stable
-
-rustup target list --installed
-rustup target add wasm32-unknown-unknown
+tgrade query bank balances <address> --node=<node_url>
           `}
           language={"shell"}
           showLineNumbers={false}
           theme={monokai}
           wrapLines
         />
-        <Subtitle>wasmd</Subtitle>
-        <Text>
-          wasmd is the backbone of CosmWasm platform. It is both blockchain node and interaction client. It is
-          the implementation of a Cosmos zone with wasm smart contracts enabled.
-        </Text>
-        <Text>
-          tgrade binary that will be released is a modified version of wasmd. For deployment and interaction,
-          we will use wasmd for now.
-        </Text>
+        <Text>Example:</Text>
         <CopyBlock
           text={`
-# Get wasmd v0.18,0 ( that is the version we verified and tested)
-wget https://github.com/CosmWasm/wasmd/archive/refs/tags/v0.18.0.tar.gz
-tar xzvf v0.18.0.tar.gz
-cd wasmd-0.18.0
-  
-# Run GO install for the upcoming binary,
-# all those optional flags will make wasmd available to run tgrade addresses
-go install -mod=readonly -ldflags \\
-    "-X github.com/cosmos/cosmos-sdk/version.Name=tgrade \\
-    -X github.com/cosmos/cosmos-sdk/version.AppName=tgrade \\
-    -X github.com/CosmWasm/wasmd/app.Bech32Prefix=tgrade" \\
-    ./cmd/wasmd
-  
-# Build the binary
-go build -mod=readonly -ldflags \\
-    "-X github.com/cosmos/cosmos-sdk/version.Name=tgrade \\
-    -X github.com/cosmos/cosmos-sdk/version.AppName=tgrade \\
-    -X github.com/CosmWasm/wasmd/app.Bech32Prefix=tgrade" \\
-    -o build/wasmd ./cmd/wasmd
-  
-# Move the binary to an executable path
-sudo mv build/wasmd /usr/local/bin
-
-# verify the installation
-wasmd version
+$ tgrade query bank balances tgrade1kwc9ds5t03xkhx49qwkwq3z2tqzhxxqtrwv780 --node=https://rpc.my-node.tgrade.confio.run:443
+balances:
+- amount: "1"
+  denom: ibc/0D4A2460893BC1C19DB97ED8CD13D10D0F1764819FB741C470C70FBC470D7A3D
+- amount: "13"
+  denom: ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9
+- amount: "5984006739433"
+  denom: utgd
+pagination:
+  next_key: null
+  total: "0"
+$
           `}
           language={"shell"}
           showLineNumbers={false}
           theme={monokai}
           wrapLines
         />
-        <Title id="environment">Setting Up the Environment</Title>
-        <Text>
-          You need an environment to run contracts. You can either run your node locally or connect to an
-          existing network. For easy testing, testnet-2 network is online, you can use it to deploy and run
-          your contracts.
-        </Text>
-        <Text>
-          RPC -{" "}
-          <a href="https://rpc.testnet-2.tgrade.io" target="_blank" rel="noopener noreferrer">
-            https://rpc.testnet-2.tgrade.io
-          </a>
-        </Text>
-        <Text>
-          LCD -{" "}
-          <a href="https://lcd.testnet-2.tgrade.io" target="_blank" rel="noopener noreferrer">
-            https://lcd.testnet-2.tgrade.io
-          </a>
-        </Text>
-        <Text>
-          Faucet -{" "}
-          <a href="https://faucet.testnet-2.tgrade.io" target="_blank" rel="noopener noreferrer">
-            https://faucet.testnet-2.tgrade.io
-          </a>
-        </Text>
-        <Text>
-          Block explorer -{" "}
-          <a href="https://testnet.tgrade.aneka.io" target="_blank" rel="noopener noreferrer">
-            https://testnet.tgrade.aneka.io
-          </a>
-        </Text>
-        <Subtitle>Setup Go CLI</Subtitle>
-        <Text>
-          Let's configure wasmd exec, point it to testnets, create wallet and ask tokens from faucet:
-        </Text>
-        <Text>First, source the testnet-2 network configurations to the shell:</Text>
+        <Subtitle id="Get_vesting_detail">Get vesting detail</Subtitle>
+        <Text>If the account is a vesting account, the vesting amounts detail can be obtained with:</Text>
         <CopyBlock
-          text={`source <(curl -sSL https://gist.githubusercontent.com/orkunkl/773e1798dc04ac7d06f468a778e90db6/raw/747290af38420138c1179ec3ce7d89f28e3accca/testnet-2_defaults.env)`}
+          text={`
+tgrade query account <address> --node=<node_url>
+          `}
           language={"shell"}
           showLineNumbers={false}
           theme={monokai}
           wrapLines
         />
-        <Text>Setup the client:</Text>
+        <Text>Example:</Text>
         <CopyBlock
           text={`
-# add wallets for testing
-wasmd keys add wallet
->
+$ tgrade query bank balances tgrade10wx3tmjhpepnul0s6ssqqr0rdr6uprs6j2rkqy --node=https://rpc.my-node.tgrade.confio.run:443
+balances:
+- amount: "99990818284"
+  denom: utgd
+pagination:
+  next_key: null
+  total: "0"
+$ tgrade query account tgrade10wx3tmjhpepnul0s6ssqqr0rdr6uprs6j2rkqy --node=https://rpc.my-node.tgrade.confio.run:443
+'@type': /cosmos.vesting.v1beta1.DelayedVestingAccount
+base_vesting_account:
+  base_account:
+    account_number: "0"
+    address: tgrade10wx3tmjhpepnul0s6ssqqr0rdr6uprs6j2rkqy
+    pub_key:
+      '@type': /cosmos.crypto.secp256k1.PubKey
+      key: AvYORgF4iN1kr30qdb26VYTFMYoULcJKcKpIgBXaHmoV
+    sequence: "84"
+  delegated_free: []
+  delegated_vesting:
+  - amount: "900000000000"
+    denom: utgd
+  end_time: "1702818618"
+  original_vesting:
+  - amount: "900000000000"
+    denom: utgd
+$
+          `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>
+          Subtracting the vesting amount (900000000000) minus the delegated vesting (900000000000) plus the
+          delegated free amount from the total balance (99990818284), we can then obtain the liquid amount
+          (99990818284 - (900000000000 - 900000000000+0) = 99990818284).
+        </Text>
+        <Subtitle id="Get_Staking_address_1">Get Staking address</Subtitle>
+        <Text>
+          To stake liquid or vesting amounts, a staking message has to be sent to the tg4-stake contract:
+        </Text>
+        <CopyBlock
+          text={`
+$ stakeAddr=$(trade q poe contract-address STAKING -o json --node="$nodeUrl" | jq -re ".address")
+$ echo $stakeAddr
+tgrade17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgsmsjtzp
+$
+          `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Subtitle id="Stake_liquid">Stake liquid</Subtitle>
+        <Text>
+          This will stake liquid {"<liquid_amount>"} tokens associated with {"<my_key>"} into the staking
+          contract, and no vesting tokens:
+        </Text>
+        <CopyBlock
+          text={`
+tgrade tx wasm execute <staking_contract_address> "{ \\"bond\\": { } }" --amount <liquid_amount> --from <my_key> <options>
+          `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>Example:</Text>
+        <CopyBlock
+          text={`
+$ tgrade tx wasm execute "$stakeAddr" "{ \\"bond\\": {} }" --amount 1000000utgd --from $myKey --gas auto --gas-prices=0.1utgd --gas-adjustment=1.3 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend" | jq .
+.
+gas estimate: 104661
 {
-  "name": "wallet",
-  "type": "local",
-  "address": "tgrade13nt9rxj7v2ly096hm8qsyfjzg5pr7vn5saqd50",
-  "pubkey": "tgradepub1addwnpepqf4n9afaefugnfztg7udk50duwr4n8p7pwcjlm9tuumtlux5vud6qvfgp9g",
-  "mnemonic": "hobby bunker rotate piano satoshi planet network verify else market spring toward pledge turkey tip slim word jaguar congress thumb flag project chalk inspire"
+  "height": "89864",
+  "txhash": "F06E91EE2C41D7513396D03E495DC38CC55A39C2F74957EA7E7ECC78D65861F4",
+  "codespace": "",
+  "code": 0,
+  "data": "0A260A242F636F736D7761736D2E7761736D2E76312E4D736745786563757465436F6E7472616374",
+...
+$
+          `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>This stakes 1 liquid and 0 vesting TGD into the staking contract.</Text>
+        <Subtitle id="Stake_vesting">Stake vesting</Subtitle>
+        <Text>This will stake {"<vesting_amount>"} vesting tokens into the staking contract:</Text>
+        <CopyBlock
+          text={`
+tgrade tx wasm execute <staking_contract_address> "{ \\"bond\\": { \\"vesting_tokens\\": { \\"denom\\": \\"utgd\\", \\"amount\\": \\"<vesting_amount>\\" } } }" --amount 0utgd --from <my_key> <options>
+          `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>Example:</Text>
+        <CopyBlock
+          text={`
+$ tgrade tx wasm execute "$stakeAddr" "{ \\"bond\\": { \\"vesting_tokens\\": { \\"denom\\": \\"utgd\\", \\"amount\\": \\"1000000\\" } } }" --amount 0utgd --from $myKey --gas auto --gas-prices=0.1utgd --gas-adjustment=1.3 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend" | jq .
+gas estimate: 220715
+{
+  "height": "90747",
+  "txhash": "66FEB5604FD56807FA776F79E4CF4AB738A4769115C5B87CCD93D167275AF857",
+  "codespace": "",
+  "code": 0,
+  "data": "0A260A242F636F736D7761736D2E7761736D2E76312E4D736745786563757465436F6E7472616374",
+...
+$
+          `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>This then stakes 0 liquid and 1 vesting TGD into the staking contract.</Text>
+        <Text>Both variants can be combined, staking both liquid and vesting amounts at the same time.</Text>
+        <Title>Proof of Engagement</Title>
+        <Subtitle id="Get_Engagement_address">Get Engagement address</Subtitle>
+        <Text>To query engagement, a engagement message has to be sent to the tg4-engagement contract:</Text>
+        <CopyBlock
+          text={`
+$ engagementAddr=$(tgrade q poe contract-address ENGAGEMENT -o json --node="$nodeUrl" | jq -re ".address")
+$ echo $engagementAddr
+tgrade14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s07fvfr
+$
+          `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Subtitle id="List_Engagement_members">List Engagement members</Subtitle>
+        <Text>With this query you can list the engagement members:</Text>
+        <CopyBlock
+          text={`
+tgrade query wasm contract-state smart <engagement_address> "{\\"list_members\\": {} }" -o json --node=<node_url> | jq .
+  `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>Example:</Text>
+        <CopyBlock
+          text={`
+$ tgrade query wasm contract-state smart $engagementAddr "{\\"list_members\\": {} }" -o json --node="$nodeUrl"
+{
+  "data": {
+    "members": [
+      {
+        "addr": "tgrade10wx3tmjhpepnul0s6ssqqr0rdr6uprs6j2rkqy",
+        "points": 1,
+        "start_height": null
+      },
+      {
+        "addr": "tgrade16h7afvwlgxup5cajj368azjju786jpr7wfzh3y",
+        "points": 1,
+        "start_height": null
+      },
+      {
+        "addr": "tgrade1dksv75fj249qarl2nncsssqjsepn4ewhy9eqr4",
+        "points": 1,
+        "start_height": null
+      },
+      {
+        "addr": "tgrade1p3xrhk4kcqeqck6pymafny2c7uqfysul3nr5rw",
+        "points": 2,
+        "start_height": null
+      },
+      {
+        "addr": "tgrade1y7jun5ddt2n5j8t3h9c4qxturcrdrhhuyc0clt",
+        "points": 2,
+        "start_height": null
+      }
+    ]
+  }
 }
-          `}
+$
+  `}
           language={"shell"}
           showLineNumbers={false}
           theme={monokai}
           wrapLines
         />
-        <Text>You need some tokens in your address to interact. Requesting tokens from faucet:</Text>
-        <CopyBlock
-          text={`JSON=$(jq -n --arg addr $(wasmd keys show -a wallet) '{"denom":"utgd","address":$addr}') && curl -X POST --header "Content-Type: application/json" --data "$JSON" https://faucet.testnet-2.tgrade.io/credit`}
-          language={"shell"}
-          showLineNumbers={false}
-          theme={monokai}
-          wrapLines
-        />
-        <Subtitle>Export wasmd Parameters</Subtitle>
-        <Text>Export wasmd variables for setting up node endpoint and transaction configuration:</Text>
+        <Subtitle id="Query_member_EP">Query member EP</Subtitle>
+        <Text>With this query you can get a member's engagement points:</Text>
         <CopyBlock
           text={`
-# bash
-export NODE="--node $RPC"
-export TXFLAG="\${NODE} --chain-id \${CHAIN_ID} --gas-prices 0.001utgd --gas auto --gas-adjustment 1.3"
-
-# zsh
-export NODE=(--node $RPC)
-export TXFLAG=($NODE --chain-id $CHAIN_ID --gas-prices 0.001utgd --gas auto --gas-adjustment 1.3)
-          `}
+tgrade query wasm contract-state smart <engagement_address> "{ \\"member\\": { \\"addr\\": \\"<member_addr>\\" } }" -o json --node=<node_url> | jq .
+  `}
           language={"shell"}
           showLineNumbers={false}
           theme={monokai}
           wrapLines
         />
-        <Text>
-          If command above throws error, this means your shell is different. If no errors, try running this:
-        </Text>
-        <CopyBlock
-          text={`wasmd query bank total $NODE`}
-          language={"shell"}
-          showLineNumbers={false}
-          theme={monokai}
-          wrapLines
-        />
-        <Title id="compiling">Optimizing the Compilation</Title>
-        <Text>
-          After compiling your contract with cargo, the optimized compilation process will provide a binary
-          ready to be deployed on a network. Smart contract binary size must be as small as possible for
-          reduced gas cost. This will not only cost less on deployment, also for every single interaction.
-          Simply, optimize production code using{" "}
-          <a href="https://github.com/CosmWasm/rust-optimizer" target="_blank" rel="noopener noreferrer">
-            cosmwasm/rust-optimizer
-          </a>
-          . rust-optimizer also produces reproducible builds of smart contracts. This means third parties can
-          verify the contract is actually the claimed code.
-        </Text>
+        <Text>Example:</Text>
         <CopyBlock
           text={`
-docker run --rm -v "$(pwd)":/code \\
-  --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \\
-  --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \\
-  cosmwasm/rust-optimizer:0.11.5
+$ tgrade query wasm contract-state smart $engagementAddr "{ \\"member\\": { \\"addr\\": \\"tgrade16h7afvwlgxup5cajj368azjju786jpr7wfzh3y\\" } }" -o json --node="$nodeUrl" | jq .
+{
+  "data": {
+    "points": 1,
+    "start_height": null
+  }
+}
+$
+  `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+
+        <Subtitle id="Get_Staking_address_2">Get Staking address</Subtitle>
+        <Text>In the same way, the staked amounts in the staking contract can be listed and queried:</Text>
+        <CopyBlock
+          text={`
+$ stakeAddr=$(trade q poe contract-address STAKING -o json --node="$nodeUrl" | jq -re ".address")
+$ echo $stakeAddr
+tgrade17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgsmsjtzp
+$
           `}
           language={"shell"}
           showLineNumbers={false}
           theme={monokai}
           wrapLines
         />
-        <Text>Binary will be at artifacts.</Text>
-        <Title id="uploading">Uploading and Verifying</Title>
-        <Text>
-          After generating a wasm binary executable, we can put it into use. Now, we will upload the code to
-          the blockchain. Afterwards, you can download the bytecode to verify it is proper:
-        </Text>
+        <Subtitle id="List_Staking_members">List Staking members</Subtitle>
+        <Text>With this query you can list the staking contract members:</Text>
         <CopyBlock
           text={`
-# see how many codes we have now
-wasmd query wasm list-code $NODE
-
-# gas is huge due to wasm size... but auto-zipping reduced this from 1.8M to around 600k
-# you can see the code in the result
-RES=$(wasmd tx wasm store artifacts/mycontract.wasm --from wallet $TXFLAG -y)
-
-# you can also get the code this way
-CODE_ID=$(echo $RES | jq -r '.logs[0].events[-1].attributes[0].value')
-
-# no contracts yet, this should return an empty list
-wasmd query wasm list-contract-by-code $CODE_ID $NODE --output json
-
-# you can also download the wasm from the chain and check that the diff between them is empty
-wasmd query wasm code $CODE_ID $NODE download.wasm
-diff artifacts/mycontract.wasm download.wasm
-          `}
+tgrade query wasm contract-state smart <staking_address> "{\\"list_members\\": {} }" -o json --node=<node_url> | jq .
+  `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>Example:</Text>
+        <CopyBlock
+          text={`
+$ tgrade query wasm contract-state smart $stakeAddr "{\\"list_members\\": {} }" -o json --node="$nodeUrl" | jq .
+{
+  "data": {
+    "members": [
+      {
+        "addr": "tgrade10wx3tmjhpepnul0s6ssqqr0rdr6uprs6j2rkqy",
+        "points": 900001,
+        "start_height": null
+      },
+      {
+        "addr": "tgrade16h7afvwlgxup5cajj368azjju786jpr7wfzh3y",
+        "points": 888905,
+        "start_height": null
+      },
+      {
+        "addr": "tgrade1dksv75fj249qarl2nncsssqjsepn4ewhy9eqr4",
+        "points": 900000,
+        "start_height": null
+      },
+      {
+        "addr": "tgrade1y7jun5ddt2n5j8t3h9c4qxturcrdrhhuyc0clt",
+        "points": 900000,
+        "start_height": null
+      }
+    ]
+  }
+}
+$
+  `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Subtitle id="Query_member_staking">Query member staking</Subtitle>
+        <Text>With this query you can get a member's staking:</Text>
+        <CopyBlock
+          text={`
+tgrade query wasm contract-state smart <staking_address> "{\\"staked\\": { \\"address\\": \\"<member_addr>\\"} }" -o json --node="$nodeUrl" | jq .
+  `}
+          language={"shell"}
+          showLineNumbers={false}
+          theme={monokai}
+          wrapLines
+        />
+        <Text>Example:</Text>
+        <CopyBlock
+          text={`
+tgrade query wasm contract-state smart $stakeAddr "{\\"staked\\": { \\"address\\": \\"tgrade16h7afvwlgxup5cajj368azjju786jpr7wfzh3y\\"} }" -o json --node="$nodeUrl" | jq .
+{
+  "data": {
+    "liquid": {
+      "denom": "utgd",
+      "amount": "10000000"
+    },
+    "vesting": {
+      "denom": "utgd",
+      "amount": "888895000000"
+    }
+  }
+}
+$
+  `}
           language={"shell"}
           showLineNumbers={false}
           theme={monokai}
