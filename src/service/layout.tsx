@@ -97,7 +97,7 @@ export default function LayoutProvider({ children }: HTMLAttributes<HTMLOrSVGEle
   const [layoutState, layoutDispatch] = useReducer(layoutReducer, { isLoading: false });
   const { pathname } = useLocation();
 
-  const showNavSidebar = pathname !== paths.root && pathname !== paths.documentation.prefix;
+  const showNavSidebar = pathname !== paths.documentation.prefix;
 
   return (
     <LayoutContext.Provider value={{ layoutState, layoutDispatch }}>
