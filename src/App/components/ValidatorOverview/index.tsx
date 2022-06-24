@@ -106,8 +106,12 @@ const columns: ColumnProps<ValidatorType>[] = [
       </p>
     ),
     sorter: (a: ValidatorType, b: ValidatorType) => {
-      if ((a.staked ?? "") < (b.staked ?? "")) return -1;
-      if ((a.staked ?? "") > (b.staked ?? "")) return 1;
+      if (!a.staked && !b.staked) return 0;
+      if (!a.staked && !!b.staked) return -1;
+      if (!!a.staked && !b.staked) return 1;
+
+      if (parseFloat(a.staked) < parseFloat(b.staked)) return -1;
+      if (parseFloat(a.staked) > parseFloat(b.staked)) return 1;
 
       return 0;
     },
