@@ -19,29 +19,7 @@ export const ContentWrapper = styled.div<StyledProps>`
   padding: ${(props) => (props.isMobile ? "5px" : "50px")};
 
   & div {
-    margin-bottom: 25px;
-  }
-`;
-
-export const RequirementList = styled.ul`
-  &[class] {
-    margin: var(--s-2);
-    list-style-type: "- ";
-  }
-`;
-
-export const ReferenceList = styled.ol`
-  &[class] {
-    margin: var(--s-2) 0;
-    counter-reset: bracket-counter;
-
-    & li {
-      counter-increment: bracket-counter;
-
-      &::before {
-        content: "[" counter(bracket-counter) "] ";
-      }
-    }
+    margin-top: 25px;
   }
 `;
 
@@ -67,9 +45,10 @@ export const StyledMenuItem = styled(Menu.Item)`
   text-align: left;
 `;
 export const StyledItemGroup = styled(Menu.ItemGroup)`
-  background-color: #054e4f;
+  background-color: rgba(220, 220, 220, 0.1);
 
   & .ant-menu-item-group-title {
+    padding: 0;
     color: #fff;
   }
   & .ant-menu-item-active {
@@ -110,17 +89,21 @@ export const StyledMenu = styled(Menu)`
   height: 100vh;
   width: 244px;
   position: fixed;
-  background-color: #016465;
+  background-color: var(--color-primary);
   color: white;
+
   & .ant-menu-item-active {
     background-color: rgba(220, 220, 220, 0.1);
+  }
+  & .ant-menu-submenu-active .ant-menu-title-content {
+    color: #fff;
   }
   & .ant-menu-item-selected {
     background-color: rgba(220, 220, 220, 0.1) !important;
   }
 
   & .ant-menu-sub {
-    background-color: #016465;
+    background-color: var(--color-primary);
   }
   font-family: Quicksand;
   font-size: 13px;
@@ -139,7 +122,7 @@ export const Title = styled.h1`
   line-height: 39px;
   letter-spacing: 0em;
   text-align: left;
-  margin-bottom: 25px;
+  margin-top: 25px;
 `;
 export const Subtitle = styled.h2`
   font-family: Quicksand;
@@ -149,7 +132,7 @@ export const Subtitle = styled.h2`
   line-height: 20px;
   letter-spacing: 0em;
   text-align: left;
-  margin-bottom: 20px;
+  margin-top: 20px;
 `;
 export const Text = styled.p`
   font-family: Quicksand;
@@ -159,5 +142,5 @@ export const Text = styled.p`
   line-height: 26px;
   letter-spacing: 0em;
   text-align: left;
-  margin-bottom: 10px;
+  margin-top: 10px;
 `;
