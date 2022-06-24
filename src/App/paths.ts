@@ -44,4 +44,7 @@ export const paths = {
       result: "/result",
     },
   },
+  documentation: {
+    prefix: "/docs",
+  },
 };
