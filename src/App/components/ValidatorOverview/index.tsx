@@ -54,6 +54,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Validator",
     key: "moniker",
+    width: "20%",
     render: (record: ValidatorType) => (
       <div key={record.metadata?.moniker} style={{ display: "flex", flexDirection: "column" }}>
         <b>{record.metadata?.moniker}</b>
@@ -79,6 +80,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Status",
     key: "status",
+    width: "5%",
     render: (record: ValidatorType) => <p>{record.status}</p>,
     sorter: (a: ValidatorType, b: ValidatorType) => {
       function getSortNumFromStatus(status: string): number {
@@ -97,6 +99,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Staked",
     key: "staked",
+    width: "20%",
     render: (record: ValidatorType) => (
       <p>
         {record.staked || "—"} {config.coinMap[config.feeToken].denom}
@@ -112,6 +115,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Distributed points",
     key: "engagementPoints",
+    width: "20%",
     render: (record: ValidatorType) => <p>{record.engagementPoints}</p>,
     sorter: (a: ValidatorType, b: ValidatorType) => (a.engagementPoints ?? 0) - (b.engagementPoints ?? 0),
     defaultSortOrder: "descend",
@@ -119,6 +123,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Rewards",
     key: "rewards",
+    width: "20%",
     render: (record: ValidatorType) => (
       <p>
         {record.rewards || "—"} {config.coinMap[config.feeToken].denom}
@@ -129,6 +134,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Voting Power",
     key: "power",
+    width: "10%",
     render: (record: ValidatorType) => {
       const votingPowerOrZero = !record.power || record.power === 0 ? 0 : record.power;
       const fixedVotingPower = votingPowerOrZero.toFixed(3);
@@ -142,6 +148,7 @@ const columns: ColumnProps<ValidatorType>[] = [
   {
     title: "Website",
     key: "website",
+    width: "5%",
     render: (record: ValidatorType) =>
       validateURL(record.metadata?.website || "") ? (
         <a href={record.metadata?.website}>
