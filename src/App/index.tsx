@@ -17,6 +17,7 @@ import ErrorFallback from "./components/ErrorFallback";
 import { InformationMessage } from "./components/InformationMessage/style";
 import LoadingSpinner from "./components/LoadingSpinner";
 import CPoolHome from "./pages/CPoolHome";
+import DocumentationPage from "./pages/DocumentationPage";
 import ValidatorsHome from "./pages/ValidatorsHome";
 import { paths } from "./paths";
 
@@ -71,6 +72,9 @@ export default function App(): JSX.Element {
                                   <TMarketProvider>
                                     <TMarketHome />
                                   </TMarketProvider>
+                                </Route>
+                                <Route path={`${paths.documentation.prefix}`}>
+                                  <DocumentationPage />
                                 </Route>
                                 <Route path="*">
                                   <NotFound />

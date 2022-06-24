@@ -46,7 +46,7 @@ describe("Trusted Circle", () => {
 
       cy.findByRole("button", {
         name: /Go to Trusted Circle details/i,
-      }).click({ force: true });
+      }).click();
       cy.findByText("Your transaction was approved!").should("not.be.visible");
     });
 
