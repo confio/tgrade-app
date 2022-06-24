@@ -15,6 +15,10 @@ export const StyledTable = styled(Table)`
     text-align: left;
   }
 
+  .ant-table-tbody > tr {
+    cursor: pointer;
+  }
+
   .ant-table-tbody > tr > td {
     font-family: Quicksand;
     font-size: 13px;
