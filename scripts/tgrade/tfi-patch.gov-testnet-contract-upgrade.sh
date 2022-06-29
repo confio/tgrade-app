@@ -1,5 +1,6 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
+#set -x
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
@@ -30,7 +31,8 @@ echo "--------------------------------------------------------------------------
 
 echo "## Upload new tfi factory contract"
 rsp=$(tgrade tx wasm store "$DIR/contracts/patched_tfi_factory.wasm" \
-  --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json)
+  --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json \
+  "$keyringBackend")
 codeID=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
 echo "* Code id: $codeID"
 
@@ -71,7 +73,8 @@ fi
 echo "proposal: $msg"
 
 rsp=$(tgrade tx wasm execute "$valVotingContractAddr" "$msg" \
-  --from $key --gas auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json)
+  --from $key --gas auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json \
+  "$keyringBackend")
 
 echo $rsp
 proposal_id=$(echo "$rsp" | jq -er '.logs[0].events[-1].attributes[3].value')
@@ -87,11 +90,13 @@ echo "-----------------------"
 echo "$otherKey1 votes yes:"
 tgrade tx wasm execute \
   "$valVotingContractAddr" "$msg" \
-  --from $otherKey1 --gas auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json
+  --from $otherKey1 --gas auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json \
+  "$keyringBackend"
 echo "$otherKey2 votes yes:"
 tgrade tx wasm execute \
   "$valVotingContractAddr" "$msg" \
-  --from $otherKey2 --gas auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json
+  --from $otherKey2 --gas auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json \
+  "$keyringBackend"
 
 # Check if passed
 proposal_status=$(tgrade query wasm contract-state smart $valVotingContractAddr "{\"proposal\": { \"proposal_id\": $proposal_id }}" --node $nodeUrl -o json | jq -er .data.status)
@@ -108,7 +113,8 @@ echo "Execute proposal: $msg"
 echo "-----------------------"
 tgrade tx wasm execute \
   "$valVotingContractAddr" "$msg" \
-  --from $key --gas auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json
+  --from $key --gas auto --gas-prices=0.1utgd --gas-adjustment=1.5 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json \
+  "$keyringBackend"
 
 echo "--------------------------------------------------------------------------------------------"
 echo "## TFI factory migration completed"
