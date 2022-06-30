@@ -26,6 +26,6 @@ export const TxHashContainer = styled.div`
 export const StyledTag = styled(Tag)`
   background: transparent;
   border: none;
-  color: white;
+  color: var(--color-primary);
   font-size: var(--s-1);
 `;
