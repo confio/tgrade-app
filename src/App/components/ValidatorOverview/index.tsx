@@ -155,7 +155,14 @@ const columns: ColumnProps<ValidatorType>[] = [
     width: "5%",
     render: (record: ValidatorType) =>
       validateURL(record.metadata?.website || "") ? (
-        <a href={record.metadata?.website}>
+        <a
+          href={record.metadata?.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+        >
           <LinkIcon />
         </a>
       ) : (
