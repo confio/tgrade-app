@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 84 84">
+  <rect width="84" height="84" x="84" fill="url(#a)" rx="20.45" transform="rotate(90 84 0)"/>
+  <rect width="84" height="84" x="84" fill="url(#b)" opacity=".9" rx="20.45" transform="rotate(90 84 0)"/>
+  <rect width="84" height="84" fill="url(#c)" opacity=".9" rx="20.45"/>
+  <path fill="url(#d)" d="M34.18 63.94V44.5l18.26 19.43H62.6v-.5l-21-22.13 19.38-21v-.25H50.76L34.18 38.62V20.06h-8.23v43.88h8.23Z"/>
+  <defs>
+    <linearGradient id="a" x1="130.15" x2="81.46" y1="-2.94" y2="93.36" gradientUnits="userSpaceOnUse">
+      <stop offset=".21" stop-color="#457CD6"/>
+      <stop offset=".68" stop-color="#58ADE9"/>
+      <stop offset=".94" stop-color="#71C4FF"/>
+    </linearGradient>
+    <linearGradient id="b" x1="87.48" x2="159.17" y1="48.02" y2="74.1" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#457CD6" stop-opacity="0"/>
+      <stop offset=".29" stop-color="#58ADE9" stop-opacity="0"/>
+      <stop offset=".57" stop-color="#AF75EA" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#8557E8" stop-opacity=".8"/>
+    </linearGradient>
+    <linearGradient id="c" x1="0" x2="84" y1="-1.74" y2="80.92" gradientUnits="userSpaceOnUse">
+      <stop offset=".07" stop-color="#457CD6" stop-opacity="0"/>
+      <stop offset=".29" stop-color="#58ADE9" stop-opacity="0"/>
+      <stop offset=".47" stop-color="#B594FB" stop-opacity="0"/>
+      <stop offset=".63" stop-color="#D483FB" stop-opacity=".2"/>
+      <stop offset=".9" stop-color="#BE6CFF" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#B969F8" stop-opacity=".85"/>
+    </linearGradient>
+    <linearGradient id="d" x1="44.27" x2="44.27" y1="20.06" y2="63.94" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/>
+    </linearGradient>
+  </defs>
+</svg>
