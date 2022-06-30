@@ -26,7 +26,9 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(migrateMsgLabel)]: Yup.string()
     .typeError("Migrate msg must be alphanumeric")
     .test(`is-valid-json`, "Migrate msg must be valid JSON", (msg) => !msg || isJson(msg)),
-  [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
+  [getFormItemName(commentLabel)]: Yup.string()
+    .required("Comment is required")
+    .typeError("Comment must be alphanumeric"),
 });
 
 export interface FormMigrateContractValues {
@@ -75,7 +77,7 @@ export default function FormMigrateContract({
               <Field label={contractLabel} placeholder="Enter address" />
               <Field label={codeIdLabel} placeholder="Enter code ID" />
               <Field label={migrateMsgLabel} placeholder="Enter message" optional />
-              <Field label={commentLabel} placeholder="Enter comment" optional />
+              <Field label={commentLabel} placeholder="Enter comment" />
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />
