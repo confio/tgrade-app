@@ -53,7 +53,7 @@ export default function ChooseWallet({
           <Stack gap="s1">
             <Text>Currently connected to {getLastConnectedWallet() || ""} wallet:</Text>
             <StyledAddressTag address={address} copyable />
-            <BalancesList />
+            <BalancesList closeModal={closeModal} />
           </Stack>
           <Stack gap="s1">
             <Text>Switch to:</Text>

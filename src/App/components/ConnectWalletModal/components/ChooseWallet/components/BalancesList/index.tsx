@@ -4,7 +4,9 @@ import pinLightIcon from "App/assets/icons/pin-light.svg";
 import SendTokenModal from "App/components/SendTokenModal";
 import Stack from "App/components/Stack/style";
 import TooltipWrapper from "App/components/TooltipWrapper";
+import { paths } from "App/paths";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useSdk } from "service";
 import { tokensMapToArray, useTokens } from "service/tokens";
 import { TokenProps } from "utils/tokens";
@@ -20,7 +22,11 @@ import {
 
 const { Text } = Typography;
 
-export function BalancesList(): JSX.Element {
+interface BalancesListProps {
+  readonly closeModal: () => void;
+}
+
+export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
   const {
     sdkState: { config },
   } = useSdk();
@@ -60,7 +66,13 @@ export function BalancesList(): JSX.Element {
         title={
           <TooltipStack gap="s-2">
             <Text>Not seeing all your tokens?</Text>
-            <Text>You need to go to T-Market, search for the missing token, and pin it.</Text>
+            <Text>
+              You need to go to{" "}
+              <Link to={paths.tmarket.prefix} onClick={() => closeModal()}>
+                T-Market
+              </Link>
+              , search for the missing token, and pin it.
+            </Text>
             <Text>If it has some balance, it will show in your wallet.</Text>
           </TooltipStack>
         }
