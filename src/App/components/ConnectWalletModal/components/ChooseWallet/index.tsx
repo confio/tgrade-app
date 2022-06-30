@@ -9,8 +9,8 @@ import {
 } from "utils/sdk";
 
 import closeIcon from "../../../../assets/icons/cross.svg";
+import keplrIcon from "../../../../assets/icons/keplr-logo.svg";
 import tgradeIcon from "../../../../assets/icons/tgradeLogo.svg";
-import keplrIcon from "../../../../assets/images/keplr-logo.png";
 import ledgerIcon from "../../../../assets/images/ledger-logo.png";
 import Stack from "../../../Stack/style";
 import WalletButton from "../../../WalletButton";
@@ -53,7 +53,7 @@ export default function ChooseWallet({
           <Stack gap="s1">
             <Text>Currently connected to {getLastConnectedWallet() || ""} wallet:</Text>
             <StyledAddressTag address={address} copyable />
-            <BalancesList />
+            <BalancesList closeModal={closeModal} />
           </Stack>
           <Stack gap="s1">
             <Text>Switch to:</Text>

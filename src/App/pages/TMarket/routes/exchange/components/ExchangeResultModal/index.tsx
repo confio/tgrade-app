@@ -1,4 +1,5 @@
-import copyIcon from "App/assets/icons/copy-white.svg";
+import { Tooltip } from "antd";
+import copyIcon from "App/assets/icons/copy.svg";
 import TransactionDetail, { DetailRow } from "App/pages/TMarket/components/TransactionDetail";
 import { HorizontalDivider, OkButton } from "App/pages/TMarket/components/TransactionDetail/style";
 import { paths } from "App/paths";
@@ -68,7 +69,9 @@ const TxHash = ({ value }: { value: string }): JSX.Element => {
   return (
     <TxHashContainer>
       <StyledTag>{value}</StyledTag>
-      <img src={copyIcon} alt="Copy button" onClick={() => copyToClipboard(value)} />
+      <Tooltip trigger="click" title="Hash Copied">
+        <img src={copyIcon} alt="Copy button" onClick={() => copyToClipboard(value)} />
+      </Tooltip>
     </TxHashContainer>
   );
 };

@@ -144,11 +144,11 @@ export default function WithdrawRewardsContainer({
         {halflifeInfo ? (
           <Row>
             <Cell>
-              <Text>Last halflife event</Text>
+              <Text>Last half-life event</Text>
               <BoldText>{`${halflifeInfo?.lastHalflifeDate.toLocaleDateString()} ${halflifeInfo?.lastHalflifeDate.toLocaleTimeString()}`}</BoldText>
             </Cell>
             <Cell>
-              <Text>Next halflife event</Text>
+              <Text>Next half-life event</Text>
               <BoldText>{`${halflifeInfo?.nextHalflifeDate.toLocaleDateString()} ${halflifeInfo?.nextHalflifeDate.toLocaleTimeString()}`}</BoldText>
             </Cell>
           </Row>
