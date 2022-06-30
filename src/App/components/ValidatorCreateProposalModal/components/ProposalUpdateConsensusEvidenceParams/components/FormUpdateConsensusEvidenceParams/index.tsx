@@ -1,3 +1,4 @@
+import { Typography } from "antd";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
@@ -8,6 +9,8 @@ import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 
 import { ButtonGroup, Separator } from "./style";
+
+const { Text } = Typography;
 
 const maxAgeNumBlocksLabel = "Maximum age of evidence (blocks)";
 const maxAgeDurationLabel = "Maximum age of evidence (seconds)";
@@ -68,6 +71,7 @@ export default function FormUpdateConsensusEvidenceParams({
               <Field label={maxAgeDurationLabel} placeholder="Enter max seconds" optional />
               <Field label={maxBytesLabel} placeholder="Enter max bytes" optional />
               <Field label={commentLabel} placeholder="Enter comment" optional />
+              <Text>Blocks, seconds, or bytes need to be entered</Text>
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />
