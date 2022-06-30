@@ -28,8 +28,11 @@ height:4.875rem;
 color:#fff;
 border-left: 4px solid transparent;
 svg:first-child{
-    margin:0.5rem;
-    width:1.5rem;
+    margin: 0.5rem;
+    width: 100%;
+    height: auto;
+    max-width: 1.5rem;
+    max-height: 1.5rem;
 }
 &:hover{
     background-color:rgba(220,220,220,0.10);
