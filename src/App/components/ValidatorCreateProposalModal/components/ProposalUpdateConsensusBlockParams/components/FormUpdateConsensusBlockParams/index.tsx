@@ -1,3 +1,4 @@
+import { Typography } from "antd";
 import BackButtonOrLink from "App/components/BackButtonOrLink";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
@@ -8,6 +9,8 @@ import { getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 
 import { ButtonGroup, Separator } from "./style";
+
+const { Text } = Typography;
 
 const maxBytesLabel = "Maximum bytes";
 const maxGasLabel = "Maximum gas";
@@ -61,6 +64,7 @@ export default function FormUpdateConsensusBlockParams({
               <Field label={maxBytesLabel} placeholder="Enter max bytes" optional />
               <Field label={maxGasLabel} placeholder="Enter max gas" optional />
               <Field label={commentLabel} placeholder="Enter comment" optional />
+              <Text>Bytes or gas need to be entered</Text>
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />
