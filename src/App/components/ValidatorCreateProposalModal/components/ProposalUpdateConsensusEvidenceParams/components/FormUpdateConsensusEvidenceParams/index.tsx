@@ -21,7 +21,9 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(maxAgeNumBlocksLabel)]: Yup.number().typeError("Max age in blocks must be numeric"),
   [getFormItemName(maxAgeDurationLabel)]: Yup.number().typeError("Max age in seconds must be numeric"),
   [getFormItemName(maxBytesLabel)]: Yup.number().typeError("Max bytes must be numeric"),
-  [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
+  [getFormItemName(commentLabel)]: Yup.string()
+    .required("Comment is required")
+    .typeError("Comment must be alphanumeric"),
 });
 
 export interface FormUpdateConsensusEvidenceParamsValues {
@@ -70,7 +72,7 @@ export default function FormUpdateConsensusEvidenceParams({
               <Field label={maxAgeNumBlocksLabel} placeholder="Enter max blocks" optional />
               <Field label={maxAgeDurationLabel} placeholder="Enter max seconds" optional />
               <Field label={maxBytesLabel} placeholder="Enter max bytes" optional />
-              <Field label={commentLabel} placeholder="Enter comment" optional />
+              <Field label={commentLabel} placeholder="Enter comment" />
               <Text>Blocks, seconds, or bytes need to be entered</Text>
               <Separator />
               <ButtonGroup>

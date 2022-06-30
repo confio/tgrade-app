@@ -12,7 +12,9 @@ import { ButtonGroup, Separator } from "./style";
 const commentLabel = "Comment";
 
 const validationSchema = Yup.object().shape({
-  [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
+  [getFormItemName(commentLabel)]: Yup.string()
+    .required("Comment is required")
+    .typeError("Comment must be alphanumeric"),
 });
 
 export interface FormCancelUpgradeValues {
@@ -42,7 +44,7 @@ export default function FormCancelUpgrade({
         <>
           <Form>
             <Stack gap="s1">
-              <Field label={commentLabel} placeholder="Enter comment" optional />
+              <Field label={commentLabel} placeholder="Enter comment" />
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />

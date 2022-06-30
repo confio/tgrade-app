@@ -18,7 +18,9 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(codeIdsLabel)]: Yup.string()
     .typeError("Code IDs must be alphanumeric")
     .required("Code IDs are required"),
-  [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
+  [getFormItemName(commentLabel)]: Yup.string()
+    .required("Comment is required")
+    .typeError("Comment must be alphanumeric"),
 });
 
 export interface FormPinCodesValues {
@@ -76,7 +78,7 @@ export default function FormPinCodes({
                   setCodeIdsArray(codeIdsArray.filter((codeId) => codeId !== codeIdToRemove))
                 }
               />
-              <Field label={commentLabel} placeholder="Enter comment" optional />
+              <Field label={commentLabel} placeholder="Enter comment" />
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />
