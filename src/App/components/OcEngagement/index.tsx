@@ -44,15 +44,15 @@ export default function OcEngagement(): JSX.Element {
         <Text>{egPoints}</Text>
       </EgDataStack>
       <EgDataStack gap="s-4">
-        <Text>Halflife duration:</Text>
+        <Text>Half-life duration:</Text>
         <Text>{halflifeInfo?.halflifeDuration}</Text>
       </EgDataStack>
       <EgDataStack gap="s-4">
-        <Text>Last halflife event:</Text>
+        <Text>Last half-life event:</Text>
         <Text>{`${halflifeInfo?.lastHalflifeDate.toLocaleDateString()} ${halflifeInfo?.lastHalflifeDate.toLocaleTimeString()}`}</Text>
       </EgDataStack>
       <EgDataStack gap="s-4">
-        <Text>Next halflife event:</Text>
+        <Text>Next half-life event:</Text>
         <Text>{`${halflifeInfo?.nextHalflifeDate.toLocaleDateString()} ${halflifeInfo?.nextHalflifeDate.toLocaleTimeString()}`}</Text>
       </EgDataStack>
     </EngagementStack>
