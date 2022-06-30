@@ -4,7 +4,8 @@ import Field from "App/components/Field";
 import Stack from "App/components/Stack/style";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { getFormItemName } from "utils/forms";
+import { useSdk } from "service";
+import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
 
 import { ButtonGroup, Separator } from "./style";
@@ -12,16 +13,6 @@ import { ButtonGroup, Separator } from "./style";
 const memberLabel = "Member to grant Engagements Points to";
 const pointsLabel = "Number of Engagement Points";
 const commentLabel = "Comment";
-
-const validationSchema = Yup.object().shape({
-  [getFormItemName(memberLabel)]: Yup.string()
-    .typeError("Address must be alphanumeric")
-    .required("Member is required"),
-  [getFormItemName(pointsLabel)]: Yup.number()
-    .typeError("Engagement Points must be numeric")
-    .required("Engagement Points are required"),
-  [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
-});
 
 export interface FormGrantEngagementPointsValues {
   readonly member: string;
@@ -40,6 +31,25 @@ export default function FormGrantEngagementPoints({
   goBack,
   handleSubmit,
 }: FormGrantEngagementPointsProps): JSX.Element {
+  const {
+    sdkState: { config },
+  } = useSdk();
+
+  const validationSchema = Yup.object().shape({
+    [getFormItemName(memberLabel)]: Yup.string()
+      .typeError("Address must be alphanumeric")
+      .required("Member is required")
+      .test(
+        "is-address-valid",
+        "Member address must be valid",
+        (memberAddress) => !memberAddress || isValidAddress(memberAddress, config.addressPrefix),
+      ),
+    [getFormItemName(pointsLabel)]: Yup.number()
+      .typeError("Engagement Points must be numeric")
+      .required("Engagement Points are required"),
+    [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
+  });
+
   return (
     <Formik
       initialValues={{
