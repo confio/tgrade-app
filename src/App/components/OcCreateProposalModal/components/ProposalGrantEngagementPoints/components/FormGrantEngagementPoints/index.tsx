@@ -42,7 +42,7 @@ export default function FormGrantEngagementPoints({
       .test(
         "is-address-valid",
         "Member address must be valid",
-        (memberAddress) => !memberAddress || isValidAddress(memberAddress, config.addressPrefix),
+        (memberAddress) => !memberAddress || isValidAddress(memberAddress.trim(), config.addressPrefix),
       ),
     [getFormItemName(pointsLabel)]: Yup.number()
       .typeError("Engagement Points must be numeric")
