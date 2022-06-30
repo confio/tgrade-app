@@ -88,6 +88,27 @@ export interface VoteListResponse {
   readonly votes: readonly VoteInfo[];
 }
 
+export type ComplaintState = {
+  readonly initiated?: { expiration: Expiration };
+} & {
+  readonly waiting?: { wait_over: Expiration };
+} & { readonly aborted?: Record<string, never> } & { readonly accepted?: Record<string, never> } & {
+  readonly processing?: { arbiters: string };
+} & { readonly closed?: { summary: string; ipfs_link: string } };
+
+export interface Complaint {
+  readonly complaint_id: number;
+  readonly title: string;
+  readonly description: string;
+  readonly plaintiff: string;
+  readonly defendant: string;
+  readonly state: ComplaintState;
+}
+
+export interface ListComplaintsResponse {
+  readonly complaints: readonly Complaint[];
+}
+
 export function getProposalTitle(proposal: ApoolProposal): string {
   const proposalProp = Object.keys(proposal)[0];
 
@@ -101,16 +122,36 @@ export function getProposalTitle(proposal: ApoolProposal): string {
 
 export class ApContractQuerier {
   arbiterPoolAddress?: string;
+  arbiterPoolVotingAddress?: string;
 
   constructor(readonly config: NetworkConfig, protected readonly client: CosmWasmClient) {}
 
+  protected async initAddress(): Promise<void> {
+    if (this.arbiterPoolAddress || this.arbiterPoolVotingAddress) return;
+
+    const tendermintClient = await Tendermint34Client.connect(this.config.rpcUrl);
+    const queryClient = new QueryClient(tendermintClient);
+    const rpcClient = createProtobufRpcClient(queryClient);
+    const queryService = new QueryClientImpl(rpcClient);
+
+    const { address: arbiterPoolAddress } = await queryService.ContractAddress({
+      contractType: PoEContractType.ARBITER_POOL,
+    });
+    const { address: arbiterPoolVotingAddress } = await queryService.ContractAddress({
+      contractType: PoEContractType.ARBITER_POOL_VOTING,
+    });
+
+    this.arbiterPoolAddress = arbiterPoolAddress;
+    this.arbiterPoolVotingAddress = arbiterPoolVotingAddress;
+  }
+
   async getProposals(startAfter?: number): Promise<readonly ProposalResponse[]> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const query = { list_proposals: { start_after: startAfter } };
     const { proposals }: ProposalListResponse = await this.client.queryContractSmart(
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       query,
     );
     return proposals;
@@ -131,11 +172,11 @@ export class ApContractQuerier {
 
   async getProposal(proposalId: number): Promise<ProposalResponse> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const query = { proposal: { proposal_id: proposalId } };
     const proposalResponse: ProposalResponse = await this.client.queryContractSmart(
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       query,
     );
     return proposalResponse;
@@ -143,7 +184,7 @@ export class ApContractQuerier {
 
   async getVotes(proposalId: number, startAfter?: string): Promise<readonly VoteInfo[]> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const query = {
       list_votes: {
@@ -151,7 +192,10 @@ export class ApContractQuerier {
         start_after: startAfter,
       },
     };
-    const { votes }: VoteListResponse = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
+    const { votes }: VoteListResponse = await this.client.queryContractSmart(
+      this.arbiterPoolVotingAddress,
+      query,
+    );
     return votes;
   }
 
@@ -170,20 +214,23 @@ export class ApContractQuerier {
 
   async getVote(proposalId: number, voter: string): Promise<VoteResponse> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const query = { vote: { proposal_id: proposalId, voter } };
-    const voteResponse: VoteResponse = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
+    const voteResponse: VoteResponse = await this.client.queryContractSmart(
+      this.arbiterPoolVotingAddress,
+      query,
+    );
     return voteResponse;
   }
 
   async getVoters(startAfter?: string): Promise<readonly VoterDetail[]> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const query = { list_voters: { start_after: startAfter } };
     const { voters }: VoterListResponse = await this.client.queryContractSmart(
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       query,
     );
     return voters;
@@ -202,18 +249,43 @@ export class ApContractQuerier {
     return voters;
   }
 
-  protected async initAddress(): Promise<void> {
-    if (this.arbiterPoolAddress) return;
+  async getComplaints(startAfter?: number): Promise<readonly Complaint[]> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
 
-    const tendermintClient = await Tendermint34Client.connect(this.config.rpcUrl);
-    const queryClient = new QueryClient(tendermintClient);
-    const rpcClient = createProtobufRpcClient(queryClient);
-    const queryService = new QueryClientImpl(rpcClient);
+    const query = { list_complaints: { start_after: startAfter } };
+    const { complaints }: ListComplaintsResponse = await this.client.queryContractSmart(
+      this.arbiterPoolAddress,
+      query,
+    );
 
-    const { address } = await queryService.ContractAddress({
-      contractType: PoEContractType.ARBITER_POOL_VOTING,
-    });
-    this.arbiterPoolAddress = address;
+    const complaintsWithId: readonly Complaint[] = complaints.map((complaint, index) => ({
+      ...complaint,
+      complaint_id: index,
+    }));
+    return complaintsWithId;
+  }
+
+  async getAllComplaints(): Promise<readonly Complaint[]> {
+    let complaints: readonly Complaint[] = [];
+    let nextComplaints: readonly Complaint[] = [];
+
+    do {
+      const lastComplaintId = complaints.length ? complaints.length - 1 : undefined;
+      nextComplaints = await this.getComplaints(lastComplaintId);
+      complaints = [...complaints, ...nextComplaints];
+    } while (nextComplaints.length);
+
+    return complaints;
+  }
+
+  async getComplaint(complaintId: number): Promise<Complaint> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const query = { complaint: { complaint_id: complaintId } };
+    const complaint = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
+    return { ...complaint, complaint_id: complaintId };
   }
 }
 
@@ -222,6 +294,10 @@ export class ApContract extends ApContractQuerier {
   static readonly GAS_VOTE = 200_000;
   static readonly GAS_EXECUTE = 500_000;
   static readonly GAS_CLOSE = 500_000;
+  static readonly GAS_REGISTER_COMPLAINT = 500_000;
+  static readonly GAS_ACCEPT_COMPLAINT = 500_000;
+  static readonly GAS_WITHDRAW_COMPLAINT = 500_000;
+  static readonly GAS_RENDER_DECISION = 500_000;
 
   readonly #signingClient: SigningCosmWasmClient;
 
@@ -236,14 +312,14 @@ export class ApContract extends ApContractQuerier {
     proposal: ApoolProposal,
   ): Promise<APoolProposeResponse> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("communityPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const title = getProposalTitle(proposal);
     const msg = { propose: { title, description, proposal } };
 
     const result = await this.#signingClient.execute(
       senderAddress,
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       msg,
       calculateFee(ApContract.GAS_PROPOSE, this.config.gasPrice),
     );
@@ -260,12 +336,12 @@ export class ApContract extends ApContractQuerier {
 
   async voteProposal(senderAddress: string, proposalId: number, vote: VoteOption): Promise<string> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const msg = { vote: { proposal_id: proposalId, vote } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       msg,
       calculateFee(ApContract.GAS_VOTE, this.config.gasPrice),
     );
@@ -274,14 +350,83 @@ export class ApContract extends ApContractQuerier {
 
   async executeProposal(senderAddress: string, proposalId: number): Promise<string> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const msg = { execute: { proposal_id: proposalId } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       msg,
       calculateFee(ApContract.GAS_EXECUTE, this.config.gasPrice),
+    );
+    return transactionHash;
+  }
+
+  async registerComplaint(
+    senderAddress: string,
+    title: string,
+    description: string,
+    defendant: string,
+  ): Promise<string> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const msg = { register_complaint: { title, description, defendant } };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.arbiterPoolAddress,
+      msg,
+      calculateFee(ApContract.GAS_REGISTER_COMPLAINT, this.config.gasPrice),
+    );
+    return transactionHash;
+
+    // TODO return complaintId too, getting it from the logs events
+    // return { txHash: result.transactionHash, complaintId };
+  }
+
+  async acceptComplaint(senderAddress: string, complaintId: number): Promise<string> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const msg = { accept_complaint: { complaint_id: complaintId } };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.arbiterPoolAddress,
+      msg,
+      calculateFee(ApContract.GAS_ACCEPT_COMPLAINT, this.config.gasPrice),
+    );
+    return transactionHash;
+  }
+
+  async withdrawComplaint(senderAddress: string, complaintId: number, reason: string): Promise<string> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const msg = { withdraw_complaint: { complaint_id: complaintId, reason } };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.arbiterPoolAddress,
+      msg,
+      calculateFee(ApContract.GAS_WITHDRAW_COMPLAINT, this.config.gasPrice),
+    );
+    return transactionHash;
+  }
+
+  async renderDecision(
+    senderAddress: string,
+    complaintId: number,
+    summary: string,
+    ipfsLink: string,
+  ): Promise<string> {
+    await this.initAddress();
+    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+
+    const msg = { render_decision: { complaint_id: complaintId, summary, ipfs_link: ipfsLink } };
+    const { transactionHash } = await this.#signingClient.execute(
+      senderAddress,
+      this.arbiterPoolAddress,
+      msg,
+      calculateFee(ApContract.GAS_RENDER_DECISION, this.config.gasPrice),
     );
     return transactionHash;
   }
