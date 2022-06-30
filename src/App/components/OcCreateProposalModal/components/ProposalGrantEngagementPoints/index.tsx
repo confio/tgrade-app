@@ -35,7 +35,7 @@ export default function ProposalGrantEngagementPoints({
   const [comment, setComment] = useState("");
 
   async function submitGrantEngagementPoints({ member, points, comment }: FormGrantEngagementPointsValues) {
-    setMember(member);
+    setMember(member.trim());
     setPoints(points);
     setComment(comment);
     setProposalStep({ type: ProposalType.GrantEngagementPoints, confirmation: true });
