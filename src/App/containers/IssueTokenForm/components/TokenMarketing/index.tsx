@@ -94,7 +94,12 @@ export default function TokenMarketing({
                   </FieldWrapper>
                   <Field label={descriptionLabel} placeholder="Enter description" optional />
                   <FieldWrapper>
-                    <Field label={dsoAddressLabel} placeholder="Enter address" optional />
+                    <Field
+                      label={dsoAddressLabel}
+                      placeholder="Enter address"
+                      tooltip="Associating the asset with a Trusted Circle will create a Trusted Token. Leaving this field empty will create a CW20 token."
+                      optional
+                    />
                   </FieldWrapper>
                   <Separator />
                   <ModalButtons
