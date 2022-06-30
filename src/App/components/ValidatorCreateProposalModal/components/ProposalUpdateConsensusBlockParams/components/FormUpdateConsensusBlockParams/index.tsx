@@ -16,7 +16,7 @@ const commentLabel = "Comment";
 const validationSchema = Yup.object().shape({
   [getFormItemName(maxBytesLabel)]: Yup.number().typeError("Max bytes must be numeric"),
   [getFormItemName(maxGasLabel)]: Yup.number().typeError("Max gas must be numeric"),
-  [getFormItemName(commentLabel)]: Yup.number().typeError("Comment must be numeric"),
+  [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
 });
 
 export interface FormUpdateConsensusBlockParamsValues {
