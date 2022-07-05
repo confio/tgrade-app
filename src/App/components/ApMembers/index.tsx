@@ -1,8 +1,8 @@
 import { Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { ApContractQuerier, EscrowResponse, EscrowStatus, MemberStatus } from "utils/arbiterPool";
 
+//import { ApContractQuerier, EscrowResponse, EscrowStatus, MemberStatus } from "utils/arbiterPool";
 import { MemberCount, MemberCounts, MembersStack } from "./style";
 
 const { Title, Text } = Typography;
@@ -13,15 +13,15 @@ export default function ApMembers(): JSX.Element {
     sdkState: { client, config, address },
   } = useSdk();
   const [numVoters, setNumVoters] = useState(0);
-  const [membership, setMembership] = useState<MemberStatus>();
+  //const [membership, setMembership] = useState<MemberStatus>();
 
-  useEffect(() => {
+  /*  useEffect(() => {
     (async function updateNumMembers() {
       if (!client) return;
 
       try {
         const ApContract = new ApContractQuerier(config, client);
-        const members = await ApContract.getAllVotingMembers();
+        const members = await ApContract.getAllVoters();
 
         const memberEscrowPromises = members.map(({ addr }) => ApContract.getEscrow(addr));
         const memberEscrowResults = await Promise.allSettled(memberEscrowPromises);
@@ -43,9 +43,9 @@ export default function ApMembers(): JSX.Element {
         handleError(error);
       }
     })();
-  }, [client, config, handleError]);
+  }, [client, config, handleError]);*/
 
-  useEffect(() => {
+  /*  useEffect(() => {
     (async function queryMembership() {
       if (!client || !address) return;
 
@@ -63,21 +63,21 @@ export default function ApMembers(): JSX.Element {
         //handleError(error);
       }
     })();
-  }, [address, client]);
+  }, [address, client]);*/
 
   return (
     <MembersStack>
       <Title level={2}>Member(s)</Title>
-      {membership?.leaving ? <Text>You are in the process of leaving this Trusted Circle</Text> : null}
+      {/*      {membership?.leaving ? <Text>You are in the process of leaving this Trusted Circle</Text> : null}
       {membership?.pending ? (
         <Text>You need to deposit the required escrow to gain voting rights</Text>
       ) : null}
-      {membership?.pending_paid ? <Text>You will become a voting member soon</Text> : null}
+      {membership?.pending_paid ? <Text>You will become a voting member soon</Text> : null}*/}
       <MemberCounts>
         <MemberCount>
           <Text>{numVoters}</Text>
           <Text>voting member(s)</Text>
-          {membership?.voting ? <Text>(you)</Text> : null}
+          {/*          {membership?.voting ? <Text>(you)</Text> : null}*/}
         </MemberCount>
       </MemberCounts>
     </MembersStack>

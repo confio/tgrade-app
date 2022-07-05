@@ -5,46 +5,26 @@ import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
 import { lazy, useState } from "react";
 
-import ProposalOpenText from "./components/ProposalOpenText";
 import SelectProposal from "./components/SelectProposal";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
 
-const ProposalAddOCMembers = lazy(() => import("./components/ProposalAddApMembers"));
-const ProposalPunishOCMember = lazy(() => import("./components/ProposalPunishOCMember"));
-const ProposalGrantEngagementPoints = lazy(() => import("./components/ProposalGrantEngagementPoints"));
-const ProposalPunishValidator = lazy(() => import("./components/ProposalPunishValidator"));
-const ProposalUnjailValidator = lazy(() => import("./components/ProposalUnjailValidator"));
+const ProposalOpenText = lazy(() => import("./components/ProposalOpenText"));
 
 const { Title, Text } = Typography;
 const { Step } = Steps;
 
 export enum ProposalType {
-  AddOCMembers = "add-oc-members",
-  PunishOCMember = "punish-oc-member",
-  GrantEngagementPoints = "grant-engagement-points",
-  PunishValidator = "punish-validator",
-  UnjailValidator = "unjail-validator",
   OpenText = "open-text",
 }
 
 export const proposalLabels = {
-  [ProposalType.UnjailValidator]: "Create a new Dispute",
-  [ProposalType.PunishOCMember]: "Add Arbiter Pool member(s) to hear dispute",
-  [ProposalType.GrantEngagementPoints]: "Remove Arbiter Pool members from a dispute",
-  [ProposalType.AddOCMembers]: "Add member(s)",
-  [ProposalType.PunishValidator]: "Remove member(s)",
-  [ProposalType.OpenText]: "Open Text Proposal",
+  [ProposalType.OpenText]: "Open text proposal",
 };
 
 export const proposalTitles = {
   newProposal: "New proposal",
-  [ProposalType.UnjailValidator]: "Create a new Dispute",
-  [ProposalType.PunishOCMember]: "Add Arbiter Pool member(s) to hear dispute",
-  [ProposalType.GrantEngagementPoints]: "Remove Arbiter Pool members from a dispute",
-  [ProposalType.AddOCMembers]: "Add member(s)",
-  [ProposalType.PunishValidator]: "Remove member(s)",
-  [ProposalType.OpenText]: "Open Text Proposal",
+  ...proposalLabels,
   confirmation: "Confirmation",
 };
 
@@ -62,17 +42,17 @@ function getCurrentStepIndex(step?: ProposalStep): number {
   return step?.confirmation ? 2 : step?.type ? 1 : 0;
 }
 
-interface ApCreateProposalModalProps {
+interface APoolCreateProposalModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly refreshProposals: () => void;
 }
 
-export default function OcCreateProposalModal({
+export default function APoolCreateProposalModal({
   isModalOpen,
   closeModal,
   refreshProposals,
-}: ApCreateProposalModalProps): JSX.Element {
+}: APoolCreateProposalModalProps): JSX.Element {
   const [proposalStep, setProposalStep] = useState<ProposalStep>();
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
@@ -123,7 +103,7 @@ export default function OcCreateProposalModal({
           <ModalHeader>
             <Typography>
               <Title>{getTitleFromStep(proposalStep)}</Title>
-              <Text>Arbiter Pool</Text>
+              <Text>Community Pool</Text>
             </Typography>
             <Steps size="small" current={getCurrentStepIndex(proposalStep)}>
               <Step />
@@ -135,46 +115,6 @@ export default function OcCreateProposalModal({
           <Separator />
           {!proposalStep ? (
             <SelectProposal setProposalStep={setProposalStep} />
-          ) : proposalStep.type === ProposalType.AddOCMembers ? (
-            <ProposalAddOCMembers
-              proposalStep={proposalStep}
-              setProposalStep={setProposalStep}
-              isSubmitting={isSubmitting}
-              setSubmitting={setSubmitting}
-              setTxResult={setTxResult}
-            />
-          ) : proposalStep.type === ProposalType.PunishOCMember ? (
-            <ProposalPunishOCMember
-              proposalStep={proposalStep}
-              setProposalStep={setProposalStep}
-              isSubmitting={isSubmitting}
-              setSubmitting={setSubmitting}
-              setTxResult={setTxResult}
-            />
-          ) : proposalStep.type === ProposalType.GrantEngagementPoints ? (
-            <ProposalGrantEngagementPoints
-              proposalStep={proposalStep}
-              setProposalStep={setProposalStep}
-              isSubmitting={isSubmitting}
-              setSubmitting={setSubmitting}
-              setTxResult={setTxResult}
-            />
-          ) : proposalStep.type === ProposalType.PunishValidator ? (
-            <ProposalPunishValidator
-              proposalStep={proposalStep}
-              setProposalStep={setProposalStep}
-              isSubmitting={isSubmitting}
-              setSubmitting={setSubmitting}
-              setTxResult={setTxResult}
-            />
-          ) : proposalStep.type === ProposalType.UnjailValidator ? (
-            <ProposalUnjailValidator
-              proposalStep={proposalStep}
-              setProposalStep={setProposalStep}
-              isSubmitting={isSubmitting}
-              setSubmitting={setSubmitting}
-              setTxResult={setTxResult}
-            />
           ) : proposalStep.type === ProposalType.OpenText ? (
             <ProposalOpenText
               proposalStep={proposalStep}

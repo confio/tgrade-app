@@ -26,7 +26,9 @@ const validationSchema = Yup.object().shape({
   [getFormItemName(infoLabel)]: Yup.string()
     .typeError("Info must be alphanumeric")
     .required("Info is required"),
-  [getFormItemName(commentLabel)]: Yup.string().typeError("Comment must be alphanumeric"),
+  [getFormItemName(commentLabel)]: Yup.string()
+    .required("Comment is required")
+    .typeError("Comment must be alphanumeric"),
 });
 
 export interface FormRegisterUpgradeValues {
@@ -75,7 +77,7 @@ export default function FormRegisterUpgrade({
               <Field label={nameLabel} placeholder="Enter name" />
               <Field label={heightLabel} placeholder="Enter height" />
               <Field label={infoLabel} placeholder="Enter info" />
-              <Field label={commentLabel} placeholder="Enter comment" optional />
+              <Field label={commentLabel} placeholder="Enter comment" />
               <Separator />
               <ButtonGroup>
                 <BackButtonOrLink onClick={() => goBack()} text="Back" />

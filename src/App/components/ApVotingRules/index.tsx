@@ -24,15 +24,15 @@ export default function ApVotingRules(): JSX.Element {
 
       try {
         const apContract = new ApContractQuerier(config, client);
-        const apResponse = await apContract.getOc();
+        /*        const apResponse = await apContract.getOc();
         const quorum = (parseFloat(apResponse.rules.quorum) * 100).toFixed(2).toString();
         const threshold = (parseFloat(apResponse.rules.threshold) * 100).toFixed(2).toString();
-        const allowEndEarly = apResponse.rules.allow_end_early ? "Yes" : "No";
+        const allowEndEarly = apResponse.rules.allow_end_early ? "Yes" : "No";*/
 
         setQuorum(quorum);
         setQuorum(quorum);
         setThreshold(threshold);
-        setVotingDuration(apResponse.rules.voting_period.toString());
+        //setVotingDuration(apResponse.rules.voting_period.toString());
         setAllowEndEarly(allowEndEarly);
       } catch (error) {
         if (!(error instanceof Error)) return;

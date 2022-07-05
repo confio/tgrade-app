@@ -12,6 +12,17 @@ export const TooltipStack = styled(Stack)`
       font-weight: bolder;
     }
   }
+
+  & a,
+  & a:hover {
+    color: white;
+    text-decoration: underline;
+    font-weight: bolder;
+  }
+
+  & a:hover {
+    text-decoration: none;
+  }
 `;
 
 export const SearchToken = styled(Input.Search)`

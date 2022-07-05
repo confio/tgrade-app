@@ -6,23 +6,28 @@ import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import {
+  ApContractQuerier,
+  Complaint,
+  ComplaintState,
+  Cw3Status,
   getProposalTitle,
-  isOcProposalResponse,
-  MixedProposalResponse,
-  MixedProposalResponseId,
-} from "utils/oversightCommunity";
-import { Cw3Status, isTcProposalResponse } from "utils/trustedCircle";
+  ProposalResponse,
+} from "utils/arbiterPool";
 
-import { ApContractQuerier } from "../../../utils/arbiterPool";
 import ApVotingRules from "../ApVotingRules";
 import Stack from "../Stack/style";
-import { EscrowEngagementContainer, ProposalsContainer, StatusBlock, StatusParagraph } from "./style";
+import {
+  ProposalsContainer as ComplaintsContainer,
+  ProposalsContainer,
+  StatusBlock,
+  StatusParagraph,
+} from "./style";
 
-const OcCreateProposalModal = lazy(() => import("App/components/ApCreateProposalModal"));
-const OcProposalDetailModal = lazy(() => import("App/components/ApProposalDetailModal"));
+const ApCreateProposalModal = lazy(() => import("App/components/ApCreateProposalModal"));
+const ApCreateComplaintModal = lazy(() => import("App/components/ApCreateComplaintModal"));
+const ApProposalDetailModal = lazy(() => import("App/components/ApProposalDetailModal"));
+const ApComplaintDetailModal = lazy(() => import("App/components/ApComplaintDetailModal"));
 const ArbiterPoolIdActions = lazy(() => import("App/components/ApIdActions"));
-const ArbiterPoolEscrow = lazy(() => import("App/components/ApEscrow"));
-const ArbiterPoolMembers = lazy(() => import("App/components/ApMembers"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
@@ -39,44 +44,31 @@ function getImgSrcFromStatus(status: Cw3Status) {
   }
 }
 
-const columns = [
+const proposalColumns = [
   {
-    title: "ID",
-    dataIndex: "mixedId",
-    key: "mixedId",
+    title: "Nº",
+    dataIndex: "id",
+    key: "id",
     width: "5%",
-    sorter: (a: MixedProposalResponse, b: MixedProposalResponse) => {
-      if (
-        (isTcProposalResponse(a) && isTcProposalResponse(b)) ||
-        (isOcProposalResponse(a) && isOcProposalResponse(b))
-      )
-        return a.id - b.id;
-
-      if (a.mixedId < b.mixedId) return -1;
-      if (a.mixedId > b.mixedId) return 1;
-
-      return 0;
-    },
+    sorter: (a: ProposalResponse, b: ProposalResponse) => a.id - b.id,
   },
   {
     title: "Type",
     key: "title",
     width: "25%",
-    render: (record: MixedProposalResponse) => getProposalTitle(record.proposal),
+    render: (record: ProposalResponse) => getProposalTitle(record.proposal),
   },
   {
     title: "Description",
     key: "description",
     width: "45%",
-    render: (record: MixedProposalResponse) => (
-      <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>
-    ),
+    render: (record: ProposalResponse) => <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>,
   },
   {
     title: "Due date",
     key: "expires",
-    width: "15%",
-    render: (record: MixedProposalResponse) => {
+    width: "10%",
+    render: (record: ProposalResponse) => {
       const expiryTime =
         Number(typeof record.expires === "string" ? record.expires : record.expires.at_time) / 1000000;
       const formatedDate = new Date(expiryTime).toLocaleDateString();
@@ -88,7 +80,7 @@ const columns = [
         </>
       );
     },
-    sorter: (a: MixedProposalResponse, b: MixedProposalResponse) => {
+    sorter: (a: ProposalResponse, b: ProposalResponse) => {
       const aExpiryTime = Number(typeof a.expires === "string" ? a.expires : a.expires.at_time) / 1000000;
       const bExpiryTime = Number(typeof b.expires === "string" ? b.expires : b.expires.at_time) / 1000000;
       return bExpiryTime - aExpiryTime;
@@ -98,8 +90,8 @@ const columns = [
   {
     title: "Status",
     key: "status",
-    width: "15%",
-    render: (record: MixedProposalResponse) => (
+    width: "10%",
+    render: (record: ProposalResponse) => (
       <StatusBlock>
         <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
@@ -110,7 +102,7 @@ const columns = [
         <Paragraph>Abstained: {record.votes.abstain ?? 0}</Paragraph>
       </StatusBlock>
     ),
-    sorter: (a: MixedProposalResponse, b: MixedProposalResponse) => {
+    sorter: (a: ProposalResponse, b: ProposalResponse) => {
       function getSortNumFromStatus(status: Cw3Status): number {
         switch (status) {
           case "executed":
@@ -134,17 +126,84 @@ const columns = [
   },
 ];
 
+const complaintColumns = [
+  {
+    title: "Nº",
+    dataIndex: "complaint_id",
+    key: "complaint_id",
+    width: "5%",
+    sorter: (a: Complaint, b: Complaint) => a.complaint_id - b.complaint_id,
+  },
+  {
+    title: "Title",
+    key: "title",
+    width: "25%",
+  },
+  {
+    title: "Defendant",
+    key: "defendant",
+    width: "10%",
+  },
+  {
+    title: "Plaintiff",
+    key: "plaintiff",
+    width: "10%",
+  },
+  {
+    title: "Description",
+    key: "description",
+    width: "45%",
+    render: (record: Complaint) => <Paragraph ellipsis={{ rows: 4 }}>{record.description}</Paragraph>,
+  },
+  {
+    title: "State",
+    key: "state",
+    width: "10%",
+    render: (record: Complaint) => {
+      const state = Object.keys(record.state)[0];
+      const capitalizedState = state.charAt(0).toUpperCase() + state.slice(1);
+      return capitalizedState;
+    },
+    sorter: (a: Complaint, b: Complaint) => {
+      function getSortNumFromState(state: ComplaintState): number {
+        switch (state) {
+          case "waiting":
+            return 1;
+          case "initiated":
+            return 2;
+          case "processing":
+            return 3;
+          case "accepted":
+            return 4;
+          case "closed":
+            return 5;
+          case "aborted":
+            return 6;
+          default:
+            return 7;
+        }
+      }
+
+      return getSortNumFromState(b.state) - getSortNumFromState(a.state);
+    },
+  },
+];
+
 export default function ArbiterPoolDetail(): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, client, address },
   } = useSdk();
 
-  const [isTableLoading, setTableLoading] = useState(true);
+  const [isProposalsTableLoading, setProposalsTableLoading] = useState(true);
+  const [isComplaintsTableLoading, setComplaintsTableLoading] = useState(true);
   const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
+  const [isCreateComplaintModalOpen, setCreateComplaintModalOpen] = useState(false);
 
-  const [proposals, setProposals] = useState<readonly MixedProposalResponse[]>([]);
-  const [clickedProposal, setClickedProposal] = useState<MixedProposalResponseId>();
+  const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
+  const [complaints, setComplaints] = useState<readonly Complaint[]>([]);
+  const [clickedProposal, setClickedProposal] = useState<number>();
+  const [clickedComplaint, setClickedComplaint] = useState<number>();
   const [isVotingMember, setVotingMember] = useState(false);
 
   const refreshProposals = useCallback(async () => {
@@ -152,29 +211,44 @@ export default function ArbiterPoolDetail(): JSX.Element {
 
     try {
       const apContract = new ApContractQuerier(config, client);
-      const proposals = await apContract.getAllMixedProposals();
+      const proposals = await apContract.getAllProposals();
       setProposals(proposals);
 
-      const isVotingMember = (await apContract.getAllVotingMembers()).some(
-        (member) => member.addr === address,
-      );
-      setVotingMember(true);
+      const isVotingMember = (await apContract.getAllVoters()).some((member) => member.addr === address);
+      setVotingMember(isVotingMember);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
     } finally {
-      setTableLoading(false);
+      setProposalsTableLoading(false);
     }
   }, [address, client, config, handleError]);
 
+  const refreshComplaints = useCallback(async () => {
+    if (!client) return;
+
+    try {
+      const apContract = new ApContractQuerier(config, client);
+      const complaints = await apContract.getAllComplaints();
+      setComplaints(complaints);
+    } catch (error) {
+      if (!(error instanceof Error)) return;
+      handleError(error);
+    } finally {
+      setComplaintsTableLoading(false);
+    }
+  }, [client, config, handleError]);
+
   useEffect(() => {
     refreshProposals();
-  }, [refreshProposals]);
+    refreshComplaints();
+  }, [refreshComplaints, refreshProposals]);
 
   return (
     <>
       <Stack style={{ width: "100%" }}>
         <ArbiterPoolIdActions />
+        <ApVotingRules />
         <ProposalsContainer>
           <header>
             <Title level={2} style={{ fontSize: "var(--s1)" }}>
@@ -185,32 +259,62 @@ export default function ArbiterPoolDetail(): JSX.Element {
             )}
           </header>
           <Table
-            loading={isTableLoading}
+            loading={isProposalsTableLoading}
             pagination={{ pageSize: 2, position: ["bottomCenter"], hideOnSinglePage: true }}
-            columns={columns}
+            columns={proposalColumns}
             dataSource={proposals}
-            rowKey={(record: MixedProposalResponse) => record.mixedId}
-            onRow={(record: MixedProposalResponse) => ({
-              onClick: () => setClickedProposal(record.mixedId),
+            rowKey={(record: ProposalResponse) => record.id}
+            onRow={(record: ProposalResponse) => ({
+              onClick: () => setClickedProposal(record.id),
             })}
           />
-          <ApVotingRules />
         </ProposalsContainer>
-        <EscrowEngagementContainer>
-          <ArbiterPoolEscrow />
-          <ArbiterPoolMembers />
-        </EscrowEngagementContainer>
+        <ComplaintsContainer>
+          <header>
+            <Title level={2} style={{ fontSize: "var(--s1)" }}>
+              Complaints
+            </Title>
+            <ButtonAddNew text="Register complaint" onClick={() => setCreateComplaintModalOpen(true)} />
+          </header>
+          <Table
+            loading={isComplaintsTableLoading}
+            pagination={{ pageSize: 2, position: ["bottomCenter"], hideOnSinglePage: true }}
+            columns={complaintColumns}
+            dataSource={complaints}
+            rowKey={(record: Complaint) => record.complaint_id}
+            onRow={(record: Complaint) => ({
+              onClick: () => setClickedComplaint(record.complaint_id),
+            })}
+          />
+        </ComplaintsContainer>
       </Stack>
-      <OcCreateProposalModal
+      <ApCreateProposalModal
         isModalOpen={isCreateProposalModalOpen}
         closeModal={() => setCreateProposalModalOpen(false)}
         refreshProposals={refreshProposals}
       />
-      <OcProposalDetailModal
+      {/* TODO Nº1: Implement this component. It should be a form that allows ApContract.registerComplaint() */}
+      <ApCreateComplaintModal
+        isModalOpen={isCreateComplaintModalOpen}
+        closeModal={() => setCreateComplaintModalOpen(false)}
+        refreshComplaints={refreshComplaints}
+      />
+      <ApProposalDetailModal
         isModalOpen={!!clickedProposal}
         closeModal={() => setClickedProposal(undefined)}
-        mixedProposalId={clickedProposal}
+        proposalId={clickedProposal}
         refreshProposals={refreshProposals}
+      />
+      {/* TODO Nº2: Implement this component. It should be a form that shows Complaint details and allows:
+      - ApContract.acceptComplaint()
+      - ApContract.withdrawComplaint()
+      - ApContract.renderDecision()
+      */}
+      <ApComplaintDetailModal
+        isModalOpen={!!clickedComplaint}
+        closeModal={() => setClickedComplaint(undefined)}
+        proposalId={clickedComplaint}
+        refreshComplaints={refreshComplaints}
       />
     </>
   );
