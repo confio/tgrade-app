@@ -1,43 +1,61 @@
-import BackButtonOrLink from "App/components/BackButtonOrLink";
+import Title from "antd/es/typography/Title";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { getFormItemName } from "utils/forms";
+import { getFormItemName, isValidAddress } from "utils/forms";
 import * as Yup from "yup";
 
+import { config } from "../../../../../config/network";
+import { defendantAddressLabel } from "../../../DistributionModal/components/DelegateContainer/DelegateForm";
 import { ButtonGroup, FormStack, Separator } from "./style";
 
-const textLabel = "Text";
+const titleLabel = "Title";
+const descriptionLabel = "Description";
+const defendantLabel = "Defendant";
 
-const validationSchema = Yup.object().shape({
-  [getFormItemName(textLabel)]: Yup.string()
-    .typeError("Text must be alphanumeric")
-    .required("Text is required")
-    .min(10, "Text length should be between 10 and 500 characters")
-    .max(500, "Text length should be between 10 and 500 characters"),
-});
-
-export interface FormOpenTextValues {
-  readonly text: string;
+export interface FormRegisterComplaintValues {
+  readonly title: string;
+  readonly description: string;
+  readonly defendant: string;
 }
 
-interface FormOpenTextProps extends FormOpenTextValues {
-  readonly goBack: () => void;
-  readonly handleSubmit: (values: FormOpenTextValues) => void;
+interface FormRegisterComplaintProps extends FormRegisterComplaintValues {
+  readonly goBack?: () => void;
+  readonly handleSubmit: (values: FormRegisterComplaintValues) => void;
 }
 
-export default function FormOpenText({ text, goBack, handleSubmit }: FormOpenTextProps): JSX.Element {
+export default function FormRegisterComplaint({
+  title,
+  description,
+  defendant,
+  handleSubmit,
+}: FormRegisterComplaintProps): JSX.Element {
+  const validationSchema = Yup.object().shape({
+    [getFormItemName(defendantAddressLabel)]: Yup.string()
+      .typeError("Defendant address must be alphanumeric")
+      .required("Defendant address is required")
+      .test(
+        "is-address-valid",
+        "defendant address must be valid",
+        (defendantAddress) => !defendantAddress || isValidAddress(defendantAddress, config.addressPrefix),
+      ),
+  });
+
   return (
     <Formik
       initialValues={{
-        [getFormItemName(textLabel)]: text,
+        [getFormItemName(titleLabel)]: title,
+        [getFormItemName(descriptionLabel)]: description,
+        [getFormItemName(defendantLabel)]: defendantLabel,
       }}
       enableReinitialize
       validationSchema={validationSchema}
       onSubmit={(values) =>
         handleSubmit({
-          text: values[getFormItemName(textLabel)],
+          title: values[getFormItemName(titleLabel)],
+          description: values[getFormItemName(descriptionLabel)],
+          defendant: values[getFormItemName(defendantLabel)],
         })
       }
     >
@@ -45,12 +63,14 @@ export default function FormOpenText({ text, goBack, handleSubmit }: FormOpenTex
         <>
           <Form>
             <FormStack gap="s1">
-              <Field label={textLabel} placeholder="Enter proposal text" textArea />
+              <Field label={titleLabel} placeholder="Enter details of complains" />
+              <Field label={descriptionLabel} placeholder="Enter details of complains" textArea />
+              <Field label={defendantLabel} placeholder="Enter details of complains"></Field>
               <Separator />
               <ButtonGroup>
-                <BackButtonOrLink onClick={() => goBack()} text="Back" />
+                {/*<BackButtonOrLink onClick={() => goBack()} text="Back" />*/}
                 <Button disabled={!isValid} onClick={() => submitForm()}>
-                  <div>Create proposal</div>
+                  <div>Submit</div>
                 </Button>
               </ButtonGroup>
             </FormStack>

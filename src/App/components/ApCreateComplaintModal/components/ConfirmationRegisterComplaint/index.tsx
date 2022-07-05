@@ -7,12 +7,14 @@ import { useError, useSdk } from "service";
 import { ApContract } from "utils/arbiterPool";
 import { getDisplayAmountFromFee } from "utils/currency";
 
+import { ProposalStep } from "../../../ApCreateProposalModal";
 import { ButtonGroup, FeeGroup, ProposalText, Separator } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
 const { Paragraph } = Typography;
 
 interface ConfirmationOpenTextProps {
+  readonly proposalStep: ProposalStep;
   readonly text: string;
   readonly isSubmitting: boolean;
   readonly goBack: () => void;

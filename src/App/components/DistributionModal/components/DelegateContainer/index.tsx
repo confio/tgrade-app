@@ -7,7 +7,7 @@ import { getFormItemName, isValidAddress } from "utils/forms";
 import { EngagementContract, EngagementContractQuerier } from "utils/poeEngagement";
 import * as Yup from "yup";
 
-import DelegateForm, { delegatedAddressLabel, FormDelegateValues } from "./DelegateForm";
+import DelegateForm, { defendantAddressLabel, FormDelegateValues } from "./DelegateForm";
 
 const { Text } = Typography;
 
@@ -38,7 +38,7 @@ export default function DelegateContainer({
   }, [address, egContract]);
 
   const delegateValidationSchema = Yup.object().shape({
-    [getFormItemName(delegatedAddressLabel)]: Yup.string()
+    [getFormItemName(defendantAddressLabel)]: Yup.string()
       .typeError("Delegated address must be alphanumeric")
       .required("Delegated address is required")
       .test(

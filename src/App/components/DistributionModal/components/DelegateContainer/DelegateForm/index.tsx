@@ -6,7 +6,7 @@ import { getFormItemName } from "utils/forms";
 
 import { ButtonGroup, DelegateStack } from "./style";
 
-export const delegatedAddressLabel = "Delegated withdrawal to";
+export const defendantAddressLabel = "Delegated withdrawal to";
 
 export interface FormDelegateValues {
   readonly delegatedAddress: string;
@@ -26,24 +26,24 @@ export default function DelegateForm({
 }: DelegateFormProps): JSX.Element | null {
   return (
     <Formik
-      initialValues={{ [getFormItemName(delegatedAddressLabel)]: delegatedAddress }}
+      initialValues={{ [getFormItemName(defendantAddressLabel)]: delegatedAddress }}
       enableReinitialize
       validationSchema={delegateValidationSchema}
       onSubmit={(values) =>
-        submitDelegate({ delegatedAddress: values[getFormItemName(delegatedAddressLabel)] })
+        submitDelegate({ delegatedAddress: values[getFormItemName(defendantAddressLabel)] })
       }
     >
       {({ submitForm, isValid, isSubmitting, setSubmitting, values }) => (
         <>
           <Form>
             <DelegateStack gap="s1">
-              <Field label={delegatedAddressLabel} placeholder="Enter delegated address" />
+              <Field label={defendantAddressLabel} placeholder="Enter delegated address" />
               <ButtonGroup>
                 <Button
                   disabled={
                     !isValid ||
                     isSubmitting ||
-                    delegatedAddress === values[getFormItemName(delegatedAddressLabel)]
+                    delegatedAddress === values[getFormItemName(defendantAddressLabel)]
                   }
                   onClick={() => submitForm()}
                 >
