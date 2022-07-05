@@ -19,7 +19,7 @@ interface ConfirmationOpenTextProps {
   readonly submitForm: () => void;
 }
 
-export default function ConfirmationOpenText({
+export default function ConfirmationRegisterComplaint({
   text,
   isSubmitting,
   goBack,

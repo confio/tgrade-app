@@ -3,46 +3,15 @@ import closeIcon from "App/assets/icons/cross.svg";
 import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
-import { lazy, useState } from "react";
+import { useState } from "react";
 
-import SelectProposal from "./components/SelectProposal";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
 import { ModalHeader, Separator, StyledModal } from "./style";
-
-const ProposalOpenText = lazy(() => import("./components/ProposalOpenText"));
 
 const { Title, Text } = Typography;
 const { Step } = Steps;
 
-export enum ProposalType {
-  OpenText = "open-text",
-}
-
-export const proposalLabels = {
-  [ProposalType.OpenText]: "Open text proposal",
-};
-
-export const proposalTitles = {
-  newProposal: "New proposal",
-  ...proposalLabels,
-  confirmation: "Confirmation",
-};
-
-export type ProposalStep = { type: ProposalType; confirmation?: true };
-
-function getTitleFromStep(step?: ProposalStep): string {
-  return step?.confirmation
-    ? proposalTitles.confirmation
-    : step
-    ? proposalTitles[step.type]
-    : proposalTitles.newProposal;
-}
-
-function getCurrentStepIndex(step?: ProposalStep): number {
-  return step?.confirmation ? 2 : step?.type ? 1 : 0;
-}
-
-interface ApCreateComplaintModalProps {
+interface APoolCreateComplaintModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly refreshComplaints: () => void;
@@ -52,19 +21,16 @@ export default function ApCreateComplaintModal({
   isModalOpen,
   closeModal,
   refreshComplaints,
-}: ApCreateComplaintModalProps): JSX.Element {
-  const [proposalStep, setProposalStep] = useState<ProposalStep>();
+}: APoolCreateComplaintModalProps): JSX.Element {
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
 
   function tryAgain() {
-    setProposalStep(proposalStep ? { type: proposalStep.type } : undefined);
     setTxResult(undefined);
   }
 
   function resetModal() {
     closeModal();
-    setProposalStep(undefined);
     setSubmitting(false);
     setTxResult(undefined);
     refreshComplaints();
@@ -102,28 +68,16 @@ export default function ApCreateComplaintModal({
         <Stack gap="s1">
           <ModalHeader>
             <Typography>
-              <Title>{getTitleFromStep(proposalStep)}</Title>
-              <Text>Community Pool</Text>
+              <Title>Register Complaint</Title>
+              <Text>Arbiter Pool</Text>
             </Typography>
-            <Steps size="small" current={getCurrentStepIndex(proposalStep)}>
-              <Step />
+            <Steps size="small" current={0}>
               <Step />
               <Step />
             </Steps>
             {!isSubmitting ? <img alt="Close button" src={closeIcon} onClick={() => closeModal()} /> : null}
           </ModalHeader>
           <Separator />
-          {!proposalStep ? (
-            <SelectProposal setProposalStep={setProposalStep} />
-          ) : proposalStep.type === ProposalType.OpenText ? (
-            <ProposalOpenText
-              proposalStep={proposalStep}
-              setProposalStep={setProposalStep}
-              isSubmitting={isSubmitting}
-              setSubmitting={setSubmitting}
-              setTxResult={setTxResult}
-            />
-          ) : null}
         </Stack>
       )}
     </StyledModal>
