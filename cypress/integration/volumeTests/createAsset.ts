@@ -16,7 +16,7 @@ describe("T-Market", () => {
     cy.visit("/trustedcircle");
 
     // connect demo wallet
-    cy.findByText("Connect Wallet").click();
+    cy.findByText("Connect wallet").click();
     cy.findByText("Web wallet (demo)").click();
     cy.findByText("Loading your Wallet").should("not.exist");
     cy.get(trustedCirclesPage.getConnectedWalletButton()).should("exist");
