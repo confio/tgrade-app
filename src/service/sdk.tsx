@@ -23,7 +23,7 @@ import { retry } from "utils/ui";
 
 import { useError } from "./error";
 
-type SdkState = {
+export type SdkState = {
   readonly config: NetworkConfig;
   readonly client?: CosmWasmClient;
   readonly signer?: OfflineDirectSigner | LedgerSigner;
