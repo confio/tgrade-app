@@ -9,10 +9,10 @@ xdescribe("Trusted Circle", () => {
   beforeEach(() => {
     cy.visit("/trustedcircle");
     // connect demo wallet
-    cy.findByText("Connect Wallet").click();
+    cy.findByText("Connect wallet").click();
     cy.findByText("Web wallet (demo)").click();
     cy.findByText("Loading your Wallet").should("not.exist");
-    cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
+    cy.get(trustedCirclesPage.getConnectedWalletButton()).should("exist");
     // workaround to wait for wallet connection (critical ~4000)
     cy.wait(5500);
   });

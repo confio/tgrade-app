@@ -18,6 +18,7 @@ export default styled.button`
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  gap: var(--s1);
 
   &:hover,
   &:focus {
@@ -26,10 +27,6 @@ export default styled.button`
     & img[alt="Right arrow icon"] {
       visibility: visible;
     }
-  }
-
-  & > * + * {
-    margin-left: clamp(var(--s-2), calc(2vw + var(--s-2)), var(--s2));
   }
 
   & img[alt="Right arrow icon"] {
