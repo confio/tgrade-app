@@ -23,7 +23,7 @@ describe("Non Voting Member", () => {
     cy.findByText("Connect Wallet").click();
     cy.findByText("Web wallet (demo)").click();
     cy.findByText("Loading your Wallet").should("not.exist");
-    cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
+    cy.get(trustedCirclesPage.getConnectedWalletButton()).should("exist");
     // workaround to wait for wallet connection (critical ~4000)
     // and to wait until account will be existed on chain
     cy.wait(6500);

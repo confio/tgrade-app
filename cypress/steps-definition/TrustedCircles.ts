@@ -15,10 +15,10 @@ Given("Go to Trusted Circle page", () => {
 });
 
 Then("I connect to Web Demo wallet", () => {
-  cy.findByText("Connect Wallet").click();
+  cy.findByText("Connect wallet").click();
   cy.findByText("Web wallet (demo)").click();
   cy.findByText("Loading your Wallet").should("not.exist");
-  cy.get(trustedCirclesPage.getMainWalletAddress()).should("contain.text", "tgrade");
+  cy.get(trustedCirclesPage.getConnectedWalletButton()).should("exist");
   // workaround to wait for wallet connection (critical ~4000)
   // and to wait until account will be existed on chain
   cy.wait(7000);
@@ -91,7 +91,7 @@ And("I select Whitelist Pair option", () => {
 And("I select Trading Pair from drop down", () => {
   cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "Whitelist Pair");
   cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "2");
-  cy.wait(4000) //Wait to finishing fetch (probably bug)
+  cy.wait(4000); //Wait to finishing fetch (probably bug)
   cy.get(trustedCirclesPage.getProposalOptionDropDown()).click();
   cy.get(trustedCirclesPage.getFirstItemFromDropDown()).click();
 });

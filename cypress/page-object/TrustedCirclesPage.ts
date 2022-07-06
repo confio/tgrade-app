@@ -3,8 +3,8 @@ export class TrustedCirclesPage {
     return "#cky-btn-accept";
   }
 
-  getMainWalletAddress(): string {
-    return '[href*="/trustedcircle"] .ant-tag';
+  getConnectedWalletButton(): string {
+    return 'img[alt="Demo wallet icon"]';
   }
 
   getDialogHeaderName(): string {
