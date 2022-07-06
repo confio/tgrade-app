@@ -1,19 +1,28 @@
-import { Collapse, Tag, Typography } from "antd";
-import MenuBG from "App/assets/images/menu-background.jpg";
+import { Collapse, Typography } from "antd";
 import Styled from "styled-components";
 
 export const Navbar = Styled.div`
-display:flex;
-justify-content:space-between;
-flex-direction:column;
-min-height: 100vh;
-width:15.25rem;
-background: url(${MenuBG});
-svg{
+  display:flex;
+  justify-content:space-between;
+  flex-direction:column;
+  min-height: 100vh;
+  width:15.25rem;
+  background: hsla(224, 15%, 14%, 1);
+
+  & .ant-collapse-item-active {
+    background: hsla(225, 15%, 16%, 1);
+  }
+
+  & svg{
     margin: 1rem;
     margin-left: calc(0.5rem + 4px); /* Cell's margin + border */
     margin-right: 2rem;
-}
+  }
+
+  & button {
+    margin: var(--s0);
+    margin-top: var(--s0);
+  }
 `;
 
 export const LinkWrapper = Styled.div`
@@ -63,23 +72,6 @@ export const StyledText = Styled(Typography.Text)`
     color: #fff;
     font-size:1rem;
   }
-`;
-
-export const StyledAddressTag = Styled(Tag)`
-display: flex;
-justify-content: center;
-align-items:center;
-border-radius: var(--border-radius);
-width: 204px;
-height: 26px;
-margin-left: 16px;
-font-family: Quicksand;
-font-size: 13px;
-font-style: normal;
-font-weight: 400;
-line-height: 16px;
-letter-spacing: 0em;
-text-align: left;
 `;
 
 export const StyledCollapse = Styled(Collapse)`
