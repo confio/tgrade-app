@@ -21,7 +21,6 @@ export const Navbar = Styled.div`
 
   & button {
     margin: var(--s0);
-    margin-top: var(--s0);
   }
 `;
 
