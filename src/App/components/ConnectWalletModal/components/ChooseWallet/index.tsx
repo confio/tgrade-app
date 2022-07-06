@@ -10,8 +10,8 @@ import {
 
 import closeIcon from "../../../../assets/icons/cross.svg";
 import keplrIcon from "../../../../assets/icons/keplr-logo.svg";
+import ledgerIcon from "../../../../assets/icons/ledger-logo.svg";
 import tgradeIcon from "../../../../assets/icons/tgradeLogo.svg";
-import ledgerIcon from "../../../../assets/images/ledger-logo.png";
 import Stack from "../../../Stack/style";
 import WalletButton from "../../../WalletButton";
 import { BalancesList } from "./components/BalancesList";
