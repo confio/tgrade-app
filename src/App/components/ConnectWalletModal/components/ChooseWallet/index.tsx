@@ -1,4 +1,8 @@
 import { Typography } from "antd";
+import closeIcon from "App/assets/icons/cross.svg";
+import keplrIcon from "App/assets/icons/keplr-logo.svg";
+import ledgerIcon from "App/assets/icons/ledger-logo.svg";
+import tgradeIcon from "App/assets/icons/tgrade-icon-dark.svg";
 import { resetSdk, useSdk } from "service";
 import {
   getLastConnectedWallet,
@@ -8,10 +12,6 @@ import {
   setLastConnectedWallet,
 } from "utils/sdk";
 
-import closeIcon from "../../../../assets/icons/cross.svg";
-import keplrIcon from "../../../../assets/icons/keplr-logo.svg";
-import ledgerIcon from "../../../../assets/icons/ledger-logo.svg";
-import tgradeIcon from "../../../../assets/icons/tgradeLogo.svg";
 import Stack from "../../../Stack/style";
 import WalletButton from "../../../WalletButton";
 import { BalancesList } from "./components/BalancesList";
