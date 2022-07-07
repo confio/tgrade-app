@@ -5,6 +5,9 @@ import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
 import { useState } from "react";
 
+import { useError, useSdk } from "../../../service";
+import { ApContract } from "../../../utils/arbiterPool";
+import { getErrorFromStackTrace } from "../../../utils/errors";
 import { ProposalType } from "../ApCreateProposalModal";
 import { FormRegisterComplaintValues } from "./components/FormRegisterComplaint";
 import FormRegisterComplaint from "./components/FormRegisterComplaint";
@@ -18,6 +21,14 @@ interface APoolCreateComplaintModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
   readonly refreshComplaints: () => void;
+}
+
+export interface CreateFormComplaintValues {
+  readonly dsoName: string;
+  readonly votingDuration: string;
+  readonly quorum: string;
+  readonly threshold: string;
+  readonly allowEndEarly: boolean;
 }
 
 export type ProposalStep = { type: ProposalType; confirmation?: true };
@@ -34,6 +45,14 @@ export default function ApCreateComplaintModal({
   const [proposalStep, setProposalStep] = useState<ProposalStep>();
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
+  const { handleError } = useError();
+  const {
+    sdkState: { address, signingClient, config },
+  } = useSdk();
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [defendant, setDefendant] = useState("");
 
   function tryAgain() {
     setTxResult(undefined);
@@ -46,11 +65,36 @@ export default function ApCreateComplaintModal({
     refreshComplaints();
   }
 
-  const [title, setTitle] = useState("");
+  async function confirmAndSubmitComplaintForm({
+    title,
+    description,
+    defendant,
+  }: FormRegisterComplaintValues) {
+    setTitle(title);
+    setDescription(description);
+    setDefendant(defendant);
 
-  async function submitOpenText({ description }: FormRegisterComplaintValues) {
-    setTitle(description);
-    setProposalStep({ type: ProposalType.OpenText, confirmation: true });
+    if (!signingClient || !address) return;
+    setSubmitting(true);
+
+    try {
+      const apContract = new ApContract(config, signingClient);
+      const { txHash } = await apContract.registerComplaint(address, title, description, defendant);
+
+      setTxResult({
+        msg: `Created proposal for Complaint Arbiter Pool. Transaction ID: ${txHash}`,
+      });
+    } catch (error) {
+      if (!(error instanceof Error)) return;
+      setTxResult({ error: getErrorFromStackTrace(error) });
+      handleError(error);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function createAndConfirmProposal({ title, description, defendant }: FormRegisterComplaintValues) {
+    // TODO as next step
   }
 
   return (
@@ -96,11 +140,11 @@ export default function ApCreateComplaintModal({
           </ModalHeader>
           <Separator />
           <FormRegisterComplaint
-            title=""
-            description=""
-            defendant=""
+            title={title}
+            description={description}
+            defendant={defendant}
             goBack={() => setProposalStep(undefined)}
-            handleSubmit={submitOpenText}
+            handleSubmit={confirmAndSubmitComplaintForm}
           />
         </Stack>
       )}

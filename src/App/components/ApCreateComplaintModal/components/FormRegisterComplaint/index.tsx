@@ -3,10 +3,9 @@ import Button from "App/components/Button";
 import Field from "App/components/Field";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
-import { getFormItemName, isValidAddress } from "utils/forms";
+import { getDecodedAddress, getFormItemName } from "utils/forms";
 import * as Yup from "yup";
 
-import { config } from "../../../../../config/network";
 import { defendantAddressLabel } from "../../../DistributionModal/components/DelegateContainer/DelegateForm";
 import { ButtonGroup, FormStack, Separator } from "./style";
 
@@ -35,11 +34,16 @@ export default function FormRegisterComplaint({
     [getFormItemName(defendantAddressLabel)]: Yup.string()
       .typeError("Defendant address must be alphanumeric")
       .required("Defendant address is required")
-      .test(
+      //TODO add more validations
+      /*.test(
         "is-address-valid",
         "defendant address must be valid",
-        (defendantAddress) => !defendantAddress || isValidAddress(defendantAddress, config.addressPrefix),
-      ),
+        (defendantAddress) => !defendantAddress || isValidAddress(defendantAddress, addressPrefix),
+      ),*/
+      .test(`is-valid-bech32`, "defendant address must be valid", (address) => {
+        const decodedAddress = getDecodedAddress(address);
+        return !!decodedAddress;
+      }),
   });
 
   return (
