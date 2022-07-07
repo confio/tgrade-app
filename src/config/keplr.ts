@@ -39,11 +39,11 @@ export function configKeplr(config: NetworkConfig): KeplrConfig {
     rest: config.httpUrl,
     bech32Config: {
       bech32PrefixAccAddr: `${config.addressPrefix}`,
-      bech32PrefixAccPub: `${config.addressPrefix}pub`,
-      bech32PrefixValAddr: `${config.addressPrefix}valoper`,
-      bech32PrefixValPub: `${config.addressPrefix}valoperpub`,
-      bech32PrefixConsAddr: `${config.addressPrefix}valcons`,
-      bech32PrefixConsPub: `${config.addressPrefix}valconspub`,
+      bech32PrefixAccPub: `${config.addressPrefix}`,
+      bech32PrefixValAddr: `${config.addressPrefix}`,
+      bech32PrefixValPub: `${config.addressPrefix}`,
+      bech32PrefixConsAddr: `${config.addressPrefix}`,
+      bech32PrefixConsPub: `${config.addressPrefix}`,
     },
     currencies: [
       {
