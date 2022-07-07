@@ -1,7 +1,7 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
 import { calculateFee, GasPrice } from "@cosmjs/stargate";
-import tgradeLogo from "App/assets/icons/tgradeLogo.svg";
+import tgdIcon from "App/assets/icons/tgrade-icon-gradient.svg";
 import tempImgUrl from "App/assets/icons/token-placeholder.png";
 import { NetworkConfig } from "config/network";
 
@@ -164,7 +164,7 @@ export class Contract20WS {
         name: "Tgrade",
         symbol: config.coinMap.utgd.denom,
         total_supply: "",
-        img: tgradeLogo,
+        img: tgdIcon,
       };
     } else {
       const token_info = await client.queryContractSmart(contractAddress, {

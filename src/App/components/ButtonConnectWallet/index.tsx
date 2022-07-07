@@ -2,7 +2,7 @@ import { Typography } from "antd";
 import connectIcon from "App/assets/icons/add-light.svg";
 import keplrIcon from "App/assets/icons/keplr-logo.svg";
 import ledgerIcon from "App/assets/icons/ledger-logo-light.svg";
-import demoIcon from "App/assets/icons/tgrade-logo-light.svg";
+import demoIcon from "App/assets/icons/tgrade-icon-light.svg";
 import { ComponentProps } from "react";
 import { useSdk } from "service";
 import { SdkState } from "service/sdk";
