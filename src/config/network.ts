@@ -92,12 +92,12 @@ const tgradeInternal: NetworkConfig = {
 };
 
 const tgradeTestnet: NetworkConfig = {
-  chainId: "tgrade-dryrunnet",
-  chainName: "Tgrade-dryrunnet",
+  chainId: "tgrade-demo-1",
+  chainName: "Tgrade-demo-1",
   addressPrefix: "tgrade",
-  rpcUrl: "https://rpc.dryrunnet.tgrade.confio.run",
-  httpUrl: "https://lcd.dryrunnet.tgrade.confio.run",
-  faucetUrl: "https://faucet.dryrunnet.tgrade.confio.run",
+  rpcUrl: "https://rpc.demo-1.tgrade.confio.run",
+  httpUrl: "https://api.demo-1.tgrade.confio.run",
+  faucetUrl: "https://faucet.demo-1.tgrade.confio.run",
   feeToken: "utgd",
   stakingToken: "utgd",
   faucetTokens: ["utgd"],
