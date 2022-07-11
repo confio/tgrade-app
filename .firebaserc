@@ -8,11 +8,14 @@
         "dapp.tgrade.finance": [
           "tgrade-dapp"
         ],
+        "staging.tgrade.finance": [
+          "tgrade-staging"
+        ],
         "dev.tgrade.finance": [
           "tgrade-dev"
         ],
-        "staging.tgrade.finance": [
-          "tgrade-staging"
+        "demo.tgrade.finance": [
+          "tgrade-demo"
         ]
       }
     }
