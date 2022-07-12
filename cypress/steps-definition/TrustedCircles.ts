@@ -18,10 +18,9 @@ Then("I connect to Web Demo wallet", () => {
   cy.findByText("Connect wallet").click();
   cy.findByText("Web wallet (demo)").click();
   cy.findByText("Loading your Wallet").should("not.exist");
-  cy.get(trustedCirclesPage.getConnectedWalletButton()).should("exist");
+  cy.get(trustedCirclesPage.getConnectedWalletButton(), { timeout: 7000 }).should("exist");
   // workaround to wait for wallet connection (critical ~4000)
   // and to wait until account will be existed on chain
-  cy.wait(7000);
 });
 
 When("I click on Add Trusted Circle button", () => {

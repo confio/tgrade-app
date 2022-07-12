@@ -1,5 +1,6 @@
 Feature: Check validator name, address, slashing events, voting power
   Background:
+    * I visit Trusted Circle page
     * I connect to Web Demo wallet
     * I am a validator
     * I visit Validators
