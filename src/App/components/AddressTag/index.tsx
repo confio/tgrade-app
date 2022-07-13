@@ -8,7 +8,7 @@ import copyIcon from "../../assets/icons/copy.svg";
 import StyledAddressTag from "./style";
 
 function CopyIconImg() {
-  return <img alt="Copy icon" src={copyIcon} data-cy="copy-con" />;
+  return <img alt="Copy icon" src={copyIcon} />;
 }
 
 type AddressTagProps = ComponentProps<typeof StyledAddressTag> & {
@@ -32,14 +32,18 @@ export default function AddressTag({
   return (
     <Tooltip trigger="click" title="Address Copied">
       <StyledAddressTag
-        data-cy="address-tag-hash"
+        data-cy="address-copy-tooltip-tag-hash"
         icon={copyable ? <CopyIconImg /> : undefined}
         onClick={copyable ? () => copyToClipboard(address) : undefined}
         {...restProps}
       >
         {short ? ellipsifyAddress(address) : address}
 
-        {myAddress === address && !noYou ? <span className="your-address">(you)</span> : null}
+        {myAddress === address && !noYou ? (
+          <span className="your-address" data-cy="dialog-address-tag-hash">
+            (you)
+          </span>
+        ) : null}
       </StyledAddressTag>
     </Tooltip>
   );
