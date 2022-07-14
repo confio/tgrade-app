@@ -5,7 +5,6 @@ const validatorMnemonicNode1 =
 
 Given("I visit Validators page", () => {
   cy.visit("/validators", { timeout: 8000 }); //workaround until fetching validators
-  cy.wait(8000);
 });
 
 And("I click on Validator name {string} to open Validator detail modal", (validatorName) => {
