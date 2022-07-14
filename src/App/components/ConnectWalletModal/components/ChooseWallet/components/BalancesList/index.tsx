@@ -77,7 +77,7 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
           </TooltipStack>
         }
       >
-        <Text style={{ color: "black" }}>Available</Text>
+        <Text style={{ color: "black" }}>Available tokens to send</Text>
       </TooltipWrapper>
       <SearchToken
         placeholder="Search token"
