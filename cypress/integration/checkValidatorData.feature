@@ -1,9 +1,8 @@
 Feature: Check validator's data
   Background: Go to Validators page
-    * I visit Trusted Circle page
+    * I visit Validators page
     * I connect to Web Demo wallet
     * I set validator mnemonic
-    * I visit Validators page
 
   Scenario: Check validator name, address, slashing events, voting power
     * I verify presence of validator name "delme" and address "tgrade…xy5rzj"

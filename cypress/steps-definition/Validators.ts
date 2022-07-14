@@ -4,7 +4,8 @@ const validatorMnemonicNode1 =
   "merit daring radio hospital exchange kitten skirt cry seven evil faculty lion cup inherit live host stable tuna convince tip blur sphere curve search";
 
 Given("I visit Validators page", () => {
-  cy.visit("/validators", { timeout: 8000 }); //workaround until fetching validators
+  cy.visit("/validators");
+  cy.wait(8000); //workaround until fetching validators
 });
 
 And("I click on Validator name {string} to open Validator detail modal", (validatorName) => {
