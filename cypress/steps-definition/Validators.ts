@@ -1,11 +1,11 @@
 import { And, Given } from "cypress-cucumber-preprocessor/steps";
 
+// TODO move away this mnemonic to some other file storage
 const validatorMnemonicNode1 =
   "merit daring radio hospital exchange kitten skirt cry seven evil faculty lion cup inherit live host stable tuna convince tip blur sphere curve search";
 
 Given("I visit Validators page", () => {
   cy.visit("/validators", { timeout: 8000 }); //workaround until fetching validators
-  cy.wait(8000);
 });
 
 And("I click on Validator name {string} to open Validator detail modal", (validatorName) => {
@@ -24,7 +24,6 @@ And("I verify presence of validator name {string} and address {string}", (valida
 
 And("I see validator's name {string}, address {string}", (validatorName, address) => {
   cy.get('[data-cy="details-dialog-validator-name"]').should("contain.text", validatorName);
-  // Address is randomly generated so assertion is only for static part of address
   cy.get('[data-cy="address-copy-tooltip-tag-hash"]').should("contain.text", address);
 });
 

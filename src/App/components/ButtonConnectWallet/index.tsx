@@ -59,7 +59,7 @@ export default function ButtonConnectWallet(props: ComponentProps<typeof Button>
 
   return (
     <StyledButtonConnectWallet {...props}>
-      <img src={imgSrc} alt={imgAlt} />
+      <img src={imgSrc} alt={imgAlt} data-cy="main-menu-connect-wallet-icon" />
       <Stack gap="s-4">
         <Text>{buttonText}</Text>
       </Stack>

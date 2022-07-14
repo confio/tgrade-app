@@ -1,9 +1,11 @@
 Feature: Withdraw my rewards to my address
   Background:
+    * I visit Trusted Circle page
     * I connect to Web Demo wallet
-    * I have some Engagement Points and Engagement Rewards
-    * I check my TGD balance
-    * I visit Engagement
+    * Set wallet with Engagement Points and Engagement Rewards
+    * Open wallet dialog
+    * I see my TGD balance "232"
+    * I visit Engagement page
 
   Scenario: Withdraw rewards
     * I see the "Address" field prefilled with my address
