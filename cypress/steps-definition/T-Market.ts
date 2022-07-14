@@ -142,6 +142,5 @@ And("I click Ok button", () => {
 });
 
 And("I redirected back to Provided Liquidity tab", () => {
-  cy.url().should("include", "/tmarket/provide");
-  cy.wait(3000); //workaround to fix failed step
+  cy.url().should("include", "/tmarket/provide", { timeout: 3000 }); //workaround to fix failed step
 });

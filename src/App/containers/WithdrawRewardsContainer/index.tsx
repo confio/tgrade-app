@@ -126,14 +126,14 @@ export default function WithdrawRewardsContainer({
         <Row>
           <Cell>
             <Text>Engagement points</Text>
-            <Text>
+            <Text data-cy="engagement-page-engagement-points">
               <BoldText>{engagement} / </BoldText>
               {totalEngagement} ({((engagement / totalEngagement) * 100).toFixed(2)}%)
             </Text>
           </Cell>
           <Cell>
             <Text>Engagement rewards</Text>
-            <Text>
+            <Text data-cy="engagement-page-engagement-rewards">
               {withdrawableFunds?.amount || "—"} {withdrawableFunds?.denom || ""}
             </Text>
           </Cell>

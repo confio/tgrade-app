@@ -73,7 +73,7 @@ export const NavSidebar: React.FC = () => {
           <Cell>
             <Icon.Flag />
             <TextCell>
-              <StyledText>Engagement</StyledText>
+              <StyledText data-cy="main-nav-side-bar-engagement">Engagement</StyledText>
               <Icon.TakeAway />
             </TextCell>
           </Cell>
