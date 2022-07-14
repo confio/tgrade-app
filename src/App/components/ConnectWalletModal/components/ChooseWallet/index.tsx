@@ -15,7 +15,14 @@ import {
 import Stack from "../../../Stack/style";
 import WalletButton from "../../../WalletButton";
 import { BalancesList } from "./components/BalancesList";
-import { ChooseButtons, LogoutButton, ModalHeader, StyledAddressTag, SwitchButtons } from "./style";
+import {
+  ChooseButtons,
+  LogoutButton,
+  ModalHeader,
+  StyledAddressTag,
+  SwitchButtons,
+  WalletConnected,
+} from "./style";
 
 const { Text } = Typography;
 
@@ -37,11 +44,25 @@ export default function ChooseWallet({
     sdkDispatch,
   } = useSdk();
 
+  function getWalletLogo() {
+    if (isKeplrSigner(signer)) return keplrIcon;
+    if (isLedgerSigner(signer)) return ledgerIcon;
+    if (isWebSigner(signer)) return tgradeIcon;
+
+    return undefined;
+  }
+
   function logout(): void {
     resetSdk(sdkDispatch);
     closeModal();
     setLastConnectedWallet("");
   }
+
+  const lastConnectedWallet = getLastConnectedWallet();
+  const capitalizedWallet = lastConnectedWallet
+    ? lastConnectedWallet.charAt(0).toUpperCase() + lastConnectedWallet.slice(1)
+    : undefined;
+  const walletLogo = getWalletLogo();
 
   return (
     <>
@@ -51,8 +72,17 @@ export default function ChooseWallet({
       {address ? (
         <SwitchButtons>
           <Stack gap="s1">
-            <Text>Currently connected to {getLastConnectedWallet() || ""} wallet:</Text>
-            <StyledAddressTag address={address} copyable />
+            {capitalizedWallet && walletLogo ? (
+              <>
+                <WalletConnected>
+                  <img alt="" src={walletLogo} />
+                  <Text>{capitalizedWallet} wallet is connected with address:</Text>
+                </WalletConnected>
+                <StyledAddressTag address={address} copyable />
+              </>
+            ) : (
+              <Text>Loading wallet...</Text>
+            )}
             <BalancesList closeModal={closeModal} />
           </Stack>
           <Stack gap="s1">
