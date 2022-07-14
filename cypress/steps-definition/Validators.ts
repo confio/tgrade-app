@@ -24,7 +24,6 @@ And("I verify presence of validator name {string} and address {string}", (valida
 
 And("I see validator's name {string}, address {string}", (validatorName, address) => {
   cy.get('[data-cy="details-dialog-validator-name"]').should("contain.text", validatorName);
-  // Address is randomly generated so assertion is only for static part of address
   cy.get('[data-cy="address-copy-tooltip-tag-hash"]').should("contain.text", address);
 });
 
