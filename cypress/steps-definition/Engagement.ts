@@ -10,6 +10,10 @@ And('I see the "Address" field prefilled with my {string}', (walletAddress) => {
   cy.get(engagementPage.getQueryAddressInputField()).should("have.value", walletAddress);
 });
 
+And('I enter the address of the other account on the "Receiver address" field', (walletAddress) => {
+  cy.get(engagementPage.getReceiverAddressInputField()).should("have.value", walletAddress);
+});
+
 And(
   "I see my Engagement Points {string} and Engagement Rewards {string}",
   (engagementPoint, engagementRewards) => {

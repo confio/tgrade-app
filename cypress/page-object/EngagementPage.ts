@@ -3,6 +3,10 @@ export class EngagementPage {
     return '[name="form-item-name-address"]';
   }
 
+  getReceiverAddressInputField(): string {
+    return '[name="form-item-name-receiver-address"]';
+  }
+
   getEngagementPointsValue(): string {
     return '[data-cy="engagement-page-engagement-points"]';
   }
