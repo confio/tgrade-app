@@ -32,13 +32,18 @@ export default function AddressTag({
   return (
     <Tooltip trigger="click" title="Address Copied">
       <StyledAddressTag
+        data-cy="address-copy-tooltip-tag-hash"
         icon={copyable ? <CopyIconImg /> : undefined}
         onClick={copyable ? () => copyToClipboard(address) : undefined}
         {...restProps}
       >
         {short ? ellipsifyAddress(address) : address}
 
-        {myAddress === address && !noYou ? <span className="your-address">(you)</span> : null}
+        {myAddress === address && !noYou ? (
+          <span className="your-address" data-cy="dialog-address-tag-hash">
+            (you)
+          </span>
+        ) : null}
       </StyledAddressTag>
     </Tooltip>
   );

@@ -145,7 +145,7 @@ export function ValidatorDetail({
           <div style={{ display: "flex", flexDirection: "column", minHeight: "530px" }}>
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
-                <Title> {validator.metadata?.moniker ?? ""}</Title>
+                <Title data-cy="details-dialog-validator-name"> {validator.metadata?.moniker ?? ""}</Title>
                 <AddressTag address={validator.operator} copyable />
                 <p> {validator.metadata?.website ?? ""}</p>
               </div>
@@ -209,7 +209,7 @@ export function ValidatorDetail({
               </StyledCard>
               <StyledCard>
                 <Title>Voting power</Title>
-                <p>{votingPower} %</p>
+                <p data-cy="validator-detail-dialog-voting-power">{votingPower} %</p>
               </StyledCard>
             </div>
             <div style={{ marginTop: "25px", marginBottom: "10px" }}>

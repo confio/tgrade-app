@@ -56,7 +56,11 @@ const columns: ColumnProps<ValidatorType>[] = [
     key: "moniker",
     width: "20%",
     render: (record: ValidatorType) => (
-      <div key={record.metadata?.moniker} style={{ display: "flex", flexDirection: "column" }}>
+      <div
+        key={record.metadata?.moniker}
+        style={{ display: "flex", flexDirection: "column" }}
+        data-cy={`validator-name-${record.metadata?.moniker}`}
+      >
         <b>{record.metadata?.moniker}</b>
         <p>{ellipsifyAddress(record.operator)}</p>
       </div>
