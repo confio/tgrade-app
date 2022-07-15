@@ -80,7 +80,7 @@ export default function WithdrawRewardsForm({
                     onClick={() => submitForm()}
                     style={{ alignSelf: "flex-start" }}
                   >
-                    <div>Withdraw rewards</div>
+                    <div data-cy="engagement-page-withdraw-rewards-button">Withdraw rewards</div>
                   </Button>
                 </>
               ) : (

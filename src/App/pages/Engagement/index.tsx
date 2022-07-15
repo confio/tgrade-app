@@ -36,7 +36,10 @@ export default function Engagement(): JSX.Element | null {
   return txResult ? (
     <PageLayout maxwidth="75rem">
       <ShowTxResult {...txResult}>
-        <Button onClick={() => setTxResult(undefined)}>
+        <Button
+          onClick={() => setTxResult(undefined)}
+          data-cy="transaction-result-screen-go-to-engagement-button"
+        >
           <span>{txResult.error ? "Try again" : "Go to Engagement"}</span>
         </Button>
       </ShowTxResult>
