@@ -24,6 +24,7 @@ Then("I connect to Web Demo wallet", () => {
 });
 
 When("I click on Add Trusted Circle button", () => {
+  cy.url().should("not.include", "/trustedcircle/undefined"); //probably a bug of the App
   cy.findByText(/Add Trusted Circle/i).click();
 });
 
