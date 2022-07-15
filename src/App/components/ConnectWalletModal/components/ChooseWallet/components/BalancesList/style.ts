@@ -61,13 +61,22 @@ export const BalancesItem = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  &:hover {
-    cursor: pointer;
-    border-color: var(--color-primary);
-  }
-
   & .ant-typography {
     color: black;
+  }
+
+  &:hover,
+  &:focus {
+    cursor: pointer;
+    border-color: var(--color-primary);
+
+    & .ant-typography:first-of-type {
+      display: inline;
+    }
+
+    & svg {
+      display: inline;
+    }
   }
 `;
 
@@ -82,6 +91,26 @@ export const TokenLogoName = styled.div`
     height: 100%;
     max-width: 30px;
     max-height: 30px;
+  }
+
+  & .ant-typography:first-of-type {
+    display: none;
+  }
+
+  & span[role="img"] {
+    width: 100%;
+    height: 100%;
+    max-width: 18px;
+    max-height: 18px;
+  }
+
+  & svg {
+    color: var(--color-primary);
+    width: 100%;
+    height: 100%;
+    max-width: 18px;
+    max-height: 18px;
+    display: none;
   }
 `;
 
