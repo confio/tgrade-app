@@ -99,7 +99,7 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
             </TokenLogoName>
             <TokenDetailPin>
               <div>
-                <Text data-cy="connect-wallet-modal-token-token-balance">{token.humanBalance}</Text>
+                <Text data-cy="connect-wallet-modal-token-balance">{token.humanBalance}</Text>
                 <Text
                   onClick={(event) => {
                     event?.stopPropagation();

@@ -3,11 +3,27 @@ export class EngagementPage {
     return '[name="form-item-name-address"]';
   }
 
-  getAddressTooltipTagHash(): string {
-    return '[data-cy="address-copy-tooltip-tag-hash"]';
+  getEngagementPointsValue(): string {
+    return '[data-cy="engagement-page-engagement-points"]';
   }
 
-  getVotingPowerValue(): string {
-    return '[data-cy="validator-detail-dialog-voting-power"]';
+  getEngagementRewardsValue(): string {
+    return '[data-cy="engagement-page-engagement-rewards"]';
+  }
+
+  getWithdrawRewardsButton(): string {
+    return '[data-cy="engagement-page-withdraw-rewards-button"]';
+  }
+
+  getTransactionResultScreenText(): string {
+    return '[data-cy="transaction-result-screen-text"]';
+  }
+
+  getTransactionResultScreenDetails(): string {
+    return '[data-cy="transaction-result-screen-details"]';
+  }
+
+  getTransactionResultScreenGoToEngagementButton(): string {
+    return '[data-cy="transaction-result-screen-go-to-engagement-button"]';
   }
 }

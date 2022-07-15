@@ -2,10 +2,10 @@ import { And, Given } from "cypress-cucumber-preprocessor/steps";
 
 import { MainNavigationMenu } from "../page-object/MainNavigationMenu";
 
-const manMenu = new MainNavigationMenu();
+const mainNavigationMenu = new MainNavigationMenu();
 
 Given("Open wallet dialog", () => {
-  cy.get('[data-cy="main-menu-connect-wallet-icon"]').click();
+  cy.get(mainNavigationMenu.getConnectWalletIcon()).click();
 });
 
 Given("I connect Web Demo wallet", () => {
@@ -13,11 +13,11 @@ Given("I connect Web Demo wallet", () => {
   cy.findByText("Connect wallet").click();
   cy.findByText("Web wallet (demo)").click();
   cy.findByText("Loading your Wallet").should("not.exist");
-  cy.get(manMenu.getConnectedWalletButton(), { timeout: 7000 }).should("exist");
+  cy.get(mainNavigationMenu.getConnectedWalletButton(), { timeout: 7000 }).should("exist");
   // workaround to wait for wallet connection (critical ~4000)
   // and to wait until account will be existed on chain
 });
 
 And("I visit Engagement page", () => {
-  cy.get('[data-cy="main-nav-side-bar-engagement"]').click();
+  cy.get(mainNavigationMenu.getEngagementMenuOption()).click();
 });
