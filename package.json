@@ -20,6 +20,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@types/cypress-cucumber-preprocessor": "^4.0.1",
     "@types/jest": "^27.0.2",
     "@types/ledgerhq__hw-transport-webusb": "^4.70.1",
     "@types/node": "^16.11.6",

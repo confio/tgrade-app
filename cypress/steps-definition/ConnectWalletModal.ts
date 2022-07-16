@@ -14,7 +14,7 @@ Given("Set wallet with Engagement Points and Engagement Rewards", () => {
 });
 
 And("I see my TGD balance {string}", (tokenBalance) => {
-  cy.get(connectWalletModal.getTokenBalance()).should("have.text", tokenBalance);
+  cy.get(connectWalletModal.getTokenBalance()).should("contain.text", tokenBalance);
 });
 
 And("I close wallet dialog modal", () => {

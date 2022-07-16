@@ -3618,6 +3618,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/cypress-cucumber-preprocessor@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/cypress-cucumber-preprocessor/-/cypress-cucumber-preprocessor-4.0.1.tgz#1e4cb1c3cf6c9c2c37bc523b5d5047a515cd4e93"
+  integrity sha512-sK2/uU5CtmJ51zo0JF2Lc4iSw9Fy3xn9ewfewuooV5Qmeb5O+brAHuoXKMV7UWwRbBmd+txhAXAJoi4S5QLDRQ==
+
 "@types/d3-timer@^2.0.0":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/d3-timer/-/d3-timer-2.0.1.tgz#ffb6620d290624f3726aa362c0c8a4b44c8d7200"
