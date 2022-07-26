@@ -1,1 +1,1 @@
-../../../tgrade-testnets/tgrade-internal-13/scripts/env.sh
+../../../tgrade-testnets/tgrade-internal-14/scripts/env.sh
