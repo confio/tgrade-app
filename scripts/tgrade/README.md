@@ -2,7 +2,7 @@
 
 Without new PoE contracts of DeFi contract upgrades.
 
-* For the version you want to upgrade too, check a docker artifact exists at https://hub.docker.com/r/confio/tgrade/tags
+* For the version you want to upgrade to, check a docker artifact exists at https://hub.docker.com/r/confio/tgrade/tags
 * Create a new branch in tgrade-app. for example: `git checkout -b tgrade-upgrade-v0.6beta1`
 * Jump into the `./scripts/tgrade` folder `cd scripts/tgrade`
 * Bump tgrade version in `env` file
@@ -34,3 +34,15 @@ Without new PoE contracts of DeFi contract upgrades.
   * run `./start_all.sh` to start chain, seed contracts, start faucet
   * in project root, check webapp still works via `yarn install;yarn start:local`
 
+Some extra scripts that might be useful:
+
+ - scripts/tgrade/env.sh: Symlink to a tgrade testnet (tgrade-testnets repo) / mainnet (tgrade-networks repo) env file. Used by
+   the other scripts.
+ - scripts/tgrade/list_contracts.sh: Generates a list of stored / instantiated contract in the blockchain.
+ - scripts/tgrade/list_stakers.sh: Generates a list of tg4-stake stakers, and their staked amounts.
+ - scripts/tgrade/instantiate_fixed_multisig.sh: Instantiates a cw3-fixed-multisig contract.
+
+Contract migration scripts (for testnet tests / checks):
+ - scripts/tgrade/tfi-patch.gov-testnet-contract-upgrade.sh: Upgrades / migrates tfi-factory contract (testnet).
+ - scripts/tgrade/tg4-stake-testnet-contract-upgrade.sh: Upgrades / migrates tg4-stake contract (testnet).
+ - scripts/tgrade/ap-voting-testnet-contract-upgrade.sh: Upgrades / migrates ap-voting contract (testnet).
