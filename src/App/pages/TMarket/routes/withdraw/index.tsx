@@ -1,6 +1,8 @@
 import { calculateFee } from "@cosmjs/stargate";
 import { Divider } from "antd";
-import { ArrowIcon, EstimatedMessage, MenuAMM, MiddleRow, SubmitButton } from "App/pages/TMarket/components";
+import arrowDownIcon from "App/assets/icons/arrow-down.svg";
+import ButtonCircle from "App/components/ButtonCircle";
+import { EstimatedMessage, MenuAMM, MiddleRow, SubmitButton } from "App/pages/TMarket/components";
 import { paths } from "App/paths";
 import { Formik } from "formik";
 import { lazy, useEffect, useState } from "react";
@@ -95,7 +97,9 @@ export default function Withdraw(): JSX.Element {
           <FormCustom>
             <FromToken />
             <MiddleRow>
-              <ArrowIcon />
+              <ButtonCircle>
+                <img src={arrowDownIcon} alt="" />
+              </ButtonCircle>
             </MiddleRow>
             <ToToken />
             <Divider />

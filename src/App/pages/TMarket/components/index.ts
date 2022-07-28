@@ -1,4 +1,3 @@
-export { ArrowIcon, PlusIcon } from "./DummyButton";
 export { default as EstimatedMessage } from "./EstimatedMessage";
 export { default as MenuAMM } from "./Menu";
 export { default as MiddleRow } from "./MiddleRow";
