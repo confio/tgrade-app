@@ -2,7 +2,7 @@
 set -o errexit -o nounset -o pipefail
 #set -x
 
-source ./env.sh
+#source ./env.sh
 
 stakeAddr=$(tgrade q poe contract-address STAKING -o json --node="$nodeUrl" | jq -re ".address")
 start_after=null
