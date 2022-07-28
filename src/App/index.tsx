@@ -28,6 +28,9 @@ const TMarketHome = lazy(() => import("App/pages/TMarket"));
 const NotFound = lazy(() => import("App/pages/NotFound"));
 
 export default function App(): JSX.Element {
+  const isCbdc = window.location.href.includes("cbdc");
+  const basename = `${process.env.PUBLIC_URL}${isCbdc ? "/cbdc" : ""}`;
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       {isMobile ? (
@@ -44,7 +47,7 @@ export default function App(): JSX.Element {
                   <OcProvider>
                     <Suspense fallback={null}>
                       <ThemeProvider>
-                        <Router basename={process.env.PUBLIC_URL}>
+                        <Router basename={basename}>
                           <LayoutProvider>
                             <Suspense fallback={<LoadingSpinner fullPage />}>
                               <Switch>

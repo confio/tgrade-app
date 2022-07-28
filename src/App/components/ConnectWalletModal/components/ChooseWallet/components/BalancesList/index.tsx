@@ -61,6 +61,9 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
     setTokenList(filteredTokensList);
   }, [config.feeToken, pinnedTokens, searchText, tokens]);
 
+  const isCbdc = window.location.href.includes("cbdc");
+  const tMarketTitle = isCbdc ? "CBDC-Marketplace" : "T-Market";
+
   return (
     <Stack gap="s1">
       <TooltipWrapper
@@ -70,7 +73,7 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
             <Text>
               You need to go to{" "}
               <Link to={paths.tmarket.prefix} onClick={() => closeModal()}>
-                T-Market
+                {tMarketTitle}
               </Link>
               , search for the missing token, and pin it.
             </Text>
