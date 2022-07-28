@@ -108,6 +108,9 @@ export class Contract20WS {
       initMsg as unknown as Record<string, unknown>,
       "CW20 instance",
       calculateFee(500_000, GasPrice.fromString("0.05utgd")),
+      {
+        admin: creatorAddress,
+      },
     );
     return contractAddress;
   }
