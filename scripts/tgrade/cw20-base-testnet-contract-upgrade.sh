@@ -22,10 +22,13 @@ key="validator1-$chainSuffix"
 #otherKey2="validator3-$chainSuffix"
 
 cw20Name="cw20-base"
+cw20CodeId=10 # From ./list_contract.sh
 cw20Contract="cw20_base-aarch64.wasm"
 
 factoryName="tfi-factory"
-factoryCodeId=12 # from ./list_contract.sh
+factoryCodeId=12 # From ./list_contract.sh
+
+keyAddr=$(tgrade keys show "$key" "$keyringBackend" | grep address: | cut -f4 -d\ )
 
 echo "## Upload new $cw20Name contract"
 rsp=$(tgrade tx wasm store "$DIR/contracts/$cw20Contract" \
@@ -33,7 +36,31 @@ rsp=$(tgrade tx wasm store "$DIR/contracts/$cw20Contract" \
 codeId=$(echo "$rsp" | jq -r '.logs[0].events[1].attributes[-1].value')
 echo "* Code id: $codeId"
 
-# TODO: Migrate existing cw20-base *instances* to new code id
+# Migrate existing cw20-base *instances* to new code id
+echo "## Migrating  $cw20Name instances from code id '$cw20CodeId' to new code id '$codeId'"
+
+# 1. Get addresses to migrate
+cw20Addrs=$(tgrade query wasm list-contract-by-code "$cw20CodeId" -o json --node="$nodeUrl" | jq -r '.contracts[]')
+
+for cw20Addr in $cw20Addrs
+do
+  echo "Migrating $cw20Addr:"
+  # Get contract info
+  cw20ContractInfo=$(tgrade q wasm contract "$cw20Addr" -o json --node="$nodeUrl" | jq '.contract_info')
+  echo "Contract info: "
+  echo "$cw20ContractInfo" | jq '.'
+  # Get migrate admin
+  cw20MigrateAdmin=$(echo "$cw20ContractInfo" | jq -r '.admin')
+  [ -z "$cw20MigrateAdmin" ] && echo "No migrate admin!" && exit 1
+  echo "Migrate admin: $cw20MigrateAdmin"
+  # Get migrate admin key
+  cw20MigrateAdminKey=$(tgrade keys list "$keyringBackend" | grep -B2 "$cw20MigrateAdmin" | head -1 | cut -f3 -d\ )
+  [ -z "$cw20MigrateAdminKey" ] && echo "Need to import / recover the credentials for '$cw20MigrateAdminKey'" && exit 1
+  echo "Migrate admin key: $cw20MigrateAdminKey"
+
+  # Migrate
+  tgrade tx wasm migrate "$cw20Addr" "$codeId" "{ }" --from "$cw20MigrateAdminKey" --gas auto --gas-prices=0.1utgd --gas-adjustment=1.3 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend"
+done
 
 # Update tfi-factory config
 echo "## Update $factoryName contract config"
@@ -55,7 +82,7 @@ tfiOwnerKey=$(tgrade keys list "$keyringBackend" | grep -B2 "$tfiOwner" | head -
 
 echo "$factoryName owner key: $tfiOwnerKey"
 
-# 5. TODO: Update tfi-factory config
+# 5. Update tfi-factory config
 echo "## Now update $factoryName contract config using '$tfiOwnerKey' as key"
 tgrade tx wasm execute "$tfiAddr" "{ \"update_config\": { \"token_code_id\": $codeId } }" --from "$tfiOwnerKey" --gas auto --gas-prices=0.1utgd --gas-adjustment=1.3 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend" | jq .
 
@@ -75,8 +102,8 @@ then
   exit 1
 fi
 
-# TODO: Verify *allowances per spender* can now be queried
-#if [ "$A" = "y" ]
-#then
-#  tgrade query wasm contract-state smart "$cw20BaseAddr" "{\"all_spender_allowances\": { \"spender\": \"$keyAddr\" } }" -o json --node="$nodeUrl" | jq '.data'
-#fi
+# Verify *allowances per spender* can now be queried
+for cw20Addr in $cw20Addrs
+do
+  tgrade query wasm contract-state smart "$cw20Addr" "{\"all_spender_allowances\": { \"spender\": \"$keyAddr\" } }" -o json --node="$nodeUrl" | jq '.data'
+done
