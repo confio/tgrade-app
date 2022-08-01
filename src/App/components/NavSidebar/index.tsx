@@ -11,10 +11,13 @@ const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"
 export const NavSidebar: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const isCbdc = window.location.href.includes("cbdc");
+  const tMarketTitle = isCbdc ? "CBDC-Marketplace" : "T-Market";
+
   return (
     <Navbar>
       <LinkWrapper>
-        <Icon.TgradeLogo />
+        {isCbdc ? <Icon.CbdcLogo /> : <Icon.TgradeLogo />}
         <Link to={paths.dso.prefix}>
           <Cell>
             <Icon.TrustedCircle />
@@ -28,84 +31,88 @@ export const NavSidebar: React.FC = () => {
           <Cell>
             <Icon.Token />
             <TextCell>
-              <StyledText>T-Market</StyledText>
+              <StyledText>{tMarketTitle}</StyledText>
               <Icon.Trade />
             </TextCell>
           </Cell>
         </Link>
-        <StyledCollapse ghost expandIconPosition="right">
-          <StyledPanel
-            key="1"
-            header={
+        {!isCbdc ? (
+          <>
+            <StyledCollapse ghost expandIconPosition="right">
+              <StyledPanel
+                key="1"
+                header={
+                  <Cell>
+                    <Icon.Oversight />
+                    <TextCell>
+                      <StyledText>Governance</StyledText>
+                      <Icon.Manage />
+                    </TextCell>
+                  </Cell>
+                }
+              >
+                <Link to={paths.oc.prefix}>
+                  <Cell>
+                    <TextCell>
+                      <StyledText>Oversight Community</StyledText>
+                    </TextCell>
+                  </Cell>
+                </Link>
+                <Link to={paths.validators.prefix}>
+                  <Cell>
+                    <TextCell>
+                      <StyledText>Validators</StyledText>
+                    </TextCell>
+                  </Cell>
+                </Link>
+                <Link to={paths.cpool.prefix}>
+                  <Cell>
+                    <TextCell>
+                      <StyledText>Community Pool</StyledText>
+                    </TextCell>
+                  </Cell>
+                </Link>
+              </StyledPanel>
+            </StyledCollapse>
+            <Link to={paths.engagement.prefix}>
               <Cell>
-                <Icon.Oversight />
+                <Icon.Flag />
                 <TextCell>
-                  <StyledText>Governance</StyledText>
-                  <Icon.Manage />
-                </TextCell>
-              </Cell>
-            }
-          >
-            <Link to={paths.oc.prefix}>
-              <Cell>
-                <TextCell>
-                  <StyledText>Oversight Community</StyledText>
+                  <StyledText>Engagement</StyledText>
+                  <Icon.TakeAway />
                 </TextCell>
               </Cell>
             </Link>
-            <Link to={paths.validators.prefix}>
+            <Link to={paths.documentation.prefix} target="_blank" rel="noopener noreferrer">
               <Cell>
+                <Icon.Wiki />
                 <TextCell>
-                  <StyledText>Validators</StyledText>
+                  <div>
+                    <StyledText>Documentation</StyledText>
+                    <Icon.ArrowTopRight style={{ height: "10px" }} />
+                  </div>
+                  <Icon.Code />
                 </TextCell>
               </Cell>
             </Link>
-            <Link to={paths.cpool.prefix}>
+            <a
+              href="https://confio.github.io/tgrade-address-generator/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none" }}
+            >
               <Cell>
+                <Icon.CodeIcon />
                 <TextCell>
-                  <StyledText>Community Pool</StyledText>
+                  <div>
+                    <StyledText>Address Generator</StyledText>
+                    <Icon.ArrowTopRight style={{ height: "10px" }} />
+                  </div>
                 </TextCell>
               </Cell>
-            </Link>
-          </StyledPanel>
-        </StyledCollapse>
-        <Link to={paths.engagement.prefix}>
-          <Cell>
-            <Icon.Flag />
-            <TextCell>
-              <StyledText>Engagement</StyledText>
-              <Icon.TakeAway />
-            </TextCell>
-          </Cell>
-        </Link>
-        <Link to={paths.documentation.prefix} target="_blank" rel="noopener noreferrer">
-          <Cell>
-            <Icon.Wiki />
-            <TextCell>
-              <div>
-                <StyledText>Documentation</StyledText>
-                <Icon.ArrowTopRight style={{ height: "10px" }} />
-              </div>
-              <Icon.Code />
-            </TextCell>
-          </Cell>
-        </Link>
-        <a
-          href="https://confio.github.io/tgrade-address-generator/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ textDecoration: "none" }}
-        >
-          <Cell>
-            <Icon.CodeIcon />
-            <TextCell>
-              <div>
-                <StyledText>Address Generator</StyledText>
-                <Icon.ArrowTopRight style={{ height: "10px" }} />
-              </div>
-            </TextCell>
-          </Cell>
-        </a>
+            </a>
+          </>
+        ) : null}
         <Link to="#" className="cky-banner-element">
           <Cell>
             <TextCell>

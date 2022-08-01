@@ -13,11 +13,14 @@ const IssueTokenModal = lazy(() => import("App/containers/IssueTokenModal"));
 export default function TMarketHome(): JSX.Element | null {
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const isCbdc = window.location.href.includes("cbdc");
+  const tMarketTitle = isCbdc ? "CBDC-Marketplace" : "T-Market";
+
   return (
     <PageLayout maxwidth="738px" centered="false">
       <Stack gap="s4">
         <TitleWrapper>
-          <Title>Welcome to T-Market</Title>
+          <Title>Welcome to {tMarketTitle}</Title>
           <LightButton onClick={() => setModalOpen(true)}>Create Asset</LightButton>
         </TitleWrapper>
         <NotificationsContainer id="notifications_container">

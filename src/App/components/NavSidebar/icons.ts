@@ -1,4 +1,5 @@
 import { ReactComponent as ArrowTopRight } from "App/assets/icons/arrow-top-right.svg";
+import { ReactComponent as CbdcLogo } from "App/assets/icons/cbdc-logo.svg";
 import { ReactComponent as Code } from "App/assets/icons/code.svg";
 import { ReactComponent as CodeIcon } from "App/assets/icons/code-icon.svg";
 import { ReactComponent as ConnectWallet } from "App/assets/icons/connect-wallet-icon.svg";
@@ -18,6 +19,7 @@ import { ReactComponent as Wiki } from "App/assets/icons/wiki-icon.svg";
 
 export {
   ArrowTopRight,
+  CbdcLogo,
   Code,
   CodeIcon,
   ConnectWallet,

@@ -18,6 +18,9 @@ export default function IssueTokenModal({ isModalOpen, closeModal }: IssueTokenM
     setTxResult(undefined);
   }
 
+  const isCbdc = window.location.href.includes("cbdc");
+  const tMarketTitle = isCbdc ? "CBDC-Marketplace" : "T-Market";
+
   return (
     <StyledIssueTokenModal
       centered
@@ -47,7 +50,7 @@ export default function IssueTokenModal({ isModalOpen, closeModal }: IssueTokenM
             </Button>
           ) : null}
           <Button onClick={() => resetModal()}>
-            <span>Go to T-Market</span>
+            <span>Go to {tMarketTitle}</span>
           </Button>
         </ShowTxResult>
       ) : (
