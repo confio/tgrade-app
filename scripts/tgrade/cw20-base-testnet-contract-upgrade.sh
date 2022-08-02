@@ -23,7 +23,7 @@ key="validator1-$chainSuffix"
 
 cw20Name="cw20-base"
 cw20CodeId=10 # From ./list_contract.sh
-cw20Contract="cw20_base-aarch64.wasm"
+cw20Contract="cw20_base.wasm"
 
 factoryName="tfi-factory"
 factoryCodeId=12 # From ./list_contract.sh

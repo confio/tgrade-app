@@ -20,7 +20,7 @@ otherKey1="validator2-$chainSuffix"
 otherKey2="validator3-$chainSuffix"
 
 poeContract="ARBITER_POOL_VOTING"
-apVotingContract="tgrade_ap_voting-aarch64.wasm"
+apVotingContract="tgrade_ap_voting.wasm"
 apConfigKey="ap_config"
 
 # TODO: Automate

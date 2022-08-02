@@ -22,7 +22,7 @@ otherKey1="validator2-$chainSuffix"
 otherKey2="validator3-$chainSuffix"
 
 poeContract="STAKING"
-stakeContract="tg4_stake-aarch64.wasm"
+stakeContract="tg4_stake.wasm"
 
 # Get key address
 keyAddr=$(tgrade keys show "$key" "$keyringBackend" | grep address: | cut -f4 -d\ )
