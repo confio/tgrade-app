@@ -20,7 +20,7 @@ otherKey1="validator2-$chainSuffix"
 otherKey2="validator3-$chainSuffix"
 
 poeContract="ARBITER_POOL_VOTING"
-apVotingContract="tgrade_ap_voting.wasm"
+apVotingContract="tgrade_ap_voting-aarch64.wasm"
 apConfigKey="ap_config"
 
 # TODO: Automate
@@ -53,7 +53,7 @@ EOF
 
 # Prepare migration proposal message
 upgrade_proposal=$(cat <<EOF
-{"propose": {"title": "$title", "description": "$description", "proposal": {"migrate_contract": {"contract":"$apVotingAddr", "code_id": $codeId, "migrate_msg": "$(echo -n "{ \"multisig_code\": $multisigCodeId }" | base64)"}} }}
+{"propose": {"title": "$title", "description": "$description", "proposal": {"migrate_contract": {"contract":"$apVotingAddr", "code_id": $codeId, "migrate_msg": "$(echo -n "{ \"multisig_code\": $multisigCodeId, \"waiting_period\": 1209600 }" | base64)"}} }}
 EOF
 )
 
