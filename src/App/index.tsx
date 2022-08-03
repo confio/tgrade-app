@@ -10,6 +10,7 @@ import {
 } from "react-query";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { DsoProvider, ErrorProvider, LayoutProvider, OcProvider, SdkProvider, ThemeProvider } from "service";
+import ApProvider from "service/arbiterPool";
 import TMarketProvider from "service/tmarket";
 import TokensProvider from "service/tokens";
 
@@ -24,6 +25,7 @@ import { paths } from "./paths";
 const Dso = lazy(() => import("./routes/Dso"));
 const Engagement = lazy(() => import("./pages/Engagement"));
 const OcHome = lazy(() => import("./pages/OcHome"));
+const ApHome = lazy(() => import("./pages/ApHome"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
 const NotFound = lazy(() => import("App/pages/NotFound"));
 
@@ -45,49 +47,54 @@ export default function App(): JSX.Element {
               <SdkProvider config={config}>
                 <TokensProvider>
                   <OcProvider>
-                    <Suspense fallback={null}>
-                      <ThemeProvider>
-                        <Router basename={basename}>
-                          <LayoutProvider>
-                            <Suspense fallback={<LoadingSpinner fullPage />}>
-                              <Switch>
-                                <Route exact path={paths.root}>
-                                  <Redirect to={`${paths.dso.prefix}`} />
-                                </Route>
-                                <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
-                                  <DsoProvider>
-                                    <Dso />
-                                  </DsoProvider>
-                                </Route>
-                                <Route path={paths.engagement.prefix}>
-                                  <Engagement />
-                                </Route>
-                                <Route path={paths.validators.prefix}>
-                                  <ValidatorsHome />
-                                </Route>
-                                <Route path={paths.oc.prefix}>
-                                  <OcHome />
-                                </Route>
-                                <Route path={paths.cpool.prefix}>
-                                  <CPoolHome />
-                                </Route>
-                                <Route path={`${paths.tmarket.prefix}`}>
-                                  <TMarketProvider>
-                                    <TMarketHome />
-                                  </TMarketProvider>
-                                </Route>
-                                <Route path={`${paths.documentation.prefix}`}>
-                                  <DocumentationPage />
-                                </Route>
-                                <Route path="*">
-                                  <NotFound />
-                                </Route>
-                              </Switch>
-                            </Suspense>
-                          </LayoutProvider>
-                        </Router>
-                      </ThemeProvider>
-                    </Suspense>
+                    <ApProvider>
+                      <Suspense fallback={null}>
+                        <ThemeProvider>
+                          <Router basename={basename}>
+                            <LayoutProvider>
+                              <Suspense fallback={<LoadingSpinner fullPage />}>
+                                <Switch>
+                                  <Route exact path={paths.root}>
+                                    <Redirect to={`${paths.dso.prefix}`} />
+                                  </Route>
+                                  <Route path={`${paths.dso.prefix}${paths.dso.params.dsoAddressOptional}`}>
+                                    <DsoProvider>
+                                      <Dso />
+                                    </DsoProvider>
+                                  </Route>
+                                  <Route path={paths.engagement.prefix}>
+                                    <Engagement />
+                                  </Route>
+                                  <Route path={paths.validators.prefix}>
+                                    <ValidatorsHome />
+                                  </Route>
+                                  <Route path={paths.oc.prefix}>
+                                    <OcHome />
+                                  </Route>
+                                  <Route path={paths.cpool.prefix}>
+                                    <CPoolHome />
+                                  </Route>
+                                  <Route path={paths.ap.prefix}>
+                                    <ApHome />
+                                  </Route>
+                                  <Route path={`${paths.tmarket.prefix}`}>
+                                    <TMarketProvider>
+                                      <TMarketHome />
+                                    </TMarketProvider>
+                                  </Route>
+                                  <Route path={`${paths.documentation.prefix}`}>
+                                    <DocumentationPage />
+                                  </Route>
+                                  <Route path="*">
+                                    <NotFound />
+                                  </Route>
+                                </Switch>
+                              </Suspense>
+                            </LayoutProvider>
+                          </Router>
+                        </ThemeProvider>
+                      </Suspense>
+                    </ApProvider>
                   </OcProvider>
                 </TokensProvider>
               </SdkProvider>
