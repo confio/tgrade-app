@@ -115,6 +115,8 @@ export function getProposalTitle(proposal: ApoolProposal): string {
   switch (proposalProp) {
     case "text":
       return "Open Text Proposal";
+    case "propose_arbiters":
+      return "Propose Arbiters";
     default:
       return "Uknown proposal type";
   }
@@ -127,7 +129,7 @@ export class ApContractQuerier {
   constructor(readonly config: NetworkConfig, protected readonly client: CosmWasmClient) {}
 
   protected async initAddress(): Promise<void> {
-    if (this.arbiterPoolAddress || this.arbiterPoolVotingAddress) return;
+    if (this.arbiterPoolVotingAddress || this.arbiterPoolVotingAddress) return;
 
     const tendermintClient = await Tendermint34Client.connect(this.config.rpcUrl);
     const queryClient = new QueryClient(tendermintClient);
@@ -141,8 +143,20 @@ export class ApContractQuerier {
       contractType: PoEContractType.ARBITER_POOL_VOTING,
     });
 
-    this.arbiterPoolAddress = arbiterPoolAddress;
+    this.arbiterPoolVotingAddress = arbiterPoolAddress;
     this.arbiterPoolVotingAddress = arbiterPoolVotingAddress;
+  }
+
+  async getVotingRules(): Promise<VotingRules> {
+    await this.initAddress();
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
+
+    const query = { rules: {} };
+    const votingRules: VotingRules = await this.client.queryContractSmart(
+      this.arbiterPoolVotingAddress,
+      query,
+    );
+    return votingRules;
   }
 
   async getProposals(startAfter?: number): Promise<readonly ProposalResponse[]> {
@@ -251,11 +265,11 @@ export class ApContractQuerier {
 
   async getComplaints(startAfter?: number): Promise<readonly Complaint[]> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const query = { list_complaints: { start_after: startAfter } };
     const { complaints }: ListComplaintsResponse = await this.client.queryContractSmart(
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       query,
     );
 
@@ -281,10 +295,10 @@ export class ApContractQuerier {
 
   async getComplaint(complaintId: number): Promise<Complaint> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const query = { complaint: { complaint_id: complaintId } };
-    const complaint = await this.client.queryContractSmart(this.arbiterPoolAddress, query);
+    const complaint = await this.client.queryContractSmart(this.arbiterPoolVotingAddress, query);
     return { ...complaint, complaint_id: complaintId };
   }
 }
@@ -369,14 +383,16 @@ export class ApContract extends ApContractQuerier {
     defendant: string,
   ): Promise<string> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const msg = { register_complaint: { title, description, defendant } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       msg,
       calculateFee(ApContract.GAS_REGISTER_COMPLAINT, this.config.gasPrice),
+      undefined,
+      [{ denom: "utgd", amount: "1000000" }], // TODO: figure out how to get this
     );
     return transactionHash;
 
@@ -386,12 +402,12 @@ export class ApContract extends ApContractQuerier {
 
   async acceptComplaint(senderAddress: string, complaintId: number): Promise<string> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const msg = { accept_complaint: { complaint_id: complaintId } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       msg,
       calculateFee(ApContract.GAS_ACCEPT_COMPLAINT, this.config.gasPrice),
     );
@@ -400,12 +416,12 @@ export class ApContract extends ApContractQuerier {
 
   async withdrawComplaint(senderAddress: string, complaintId: number, reason: string): Promise<string> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const msg = { withdraw_complaint: { complaint_id: complaintId, reason } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       msg,
       calculateFee(ApContract.GAS_WITHDRAW_COMPLAINT, this.config.gasPrice),
     );
@@ -419,12 +435,12 @@ export class ApContract extends ApContractQuerier {
     ipfsLink: string,
   ): Promise<string> {
     await this.initAddress();
-    if (!this.arbiterPoolAddress) throw new Error("arbiterPoolAddress was not set");
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const msg = { render_decision: { complaint_id: complaintId, summary, ipfs_link: ipfsLink } };
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
-      this.arbiterPoolAddress,
+      this.arbiterPoolVotingAddress,
       msg,
       calculateFee(ApContract.GAS_RENDER_DECISION, this.config.gasPrice),
     );
