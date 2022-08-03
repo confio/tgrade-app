@@ -4,7 +4,7 @@ set -o errexit -o nounset -o pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 # Link this to testnet's env file
-source ./env.sh
+#source ./env.sh
 
 echo "Tgrade home: $TGRADE_HOME"
 echo "Chain id: $chainId"
@@ -13,11 +13,10 @@ echo "Correct? [y/N]:"
 read A
 [ "$A" != "y" ] && echo "Abort." && exit 1
 
-key="validator-$chainSuffix"
+key="tgrade-v5-reserve-internal-14"
+#key="burner3-mainnet-1"
 
 contract="cw3_fixed_multisig"
-
-keyAddr=$(tgrade keys show "$key" "$keyringBackend" | grep address: | cut -f4 -d\ )
 
 # Instantiate a fixed-multisig contract
 # 1. Store contract
@@ -29,6 +28,8 @@ if echo $0 | grep -q store_fixed_multisig
 then
   exit 0
 fi
+
+keyAddr=$(tgrade keys show "$key" "$keyringBackend" | grep address: | cut -f4 -d\ )
 
 # 2. Instantiate fixed-multisig contract (for reference / labeling)
 # Dummy values
