@@ -53,7 +53,7 @@ EOF
 
 # Prepare migration proposal message
 upgrade_proposal=$(cat <<EOF
-{"propose": {"title": "$title", "description": "$description", "proposal": {"migrate_contract": {"contract":"$apVotingAddr", "code_id": $codeId, "migrate_msg": "$(echo -n "{ \"multisig_code\": $multisigCodeId, \"waiting_period\": 1209600 }" | base64)"}} }}
+{"propose": {"title": "$title", "description": "$description", "proposal": {"migrate_contract": {"contract":"$apVotingAddr", "code_id": $codeId, "migrate_msg": "$(echo -n "{ \"multisig_code\": $multisigCodeId, \"waiting_period\": 604800 }" | base64)"}} }}
 EOF
 )
 
