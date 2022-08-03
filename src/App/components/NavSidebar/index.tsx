@@ -72,6 +72,13 @@ export const NavSidebar: React.FC = () => {
                     </TextCell>
                   </Cell>
                 </Link>
+                <Link to={paths.ap.prefix}>
+                  <Cell>
+                    <TextCell>
+                      <StyledText>Arbiter Pool</StyledText>
+                    </TextCell>
+                  </Cell>
+                </Link>
               </StyledPanel>
             </StyledCollapse>
             <Link to={paths.engagement.prefix}>
