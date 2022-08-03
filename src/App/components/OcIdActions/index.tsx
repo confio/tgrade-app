@@ -44,7 +44,6 @@ export default function OcIdActions(): JSX.Element {
 
         setMinimumEscrow(minimumEscrow);
         setQuorum(quorum);
-        setQuorum(quorum);
         setThreshold(threshold);
         setVotingDuration(ocResponse.rules.voting_period.toString());
         setAllowEndEarly(allowEndEarly);

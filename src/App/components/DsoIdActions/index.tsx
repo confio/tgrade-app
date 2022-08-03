@@ -50,7 +50,6 @@ export default function DsoIdActions(): JSX.Element {
 
         setMinimumEscrow(minimumEscrow);
         setQuorum(quorum);
-        setQuorum(quorum);
         setThreshold(threshold);
         setVotingDuration(dsoResponse.rules.voting_period.toString());
         setAllowEndEarly(allowEndEarly);
