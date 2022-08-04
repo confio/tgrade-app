@@ -58,6 +58,11 @@ export const StatusParagraph = styled(Paragraph)<{ readonly status: string }>`
 
   img {
     margin-right: 3px;
+
+    width: 100%;
+    height: auto;
+    max-width: 12px;
+    max-height: 12px;
   }
 
   &&.ant-typography {
