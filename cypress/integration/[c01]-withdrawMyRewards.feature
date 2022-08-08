@@ -3,7 +3,7 @@ Feature: Withdraw my rewards to my address
     * I connect Web Demo wallet
     * Set wallet with Engagement Points and Engagement Rewards
     * Open wallet dialog
-    * I see my TGD balance "998"
+    * I see my TGD balance
     * I close wallet dialog modal
     * I visit Engagement page
 
