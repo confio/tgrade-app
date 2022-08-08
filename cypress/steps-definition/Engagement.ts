@@ -13,6 +13,7 @@ And('I see the "Address" field prefilled with my {string}', (walletAddress) => {
 And(
   "I see my Engagement Points {string} and Engagement Rewards {string}",
   (engagementPoint, engagementRewards) => {
+    // TODO instead of hardcoded value, make a query to get current
     cy.get(engagementPage.getEngagementPointsValue()).should("contain.text", engagementPoint);
     cy.get(engagementPage.getEngagementRewardsValue()).should("contain.text", engagementRewards);
   },
