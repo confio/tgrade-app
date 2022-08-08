@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import pendingIcon from "App/assets/icons/clock.svg";
-import rejectedIcon from "App/assets/icons/cross.svg";
+import rejectedIcon from "App/assets/icons/cross-red.svg";
 import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";

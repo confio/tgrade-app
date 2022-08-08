@@ -1,9 +1,8 @@
+import switchIcon from "App/assets/icons/arrows-up-down.svg";
 import ButtonCircle from "App/components/ButtonCircle";
 import { useFormikContext } from "formik";
 import { setEstimatingSwitch, useTMarket } from "service/tmarket";
 import { SwapFormValues } from "utils/tokens";
-
-import switchIcon from "../assets/switch-tokens-icon.png";
 
 const handleSwitchTokens = (values: SwapFormValues, setValues: any, switchState: () => void): void => {
   if (!values) return;
@@ -24,11 +23,7 @@ const SwitchTokensButton = (): JSX.Element => {
     setEstimatingSwitch(tMarketDispatch, tMarketState.estimatingFromA, tMarketState.estimatingFromB);
 
   return (
-    <ButtonCircle
-      shape="circle"
-      size="middle"
-      onClick={() => handleSwitchTokens(values, setValues, switchState)}
-    >
+    <ButtonCircle onClick={() => handleSwitchTokens(values, setValues, switchState)}>
       <img src={switchIcon} alt="Switch tokens" />
     </ButtonCircle>
   );
