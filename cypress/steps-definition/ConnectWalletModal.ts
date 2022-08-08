@@ -19,4 +19,5 @@ And("I see my TGD balance {string}", (tokenBalance) => {
 
 And("I close wallet dialog modal", () => {
   cy.get(connectWalletModal.getCloseIcon()).click();
+  cy.get(connectWalletModal.getCloseIcon()).should("not.exist");
 });

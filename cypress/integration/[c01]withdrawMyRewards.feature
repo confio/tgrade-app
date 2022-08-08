@@ -9,10 +9,10 @@ Feature: Withdraw my rewards to my address
 
   Scenario: Withdraw rewards
     * I see the "Address" field prefilled with my "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3"
-    * I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "9"
+    * I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "17" TGD
     * I click on the "Withdraw rewards" button
     * I see Tx success screen with my address "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3"
     * I click Go to Engagement button
-    * I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "0 TGD"
+    * I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "0" TGD
     * Open wallet dialog
-    * I check that my TGD balance has gone up "19"
+    * I check that my TGD balance has gone up "27"
