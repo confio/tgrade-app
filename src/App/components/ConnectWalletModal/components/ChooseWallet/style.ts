@@ -69,6 +69,23 @@ export const SwitchButtons = styled.div`
   }
 `;
 
+export const WalletConnected = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+
+  & img {
+    width: 100%;
+    height: 100%;
+    max-width: 20px;
+    max-height: 20px;
+  }
+
+  & span.ant-typography {
+    color: black;
+  }
+`;
+
 export const LogoutButton = styled(Button)`
   display: block;
   width: 100%;

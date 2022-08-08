@@ -106,8 +106,11 @@ export class Contract20WS {
       creatorAddress,
       codeId,
       initMsg as unknown as Record<string, unknown>,
-      "CW20 instance",
+      dsoAddress ? "Trusted Token instance" : "CW20 Token instance",
       calculateFee(500_000, GasPrice.fromString("0.05utgd")),
+      {
+        admin: creatorAddress,
+      },
     );
     return contractAddress;
   }

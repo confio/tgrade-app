@@ -1,6 +1,8 @@
 import { calculateFee } from "@cosmjs/stargate";
 import { Divider } from "antd";
-import { EstimatedMessage, MenuAMM, MiddleRow, PlusIcon, SubmitButton } from "App/pages/TMarket/components";
+import plusIcon from "App/assets/icons/plus.svg";
+import ButtonCircle from "App/components/ButtonCircle";
+import { EstimatedMessage, MenuAMM, MiddleRow, SubmitButton } from "App/pages/TMarket/components";
 import { CardCustom } from "App/pages/TMarket/style";
 import { Formik } from "formik";
 import { lazy, useEffect, useState } from "react";
@@ -159,7 +161,9 @@ export default function Provide(): JSX.Element {
             <FormCustom>
               <FromToken />
               <MiddleRow>
-                <PlusIcon />
+                <ButtonCircle>
+                  <img src={plusIcon} alt="" />
+                </ButtonCircle>
               </MiddleRow>
               <ToToken />
               <Divider />

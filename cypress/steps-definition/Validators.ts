@@ -4,7 +4,6 @@ import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
 
 const validatorDetailsDialog = new ValidatorDetailsDialog();
 
-// TODO move away this mnemonic to some other file storage
 const validatorMnemonicNode1 =
   "merit daring radio hospital exchange kitten skirt cry seven evil faculty lion cup inherit live host stable tuna convince tip blur sphere curve search";
 

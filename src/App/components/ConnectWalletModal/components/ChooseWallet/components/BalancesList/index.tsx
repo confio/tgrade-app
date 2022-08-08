@@ -1,3 +1,4 @@
+import { SendOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
 import pinDarkIcon from "App/assets/icons/pin-dark.svg";
 import pinLightIcon from "App/assets/icons/pin-light.svg";
@@ -60,6 +61,9 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
     setTokenList(filteredTokensList);
   }, [config.feeToken, pinnedTokens, searchText, tokens]);
 
+  const isCbdc = window.location.href.includes("cbdc");
+  const tMarketTitle = isCbdc ? "CBDC-Marketplace" : "T-Market";
+
   return (
     <Stack gap="s1">
       <TooltipWrapper
@@ -69,7 +73,7 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
             <Text>
               You need to go to{" "}
               <Link to={paths.tmarket.prefix} onClick={() => closeModal()}>
-                T-Market
+                {tMarketTitle}
               </Link>
               , search for the missing token, and pin it.
             </Text>
@@ -77,7 +81,7 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
           </TooltipStack>
         }
       >
-        <Text style={{ color: "black" }}>Available</Text>
+        <Text style={{ color: "black" }}>Available tokens to send</Text>
       </TooltipWrapper>
       <SearchToken
         placeholder="Search token"
@@ -95,7 +99,11 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
           >
             <TokenLogoName>
               <img alt="Token logo" src={token.img} />
-              <Text>{token.symbol}</Text>
+              <div>
+                <Text>Send </Text>
+                <Text>{token.symbol}</Text>
+              </div>
+              <SendOutlined color="red" />
             </TokenLogoName>
             <TokenDetailPin>
               <div>
