@@ -8,8 +8,11 @@ import { EngagementPage } from "../page-object/EngagementPage";
 
 const engagementPage = new EngagementPage();
 const connectWalletModal = new ConnectWalletModal();
+const firstWalletAddress = "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3";
+const secondWalletAddress = "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl";
 
-And('I see the "Address" field prefilled with my {string}', (walletAddress) => {
+And('I see the "Address" field prefilled with my {string} wallet', (walletNumber) => {
+  const walletAddress = walletNumber === "first" ? firstWalletAddress : secondWalletAddress;
   cy.get(engagementPage.getQueryAddressInputField()).should("have.value", walletAddress);
 });
 

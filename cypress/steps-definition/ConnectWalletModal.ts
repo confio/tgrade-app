@@ -9,16 +9,26 @@ import { ConnectWalletModal } from "../page-object/ConnectWalletModal";
 const connectWalletModal = new ConnectWalletModal();
 
 // TODO move away this mnemonic to some other file storage
-const mnemonicWalletWithEngagementPoints =
+const mnemonicFirstWalletWithEngagementPoints =
   "bone idea foster kid item private figure victory power reflect wrong bunker";
+const mnemonicSecondWalletWithEngagementPoints =
+  "cancel fault concert check match goose auto item judge couch exist shop mango option sister edit maze wide praise tortoise memory right post unusual";
 
-Given("Set wallet with Engagement Points and Engagement Rewards", async () => {
-  localStorage.setItem("burner-wallet", mnemonicWalletWithEngagementPoints);
+Given("Set {string} wallet with Engagement Points and Engagement Rewards", async (walletNumber) => {
+  const mnemonic =
+    walletNumber === "first"
+      ? mnemonicFirstWalletWithEngagementPoints
+      : mnemonicSecondWalletWithEngagementPoints;
+  localStorage.setItem("burner-wallet", mnemonic);
   cy.reload(); //help to apply new mnemonic and exchange address
 });
 
-And("I see my TGD balance", async () => {
-  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonicWalletWithEngagementPoints, {
+And("I see my TGD balance in wallet {string}", async (walletNumber) => {
+  const mnemonic =
+    walletNumber === "first"
+      ? mnemonicFirstWalletWithEngagementPoints
+      : mnemonicSecondWalletWithEngagementPoints;
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: config.addressPrefix,
   });
@@ -27,7 +37,7 @@ And("I see my TGD balance", async () => {
   const signingClient_01 = await createSigningClient(config, wallet);
 
   const walletBalanceUser = await signingClient_01.getBalance(walletUserA, config.feeToken);
-  cy.get(connectWalletModal.getTokenBalance()).should("contain.text", walletBalanceUser.amount.slice(0, 4));
+  cy.get(connectWalletModal.getTokenBalance()).should("contain.text", walletBalanceUser.amount.slice(0, 3));
 });
 
 And("I close wallet dialog modal", () => {
