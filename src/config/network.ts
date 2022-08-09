@@ -84,10 +84,10 @@ const tgradeInternal: NetworkConfig = {
   codeIds: {
     // The first 11 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [2],
-    cw20Tokens: [12],
-    tgradeCw20: [13],
-    tgradeFactory: [14],
-    tgradePair: [15],
+    cw20Tokens: [13],
+    tgradeCw20: [14],
+    tgradeFactory: [15],
+    tgradePair: [16],
   },
 };
 
