@@ -80,7 +80,7 @@ const tgradeInternal: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
-  factoryAddress: "tgrade1f8rp2vlg5s7pvyfcnpfms007uyl7856kpe2dcx8hjq2fkt90qfjsdmyp8g",
+  factoryAddress: "tgrade10v0hrjvwwlqwvk2yhwagm9m9h385spxa4s54f4aekhap0lxyekys20x6y2",
   codeIds: {
     // The first 11 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [2],
