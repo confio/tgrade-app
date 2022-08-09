@@ -26,6 +26,7 @@ cw20CodeId=10 # From ./list_contract.sh
 cw20Contract="cw20_base.wasm"
 
 factoryName="tfi-factory"
+# TODO: Automate
 factoryCodeId=12 # From ./list_contract.sh
 
 keyAddr=$(tgrade keys show "$key" "$keyringBackend" | grep address: | cut -f4 -d\ )
