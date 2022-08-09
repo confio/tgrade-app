@@ -9,9 +9,10 @@ Feature: Withdraw my rewards to another address
 
   Scenario: Withdraw rewards to another
     * I see the "Address" field prefilled with my "first" wallet
-    #* I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "9" TGD
-    * I enter the address of the other account on the "Receiver address" field
+    * I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "178" TGD
+    * I enter the address of the other account in the "Receiver address" field
     * I click on the "Withdraw rewards" button
-    #* I see Tx success screen with my address "tgrade1tsg4wldpwyehhkqx3za78ygkzatncxxup96k7h"
-    #* I click Go to Engagement button
-    #* I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "0 TGD"
+    * I see Tx success screen with my address "first"
+    * I click Go to Engagement button
+    * I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "0" TGD
+    * I check balance on new receive address "178"
