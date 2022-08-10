@@ -1,4 +1,5 @@
 import { Bip39, Random } from "@cosmjs/crypto";
+import { Bech32 } from "@cosmjs/encoding";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { And } from "cypress-cucumber-preprocessor/steps";
@@ -15,6 +16,7 @@ const secondWalletAddress = "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl";
 
 const generateMnemonic = (): string => Bip39.encode(Random.getBytes(16)).toString();
 const mnemonic_01 = generateMnemonic();
+const randomlyGeneratedAddress = makeRandomTgradeAddress();
 
 And('I see the "Address" field prefilled with my {string} wallet', (walletNumber) => {
   const walletAddress = walletNumber === "first" ? firstWalletAddress : secondWalletAddress;
@@ -57,6 +59,10 @@ And("I check that my TGD balance has gone up {string}", (tokenBalance) => {
   cy.get(connectWalletModal.getTokenBalance()).should("contain.text", tokenBalance);
 });
 
+And("I enter the address of a known account in Delegated withdrawal to field", () => {
+  cy.get(engagementPage.getDelegatedWithdrawalToField()).clear().type(randomlyGeneratedAddress);
+});
+
 And("I check balance on new receive address {string}", async (tokenBalance) => {
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
     hdPaths: [makeCosmoshubPath(0)],
@@ -70,6 +76,26 @@ And("I check balance on new receive address {string}", async (tokenBalance) => {
   expect(walletBalanceUser.amount.slice(0, 3)).to.contains(tokenBalance);
 });
 
+And('I click the "Set delegate" button', () => {
+  cy.get(engagementPage.getSetDelegatedButton()).click();
+});
+
+And("I see Tx success screen with new delegated address", () => {
+  cy.get(engagementPage.getTransactionResultScreenText()).should(
+    "have.text",
+    "Your transaction was approved!",
+  );
+  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", randomlyGeneratedAddress);
+});
+
+And("I see delegate address is still percent in the field", () => {
+  cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", randomlyGeneratedAddress);
+});
+
+And("I set new to the delegate account", () => {
+  cy.get(engagementPage.getQueryAddressInputField()).clear().type(randomlyGeneratedAddress);
+});
+
 async function generateWalletAddress() {
   const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
     hdPaths: [makeCosmoshubPath(0)],
@@ -77,4 +103,8 @@ async function generateWalletAddress() {
   });
   const { address: walletAddress } = (await wallet_01.getAccounts())[0];
   return walletAddress;
+}
+
+function makeRandomTgradeAddress(): string {
+  return Bech32.encode("tgrade", Random.getBytes(20));
 }

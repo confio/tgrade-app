@@ -30,4 +30,16 @@ export class EngagementPage {
   getTransactionResultScreenGoToEngagementButton(): string {
     return '[data-cy="transaction-result-screen-go-to-engagement-button"]';
   }
+
+  getDelegatedWithdrawalToField(): string {
+    return '[name="form-item-name-delegated-withdrawal-to"]';
+  }
+
+  getSetDelegatedButton(): string {
+    return '[data-cy="engagement-withdraws-rewards-set-delegate-button"]';
+  }
+
+  getLastHalfLifeEventDate(): string {
+    return '[data-cy="engagement-last-half-life-event-date"]';
+  }
 }

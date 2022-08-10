@@ -1,8 +1,10 @@
 import { And, Given } from "cypress-cucumber-preprocessor/steps";
 
+import { EngagementPage } from "../page-object/EngagementPage";
 import { MainNavigationMenu } from "../page-object/MainNavigationMenu";
 
 const mainNavigationMenu = new MainNavigationMenu();
+const engagementPage = new EngagementPage();
 
 Given("Open wallet dialog", () => {
   cy.get(mainNavigationMenu.getConnectWalletIcon()).click();
@@ -20,4 +22,5 @@ Given("I connect Web Demo wallet", () => {
 
 And("I visit Engagement page", () => {
   cy.get(mainNavigationMenu.getEngagementMenuOption()).click();
+  cy.get(engagementPage.getLastHalfLifeEventDate()).should("be.visible"); //workaround until fetch is finished
 });
