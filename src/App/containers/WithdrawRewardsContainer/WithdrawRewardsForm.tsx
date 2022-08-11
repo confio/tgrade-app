@@ -75,12 +75,13 @@ export default function WithdrawRewardsForm({
                     }}
                   />
                   <Button
+                    data-cy="engagement-page-withdraw-rewards-button"
                     disabled={!isValid || !canWithdraw}
                     loading={isSubmitting}
                     onClick={() => submitForm()}
                     style={{ alignSelf: "flex-start" }}
                   >
-                    <div data-cy="engagement-page-withdraw-rewards-button">Withdraw rewards</div>
+                    <div>Withdraw rewards</div>
                   </Button>
                 </>
               ) : (

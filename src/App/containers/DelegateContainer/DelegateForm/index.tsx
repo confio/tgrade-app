@@ -60,7 +60,7 @@ export default function DelegateForm({
                     setSubmitting(false);
                   }}
                 >
-                  <div>Clear delegate</div>
+                  <div data-cy="engagement-withdraws-rewards-clear-delegate-button">Clear delegate</div>
                 </Button>
               </ButtonGroup>
             </DelegateStack>

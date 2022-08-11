@@ -14,20 +14,31 @@ const mnemonicFirstWalletWithEngagementPoints =
 const mnemonicSecondWalletWithEngagementPoints =
   "cancel fault concert check match goose auto item judge couch exist shop mango option sister edit maze wide praise tortoise memory right post unusual";
 
+const mnemonicThirdWalletWithEngagementPoints =
+  "move drastic law sustain decade parent stairs minor cry help worry minute bridge bone force found mimic frown burst foil avocado water kingdom picture";
+
+const selectMnemonic = (walletNumber: string): string => {
+  switch (walletNumber) {
+    case "first":
+      return mnemonicFirstWalletWithEngagementPoints;
+    case "second":
+      return mnemonicSecondWalletWithEngagementPoints;
+    case "third":
+      return mnemonicThirdWalletWithEngagementPoints;
+    default:
+      return "no mnemonic was provided";
+  }
+};
+
 Given("Set {string} wallet with Engagement Points and Engagement Rewards", async (walletNumber) => {
-  const mnemonic =
-    walletNumber === "first"
-      ? mnemonicFirstWalletWithEngagementPoints
-      : mnemonicSecondWalletWithEngagementPoints;
+  const mnemonic = selectMnemonic(walletNumber);
+  console.log(mnemonic);
   localStorage.setItem("burner-wallet", mnemonic);
   cy.reload(); //help to apply new mnemonic and exchange address
 });
 
 And("I see my TGD balance in wallet {string}", async (walletNumber) => {
-  const mnemonic =
-    walletNumber === "first"
-      ? mnemonicFirstWalletWithEngagementPoints
-      : mnemonicSecondWalletWithEngagementPoints;
+  const mnemonic = selectMnemonic(walletNumber);
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: config.addressPrefix,

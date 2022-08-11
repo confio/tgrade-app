@@ -35,11 +35,19 @@ export class EngagementPage {
     return '[name="form-item-name-delegated-withdrawal-to"]';
   }
 
-  getSetDelegatedButton(): string {
+  getSetDelegateButton(): string {
     return '[data-cy="engagement-withdraws-rewards-set-delegate-button"]';
+  }
+
+  getClearDelegateButton(): string {
+    return '[data-cy="engagement-withdraws-rewards-clear-delegate-button"]';
   }
 
   getLastHalfLifeEventDate(): string {
     return '[data-cy="engagement-last-half-life-event-date"]';
+  }
+
+  getDisabledWithdrawRewardsButton(): string {
+    return '[data-cy="engagement-page-withdraw-rewards-button"]';
   }
 }

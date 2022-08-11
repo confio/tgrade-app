@@ -13,20 +13,38 @@ const engagementPage = new EngagementPage();
 const connectWalletModal = new ConnectWalletModal();
 const firstWalletAddress = "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3";
 const secondWalletAddress = "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl";
+const thirdWalletAddress = "tgrade10jdqrtm46xsxtdmuyt2zfcrhupvycrpv80r7nh";
+
+const selectWalletAddressByNumber = (walletNumber: string): string => {
+  switch (walletNumber) {
+    case "first":
+      return firstWalletAddress;
+    case "second":
+      return secondWalletAddress;
+    case "third":
+      return thirdWalletAddress;
+    default:
+      return "no wallet number was provided";
+  }
+};
 
 const generateMnemonic = (): string => Bip39.encode(Random.getBytes(16)).toString();
 const mnemonic_01 = generateMnemonic();
 const randomlyGeneratedAddress = makeRandomTgradeAddress();
 
 And('I see the "Address" field prefilled with my {string} wallet', (walletNumber) => {
-  const walletAddress = walletNumber === "first" ? firstWalletAddress : secondWalletAddress;
-  cy.get(engagementPage.getQueryAddressInputField()).should("have.value", walletAddress);
+  const address = selectWalletAddressByNumber(walletNumber);
+  cy.get(engagementPage.getQueryAddressInputField()).should("have.value", address);
 });
 
 And('I enter the address of the other account in the "Receiver address" field', async () => {
   const randomlyGeneratedAddress = await generateWalletAddress();
   cy.log(randomlyGeneratedAddress);
   cy.get(engagementPage.getReceiverAddressInputField()).type(randomlyGeneratedAddress);
+});
+
+And('I see no any address in the "Receiver address" field', async () => {
+  cy.get(engagementPage.getReceiverAddressInputField()).should("have.value", "");
 });
 
 And(
@@ -43,7 +61,7 @@ And('I click on the "Withdraw rewards" button', () => {
 });
 
 And("I see Tx success screen with my address {string}", (walletNumber) => {
-  const walletAddress = walletNumber === "first" ? firstWalletAddress : secondWalletAddress;
+  const walletAddress = selectWalletAddressByNumber(walletNumber);
   cy.get(engagementPage.getTransactionResultScreenText()).should(
     "have.text",
     "Your transaction was approved!",
@@ -77,7 +95,7 @@ And("I check balance on new receive address {string}", async (tokenBalance) => {
 });
 
 And('I click the "Set delegate" button', () => {
-  cy.get(engagementPage.getSetDelegatedButton()).click();
+  cy.get(engagementPage.getSetDelegateButton()).click();
 });
 
 And("I see Tx success screen with new delegated address", () => {
@@ -88,12 +106,38 @@ And("I see Tx success screen with new delegated address", () => {
   cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", randomlyGeneratedAddress);
 });
 
-And("I see delegate address is still percent in the field", () => {
+And("I see Tx success screen with {string} delegated address", (walletNumber) => {
+  const address = selectWalletAddressByNumber(walletNumber);
+  cy.get(engagementPage.getTransactionResultScreenText()).should(
+    "have.text",
+    "Your transaction was approved!",
+  );
+  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", address);
+});
+
+And("I see there is randomly generated address set in Delegate withdrawal field", () => {
   cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", randomlyGeneratedAddress);
+});
+
+And("I see Delegate withdrawal to field is pre-field with {string} address", (address) => {
+  const preFieldAddress = selectWalletAddressByNumber(address);
+  cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", preFieldAddress);
 });
 
 And("I set new to the delegate account", () => {
   cy.get(engagementPage.getQueryAddressInputField()).clear().type(randomlyGeneratedAddress);
+});
+
+And("I check presence of main address with tokens in Address field", () => {
+  cy.get(engagementPage.getQueryAddressInputField()).clear().type(randomlyGeneratedAddress);
+});
+
+And("I click on the Clear delegate button", () => {
+  cy.get(engagementPage.getClearDelegateButton()).click();
+});
+
+And("I see I can no longer withdraw rewards for the initial account", () => {
+  cy.get(engagementPage.getDisabledWithdrawRewardsButton()).should("be.disabled");
 });
 
 async function generateWalletAddress() {
@@ -101,6 +145,7 @@ async function generateWalletAddress() {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: "tgrade",
   });
+  console.log(mnemonic_01);
   const { address: walletAddress } = (await wallet_01.getAccounts())[0];
   return walletAddress;
 }
