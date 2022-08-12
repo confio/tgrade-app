@@ -1,5 +1,5 @@
 export class EngagementPage {
-  getQueryAddressInputField(): string {
+  getInitialAddressInputField(): string {
     return '[name="form-item-name-address"]';
   }
 

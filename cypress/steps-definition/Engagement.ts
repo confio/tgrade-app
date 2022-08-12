@@ -14,6 +14,11 @@ const connectWalletModal = new ConnectWalletModal();
 const firstWalletAddress = "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3";
 const secondWalletAddress = "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl";
 const thirdWalletAddress = "tgrade10jdqrtm46xsxtdmuyt2zfcrhupvycrpv80r7nh";
+const generateMnemonic = (): string => Bip39.encode(Random.getBytes(16)).toString();
+const mnemonic_01 = generateMnemonic();
+const randomFirstAddress = makeRandomTgradeAddress();
+const randomSecondAddress = makeRandomTgradeAddress();
+const randomThirdAddress = makeRandomTgradeAddress();
 
 const selectWalletAddressByNumber = (walletNumber: string): string => {
   switch (walletNumber) {
@@ -28,13 +33,22 @@ const selectWalletAddressByNumber = (walletNumber: string): string => {
   }
 };
 
-const generateMnemonic = (): string => Bip39.encode(Random.getBytes(16)).toString();
-const mnemonic_01 = generateMnemonic();
-const randomlyGeneratedAddress = makeRandomTgradeAddress();
+const selectRandomGeneratedAddressByNumber = (number: string): string => {
+  switch (number) {
+    case "randomFirst":
+      return randomFirstAddress;
+    case "randomSecond":
+      return randomSecondAddress;
+    case "randomThird":
+      return randomThirdAddress;
+    default:
+      return "no number was provided";
+  }
+};
 
 And('I see the "Address" field prefilled with my {string} wallet', (walletNumber) => {
   const address = selectWalletAddressByNumber(walletNumber);
-  cy.get(engagementPage.getQueryAddressInputField()).should("have.value", address);
+  cy.get(engagementPage.getInitialAddressInputField()).should("have.value", address);
 });
 
 And('I enter the address of the other account in the "Receiver address" field', async () => {
@@ -77,8 +91,9 @@ And("I check that my TGD balance has gone up {string}", (tokenBalance) => {
   cy.get(connectWalletModal.getTokenBalance()).should("contain.text", tokenBalance);
 });
 
-And("I enter the address of a known account in Delegated withdrawal to field", () => {
-  cy.get(engagementPage.getDelegatedWithdrawalToField()).clear().type(randomlyGeneratedAddress);
+And("I type {string} address in Delegated withdrawal to field", (number) => {
+  const randomAddress = selectRandomGeneratedAddressByNumber(number);
+  cy.get(engagementPage.getDelegatedWithdrawalToField()).clear().type(randomAddress);
 });
 
 And("I check balance on new receive address {string}", async (tokenBalance) => {
@@ -98,12 +113,13 @@ And('I click the "Set delegate" button', () => {
   cy.get(engagementPage.getSetDelegateButton()).click();
 });
 
-And("I see Tx success screen with new delegated address", () => {
+And("I see Tx success screen with {string} delegated address", (addressNumber) => {
+  const randomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
   cy.get(engagementPage.getTransactionResultScreenText()).should(
     "have.text",
     "Your transaction was approved!",
   );
-  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", randomlyGeneratedAddress);
+  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", randomAddress);
 });
 
 And("I see Tx success screen with {string} delegated address", (walletNumber) => {
@@ -115,8 +131,9 @@ And("I see Tx success screen with {string} delegated address", (walletNumber) =>
   cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", address);
 });
 
-And("I see there is randomly generated address set in Delegate withdrawal field", () => {
-  cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", randomlyGeneratedAddress);
+And("I see there is {string} address set in Delegate withdrawal field", (addressNumber) => {
+  const randomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
+  cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", randomAddress);
 });
 
 And("I see Delegate withdrawal to field is pre-field with {string} address", (address) => {
@@ -124,12 +141,9 @@ And("I see Delegate withdrawal to field is pre-field with {string} address", (ad
   cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", preFieldAddress);
 });
 
-And("I set new to the delegate account", () => {
-  cy.get(engagementPage.getQueryAddressInputField()).clear().type(randomlyGeneratedAddress);
-});
-
-And("I check presence of main address with tokens in Address field", () => {
-  cy.get(engagementPage.getQueryAddressInputField()).clear().type(randomlyGeneratedAddress);
+And("I set {string} address to initial Address field", (addressNumber) => {
+  const randomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
+  cy.get(engagementPage.getInitialAddressInputField()).clear().type(randomAddress);
 });
 
 And("I click on the Clear delegate button", () => {

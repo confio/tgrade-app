@@ -10,13 +10,13 @@ Feature: Withdraw rewards as delegate
   Scenario: Delegate withdraws rewards
 
     # Set delegate
-    * I enter the address of a known account in Delegated withdrawal to field
+    * I type "randomFirst" address in Delegated withdrawal to field
     * I click the "Set delegate" button
-    * I see Tx success screen with new delegated address
+    * I see Tx success screen with "randomFirst" delegated address
     * I click Go to Engagement button
-    * I see there is randomly generated address set in Delegate withdrawal field
+    * I see there is "randomFirst" address set in Delegate withdrawal field
 
-    # Withdraw rewards to Delegated address
+    # Withdraw rewards to Delegated address with empty "Receiver address" field
     * I see the "Address" field prefilled with my "third" wallet
     * I see my Engagement Points "5 / 2034 (0.25%)" and Engagement Rewards "9" TGD
     * I see no any address in the "Receiver address" field
@@ -28,8 +28,10 @@ Feature: Withdraw rewards as delegate
     #* I check balance on new receive address "9" //tgrade-app/issues/798
 
     # Clear delegate then change it to the initial account
-    * I see there is randomly generated address set in Delegate withdrawal field
+    * I see there is "randomFirst" address set in Delegate withdrawal field
     * I click on the Clear delegate button
+    * I click Go to Engagement button
+    * I see there is "third" address set in Delegate withdrawal field
     * I see Tx success screen with "third" delegated address
     * I click Go to Engagement button
     * I see Delegate withdrawal to field is pre-field with "third" address
