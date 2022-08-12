@@ -11,7 +11,7 @@ Feature: Withdraw my rewards to my address
     * I see the "Address" field prefilled with my "second" wallet
     * I see my Engagement Points "7 / 2034 (0.34%)" and Engagement Rewards "13" TGD
     * I click on the "Withdraw rewards" button
-    * I see Tx success screen with my address "second"
+    * I see Tx success screen with "second" address
     * I click Go to Engagement button
     * I see my Engagement Points "7 / 2034 (0.34%)" and Engagement Rewards "0" TGD
     * Open wallet dialog

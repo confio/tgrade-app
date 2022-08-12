@@ -14,12 +14,12 @@ Feature: Withdraw rewards as delegate to another address
     * I click the "Set delegate" button
     * I see Tx success screen with "randomSecond" delegated address
     * I click Go to Engagement button
-    * I see there is "randomSecond" address set in Delegate withdrawal field
+    * I see there is random "randomSecond" address set in Delegate withdrawal field
 
     # Withdraw rewards
     * I see the "Address" field prefilled with my "third" wallet
-    * I see my Engagement Points "5 / 2034 (0.25%)" and Engagement Rewards "9" TGD
-    * I enter the address of the other account in the "Receiver address" field
+    #* I see my Engagement Points "5 / 2034 (0.25%)" and Engagement Rewards "9" TGD
+    #* I enter the address of the other account in the "Receiver address" field
     #* I see the initial account's Engagement Points and Engagement Rewards
     #* I enter the address of the other account on the "Receiver address" field
     #* I click on the "Withdraw rewards" button

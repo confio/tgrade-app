@@ -74,7 +74,7 @@ And('I click on the "Withdraw rewards" button', () => {
   cy.get(engagementPage.getWithdrawRewardsButton()).click();
 });
 
-And("I see Tx success screen with my address {string}", (walletNumber) => {
+And("I see Tx success screen with {string} address", (walletNumber) => {
   const walletAddress = selectWalletAddressByNumber(walletNumber);
   cy.get(engagementPage.getTransactionResultScreenText()).should(
     "have.text",
@@ -122,7 +122,7 @@ And("I see Tx success screen with {string} delegated address", (addressNumber) =
   cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", randomAddress);
 });
 
-And("I see Tx success screen with {string} delegated address", (walletNumber) => {
+And("I see Tx success screen with initial {string} delegated address", (walletNumber) => {
   const address = selectWalletAddressByNumber(walletNumber);
   cy.get(engagementPage.getTransactionResultScreenText()).should(
     "have.text",
@@ -131,13 +131,23 @@ And("I see Tx success screen with {string} delegated address", (walletNumber) =>
   cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", address);
 });
 
-And("I see there is {string} address set in Delegate withdrawal field", (addressNumber) => {
+And("I see there is random {string} address set in Delegate withdrawal field", (addressNumber) => {
   const randomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
   cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", randomAddress);
 });
 
-And("I see Delegate withdrawal to field is pre-field with {string} address", (address) => {
+And("I see there is existing {string} address set in Delegate withdrawal field", (addressNumber) => {
+  const randomAddress = selectWalletAddressByNumber(addressNumber);
+  cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", randomAddress);
+});
+
+And("I see Delegate withdrawal to field is pre-field with existing {string} address", (address) => {
   const preFieldAddress = selectWalletAddressByNumber(address);
+  cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", preFieldAddress);
+});
+
+And("I see Delegate withdrawal to field is pre-field with {string} address", (addressNumber) => {
+  const preFieldAddress = selectRandomGeneratedAddressByNumber(addressNumber);
   cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", preFieldAddress);
 });
 

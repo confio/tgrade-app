@@ -12,7 +12,7 @@ Feature: Withdraw my rewards to another address
     * I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "18" TGD
     * I enter the address of the other account in the "Receiver address" field
     * I click on the "Withdraw rewards" button
-    * I see Tx success screen with my address "first"
+    * I see Tx success screen with "first" address
     * I click Go to Engagement button
     * I see my Engagement Points "1000 / 2034 (49.16%)" and Engagement Rewards "0" TGD
     * I check balance on new receive address "18"
