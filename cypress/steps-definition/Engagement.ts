@@ -8,17 +8,49 @@ import { config } from "../../src/config/network";
 import { createSigningClient } from "../../src/utils/sdk";
 import { ConnectWalletModal } from "../page-object/ConnectWalletModal";
 import { EngagementPage } from "../page-object/EngagementPage";
+import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
 
 const engagementPage = new EngagementPage();
 const connectWalletModal = new ConnectWalletModal();
-const firstWalletAddress = "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3";
-const secondWalletAddress = "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl";
-const thirdWalletAddress = "tgrade10jdqrtm46xsxtdmuyt2zfcrhupvycrpv80r7nh";
+const validatorDetailsDialog = new ValidatorDetailsDialog();
+const firstWalletAddress = "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3"; // with Tokens
+const secondWalletAddress = "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl"; // with Tokens
+const thirdWalletAddress = "tgrade10jdqrtm46xsxtdmuyt2zfcrhupvycrpv80r7nh"; // with Tokens
+const fourthWalletAddress = "tgrade1dzav7m7r42sg02sqdvqelazsg0mu5ef0qjpq5e"; // with Tokens
+const fifthWalletAddress = "tgrade1kjeuxlg02ku900mzddhrvpc2cjgaaen90czgg8"; // with Tokens
 const generateMnemonic = (): string => Bip39.encode(Random.getBytes(16)).toString();
-const mnemonic_01 = generateMnemonic();
+const randomMnemonicFirst = generateMnemonic();
+const randomMnemonicSecond = generateMnemonic();
+const mnemonicFourth =
+  "pink neutral tray meadow pet caught cereal pass test swarm edge junior cradle all split matrix siege squeeze hobby fence act human patrol ramp";
+const mnemonicFifth =
+  "shell display fetch burst pear naive hip box nose gallery unlock sign surprise ancient elite girl winter disorder wish list maximum galaxy twenty rather";
 const randomFirstAddress = makeRandomTgradeAddress();
 const randomSecondAddress = makeRandomTgradeAddress();
 const randomThirdAddress = makeRandomTgradeAddress();
+const randomFourthAddress = makeRandomTgradeAddress();
+
+const selectAddressMnemonicByNumber = (addressMnemonic: string): string => {
+  switch (addressMnemonic) {
+    case "fourthMnemonic":
+      return mnemonicFourth;
+    case "fifthMnemonic":
+      return mnemonicFifth;
+    default:
+      return "no mnemonic was provided";
+  }
+};
+
+const selectRandomGeneratedMnemonicByNumber = (addressMnemonic: string): string => {
+  switch (addressMnemonic) {
+    case "randomMnemonicFirst":
+      return randomMnemonicFirst;
+    case "randomMnemonicSecond":
+      return randomMnemonicSecond;
+    default:
+      return "no mnemonic was provided";
+  }
+};
 
 const selectWalletAddressByNumber = (walletNumber: string): string => {
   switch (walletNumber) {
@@ -28,6 +60,10 @@ const selectWalletAddressByNumber = (walletNumber: string): string => {
       return secondWalletAddress;
     case "third":
       return thirdWalletAddress;
+    case "fourth":
+      return fourthWalletAddress;
+    case "fifth":
+      return fifthWalletAddress;
     default:
       return "no wallet number was provided";
   }
@@ -41,6 +77,8 @@ const selectRandomGeneratedAddressByNumber = (number: string): string => {
       return randomSecondAddress;
     case "randomThird":
       return randomThirdAddress;
+    case "randomFourth":
+      return randomFourthAddress;
     default:
       return "no number was provided";
   }
@@ -51,10 +89,19 @@ And('I see the "Address" field prefilled with my {string} wallet', (walletNumber
   cy.get(engagementPage.getInitialAddressInputField()).should("have.value", address);
 });
 
-And('I enter the address of the other account in the "Receiver address" field', async () => {
-  const randomlyGeneratedAddress = await generateWalletAddress();
-  cy.log(randomlyGeneratedAddress);
-  cy.get(engagementPage.getReceiverAddressInputField()).type(randomlyGeneratedAddress);
+And('I enter {string} address in the "Receiver address" field', (randomNumber) => {
+  const randomAddress = selectRandomGeneratedAddressByNumber(randomNumber);
+  cy.get(engagementPage.getReceiverAddressInputField()).type(randomAddress);
+});
+
+And('I enter existing {string} address in the "Receiver address" field', (orderNumber) => {
+  const existingAddress = selectWalletAddressByNumber(orderNumber);
+  cy.get(engagementPage.getReceiverAddressInputField()).type(existingAddress);
+});
+
+And('I enter existing {string} address in the "Receiver address" field', (randomNumber) => {
+  const randomAddress = selectWalletAddressByNumber(randomNumber);
+  cy.get(engagementPage.getReceiverAddressInputField()).type(randomAddress);
 });
 
 And('I see no any address in the "Receiver address" field', async () => {
@@ -75,6 +122,15 @@ And('I click on the "Withdraw rewards" button', () => {
 });
 
 And("I see Tx success screen with {string} address", (walletNumber) => {
+  const walletAddress = selectRandomGeneratedAddressByNumber(walletNumber);
+  cy.get(engagementPage.getTransactionResultScreenText()).should(
+    "have.text",
+    "Your transaction was approved!",
+  );
+  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", walletAddress);
+});
+
+And("I see Tx success screen with existing {string} address", (walletNumber) => {
   const walletAddress = selectWalletAddressByNumber(walletNumber);
   cy.get(engagementPage.getTransactionResultScreenText()).should(
     "have.text",
@@ -87,27 +143,53 @@ And("I click Go to Engagement button", () => {
   cy.get(engagementPage.getTransactionResultScreenGoToEngagementButton()).click();
 });
 
-And("I check that my TGD balance has gone up {string}", (tokenBalance) => {
-  cy.get(connectWalletModal.getTokenBalance()).should("contain.text", tokenBalance);
-});
+And(
+  "I see on connect wallet modal that TGD balance {string} has gone up for {string} address",
+  (tokenBalance, accountAddress) => {
+    const selectedAccountAddress = selectWalletAddressByNumber(accountAddress);
+    cy.get(validatorDetailsDialog.getAddressTooltipTagHash()).should("contain.text", selectedAccountAddress);
+    cy.get(connectWalletModal.getTokenBalance()).should("contain.text", tokenBalance);
+  },
+);
 
 And("I type {string} address in Delegated withdrawal to field", (number) => {
   const randomAddress = selectRandomGeneratedAddressByNumber(number);
   cy.get(engagementPage.getDelegatedWithdrawalToField()).clear().type(randomAddress);
 });
 
-And("I check balance on new receive address {string}", async (tokenBalance) => {
-  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
-    hdPaths: [makeCosmoshubPath(0)],
-    prefix: config.addressPrefix,
-  });
+And(
+  "I use {string} mnemonic of receive address to query balance {string}",
+  async (receiveAddressMnemonic, tokenBalance) => {
+    const addressMnemonic = selectRandomGeneratedMnemonicByNumber(receiveAddressMnemonic);
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
 
-  const { address: walletUserA } = (await wallet.getAccounts())[0];
-  const signingClient_01 = await createSigningClient(config, wallet);
+    const { address: walletUserA } = (await wallet.getAccounts())[0];
+    const signingClient_01 = await createSigningClient(config, wallet);
 
-  const walletBalanceUser = await signingClient_01.getBalance(walletUserA, config.feeToken);
-  expect(walletBalanceUser.amount.slice(0, 3)).to.contains(tokenBalance);
-});
+    const walletBalanceUser = await signingClient_01.getBalance(walletUserA, config.feeToken);
+    expect(walletBalanceUser.amount.slice(0, 3)).to.contains(tokenBalance);
+  },
+);
+
+And(
+  "I use existing {string} mnemonic of receive address to query balance {string}",
+  async (receiveAddressMnemonic, tokenBalance) => {
+    const addressMnemonic = selectAddressMnemonicByNumber(receiveAddressMnemonic);
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
+      hdPaths: [makeCosmoshubPath(0)],
+      prefix: config.addressPrefix,
+    });
+
+    const { address: walletUserA } = (await wallet.getAccounts())[0];
+    const signingClient_01 = await createSigningClient(config, wallet);
+
+    const walletBalanceUser = await signingClient_01.getBalance(walletUserA, config.feeToken);
+    expect(walletBalanceUser.amount.slice(0, 3)).to.contains(tokenBalance);
+  },
+);
 
 And('I click the "Set delegate" button', () => {
   cy.get(engagementPage.getSetDelegateButton()).click();
@@ -163,16 +245,6 @@ And("I click on the Clear delegate button", () => {
 And("I see I can no longer withdraw rewards for the initial account", () => {
   cy.get(engagementPage.getDisabledWithdrawRewardsButton()).should("be.disabled");
 });
-
-async function generateWalletAddress() {
-  const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
-    hdPaths: [makeCosmoshubPath(0)],
-    prefix: "tgrade",
-  });
-  console.log(mnemonic_01);
-  const { address: walletAddress } = (await wallet_01.getAccounts())[0];
-  return walletAddress;
-}
 
 function makeRandomTgradeAddress(): string {
   return Bech32.encode("tgrade", Random.getBytes(20));

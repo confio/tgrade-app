@@ -21,7 +21,7 @@ Feature: Withdraw rewards as delegate
     * I see my Engagement Points "5 / 2034 (0.25%)" and Engagement Rewards "9" TGD
     * I see no any address in the "Receiver address" field
     * I click on the "Withdraw rewards" button
-    * I see Tx success screen with "third" address
+    * I see Tx success screen with existing "third" address
     * I click Go to Engagement button
     * I see my Engagement Points "5 / 2034 (0.25%)" and Engagement Rewards "0" TGD
     #* I check that the delegate account's TGD balance has gone up

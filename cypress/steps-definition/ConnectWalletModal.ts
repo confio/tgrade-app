@@ -13,9 +13,10 @@ const mnemonicFirstWalletWithEngagementPoints =
   "bone idea foster kid item private figure victory power reflect wrong bunker";
 const mnemonicSecondWalletWithEngagementPoints =
   "cancel fault concert check match goose auto item judge couch exist shop mango option sister edit maze wide praise tortoise memory right post unusual";
-
 const mnemonicThirdWalletWithEngagementPoints =
   "move drastic law sustain decade parent stairs minor cry help worry minute bridge bone force found mimic frown burst foil avocado water kingdom picture";
+const mnemonicFourthWalletWithEngagementPoints =
+  "pink neutral tray meadow pet caught cereal pass test swarm edge junior cradle all split matrix siege squeeze hobby fence act human patrol ramp";
 
 const selectMnemonic = (walletNumber: string): string => {
   switch (walletNumber) {
@@ -25,6 +26,8 @@ const selectMnemonic = (walletNumber: string): string => {
       return mnemonicSecondWalletWithEngagementPoints;
     case "third":
       return mnemonicThirdWalletWithEngagementPoints;
+    case "fourth":
+      return mnemonicFourthWalletWithEngagementPoints;
     default:
       return "no mnemonic was provided";
   }
@@ -32,7 +35,6 @@ const selectMnemonic = (walletNumber: string): string => {
 
 Given("Set {string} wallet with Engagement Points and Engagement Rewards", async (walletNumber) => {
   const mnemonic = selectMnemonic(walletNumber);
-  console.log(mnemonic);
   localStorage.setItem("burner-wallet", mnemonic);
   cy.reload(); //help to apply new mnemonic and exchange address
 });
