@@ -1,13 +1,14 @@
 Feature: Withdraw rewards as delegate to another address
   Background:
     * I connect Web Demo wallet
-    * Set "fourth" wallet with Engagement Points and Engagement Rewards
-    * Open wallet dialog
-    * I see my TGD balance in wallet "fourth"
+    * Set "sixthMnemonic" wallet with Engagement Points and Engagement Rewards
+    * Open wallet dialog from main menu
+    * I see my TGD balance in wallet "sixthMnemonic"
     * I close wallet dialog modal
     * I visit Engagement page
 
   Scenario: Delegate withdraws rewards to another address
+
     # Set delegate
     * I type "randomSecond" address in Delegated withdrawal to field
     * I click the "Set delegate" button
@@ -22,7 +23,7 @@ Feature: Withdraw rewards as delegate to another address
     * I click on the "Withdraw rewards" button
     * I see Tx success screen with "randomFourth" address
     * I click Go to Engagement button
-    #* I use "firs" mnemonic of receive address to query balance "5"
+    * I use "firs" mnemonic of receive address to query balance "5"
 
     # Clear delegate
     #* I change to the initial account
