@@ -1,7 +1,6 @@
 Feature: Trading pair
   Background:
-    * I visit Trusted Circle page
-    * I connect to Web Demo wallet
+    * I connect Web Demo wallet
 
   Scenario: Create Trading pair
     # Create TC

@@ -14,15 +14,6 @@ Given("Go to Trusted Circle page", () => {
   cy.findByText("Trusted Circles").click();
 });
 
-Then("I connect to Web Demo wallet", () => {
-  cy.findByText("Connect wallet").click();
-  cy.findByText("Web wallet (demo)").click();
-  cy.findByText("Loading your Wallet").should("not.exist");
-  cy.get(trustedCirclesPage.getConnectedWalletButton(), { timeout: 7000 }).should("exist");
-  // workaround to wait for wallet connection (critical ~4000)
-  // and to wait until account will be existed on chain
-});
-
 When("I click on Add Trusted Circle button", () => {
   cy.url().should("not.include", "/trustedcircle/undefined"); //probably a bug of the App
   cy.findByText(/Add Trusted Circle/i).click();
