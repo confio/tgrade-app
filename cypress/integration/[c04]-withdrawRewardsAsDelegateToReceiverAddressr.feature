@@ -9,30 +9,33 @@ Feature: Withdraw rewards as delegate to another address
 
   Scenario: Delegate withdraws rewards to another address
 
-    # Set delegate
-    * I type "randomSecond" address in Delegated withdrawal to field
+    # Set delegate account
+    * I type "firstAccount" address in Delegated withdrawal to field
     * I click the "Set delegate" button
-    * I see Tx success screen with "randomSecond" delegated address
+    * I see Tx success screen with "firstAccount" delegated address
     * I click Go to Engagement button
-    * I see there is random "randomSecond" address set in Delegate withdrawal field
+    * I see there is existing "firstAccount" address set in Delegate withdrawal field
+    * I see the "Address" field prefilled with my "sixthAccount" wallet
+    * I see my Engagement Points "8 / 2034 (0.39%)" and Engagement Rewards "15" TGD
+
+    # Fill "Receiver address" field
+    * I enter existing "thirdAccount" address in the "Receiver address" field
 
     # Withdraw rewards
-    * I see the "Address" field prefilled with my "fourth" wallet
-    * I see my Engagement Points "3 / 2034 (0.15%)" and Engagement Rewards "5" TGD
-    * I enter "randomFourth" address in the "Receiver address" field
+    * I use existing "thirdMnemonic" mnemonic of receive address to query balance "101"
     * I click on the "Withdraw rewards" button
-    * I see Tx success screen with "randomFourth" address
+    * I see Tx success screen with existing "thirdAccount" address
     * I click Go to Engagement button
-    * I use "firs" mnemonic of receive address to query balance "5"
+    * I use existing "thirdMnemonic" mnemonic of receive address to query balance "102"
 
-    # Clear delegate
-    #* I change to the initial account
-    #* I visit Engagement
-    #* I see the delegate account's address prefilled on the "Delegated withdrawal to" field
-    #* I click on the "Clear delegate" button
-    #* I see Tx success screen and close it
-    #* I change to the previously delegate account
-    #* I visit Engagement
-    #* I enter the initial account's address on the "Address" field
-    #* I see the initial account's Engagement Points and Engagement Rewards
-    #* I see I can no longer withdraw rewards for the initial account
+    # Clear delegate, change to the initial account
+    * I see Delegate withdrawal to field is pre-field with "firstAccount" address
+    * I click on the Clear delegate button
+    * I see Tx success screen with initial "sixthAccount" delegated address
+    * I click Go to Engagement button
+    * I see Delegate withdrawal to field is pre-field with existing "sixthAccount" address
+
+    # I can no longer withdraw rewards for the initial account
+    * I see the "Address" field prefilled with my "sixthAccount" wallet
+    * I see my Engagement Points "8 / 2034 (0.39%)" and Engagement Rewards "0" TGD
+    * I see no any address in the "Receiver address" field

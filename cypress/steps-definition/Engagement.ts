@@ -122,11 +122,6 @@ And('I enter existing {string} address in the "Receiver address" field', (orderN
   cy.get(engagementPage.getReceiverAddressInputField()).type(existingAddress);
 });
 
-And('I enter existing {string} address in the "Receiver address" field', (randomNumber) => {
-  const randomAddress = selectWalletAddressByNumber(randomNumber);
-  cy.get(engagementPage.getReceiverAddressInputField()).type(randomAddress);
-});
-
 And('I see no any address in the "Receiver address" field', async () => {
   cy.get(engagementPage.getReceiverAddressInputField()).should("have.value", "");
 });

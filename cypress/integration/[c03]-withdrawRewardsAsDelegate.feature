@@ -24,20 +24,20 @@ Feature: Withdraw rewards as delegate
     * I click on the "Withdraw rewards" button
     #* I see Tx success screen with existing "fifthAccount" address //tgrade-app/issues/798
     * I click Go to Engagement button
+
+    # Check balance of Delegated address
     * I see my Engagement Points "4 / 2034 (0.20%)" and Engagement Rewards "0" TGD
     #* I use existing "fifthMnemonic" mnemonic of receive address to query balance "18"
     #* I check that the delegate account's TGD balance has gone up
     #* I check balance on new receive address "9" //tgrade-app/issues/798
 
-    # Clear delegate then change it to the initial account
+    # Replace delegated address with initial account
     * I see Delegate withdrawal to field is pre-field with "fifthAccount" address
     * I click on the Clear delegate button
     * I see Tx success screen with initial "fourthAccount" delegated address
     * I click Go to Engagement button
     * I see Delegate withdrawal to field is pre-field with existing "fourthAccount" address
 
-    # Check Engagement rewards of initial account
+    # I can no longer withdraw rewards for the initial account
     * I see the "Address" field prefilled with my "fourthAccount" wallet
     * I see my Engagement Points "4 / 2034 (0.20%)" and Engagement Rewards "0" TGD
-    * I see no any address in the "Receiver address" field
-    # * I see I can no longer withdraw rewards for the initial account // issues/788
