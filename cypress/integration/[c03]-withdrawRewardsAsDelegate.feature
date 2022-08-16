@@ -9,18 +9,22 @@ Feature: Withdraw rewards as delegate
 
   Scenario: Delegate withdraws rewards
 
-    # Set delegate
+    # Set delegate account
     * I type address from "randomMnemonicSecond" in Delegated withdrawal to field
     * I click the "Set delegate" button
     * I see Tx success screen with address from "randomMnemonicSecond"
     * I click Go to Engagement button
-    * I see Delegate field is pre-field with address from "randomMnemonicSecond"
-    * I use "randomMnemonicSecond" to make a query and check balance of this address "0"
 
-    # Withdraw rewards to Delegated address with empty "Receiver address" field
+    # Check balance of delegated account
+    * I see Delegate field is pre-field with address from "randomMnemonicSecond"
+    * I use "randomMnemonicSecond" to make query and check balance of this address "0"
+
+    # Check balance of initial account
     * I see the "Address" field prefilled with my "thirdAccount" wallet
     * I see my Engagement Points "3 / 2034 (0.15%)" and Engagement Rewards "6" TGD
     * I see no any address in the "Receiver address" field
+
+    # Withdraw rewards
     * I click on the "Withdraw rewards" button
     #* I see Tx success screen with existing "fifthAccount" address //tgrade-app/issues/798
     * I click Go to Engagement button
@@ -38,6 +42,6 @@ Feature: Withdraw rewards as delegate
     * I click Go to Engagement button
     * I see Delegate field is pre-field with address "thirdAccount"
 
-    # I can no longer withdraw rewards for the initial account
+    # Check balance of initial address after
     * I see the "Address" field prefilled with my "thirdAccount" wallet
     * I see my Engagement Points "3 / 2034 (0.15%)" and Engagement Rewards "0" TGD

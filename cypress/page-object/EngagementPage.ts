@@ -12,7 +12,7 @@ export class EngagementPage {
   }
 
   getEngagementRewardsValue(): string {
-    return '[data-cy="engagement-page-engagement-rewards"]';
+    return '[data-cy="engagement-rewards-denom-amount"]';
   }
 
   getWithdrawRewardsButton(): string {

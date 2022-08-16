@@ -34,10 +34,13 @@ And('I see no any address in the "Receiver address" field', () => {
 
 And(
   "I see my Engagement Points {string} and Engagement Rewards {string} TGD",
-  (engagementPoint, engagementRewards) => {
+  (engagementPoint, expectedEngagementRewards) => {
     // TODO instead of hardcoded value, make a query to get current
     cy.get(engagementPage.getEngagementPointsValue()).should("contain.text", engagementPoint);
-    cy.get(engagementPage.getEngagementRewardsValue()).should("contain.text", engagementRewards);
+    cy.get(engagementPage.getEngagementRewardsValue()).then(($element) => {
+      const extractedRewardsValue = parseInt($element.text());
+      expect(extractedRewardsValue).to.be.not.lessThan(parseInt(expectedEngagementRewards));
+    });
   },
 );
 
@@ -85,7 +88,7 @@ And("I type address from {string} in Delegated withdrawal to field", async (wall
 });
 
 And(
-  "I use {string} to make a query and check balance of this address {string}",
+  "I use {string} to make query and check balance of this address {string}",
   async (receiveMnemonicAddress, tokenBalance) => {
     const addressMnemonic = selectRandomGeneratedMnemonicByNumber(receiveMnemonicAddress);
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
@@ -97,12 +100,12 @@ And(
     const signingClient_01 = await createSigningClient(config, wallet);
 
     const walletBalanceUser = await signingClient_01.getBalance(walletUserA, config.feeToken);
-    expect(walletBalanceUser.amount.slice(0, 3)).to.contains(tokenBalance);
+    expect(parseInt(walletBalanceUser.amount.slice(0, 3))).to.be.not.lessThan(parseInt(tokenBalance));
   },
 );
 
 And(
-  "I use existing {string} mnemonic of receive address to query balance {string}",
+  "I use existing {string} mnemonic to make query and check balance {string}",
   async (receiveAddressMnemonic, tokenBalance) => {
     const addressMnemonic = selectMnemonicByNumber(receiveAddressMnemonic);
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {

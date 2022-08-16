@@ -134,7 +134,8 @@ export default function WithdrawRewardsContainer({
           <Cell>
             <Text>Engagement rewards</Text>
             <Text data-cy="engagement-page-engagement-rewards">
-              {withdrawableFunds?.amount || "—"} {withdrawableFunds?.denom || ""}
+              <span data-cy="engagement-rewards-denom-amount">{withdrawableFunds?.amount || "—"}&nbsp;</span>
+              <span>{withdrawableFunds?.denom || ""}</span>
             </Text>
           </Cell>
         </Row>

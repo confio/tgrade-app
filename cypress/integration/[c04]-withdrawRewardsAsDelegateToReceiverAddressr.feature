@@ -24,11 +24,11 @@ Feature: Withdraw rewards as delegate to another address
     * I enter address in the "Receiver address" field from "randomMnemonicFourth" wallet
 
     # Withdraw rewards
-    * I use "randomMnemonicFourth" to make a query and check balance of this address "0"
+    * I use "randomMnemonicFourth" to make query and check balance of this address "0"
     * I click on the "Withdraw rewards" button
     * I see Tx success screen with address from "randomMnemonicFourth"
     * I click Go to Engagement button
-    * I use "randomMnemonicFourth" to make a query and check balance of this address "8"
+    * I use "randomMnemonicFourth" to make query and check balance of this address "8"
 
     # Replace delegated address with initial account
     * I see Delegate field is pre-field with address from "randomMnemonicThird"
@@ -37,7 +37,7 @@ Feature: Withdraw rewards as delegate to another address
     * I click Go to Engagement button
     * I see Delegate field is pre-field with address "fourthAccount"
 
-    # I can no longer withdraw rewards for the initial account
+    # Check balance of initial address after
     * I see the "Address" field prefilled with my "fourthAccount" wallet
     * I see my Engagement Points "4 / 2034 (0.20%)" and Engagement Rewards "0" TGD
     * I see no any address in the "Receiver address" field

@@ -36,8 +36,15 @@ And("I close wallet dialog modal", () => {
   cy.get(connectWalletModal.getCloseIcon()).should("not.exist");
 });
 
-And("I see that TGD balance {string} has gone up for {string} address", (tokenBalance, accountAddress) => {
-  const selectedAccountAddress = selectWalletAddressByNumber(accountAddress);
-  cy.get(validatorDetailsDialog.getAddressTooltipTagHash()).should("contain.text", selectedAccountAddress);
-  cy.get(connectWalletModal.getTokenBalance()).should("contain.text", tokenBalance);
-});
+And(
+  "I see that TGD balance {string} has gone up for {string} address",
+  (expectedTokenBalance, accountAddress) => {
+    const selectedAccountAddress = selectWalletAddressByNumber(accountAddress);
+    cy.get(validatorDetailsDialog.getAddressTooltipTagHash()).should("contain.text", selectedAccountAddress);
+    cy.wait(2000); // workaround to wait until full balance will be displayed
+    cy.get(connectWalletModal.getTokenBalance()).then(($element) => {
+      const extractedTokenValue = parseInt($element.text());
+      expect(extractedTokenValue).to.be.not.lessThan(parseInt(expectedTokenBalance));
+    });
+  },
+);
