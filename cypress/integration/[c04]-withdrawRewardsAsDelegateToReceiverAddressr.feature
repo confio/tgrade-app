@@ -16,7 +16,7 @@ Feature: Withdraw rewards as delegate to another address
     * I click Go to Engagement button
     * I see there is existing "firstAccount" address set in Delegate withdrawal field
     * I see the "Address" field prefilled with my "sixthAccount" wallet
-    * I see my Engagement Points "8 / 2034 (0.39%)" and Engagement Rewards "15" TGD
+    * I see my Engagement Points "8 / 2034 (0.39%)" and Engagement Rewards "16" TGD
 
     # Fill "Receiver address" field
     * I enter existing "thirdAccount" address in the "Receiver address" field

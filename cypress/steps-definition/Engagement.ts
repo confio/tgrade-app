@@ -1,58 +1,25 @@
-import { Bip39, Random } from "@cosmjs/crypto";
-import { Bech32 } from "@cosmjs/encoding";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { And } from "cypress-cucumber-preprocessor/steps";
 
 import { config } from "../../src/config/network";
 import { createSigningClient } from "../../src/utils/sdk";
-import { selectMnemonicByNumber, selectWalletAddressByNumber } from "../accounts";
+import { selectMnemonicByNumber, selectWalletAddressByNumber } from "../fixtures/existingAccounts";
+import {
+  selectRandomGeneratedAddressByNumber,
+  selectRandomGeneratedMnemonicByNumber,
+} from "../fixtures/randomGeneratedAccount";
 import { EngagementPage } from "../page-object/EngagementPage";
 
 const engagementPage = new EngagementPage();
-
-const generateMnemonic = (): string => Bip39.encode(Random.getBytes(16)).toString();
-const randomMnemonicFirst = generateMnemonic();
-const randomMnemonicSecond = generateMnemonic();
-
-const randomFirstAddress = makeRandomTgradeAddress();
-const randomSecondAddress = makeRandomTgradeAddress();
-const randomThirdAddress = makeRandomTgradeAddress();
-const randomFourthAddress = makeRandomTgradeAddress();
-
-const selectRandomGeneratedMnemonicByNumber = (addressMnemonic: string): string => {
-  switch (addressMnemonic) {
-    case "randomMnemonicFirst":
-      return randomMnemonicFirst;
-    case "randomMnemonicSecond":
-      return randomMnemonicSecond;
-    default:
-      return "no mnemonic was provided";
-  }
-};
-
-const selectRandomGeneratedAddressByNumber = (number: string): string => {
-  switch (number) {
-    case "randomFirst":
-      return randomFirstAddress;
-    case "randomSecond":
-      return randomSecondAddress;
-    case "randomThird":
-      return randomThirdAddress;
-    case "randomFourth":
-      return randomFourthAddress;
-    default:
-      return "no number was provided";
-  }
-};
 
 And('I see the "Address" field prefilled with my {string} wallet', (walletNumber) => {
   const address = selectWalletAddressByNumber(walletNumber);
   cy.get(engagementPage.getInitialAddressInputField()).should("have.value", address);
 });
 
-And('I enter {string} address in the "Receiver address" field', (randomNumber) => {
-  const randomAddress = selectRandomGeneratedAddressByNumber(randomNumber);
+And('I enter address in the "Receiver address" field from {string} wallet', async (mnemonicNumber) => {
+  const randomAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber);
   cy.get(engagementPage.getReceiverAddressInputField()).type(randomAddress);
 });
 
@@ -61,7 +28,7 @@ And('I enter existing {string} address in the "Receiver address" field', (orderN
   cy.get(engagementPage.getReceiverAddressInputField()).type(existingAddress);
 });
 
-And('I see no any address in the "Receiver address" field', async () => {
+And('I see no any address in the "Receiver address" field', () => {
   cy.get(engagementPage.getReceiverAddressInputField()).should("have.value", "");
 });
 
@@ -78,13 +45,20 @@ And('I click on the "Withdraw rewards" button', () => {
   cy.get(engagementPage.getWithdrawRewardsButton()).click();
 });
 
-And("I see Tx success screen with {string} address", (walletNumber) => {
-  const walletAddress = selectRandomGeneratedAddressByNumber(walletNumber);
+And("I see Tx success screen with address from {string}", async (walletNumber) => {
+  const addressMnemonic = selectRandomGeneratedMnemonicByNumber(walletNumber);
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+
+  const address = (await wallet.getAccounts())[0].address;
+  await createSigningClient(config, wallet);
   cy.get(engagementPage.getTransactionResultScreenText()).should(
     "have.text",
     "Your transaction was approved!",
   );
-  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", walletAddress);
+  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", address);
 });
 
 And("I see Tx success screen with existing {string} address", (walletNumber) => {
@@ -106,7 +80,7 @@ And("I type {string} address in Delegated withdrawal to field", (walletNumber) =
 });
 
 And(
-  "I use {string} mnemonic of receive address to query balance {string}",
+  "I use {string} to make a query balance of this address {string}",
   async (receiveMnemonicAddress, tokenBalance) => {
     const addressMnemonic = selectRandomGeneratedMnemonicByNumber(receiveMnemonicAddress);
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
@@ -194,6 +168,16 @@ And("I see I can no longer withdraw rewards for the initial account", () => {
   cy.get(engagementPage.getDisabledWithdrawRewardsButton()).should("be.disabled");
 });
 
-function makeRandomTgradeAddress(): string {
-  return Bech32.encode("tgrade", Random.getBytes(20));
+async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: string) {
+  const generatedMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonicNumber);
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(generatedMnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+  const walletAddress = (await wallet.getAccounts())[0].address;
+  const signingClient = await createSigningClient(config, wallet);
+
+  const walletBalanceUser = await signingClient.getBalance(walletAddress, config.feeToken);
+  expect(walletBalanceUser.amount).to.contains(0);
+  return walletAddress;
 }

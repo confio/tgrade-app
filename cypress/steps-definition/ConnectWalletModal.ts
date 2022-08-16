@@ -4,7 +4,7 @@ import { And, Given } from "cypress-cucumber-preprocessor/steps";
 
 import { config } from "../../src/config/network";
 import { createSigningClient } from "../../src/utils/sdk";
-import { selectMnemonicByNumber, selectWalletAddressByNumber } from "../accounts";
+import { selectMnemonicByNumber, selectWalletAddressByNumber } from "../fixtures/existingAccounts";
 import { ConnectWalletModal } from "../page-object/ConnectWalletModal";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
 
