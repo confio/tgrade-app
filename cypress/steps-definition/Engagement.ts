@@ -79,8 +79,13 @@ And("I type {string} address in Delegated withdrawal to field", (walletNumber) =
   cy.get(engagementPage.getDelegatedWithdrawalToField()).clear().type(accountAddress);
 });
 
+And("I type address from {string} in Delegated withdrawal to field", async (walletNumber) => {
+  const accountAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(walletNumber);
+  cy.get(engagementPage.getDelegatedWithdrawalToField()).clear().type(accountAddress);
+});
+
 And(
-  "I use {string} to make a query balance of this address {string}",
+  "I use {string} to make a query and check balance of this address {string}",
   async (receiveMnemonicAddress, tokenBalance) => {
     const addressMnemonic = selectRandomGeneratedMnemonicByNumber(receiveMnemonicAddress);
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
@@ -145,9 +150,14 @@ And("I see there is existing {string} address set in Delegate withdrawal field",
   cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", randomAddress);
 });
 
-And("I see Delegate withdrawal to field is pre-field with existing {string} address", (address) => {
+And("I see Delegate field is pre-field with address {string}", (address) => {
   const preFieldAddress = selectWalletAddressByNumber(address);
   cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", preFieldAddress);
+});
+
+And("I see Delegate field is pre-field with address from {string}", async (addressNumber) => {
+  const walletAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(addressNumber);
+  cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", walletAddress);
 });
 
 And("I see Delegate withdrawal to field is pre-field with {string} address", (addressNumber) => {

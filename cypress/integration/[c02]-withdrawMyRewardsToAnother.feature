@@ -11,9 +11,9 @@ Feature: Withdraw my rewards to another address
     * I see the "Address" field prefilled with my "secondAccount" wallet
     * I see my Engagement Points "7 / 2034 (0.34%)" and Engagement Rewards "14" TGD
     * I enter address in the "Receiver address" field from "randomMnemonicFirst" wallet
-    * I use "randomMnemonicFirst" to make a query balance of this address "0"
+    * I use "randomMnemonicFirst" to make a query and check balance of this address "0"
     * I click on the "Withdraw rewards" button
     * I see Tx success screen with address from "randomMnemonicFirst"
     * I click Go to Engagement button
     * I see my Engagement Points "7 / 2034 (0.34%)" and Engagement Rewards "0" TGD
-    * I use "randomMnemonicFirst" to make a query balance of this address "14"
+    * I use "randomMnemonicFirst" to make a query and check balance of this address "14"
