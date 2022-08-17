@@ -15,7 +15,7 @@ Feature: Trading pair
     * I see that "My Trusted Circle #" is created
 
     # Create Asset
-    * Go to T-Market page
+    * I visit T-Market page
     * I click on Create Asset button
     * I enter token Symbol
     * I enter token Name
@@ -51,7 +51,7 @@ Feature: Trading pair
     * I see proposal has change state to Executed
 
     # Provide Liquidity
-    * Go to T-Market page
+    * I visit T-Market page
     * I click on Provide Liquidity tab
     * I select TGD token FROM drop down
     * I select my created token in TO drop down

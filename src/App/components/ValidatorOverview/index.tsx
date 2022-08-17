@@ -62,7 +62,7 @@ const columns: ColumnProps<ValidatorType>[] = [
         data-cy={`validator-name-${record.metadata?.moniker}`}
       >
         <b>{record.metadata?.moniker}</b>
-        <p>{ellipsifyAddress(record.operator)}</p>
+        <p data-cy="overview-page-validator-address">{ellipsifyAddress(record.operator)}</p>
       </div>
     ),
     sorter: (a: ValidatorType, b: ValidatorType) => {

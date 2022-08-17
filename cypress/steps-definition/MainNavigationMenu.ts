@@ -25,3 +25,15 @@ And("I visit Engagement page", () => {
   cy.get(mainNavigationMenu.getEngagementMenuOption()).click();
   cy.get(engagementPage.getLastHalfLifeEventDate()).should("be.visible"); //workaround until fetch is finished
 });
+
+And("I visit T-Market page", () => {
+  cy.get(mainNavigationMenu.getTMarketMenuOption()).click();
+});
+
+And("I open Governance menu", () => {
+  cy.get(mainNavigationMenu.getGovernanceMenuOption()).click();
+});
+
+And("I visit Validators page", () => {
+  cy.get(mainNavigationMenu.getValidatorsSubMenuOption()).click();
+});
