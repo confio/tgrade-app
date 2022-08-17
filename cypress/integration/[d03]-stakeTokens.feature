@@ -7,10 +7,15 @@ Feature: Stake tokens
 
   Scenario: Stake
     * I click "node0Account" address on the list of validators
-    #* I see the Validator Detail modal
-    #* I click on the "Stake" button
-    #* I see the Stake form modal
-    #* I input some liquid amount and some vesting amount
-    #* I see how the input has changed my potential voting power
-    #* I click on the "Stake tokens" button
-    #* I see Tx success screen
+    * I see validator's address "node0Account" with related account "node0Account" name
+    * I click on the "Stake" button
+
+    # Add liquid and vesting amount
+    * I enter "4" liquid amount and "3" vesting amount
+
+    # TODO voting power does not changed!
+    * I see how the input has changed my potential voting power "100.000%"
+    * I click on the "Stake tokens" button
+    * I see Tx success screen
+
+    # TODO add further steps with assertions

@@ -201,7 +201,10 @@ export function ValidatorDetail({
                     >
                       Unstake
                     </Button>
-                    <Button onClick={() => setStakeModalState({ open: true, operation: "stake" })}>
+                    <Button
+                      onClick={() => setStakeModalState({ open: true, operation: "stake" })}
+                      data-cy="validator-details-stake-button"
+                    >
                       Stake
                     </Button>
                   </ButtonGroup>

@@ -2,7 +2,7 @@ Feature: Check validator's data
   Background: Go to Validators page
     * I connect Web Demo wallet
     * Set validator with "node1Mnemonic" mnemonic
-    * I visit Validators page
+    * I navigate to Validators page by url
 
   Scenario: Check validator name, address, slashing events, voting power
     * I verify presence of validator name "delme" and address "tgrade…xy5rzj"

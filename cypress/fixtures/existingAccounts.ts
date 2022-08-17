@@ -10,8 +10,8 @@ enum Mnemonics {
 }
 
 enum ExistingAddresses {
-  adminAccount = "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3", // admin account
-  node0Account = "tgrade1tsg4wldpwyehhkqx3za78ygkzatncxxup96k7h", // admin account
+  adminAccount = "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
+  node0Account = "tgrade1tsg4wldpwyehhkqx3za78ygkzatncxxup96k7h",
   firstAccount = "tgrade10jdqrtm46xsxtdmuyt2zfcrhupvycrpv80r7nh", // node0 with Tokens
   secondAccount = "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl", // node0 with Tokens
   thirdAccount = "tgrade1dzav7m7r42sg02sqdvqelazsg0mu5ef0qjpq5e", // node0 with Tokens
@@ -19,6 +19,22 @@ enum ExistingAddresses {
   fifthAccount = "tgrade1kwh2efsmue7pms3930gsclr224k8c7uwke5jvd", // node0 with Tokens
   sixthAccount = "tgrade1vl76n4q0pfk2ek07tz2cd5vnlvkuf5tnznqed5", // node0 with Tokens
 }
+
+enum ValidatorName {
+  node0Account = "moniker-0",
+  node1Account = "delme",
+}
+
+export const selectValidatorNameByAddressNumber = (accountNumber: string): string => {
+  switch (accountNumber) {
+    case "node0Account":
+      return ValidatorName.node0Account;
+    case "node1Account":
+      return ValidatorName.node1Account;
+    default:
+      return "no address number was provided";
+  }
+};
 
 export const selectWalletAddressByNumber = (walletNumber: string): string => {
   switch (walletNumber) {

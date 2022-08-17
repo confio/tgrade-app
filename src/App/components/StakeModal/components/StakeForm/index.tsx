@@ -189,6 +189,7 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
                   disabled={!isValid || !liquidToStake}
                   loading={isSubmitting}
                   onClick={() => submitForm()}
+                  data-cy="stake-form-dialog-potential-voting-power"
                 >
                   <div>Stake tokens</div>
                 </Button>

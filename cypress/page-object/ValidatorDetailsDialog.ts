@@ -10,4 +10,8 @@ export class ValidatorDetailsDialog {
   getVotingPowerValue(): string {
     return '[data-cy="validator-detail-dialog-voting-power"]';
   }
+
+  getStakeButton(): string {
+    return '[data-cy="validator-details-stake-button"]';
+  }
 }

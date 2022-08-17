@@ -1,11 +1,17 @@
 import { And, Given } from "cypress-cucumber-preprocessor/steps";
 
-import { selectMnemonicByNumber, selectWalletAddressByNumber } from "../fixtures/existingAccounts";
+import {
+  selectMnemonicByNumber,
+  selectValidatorNameByAddressNumber,
+  selectWalletAddressByNumber,
+} from "../fixtures/existingAccounts";
+import { StakeFormDialog } from "../page-object/StakeFormDialog";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
 
 const validatorDetailsDialog = new ValidatorDetailsDialog();
+const stakeFormDialog = new StakeFormDialog();
 
-Given("I visit Validators page", () => {
+Given("I navigate to Validators page by url", () => {
   cy.visit("/validators", { timeout: 8000 }); //workaround until fetching validators
 });
 
@@ -30,6 +36,13 @@ And("I verify presence of validator name {string} and address {string}", (valida
     .should("contain.text", address);
 });
 
+And("I see validator's address {string} with related account {string} name", (addressNumber) => {
+  const selectedValidatorAddress = selectWalletAddressByNumber(addressNumber);
+  const selectedValidatorName = selectValidatorNameByAddressNumber(addressNumber);
+  cy.get(validatorDetailsDialog.getValidatorName()).should("contain.text", selectedValidatorName);
+  cy.get(validatorDetailsDialog.getAddressTooltipTagHash()).should("contain.text", selectedValidatorAddress);
+});
+
 And("I see validator's name {string}, address {string}", (validatorName, address) => {
   cy.get(validatorDetailsDialog.getValidatorName()).should("contain.text", validatorName);
   cy.get(validatorDetailsDialog.getAddressTooltipTagHash()).should("contain.text", address);
@@ -38,4 +51,25 @@ And("I see validator's name {string}, address {string}", (validatorName, address
 And("I see slashing events {string}, and voting power {string}", (slashingEvents, votingPower) => {
   cy.get(validatorDetailsDialog.getVotingPowerValue()).should("have.text", votingPower);
   //TODO slashing data is not present
+});
+
+And('I click on the "Stake" button', () => {
+  cy.get(validatorDetailsDialog.getStakeButton()).click();
+});
+
+And("I enter {string} liquid amount and {string} vesting amount", (liquidAmount, vestingAmount) => {
+  cy.get(stakeFormDialog.getLiquidAmountField()).type(liquidAmount);
+  cy.get(stakeFormDialog.getVestingAmountField()).type(vestingAmount);
+});
+
+And("I see how the input has changed my potential voting power {string}", (votingPower) => {
+  cy.get(stakeFormDialog.getPotentialVotingPower()).should("have.value", votingPower);
+});
+
+And('I click on the "Stake tokens" button', () => {
+  cy.get(stakeFormDialog.getStakeTokensButton()).click();
+});
+
+And("I see Tx success screen", () => {
+  cy.get(stakeFormDialog.getTxSuccessScreen()).should("have.text", "Your transaction was approved!");
 });
