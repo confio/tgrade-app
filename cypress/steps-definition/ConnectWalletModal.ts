@@ -48,3 +48,7 @@ And(
     });
   },
 );
+
+And("I see TGD balance {string} for random address", (expectedTokenBalance) => {
+  cy.get(connectWalletModal.getTokenBalance()).should("have.text", expectedTokenBalance);
+});
