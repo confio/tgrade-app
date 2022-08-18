@@ -6,11 +6,13 @@ import {
   selectWalletAddressByNumber,
 } from "../fixtures/existingAccounts";
 import { StakeFormDialog } from "../page-object/StakeFormDialog";
+import { UnStakeFormDialog } from "../page-object/UnStakeFormDialog";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
 import { ValidatorsOverviewPage } from "../page-object/ValidatorsOverviewPage";
 
 const validatorDetailsDialog = new ValidatorDetailsDialog();
 const stakeFormDialog = new StakeFormDialog();
+const unStakeFormDialog = new UnStakeFormDialog();
 const validatorsOverviewPage = new ValidatorsOverviewPage();
 
 Given("I navigate to Validators page by url", () => {
@@ -59,12 +61,17 @@ And('I click on the "Stake" button', () => {
   cy.get(validatorDetailsDialog.getStakeButton()).click();
 });
 
+And('I click on the "Unstake" button', () => {
+  cy.get(validatorDetailsDialog.getUnStakeButton()).click();
+});
+
 And("I enter {string} liquid amount and {string} vesting amount", (liquidAmount, vestingAmount) => {
   cy.get(stakeFormDialog.getLiquidAmountField()).type(liquidAmount);
   cy.get(stakeFormDialog.getVestingAmountField()).type(vestingAmount);
 });
 
 And("I see potential voting power has been changed to {string}", (votingPower) => {
+  cy.wait(2000); //workaround wait until VP will be calculated
   cy.get(stakeFormDialog.getPotentialVotingPowerFromInputField()).should(($input) => {
     const extractedVotingPower = $input.val();
     if (typeof extractedVotingPower === "string") {
@@ -113,3 +120,15 @@ And(
     });
   },
 );
+
+And("I close validator details dialog", () => {
+  cy.get(validatorDetailsDialog.getCloseDialogButton()).click();
+});
+
+And("I enter {string} amount of TGD to be unstaked", (amount) => {
+  cy.get(unStakeFormDialog.getAmountToUnStakeInputField()).type(amount);
+});
+
+And('I click on the "Unstake tokens" button', () => {
+  cy.get(unStakeFormDialog.getUnStakeTokensButton()).click();
+});

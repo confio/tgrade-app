@@ -203,6 +203,7 @@ export function ValidatorDetail({
                     <Button
                       type="ghost"
                       onClick={() => setStakeModalState({ open: true, operation: "unstake" })}
+                      data-cy="validator-details-unstake-button"
                     >
                       Unstake
                     </Button>

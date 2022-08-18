@@ -16,7 +16,7 @@ export class StakeFormDialog {
   }
 
   getStakeTokensButton(): string {
-    return '[data-cy="stake-form-potential-voting-power-input-field"]';
+    return '[data-cy="stake-form-potential-voting-power-stake-token-button"]';
   }
   getTxSuccessScreen(): string {
     return '[data-cy="transaction-result-screen-text"]';
