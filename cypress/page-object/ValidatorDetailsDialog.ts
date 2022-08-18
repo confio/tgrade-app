@@ -14,4 +14,8 @@ export class ValidatorDetailsDialog {
   getStakeButton(): string {
     return '[data-cy="validator-details-stake-button"]';
   }
+
+  getCloseDialogButton(): string {
+    return '[data-cy="validator-dialog-close-button"]';
+  }
 }

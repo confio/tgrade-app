@@ -7,9 +7,11 @@ import {
 } from "../fixtures/existingAccounts";
 import { StakeFormDialog } from "../page-object/StakeFormDialog";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
+import { ValidatorsOverviewPage } from "../page-object/ValidatorsOverviewPage";
 
 const validatorDetailsDialog = new ValidatorDetailsDialog();
 const stakeFormDialog = new StakeFormDialog();
+const validatorsOverviewPage = new ValidatorsOverviewPage();
 
 Given("I navigate to Validators page by url", () => {
   cy.visit("/validators", { timeout: 8000 }); //workaround until fetching validators
@@ -62,8 +64,19 @@ And("I enter {string} liquid amount and {string} vesting amount", (liquidAmount,
   cy.get(stakeFormDialog.getVestingAmountField()).type(vestingAmount);
 });
 
-And("I see how the input has changed my potential voting power {string}", (votingPower) => {
-  cy.get(stakeFormDialog.getPotentialVotingPower()).should("have.value", votingPower);
+And("I see potential voting power has been changed to {string}", (votingPower) => {
+  cy.get(stakeFormDialog.getPotentialVotingPowerFromInputField()).should(($input) => {
+    const extractedVotingPower = $input.val();
+    if (typeof extractedVotingPower === "string") {
+      const extractedValue = parseInt(extractedVotingPower);
+      expect(extractedValue).to.be.not.lessThan(parseInt(votingPower));
+    }
+  });
+
+  cy.get(stakeFormDialog.getPotentialVotingPowerFromText()).then(($element) => {
+    const extractedVotingPower = parseInt($element.text());
+    expect(extractedVotingPower).to.be.not.lessThan(parseInt(votingPower));
+  });
 });
 
 And('I click on the "Stake tokens" button', () => {
@@ -73,3 +86,30 @@ And('I click on the "Stake tokens" button', () => {
 And("I see Tx success screen", () => {
   cy.get(stakeFormDialog.getTxSuccessScreen()).should("have.text", "Your transaction was approved!");
 });
+
+And("I click Go to Validator details page", () => {
+  cy.get(stakeFormDialog.getGoBackToValidatorDetailsButton()).click();
+  cy.wait(3000); //Wait for fetch to be finished and prevent opening validator details page
+});
+
+And("I see voting power {string} on Validator details dialog", (votingPower) => {
+  cy.get(validatorDetailsDialog.getVotingPowerValue()).should(($input) => {
+    const extractedVotingPower = parseInt($input.text());
+    expect(extractedVotingPower).to.be.not.lessThan(parseInt(votingPower));
+  });
+});
+
+And("I close validator details dialog", () => {
+  cy.get(validatorDetailsDialog.getCloseDialogButton()).click();
+});
+
+And(
+  "I see voting power {string} for {string} validator in Validator overview table",
+  (votingPower, validatorAddress) => {
+    const validatorName = selectValidatorNameByAddressNumber(validatorAddress);
+    cy.get(validatorsOverviewPage.getValidatorVotingPower(validatorName)).should(($input) => {
+      const extractedVotingPower = parseInt($input.text());
+      expect(extractedVotingPower).to.be.not.lessThan(parseInt(votingPower));
+    });
+  },
+);

@@ -7,14 +7,22 @@ export class StakeFormDialog {
     return '[name="form-item-name-vesting-amount-to-stake"]';
   }
 
-  getPotentialVotingPower(): string {
+  getPotentialVotingPowerFromInputField(): string {
     return '[name="form-item-name-potential-voting-power"]';
   }
 
+  getPotentialVotingPowerFromText(): string {
+    return '[data-cy="stake-form-potential-voting-power-text"]';
+  }
+
   getStakeTokensButton(): string {
-    return '[data-cy="stake-form-dialog-potential-voting-power"]';
+    return '[data-cy="stake-form-potential-voting-power-input-field"]';
   }
   getTxSuccessScreen(): string {
     return '[data-cy="transaction-result-screen-text"]';
+  }
+
+  getGoBackToValidatorDetailsButton(): string {
+    return '[data-cy="validator-page-go-back-to-validator-details-button"]';
   }
 }

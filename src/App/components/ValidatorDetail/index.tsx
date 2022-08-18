@@ -140,7 +140,12 @@ export function ValidatorDetail({
           <ModalHeader>
             <Stack gap="s1"></Stack>
 
-            <img alt="Close button" src={closeIcon} onClick={onCancel} />
+            <img
+              alt="Close button"
+              src={closeIcon}
+              onClick={onCancel}
+              data-cy="validator-dialog-close-button"
+            />
           </ModalHeader>
           <div style={{ display: "flex", flexDirection: "column", minHeight: "530px" }}>
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>

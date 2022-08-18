@@ -12,10 +12,10 @@ Feature: Stake tokens
 
     # Add liquid and vesting amount
     * I enter "4" liquid amount and "3" vesting amount
-
-    # TODO voting power does not changed!
-    * I see how the input has changed my potential voting power "100.000%"
+    * I see potential voting power has been changed to "71.161%"
     * I click on the "Stake tokens" button
     * I see Tx success screen
-
-    # TODO add further steps with assertions
+    * I click Go to Validator details page
+    * I see voting power "71.161%" on Validator details dialog
+    * I close validator details dialog
+    * I see voting power "71.161%" for "node0Account" validator in Validator overview table
