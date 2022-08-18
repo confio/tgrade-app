@@ -1,5 +1,5 @@
 # Choose from https://hub.docker.com/r/confio/faucet/tags
 REPOSITORY="confio/faucet"
-VERSION="0.28.11"
+VERSION="0.29.0-alpha.3"
 
 CONTAINER_NAME="faucet"
