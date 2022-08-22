@@ -8,7 +8,9 @@ import { PoEContractType } from "../../../codec/confio/poe/v1beta1/poe";
 import { OcContract } from "../../../utils/oversightCommunity";
 import { EngagementContract, EngagementContractQuerier } from "../../../utils/poeEngagement";
 
-const mnemonic_01 = process.env.SECRET_MNEMONIC || "";
+const adminMnemonic = process.env.SECRET_MNEMONIC || ""; //member of OC
+const mnemonic_01 =
+  "move drastic law sustain decade parent stairs minor cry help worry minute bridge bone force found mimic frown burst foil avocado water kingdom picture";
 const comment = "Comment message" + new Date();
 
 describe("Engagement", () => {
@@ -107,13 +109,13 @@ describe("Engagement", () => {
      *
      * */
 
-    const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
+    const walletAdmin = await DirectSecp256k1HdWallet.fromMnemonic(adminMnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: config.addressPrefix,
     });
 
-    const signingClient_01 = await createSigningClient(config, wallet_01);
-    const { address: walletUserA } = (await wallet_01.getAccounts())[0];
+    const signingClient_01 = await createSigningClient(config, walletAdmin);
+    const { address: walletUserA } = (await walletAdmin.getAccounts())[0];
 
     const faucetClient_01 = new FaucetClient(config.faucetUrl);
     await faucetClient_01.credit(walletUserA, config.faucetTokens?.[1] ?? config.feeToken);
