@@ -22,4 +22,8 @@ export class ValidatorDetailsDialog {
   getCloseDialogButton(): string {
     return '[data-cy="validator-dialog-close-button"]';
   }
+
+  getClaimRewardsButton(): string {
+    return '[data-cy="validator-details-claim-rewards-button"]';
+  }
 }

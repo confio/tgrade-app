@@ -75,6 +75,7 @@ export default function WithdrawRewardsForm({
                     }}
                   />
                   <Button
+                    data-cy="validator-distributed-rewards-dialog-withdraw-rewards-button"
                     disabled={!isValid || !canWithdraw}
                     loading={isSubmitting}
                     onClick={() => submitForm()}

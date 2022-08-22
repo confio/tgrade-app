@@ -5,6 +5,7 @@ import {
   selectValidatorNameByAddressNumber,
   selectWalletAddressByNumber,
 } from "../fixtures/existingAccounts";
+import { DistributedRewardsDialog } from "../page-object/DistributedRewardsDialog";
 import { StakeFormDialog } from "../page-object/StakeFormDialog";
 import { UnStakeFormDialog } from "../page-object/UnStakeFormDialog";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
@@ -14,6 +15,7 @@ const validatorDetailsDialog = new ValidatorDetailsDialog();
 const stakeFormDialog = new StakeFormDialog();
 const unStakeFormDialog = new UnStakeFormDialog();
 const validatorsOverviewPage = new ValidatorsOverviewPage();
+const distributedRewardsDialog = new DistributedRewardsDialog();
 
 Given("I navigate to Validators page by url", () => {
   cy.visit("/validators", { timeout: 8000 }); //workaround until fetching validators
@@ -131,4 +133,12 @@ And("I enter {string} amount of TGD to be unstaked", (amount) => {
 
 And('I click on the "Unstake tokens" button', () => {
   cy.get(unStakeFormDialog.getUnStakeTokensButton()).click();
+});
+
+And('I click on the "Claim rewards" button', () => {
+  cy.get(validatorDetailsDialog.getClaimRewardsButton()).click();
+});
+
+And("I click on withdraw rewards button", () => {
+  cy.get(distributedRewardsDialog.getWithdrawRewardsButton()).click();
 });

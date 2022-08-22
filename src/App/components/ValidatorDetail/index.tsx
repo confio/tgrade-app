@@ -188,7 +188,11 @@ export function ValidatorDetail({
                 <StyledInfoRow>
                   <b>{validator.rewards}</b>
                 </StyledInfoRow>
-                <Button type="ghost" onClick={() => setDistributionModalOpen(true)}>
+                <Button
+                  type="ghost"
+                  onClick={() => setDistributionModalOpen(true)}
+                  data-cy="validator-details-claim-rewards-button"
+                >
                   Claim rewards
                 </Button>
               </StyledCard>
