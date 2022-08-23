@@ -1,9 +1,9 @@
 Feature: Withdraw rewards as delegate to another address
   Background:
     * I connect Web Demo wallet
-    * Set "fourthMnemonic" wallet with Engagement Points and Engagement Rewards
+    * Set "fifthMnemonic" wallet with Engagement Points and Engagement Rewards
     * Open wallet dialog from main menu
-    * I see my TGD balance in wallet "fourthMnemonic"
+    * I see my TGD balance in wallet "fifthMnemonic"
     * I close wallet dialog modal
     * I visit Engagement page
 
@@ -17,8 +17,8 @@ Feature: Withdraw rewards as delegate to another address
     * I see Delegate field is pre-field with address from "randomMnemonicThird"
 
     # Check initial Address field
-    * I see the "Address" field prefilled with my "fourthAccount" wallet
-    * I see my Engagement Points "4 / 2034 (0.20%)" and Engagement Rewards "8" TGD
+    * I see the "Address" field prefilled with my "fifthAccount" wallet
+    * I see my Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "8" TGD
 
     # Fill "Receiver address" field
     * I enter address in the "Receiver address" field from "randomMnemonicFourth" wallet
@@ -33,11 +33,11 @@ Feature: Withdraw rewards as delegate to another address
     # Replace delegated address with initial account
     * I see Delegate field is pre-field with address from "randomMnemonicThird"
     * I click on the Clear delegate button
-    * I see Tx success screen with existing "fourthAccount" address
+    * I see Tx success screen with existing "fifthAccount" address
     * I click Go to Engagement button
-    * I see Delegate field is pre-field with address "fourthAccount"
+    * I see Delegate field is pre-field with address "fifthAccount"
 
     # Check balance of initial address after
-    * I see the "Address" field prefilled with my "fourthAccount" wallet
-    * I see my Engagement Points "4 / 2034 (0.20%)" and Engagement Rewards "0" TGD
+    * I see the "Address" field prefilled with my "fifthAccount" wallet
+    * I see my Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "0" TGD
     * I see no any address in the "Receiver address" field

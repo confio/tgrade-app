@@ -168,7 +168,12 @@ And("I see Delegate withdrawal to field is pre-field with {string} address", (ad
   cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", walletAddress);
 });
 
-And("I set {string} address to initial Address field", (addressNumber) => {
+And("I enter existing {string} address to initial Address field", (addressNumber) => {
+  const randomAddress = selectWalletAddressByNumber(addressNumber);
+  cy.get(engagementPage.getInitialAddressInputField()).clear().type(randomAddress);
+});
+
+And("I enter {string} address to initial Address field", (addressNumber) => {
   const randomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
   cy.get(engagementPage.getInitialAddressInputField()).clear().type(randomAddress);
 });
@@ -179,6 +184,12 @@ And("I click on the Clear delegate button", () => {
 
 And("I see I can no longer withdraw rewards for the initial account", () => {
   cy.get(engagementPage.getDisabledWithdrawRewardsButton()).should("be.disabled");
+});
+
+And("Workaround to clear localstorage", () => {
+  cy.clearLocalStorage("pinned-tokens-map");
+  cy.clearLocalStorage("burner-wallet");
+  cy.clearLocalStorage("last-wallet");
 });
 
 async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: string) {

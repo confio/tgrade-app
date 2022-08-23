@@ -15,6 +15,7 @@ Given("Set {string} wallet with Engagement Points and Engagement Rewards", async
   const mnemonic = selectMnemonicByNumber(walletNumber);
   localStorage.setItem("burner-wallet", mnemonic);
   cy.reload(); //workaround help to apply new mnemonic and exchange address
+  Cypress.on("uncaught:exception", (err) => !err.message.includes("Failed to fetch"));
 });
 
 And("I see my TGD balance in wallet {string}", async (walletNumber) => {
@@ -50,5 +51,5 @@ And(
 );
 
 And("I see TGD balance {string} for random address", (expectedTokenBalance) => {
-  cy.get(connectWalletModal.getTokenBalance()).should("have.text", expectedTokenBalance);
+  cy.get(connectWalletModal.getTokenBalance()).should("contain.text", expectedTokenBalance);
 });

@@ -11,7 +11,7 @@ Feature: Withdraw my rewards to my address
     * I see validator's address "node0Account" with related account "node0Account" name
 
   Scenario: Withdraw rewards
-    * I click on the "Claim rewards" button
+    #* I click on the "Claim rewards" button
     #* I see my Distributed Points and Distributed Rewards
     #* I click on the "Withdraw rewards" button
     #* I see Tx success screen
