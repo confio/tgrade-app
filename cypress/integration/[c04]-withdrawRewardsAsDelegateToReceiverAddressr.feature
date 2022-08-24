@@ -1,7 +1,7 @@
 Feature: Withdraw rewards as delegate to another address
   Background:
     * I connect Web Demo wallet
-    * Set "fifthMnemonic" wallet with Engagement Points and Engagement Rewards
+    * Set existing "fifthMnemonic" wallet with Engagement Points and Engagement Rewards
     * Open wallet dialog from main menu
     * I see my TGD balance in wallet "fifthMnemonic"
     * I close wallet dialog modal
@@ -16,7 +16,15 @@ Feature: Withdraw rewards as delegate to another address
     * I click Go to Engagement button
     * I see Delegate field is pre-field with address from "randomMnemonicThird"
 
+    # I switch to delegated account
+    * Workaround to clear localstorage
+    * I connect Web Demo wallet
+    * Set "randomMnemonicThird" wallet without Engagement Points and Engagement Rewards
+    * I visit Engagement page
+    * I see Delegate field is pre-field with address from "randomMnemonicThird"
+
     # Check initial Address field
+    * I enter existing "fifthAccount" address to initial Address field
     * I see the "Address" field prefilled with my "fifthAccount" wallet
     * I see my Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "8" TGD
 
@@ -30,14 +38,27 @@ Feature: Withdraw rewards as delegate to another address
     * I click Go to Engagement button
     * I use "randomMnemonicFourth" to make query and check balance of this address "8"
 
-    # Replace delegated address with initial account
+    # I switch back to initial account
+    * Workaround to clear localstorage
+    * I connect Web Demo wallet
+    * Set existing "fifthAccount" wallet with Engagement Points and Engagement Rewards
+    * I visit Engagement page
     * I see Delegate field is pre-field with address from "randomMnemonicThird"
+
+    # Clear delegated address under initial account
     * I click on the Clear delegate button
     * I see Tx success screen with existing "fifthAccount" address
     * I click Go to Engagement button
     * I see Delegate field is pre-field with address "fifthAccount"
 
-    # Check balance of initial address after
+    # I switch to delegated account
+    * Workaround to clear localstorage
+    * I connect Web Demo wallet
+    * Set "randomMnemonicThird" wallet without Engagement Points and Engagement Rewards
+    * I visit Engagement page
+    * I see Delegate field is pre-field with address from "randomMnemonicThird"
+
+    # Check initial Address field
+    * I enter existing "fifthAccount" address to initial Address field
     * I see the "Address" field prefilled with my "fifthAccount" wallet
     * I see my Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "0" TGD
-    * I see no any address in the "Receiver address" field

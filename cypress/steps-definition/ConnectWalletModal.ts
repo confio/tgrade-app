@@ -5,14 +5,22 @@ import { And, Given } from "cypress-cucumber-preprocessor/steps";
 import { config } from "../../src/config/network";
 import { createSigningClient } from "../../src/utils/sdk";
 import { selectMnemonicByNumber, selectWalletAddressByNumber } from "../fixtures/existingAccounts";
+import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
 import { ConnectWalletModal } from "../page-object/ConnectWalletModal";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
 
 const connectWalletModal = new ConnectWalletModal();
 const validatorDetailsDialog = new ValidatorDetailsDialog();
 
-Given("Set {string} wallet with Engagement Points and Engagement Rewards", async (walletNumber) => {
+Given("Set existing {string} wallet with Engagement Points and Engagement Rewards", async (walletNumber) => {
   const mnemonic = selectMnemonicByNumber(walletNumber);
+  localStorage.setItem("burner-wallet", mnemonic);
+  cy.reload(); //workaround help to apply new mnemonic and exchange address
+  Cypress.on("uncaught:exception", (err) => !err.message.includes("Failed to fetch"));
+});
+
+Given("Set {string} wallet without Engagement Points and Engagement Rewards", async (walletNumber) => {
+  const mnemonic = selectRandomGeneratedMnemonicByNumber(walletNumber);
   localStorage.setItem("burner-wallet", mnemonic);
   cy.reload(); //workaround help to apply new mnemonic and exchange address
   Cypress.on("uncaught:exception", (err) => !err.message.includes("Failed to fetch"));

@@ -27,7 +27,7 @@ Feature: Withdraw rewards as delegate
     # Set delegated address mnemonic before withdraw
     * Workaround to clear localstorage
     * I connect Web Demo wallet
-    * Set "fourthMnemonic" wallet with Engagement Points and Engagement Rewards
+    * Set existing "fourthMnemonic" wallet with Engagement Points and Engagement Rewards
     * I visit Engagement page
     * I enter existing "thirdAccount" address to initial Address field
     * I see my Engagement Points "3 / 2034 (0.15%)" and Engagement Rewards "6" TGD
@@ -47,7 +47,7 @@ Feature: Withdraw rewards as delegate
     # Replace delegated address with initial account
     * Workaround to clear localstorage
     * I connect Web Demo wallet
-    * Set "thirdMnemonic" wallet with Engagement Points and Engagement Rewards
+    * Set existing "thirdMnemonic" wallet with Engagement Points and Engagement Rewards
     * I visit Engagement page
     * I see Delegate field is pre-field with address "fourthAccount"
     * I click on the Clear delegate button
