@@ -158,7 +158,6 @@ describe("Engagement", () => {
     const engagementPointsAfter = await egContract.getEngagementPoints(walletUserB);
     expect(engagementPointsAfter).toBe(engagementPointsBefore);
 
-    mocha.setup({ timeout: 5000 });
     const withdrawableRewardsAfter = await egContract.getWithdrawableRewards(walletUserB);
     expect(withdrawableRewardsAfter.amount).toBe("0");
 
