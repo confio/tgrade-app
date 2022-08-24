@@ -1,7 +1,7 @@
 Feature: Withdraw rewards as delegate
   Background:
     * I connect Web Demo wallet
-    * Set "thirdMnemonic" wallet with Engagement Points and Engagement Rewards
+    * Set existing "thirdMnemonic" wallet with Engagement Points and Engagement Rewards
     * Open wallet dialog from main menu
     * I see my TGD balance in wallet "thirdMnemonic"
     * I close wallet dialog modal

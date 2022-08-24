@@ -41,7 +41,7 @@ Feature: Withdraw rewards as delegate to another address
     # I switch back to initial account
     * Workaround to clear localstorage
     * I connect Web Demo wallet
-    * Set existing "fifthAccount" wallet with Engagement Points and Engagement Rewards
+    * Set existing "fifthMnemonic" wallet with Engagement Points and Engagement Rewards
     * I visit Engagement page
     * I see Delegate field is pre-field with address from "randomMnemonicThird"
 

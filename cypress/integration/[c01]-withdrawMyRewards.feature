@@ -1,7 +1,7 @@
 Feature: Withdraw my rewards to my address
   Background:
     * I connect Web Demo wallet
-    * Set "firstMnemonic" wallet with Engagement Points and Engagement Rewards
+    * Set existing "firstMnemonic" wallet with Engagement Points and Engagement Rewards
     * Open wallet dialog from main menu
     * I see my TGD balance in wallet "firstMnemonic"
     * I close wallet dialog modal
