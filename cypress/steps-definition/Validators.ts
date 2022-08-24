@@ -111,6 +111,8 @@ And("I see voting power {string} on Validator details dialog", (votingPower) => 
 And("I close validator details dialog", () => {
   cy.get(validatorDetailsDialog.getCloseDialogButton()).click();
   cy.wait(3000); //workaround to prevent appearing dialog after closing (probably a bug)
+  cy.get(validatorDetailsDialog.getCloseDialogButton()).click();
+  cy.wait(3000); //workaround to prevent appearing dialog after closing (probably a bug)
 });
 
 And(
@@ -143,7 +145,13 @@ And("I click on withdraw rewards button", () => {
 And(
   "I see Distributed points {string} value and Distributed rewards {string} in validators details dialog",
   (distributedPoints, distributedRewards) => {
-    cy.get(validatorDetailsDialog.getDistributedRewardsValue()).should("contain.text", distributedRewards);
-    cy.get(validatorDetailsDialog.getDistributedPointValue()).should("contain.text", distributedPoints);
+    cy.get(validatorDetailsDialog.getDistributedRewardsValue()).should(($element) => {
+      const extractedDistributedRewards = parseInt($element.text());
+      expect(extractedDistributedRewards).to.be.not.lessThan(parseInt(distributedRewards));
+    });
+    cy.get(validatorDetailsDialog.getDistributedPointValue()).should(($element) => {
+      const extractedDistributedPoints = parseInt($element.text());
+      expect(extractedDistributedPoints).to.be.not.lessThan(parseInt(distributedPoints));
+    });
   },
 );

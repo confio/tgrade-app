@@ -59,5 +59,8 @@ And(
 );
 
 And("I see TGD balance {string} for random address", (expectedTokenBalance) => {
-  cy.get(connectWalletModal.getTokenBalance()).should("contain.text", expectedTokenBalance);
+  cy.get(connectWalletModal.getTokenBalance()).then(($element) => {
+    const extractedTokenValue = parseInt($element.text());
+    expect(extractedTokenValue).to.be.not.lessThan(parseInt(expectedTokenBalance));
+  });
 });
