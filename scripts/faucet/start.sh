@@ -14,6 +14,7 @@ export FAUCET_GAS_PRICE=0.05utgd
 export FAUCET_ADDRESS_PREFIX=tgrade
 export FAUCET_TOKENS=utgd
 export FAUCET_GAS_LIMIT=100000
+export FAUCET_COOLDOWN_TIME=0 # For running tests
 
 # docker pull "$REPOSITORY:$VERSION"
 
@@ -25,6 +26,7 @@ docker run --read-only --rm \
   -e FAUCET_ADDRESS_PREFIX \
   -e FAUCET_TOKENS \
   -e FAUCET_GAS_LIMIT \
+  -e FAUCET_COOLDOWN_TIME \
   --name "$CONTAINER_NAME" \
   -p 8000:8000 \
   "$REPOSITORY:$VERSION" \

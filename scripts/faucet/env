@@ -1,5 +1,5 @@
-# Choose from https://hub.docker.com/r/cosmwasm/wasmd/tags
-REPOSITORY="cosmwasm/faucet-demo"
-VERSION="v0.24.0-alpha.22.1"
+# Choose from https://hub.docker.com/r/confio/faucet/tags
+REPOSITORY="confio/faucet"
+VERSION="0.29.0-alpha.3"
 
 CONTAINER_NAME="faucet"
