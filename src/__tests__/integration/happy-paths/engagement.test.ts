@@ -98,7 +98,7 @@ describe("Engagement", () => {
   }, 25000);
 
   it("Claim my own rewards and send them to another address", async () => {
-    const mnemonic_02 = generateMnemonic();
+    const randomMnemonic = generateMnemonic();
     /**
      * execute a grant engagement proposal from the OC
      * withdraw all Rewards to the User_B wallet address
@@ -120,7 +120,7 @@ describe("Engagement", () => {
     const faucetClient_01 = new FaucetClient(config.faucetUrl);
     await faucetClient_01.credit(walletUserA, config.faucetTokens?.[1] ?? config.feeToken);
 
-    const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_02, {
+    const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(randomMnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
       prefix: config.addressPrefix,
     });
@@ -158,6 +158,7 @@ describe("Engagement", () => {
     const engagementPointsAfter = await egContract.getEngagementPoints(walletUserB);
     expect(engagementPointsAfter).toBe(engagementPointsBefore);
 
+    mocha.setup({ timeout: 5000 });
     const withdrawableRewardsAfter = await egContract.getWithdrawableRewards(walletUserB);
     expect(withdrawableRewardsAfter.amount).toBe("0");
 

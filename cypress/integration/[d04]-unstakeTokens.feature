@@ -10,10 +10,10 @@ Feature: Unstake tokens
     * I see validator's address "node0Account" with related account "node0Account" name
     * I click on the "Unstake" button
     * I enter "15" amount of TGD to be unstaked
-    * I see potential voting power has been changed to "71.161%"
+    * I see potential voting power has been changed to "100.00%"
     * I click on the "Unstake tokens" button
     * I see Tx success screen
     * I click Go to Validator details page
-    * I see voting power "71.161%" on Validator details dialog
+    * I see voting power "100.00%" on Validator details dialog
     * I close validator details dialog
-    * I see voting power "71.161%" for "node0Account" validator in Validator overview table
+    * I see voting power "100.00%" for "node0Account" validator in Validator overview table

@@ -26,4 +26,12 @@ export class ValidatorDetailsDialog {
   getClaimRewardsButton(): string {
     return '[data-cy="validator-details-claim-rewards-button"]';
   }
+
+  getDistributedRewardsValue(): string {
+    return '[data-cy="validators-details-distributed-rewards-value"]';
+  }
+
+  getDistributedPointValue(): string {
+    return '[data-cy="validators-details-distributed-points-value"]';
+  }
 }

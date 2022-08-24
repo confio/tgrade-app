@@ -110,6 +110,7 @@ And("I see voting power {string} on Validator details dialog", (votingPower) => 
 
 And("I close validator details dialog", () => {
   cy.get(validatorDetailsDialog.getCloseDialogButton()).click();
+  cy.wait(3000); //workaround to prevent appearing dialog after closing (probably a bug)
 });
 
 And(
@@ -122,10 +123,6 @@ And(
     });
   },
 );
-
-And("I close validator details dialog", () => {
-  cy.get(validatorDetailsDialog.getCloseDialogButton()).click();
-});
 
 And("I enter {string} amount of TGD to be unstaked", (amount) => {
   cy.get(unStakeFormDialog.getAmountToUnStakeInputField()).type(amount);
@@ -142,3 +139,11 @@ And('I click on the "Claim rewards" button', () => {
 And("I click on withdraw rewards button", () => {
   cy.get(distributedRewardsDialog.getWithdrawRewardsButton()).click();
 });
+
+And(
+  "I see Distributed points {string} value and Distributed rewards {string} in validators details dialog",
+  (distributedPoints, distributedRewards) => {
+    cy.get(validatorDetailsDialog.getDistributedRewardsValue()).should("contain.text", distributedRewards);
+    cy.get(validatorDetailsDialog.getDistributedPointValue()).should("contain.text", distributedPoints);
+  },
+);
