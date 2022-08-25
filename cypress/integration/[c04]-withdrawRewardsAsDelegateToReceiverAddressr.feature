@@ -26,7 +26,7 @@ Feature: Withdraw rewards as delegate to another address
     # Check initial Address field
     * I enter existing "fifthAccount" address to initial Address field
     * I see the "Address" field prefilled with my "fifthAccount" wallet
-    * I see my Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "8" TGD
+    * I see my Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "12" TGD
 
     # Fill "Receiver address" field
     * I enter address in the "Receiver address" field from "randomMnemonicFourth" wallet
@@ -36,7 +36,7 @@ Feature: Withdraw rewards as delegate to another address
     * I click on the "Withdraw rewards" button
     * I see Tx success screen with address from "randomMnemonicFourth"
     * I click Go to Engagement button
-    * I use "randomMnemonicFourth" to make query and check balance of this address "8"
+    * I use "randomMnemonicFourth" to make query and check balance of this address "12"
 
     # I switch back to initial account
     * Workaround to clear localstorage
