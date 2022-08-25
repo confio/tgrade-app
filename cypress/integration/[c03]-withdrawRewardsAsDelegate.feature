@@ -24,10 +24,12 @@ Feature: Withdraw rewards as delegate
     * I see Engagement Points "3 / 2034 (0.15%)" and Engagement Rewards "6" TGD
     * I see no any address in the "Receiver address" field
 
-    # Set delegated address mnemonic before withdraw
+    # Switch to Delegated wallet address
     * Workaround to clear localstorage
     * I connect Web Demo wallet
     * Set existing "fourthMnemonic" wallet with Engagement Points and Engagement Rewards
+
+    # Check Engagement balance
     * I visit Engagement page
     * I enter existing "thirdAccount" address to initial Address field
     * I see Engagement Points "3 / 2034 (0.15%)" and Engagement Rewards "6" TGD
@@ -37,17 +39,19 @@ Feature: Withdraw rewards as delegate
     * I see Tx success screen with existing "thirdAccount" address
     * I click Go to Engagement button
 
-    # Check balance of Delegated address
+    # Check Engagement of Delegated address
     * I see Engagement Points "4 / 2034 (0.20%)" and Engagement Rewards "9" TGD
     * I use existing "fourthMnemonic" mnemonic to make query and check balance "100"
     * Open wallet dialog from main menu
     * I see TGD balance "1006" for random address
     * I close wallet dialog modal
 
-    # Replace delegated address with initial account
+    # Switch to Initial wallet address
     * Workaround to clear localstorage
     * I connect Web Demo wallet
     * Set existing "thirdMnemonic" wallet with Engagement Points and Engagement Rewards
+
+    # Check balance of Initial wallet
     * I visit Engagement page
     * I see Delegate field is pre-field with address "fourthAccount"
     * I click on the Clear delegate button

@@ -16,14 +16,14 @@ Feature: Withdraw rewards as delegate to another address
     * I click Go to Engagement button
     * I see Delegate field is pre-field with address from "randomMnemonic03"
 
-    # I switch to delegated account
+    # Switch to delegated account
     * Workaround to clear localstorage
     * I connect Web Demo wallet
     * Set "randomMnemonic03" wallet without Engagement Points and Engagement Rewards
     * I visit Engagement page
     * I see Delegate field is pre-field with address from "randomMnemonic03"
 
-    # Check initial Address field
+    # Check Engagement of Initial address
     * I enter existing "fifthAccount" address to initial Address field
     * I see the "Address" field prefilled with my "fifthAccount" wallet
     * I see Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "12" TGD
@@ -38,7 +38,7 @@ Feature: Withdraw rewards as delegate to another address
     * I click Go to Engagement button
     * I use "randomMnemonic04" to make query and check balance of this address "12"
 
-    # I switch back to initial account
+    # I switch back to Initial account
     * Workaround to clear localstorage
     * I connect Web Demo wallet
     * Set existing "fifthMnemonic" wallet with Engagement Points and Engagement Rewards
@@ -58,7 +58,7 @@ Feature: Withdraw rewards as delegate to another address
     * I visit Engagement page
     * I see Delegate field is pre-field with address from "randomMnemonic03"
 
-    # Check initial Address field
+    # Check Engagement of Initial address
     * I enter existing "fifthAccount" address to initial Address field
     * I see the "Address" field prefilled with my "fifthAccount" wallet
     * I see Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "0" TGD

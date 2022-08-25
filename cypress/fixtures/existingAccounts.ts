@@ -12,6 +12,7 @@ enum Mnemonics {
 enum ExistingAddresses {
   adminAccount = "tgrade1kalzk5cvq5yu6f5u73k7r905yw52sawckddsc3",
   node0Account = "tgrade1tsg4wldpwyehhkqx3za78ygkzatncxxup96k7h",
+  node1Account = "tgrade12ty7w05kswvuvvzzdxdv8w4tf7g6y9xexy5rzj",
   firstAccount = "tgrade10jdqrtm46xsxtdmuyt2zfcrhupvycrpv80r7nh",
   secondAccount = "tgrade1aw7g4pxlzmj85fwhd3zs5hhgs0a9xeqg28z8jl",
   thirdAccount = "tgrade1dzav7m7r42sg02sqdvqelazsg0mu5ef0qjpq5e",
@@ -40,6 +41,8 @@ export const selectWalletAddressByNumber = (walletNumber: string): string => {
   switch (walletNumber) {
     case "node0Account":
       return ExistingAddresses.node0Account;
+    case "node1Account":
+      return ExistingAddresses.node1Account;
     case "firstAccount":
       return ExistingAddresses.firstAccount;
     case "secondAccount":

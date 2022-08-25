@@ -14,4 +14,12 @@ export class DistributedRewardsDialog {
   getGoToValidatorDetailsButton(): string {
     return '[data-cy="validators-page-tx-dialog-go-to-validator-details-button"]';
   }
+
+  getInitialValidatorAddressField(): string {
+    return '[name="form-item-name-address"]';
+  }
+
+  getReceiverAddressField(): string {
+    return '[name="form-item-name-receiver-address"]';
+  }
 }
