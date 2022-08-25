@@ -20,7 +20,7 @@ Feature: Withdraw my rewards to another address
     * I see initial "Address" field is pre-filled with "node1Account" in the dialog
 
     # Enter Receiver address and Withdraw rewards
-    * I enter address "node1Account" to "Receiver address" field
+    * I enter random "randomAddress01" address to "Receiver address" field
     #* I click on the "Withdraw rewards" button in the dialog
     #* I see Tx success screen with existing "node1Account" address
     #* I click Go to Engagement button

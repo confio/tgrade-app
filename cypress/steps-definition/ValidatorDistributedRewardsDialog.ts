@@ -1,6 +1,7 @@
 import { And } from "cypress-cucumber-preprocessor/steps";
 
 import { selectWalletAddressByNumber } from "../fixtures/existingAccounts";
+import { selectRandomGeneratedAddressByNumber } from "../fixtures/randomGeneratedAccount";
 import { DistributedRewardsDialog } from "../page-object/DistributedRewardsDialog";
 
 const distributedRewardsDialog = new DistributedRewardsDialog();
@@ -38,9 +39,9 @@ And('I see initial "Address" field is pre-filled with {string} in the dialog', (
   );
 });
 
-And('I enter address {string} to "Receiver address" field', (addressName) => {
-  const selectedAddress = selectWalletAddressByNumber(addressName);
-  cy.get(distributedRewardsDialog.getReceiverAddressField()).type(selectedAddress);
+And('I enter random {string} address to "Receiver address" field', (addressNumber) => {
+  const selectedRandomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
+  cy.get(distributedRewardsDialog.getReceiverAddressField()).type(selectedRandomAddress);
 });
 
 And('I click on the "Withdraw rewards" button in the dialog', (addressName) => {
