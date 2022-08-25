@@ -26,7 +26,7 @@ Feature: Withdraw rewards as delegate to another address
     # Check initial Address field
     * I enter existing "fifthAccount" address to initial Address field
     * I see the "Address" field prefilled with my "fifthAccount" wallet
-    * I see my Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "12" TGD
+    * I see Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "12" TGD
 
     # Fill "Receiver address" field
     * I enter address in the "Receiver address" field from "randomMnemonic04" wallet
@@ -61,4 +61,4 @@ Feature: Withdraw rewards as delegate to another address
     # Check initial Address field
     * I enter existing "fifthAccount" address to initial Address field
     * I see the "Address" field prefilled with my "fifthAccount" wallet
-    * I see my Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "0" TGD
+    * I see Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "0" TGD

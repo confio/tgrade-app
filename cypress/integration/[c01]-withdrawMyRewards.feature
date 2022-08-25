@@ -11,7 +11,7 @@ Feature: Withdraw my rewards to my address
 
     # Check balance of initial address before
     * I see the "Address" field prefilled with my "firstAccount" wallet
-    * I see my Engagement Points "5 / 2034 (0.25%)" and Engagement Rewards "9" TGD
+    * I see Engagement Points "5 / 2034 (0.25%)" and Engagement Rewards "9" TGD
 
     # Withdraw rewards
     * I click on the "Withdraw rewards" button
@@ -19,6 +19,6 @@ Feature: Withdraw my rewards to my address
     * I click Go to Engagement button
 
     # Check balance of initial address after
-    * I see my Engagement Points "5 / 2034 (0.25%)" and Engagement Rewards "0" TGD
+    * I see Engagement Points "5 / 2034 (0.25%)" and Engagement Rewards "0" TGD
     * Open wallet dialog from main menu
     * I see that TGD balance "1009" has gone up for "firstAccount" address

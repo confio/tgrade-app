@@ -33,7 +33,7 @@ And('I see no any address in the "Receiver address" field', () => {
 });
 
 And(
-  "I see my Engagement Points {string} and Engagement Rewards {string} TGD",
+  "I see Engagement Points {string} and Engagement Rewards {string} TGD",
   (engagementPoint, expectedEngagementRewards) => {
     cy.wait(3000); //Workaround wait until calculation will be finished
     cy.get(engagementPage.getEngagementPointsValue()).should("contain.text", engagementPoint);
