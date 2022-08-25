@@ -10,18 +10,18 @@ Feature: Withdraw rewards as delegate to another address
   Scenario: Delegate withdraws rewards to another address
 
     # Set delegate account
-    * I type address from "randomMnemonicThird" in Delegated withdrawal to field
+    * I type address from "randomMnemonic03" in Delegated withdrawal to field
     * I click the "Set delegate" button
-    * I see Tx success screen with address from "randomMnemonicThird"
+    * I see Tx success screen with address from "randomMnemonic03"
     * I click Go to Engagement button
-    * I see Delegate field is pre-field with address from "randomMnemonicThird"
+    * I see Delegate field is pre-field with address from "randomMnemonic03"
 
     # I switch to delegated account
     * Workaround to clear localstorage
     * I connect Web Demo wallet
-    * Set "randomMnemonicThird" wallet without Engagement Points and Engagement Rewards
+    * Set "randomMnemonic03" wallet without Engagement Points and Engagement Rewards
     * I visit Engagement page
-    * I see Delegate field is pre-field with address from "randomMnemonicThird"
+    * I see Delegate field is pre-field with address from "randomMnemonic03"
 
     # Check initial Address field
     * I enter existing "fifthAccount" address to initial Address field
@@ -29,21 +29,21 @@ Feature: Withdraw rewards as delegate to another address
     * I see my Engagement Points "6 / 2034 (0.29%)" and Engagement Rewards "12" TGD
 
     # Fill "Receiver address" field
-    * I enter address in the "Receiver address" field from "randomMnemonicFourth" wallet
+    * I enter address in the "Receiver address" field from "randomMnemonic04" wallet
 
     # Withdraw rewards
-    * I use "randomMnemonicFourth" to make query and check balance of this address "0"
+    * I use "randomMnemonic04" to make query and check balance of this address "0"
     * I click on the "Withdraw rewards" button
-    * I see Tx success screen with address from "randomMnemonicFourth"
+    * I see Tx success screen with address from "randomMnemonic04"
     * I click Go to Engagement button
-    * I use "randomMnemonicFourth" to make query and check balance of this address "12"
+    * I use "randomMnemonic04" to make query and check balance of this address "12"
 
     # I switch back to initial account
     * Workaround to clear localstorage
     * I connect Web Demo wallet
     * Set existing "fifthMnemonic" wallet with Engagement Points and Engagement Rewards
     * I visit Engagement page
-    * I see Delegate field is pre-field with address from "randomMnemonicThird"
+    * I see Delegate field is pre-field with address from "randomMnemonic03"
 
     # Clear delegated address under initial account
     * I click on the Clear delegate button
@@ -54,9 +54,9 @@ Feature: Withdraw rewards as delegate to another address
     # I switch to delegated account
     * Workaround to clear localstorage
     * I connect Web Demo wallet
-    * Set "randomMnemonicThird" wallet without Engagement Points and Engagement Rewards
+    * Set "randomMnemonic03" wallet without Engagement Points and Engagement Rewards
     * I visit Engagement page
-    * I see Delegate field is pre-field with address from "randomMnemonicThird"
+    * I see Delegate field is pre-field with address from "randomMnemonic03"
 
     # Check initial Address field
     * I enter existing "fifthAccount" address to initial Address field

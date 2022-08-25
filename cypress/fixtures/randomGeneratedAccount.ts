@@ -7,34 +7,34 @@ function makeRandomTgradeAddress(): string {
   return Bech32.encode("tgrade", Random.getBytes(20));
 }
 
-const randomMnemonicFirst = generateMnemonic();
-const randomMnemonicSecond = generateMnemonic();
-const randomMnemonicThird = generateMnemonic();
-const randomMnemonicFourth = generateMnemonic();
-const randomMnemonicFifth = generateMnemonic();
-const randomMnemonicSixth = generateMnemonic();
+const randomMnemonic01 = generateMnemonic();
+const randomMnemonic02 = generateMnemonic();
+const randomMnemonic03 = generateMnemonic();
+const randomMnemonic04 = generateMnemonic();
+const randomMnemonic05 = generateMnemonic();
+const randomMnemonic06 = generateMnemonic();
 
-const randomFirstAddress = makeRandomTgradeAddress();
-const randomSecondAddress = makeRandomTgradeAddress();
-const randomThirdAddress = makeRandomTgradeAddress();
-const randomFourthAddress = makeRandomTgradeAddress();
-const randomFifthAddress = makeRandomTgradeAddress();
-const randomSixthAddress = makeRandomTgradeAddress();
+const randomAddress01 = makeRandomTgradeAddress();
+const randomAddress02 = makeRandomTgradeAddress();
+const randomAddress03 = makeRandomTgradeAddress();
+const randomAddress04 = makeRandomTgradeAddress();
+const randomAddress05 = makeRandomTgradeAddress();
+const randomAddress06 = makeRandomTgradeAddress();
 
 export const selectRandomGeneratedMnemonicByNumber = (addressMnemonic: string): string => {
   switch (addressMnemonic) {
-    case "randomMnemonicFirst":
-      return randomMnemonicFirst;
-    case "randomMnemonicSecond":
-      return randomMnemonicSecond;
-    case "randomMnemonicThird":
-      return randomMnemonicThird;
-    case "randomMnemonicFourth":
-      return randomMnemonicFourth;
-    case "randomMnemonicFifth":
-      return randomMnemonicFifth;
-    case "randomMnemonicSixth":
-      return randomMnemonicSixth;
+    case "randomMnemonic01":
+      return randomMnemonic01;
+    case "randomMnemonic02":
+      return randomMnemonic02;
+    case "randomMnemonic03":
+      return randomMnemonic03;
+    case "randomMnemonic04":
+      return randomMnemonic04;
+    case "randomMnemonic05":
+      return randomMnemonic05;
+    case "randomMnemonic06":
+      return randomMnemonic06;
     default:
       return "no mnemonic was provided";
   }
@@ -42,18 +42,18 @@ export const selectRandomGeneratedMnemonicByNumber = (addressMnemonic: string): 
 
 export const selectRandomGeneratedAddressByNumber = (number: string): string => {
   switch (number) {
-    case "randomAddressFirst":
-      return randomFirstAddress;
-    case "randomAddressSecond":
-      return randomSecondAddress;
-    case "randomAddressThird":
-      return randomThirdAddress;
-    case "randomAddressFourth":
-      return randomFourthAddress;
-    case "randomAddressFifth":
-      return randomFifthAddress;
-    case "randomAddressSixth":
-      return randomSixthAddress;
+    case "randomAddress01":
+      return randomAddress01;
+    case "randomAddress02":
+      return randomAddress02;
+    case "randomAddress03":
+      return randomAddress03;
+    case "randomAddress04":
+      return randomAddress04;
+    case "randomAddress05":
+      return randomAddress05;
+    case "randomAddress06":
+      return randomAddress06;
     default:
       return "no number was provided";
   }

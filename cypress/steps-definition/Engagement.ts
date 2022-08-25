@@ -35,6 +35,7 @@ And('I see no any address in the "Receiver address" field', () => {
 And(
   "I see my Engagement Points {string} and Engagement Rewards {string} TGD",
   (engagementPoint, expectedEngagementRewards) => {
+    cy.wait(3000); //Workaround wait until calculation will be finished
     cy.get(engagementPage.getEngagementPointsValue()).should("contain.text", engagementPoint);
     cy.get(engagementPage.getEngagementRewardsValue()).then(($element) => {
       const extractedRewardsValue = parseInt($element.text());
@@ -94,7 +95,7 @@ And("I type address from {string} in Delegated withdrawal to field", async (wall
 And(
   "I use {string} to make query and check balance of this address {string}",
   async (receiveMnemonicAddress, tokenBalance) => {
-    cy.wait(5000); // Workaround to wait until transaction will be finished
+    cy.wait(9000); // Experimenting to find until transaction will be finished
     const addressMnemonic = selectRandomGeneratedMnemonicByNumber(receiveMnemonicAddress);
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
