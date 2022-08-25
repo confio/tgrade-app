@@ -129,8 +129,8 @@ export default function WithdrawRewardsContainer({
         <Row>
           <Cell>
             <Text>Distributed points</Text>
-            <Text data-cy="validators-distributed-rewards-points-value">
-              <BoldText>{engagement} / </BoldText>
+            <Text>
+              <BoldText data-cy="validators-distributed-points-value">{engagement} / </BoldText>
               {totalEngagement} ({((engagement / totalEngagement) * 100).toFixed(2)}%)
             </Text>
           </Cell>

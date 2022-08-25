@@ -4,7 +4,7 @@ export class DistributedRewardsDialog {
   }
 
   getDistributedPointsValue(): string {
-    return '[data-cy="validators-distributed-rewards-points-value"]';
+    return '[data-cy="validators-distributed-points-value"]';
   }
 
   getDistributedRewardsValue(): string {

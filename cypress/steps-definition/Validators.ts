@@ -111,8 +111,13 @@ And("I see voting power {string} on Validator details dialog", (votingPower) => 
 And("I close validator details dialog", () => {
   cy.get(validatorDetailsDialog.getCloseDialogButton()).click();
   cy.wait(3000); //workaround to prevent appearing dialog after closing (probably a bug)
-  cy.get(validatorDetailsDialog.getCloseDialogButton()).click();
-  cy.wait(3000); //workaround to prevent appearing dialog after closing (probably a bug)
+  cy.get("body").then(($el) => {
+    if ($el.find(validatorDetailsDialog.getCloseDialogButton()).length > 0) {
+      cy.get(validatorDetailsDialog.getCloseDialogButton()).click();
+    } else {
+      cy.log("Dialog does not appear second time!");
+    }
+  });
 });
 
 And(

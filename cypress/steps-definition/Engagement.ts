@@ -93,6 +93,7 @@ And("I type address from {string} in Delegated withdrawal to field", async (wall
 And(
   "I use {string} to make query and check balance of this address {string}",
   async (receiveMnemonicAddress, tokenBalance) => {
+    cy.wait(3000); // Workaround to wait until transaction will be finished
     const addressMnemonic = selectRandomGeneratedMnemonicByNumber(receiveMnemonicAddress);
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
@@ -103,7 +104,6 @@ And(
     const signingClient_01 = await createSigningClient(config, wallet);
 
     const walletBalanceUser = await signingClient_01.getBalance(walletUserA, config.feeToken);
-    console.info("Wallet balance" + walletBalanceUser.amount);
     expect(parseInt(walletBalanceUser.amount.slice(0, 3))).to.be.not.lessThan(parseInt(tokenBalance));
   },
 );
