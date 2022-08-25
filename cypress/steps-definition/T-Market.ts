@@ -1,4 +1,4 @@
-import { And, Given } from "cypress-cucumber-preprocessor/steps";
+import { And } from "cypress-cucumber-preprocessor/steps";
 
 import { TMarketPage } from "../page-object/TMarketPage";
 import { TrustedCirclesPage } from "../page-object/TrustedCirclesPage";
@@ -7,10 +7,6 @@ const trustedCirclesPage = new TrustedCirclesPage();
 const tMarketPage = new TMarketPage();
 const tokenSymbol = "SUST";
 const tokenName = "Test Sustainability Asset";
-
-Given("Go to T-Market page", () => {
-  cy.findByText("T-Market").click();
-});
 
 And("I click on Create Asset button", () => {
   cy.findByRole("button", { name: /Create Asset/i }).click();
@@ -142,6 +138,5 @@ And("I click Ok button", () => {
 });
 
 And("I redirected back to Provided Liquidity tab", () => {
-  cy.url().should("include", "/tmarket/provide");
-  cy.wait(3000); //workaround to fix failed step
+  cy.url().should("include", "/tmarket/provide", { timeout: 3000 }); //workaround to fix failed step
 });

@@ -4,9 +4,10 @@ import { LedgerSigner } from "@cosmjs/ledger-amino";
 import { DirectSecp256k1HdWallet, isOfflineDirectSigner, OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
-import { configKeplr } from "config/keplr";
 import { NetworkConfig } from "config/network";
 import { isChrome, isDesktop } from "react-device-detect";
+
+import { configKeplr } from "../config/keplr";
 
 // Wallet storage utils
 export const storedWalletKey = "burner-wallet";

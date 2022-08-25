@@ -70,7 +70,7 @@ export default function StakeModal({
             </Button>
           ) : null}
           <Button onClick={() => resetModal()}>
-            <span>Go to Validator details</span>
+            <span data-cy="validator-page-go-back-to-validator-details-button">Go to Validator details</span>
           </Button>
         </ShowTxResult>
       ) : (

@@ -209,7 +209,12 @@ export function ValidatorDetail({
           <ModalHeader>
             <Stack gap="s1"></Stack>
 
-            <img alt="Close button" src={closeIcon} onClick={onCancel} />
+            <img
+              alt="Close button"
+              src={closeIcon}
+              onClick={onCancel}
+              data-cy="validator-dialog-close-button"
+            />
           </ModalHeader>
           <div style={{ display: "flex", flexDirection: "column", minHeight: "530px" }}>
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
@@ -244,15 +249,20 @@ export function ValidatorDetail({
               <StyledCard>
                 <Title>Distributed points</Title>
                 <StyledInfoRow>
-                  <b>{validator.engagementPoints} /</b> <p> {blockchainValues.totalEgPoints}</p>
+                  <b data-cy="validators-details-distributed-points-value">{validator.engagementPoints} /</b>{" "}
+                  <p> {blockchainValues.totalEgPoints}</p>
                 </StyledInfoRow>
               </StyledCard>
               <StyledCard>
                 <Title>Distributed rewards, TGD</Title>
                 <StyledInfoRow>
-                  <b>{validator.rewards}</b>
+                  <b data-cy="validators-details-distributed-rewards-value">{validator.rewards}</b>
                 </StyledInfoRow>
-                <Button type="ghost" onClick={() => setDistributionModalOpen(true)}>
+                <Button
+                  type="ghost"
+                  onClick={() => setDistributionModalOpen(true)}
+                  data-cy="validator-details-claim-rewards-button"
+                >
                   Claim rewards
                 </Button>
               </StyledCard>
@@ -267,10 +277,14 @@ export function ValidatorDetail({
                     <Button
                       type="ghost"
                       onClick={() => setStakeModalState({ open: true, operation: "unstake" })}
+                      data-cy="validator-details-unstake-button"
                     >
                       Unstake
                     </Button>
-                    <Button onClick={() => setStakeModalState({ open: true, operation: "stake" })}>
+                    <Button
+                      onClick={() => setStakeModalState({ open: true, operation: "stake" })}
+                      data-cy="validator-details-stake-button"
+                    >
                       Stake
                     </Button>
                   </ButtonGroup>

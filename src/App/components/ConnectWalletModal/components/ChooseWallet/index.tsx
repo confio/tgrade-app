@@ -67,7 +67,12 @@ export default function ChooseWallet({
   return (
     <>
       <ModalHeader>
-        <img alt="Close button" src={closeIcon} onClick={() => closeModal()} />
+        <img
+          alt="Close button"
+          data-cy="connect-wallet-modal-close-icon"
+          src={closeIcon}
+          onClick={() => closeModal()}
+        />
       </ModalHeader>
       {address ? (
         <SwitchButtons>

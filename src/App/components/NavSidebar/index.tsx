@@ -31,7 +31,7 @@ export const NavSidebar: React.FC = () => {
           <Cell>
             <Icon.Token />
             <TextCell>
-              <StyledText>{tMarketTitle}</StyledText>
+              <StyledText data-cy="main-nav-side-bar-tmarket">{tMarketTitle}</StyledText>
               <Icon.Trade />
             </TextCell>
           </Cell>
@@ -45,7 +45,7 @@ export const NavSidebar: React.FC = () => {
                   <Cell>
                     <Icon.Oversight />
                     <TextCell>
-                      <StyledText>Governance</StyledText>
+                      <StyledText data-cy="main-nav-side-bar-governance">Governance</StyledText>
                       <Icon.Manage />
                     </TextCell>
                   </Cell>
@@ -61,7 +61,7 @@ export const NavSidebar: React.FC = () => {
                 <Link to={paths.validators.prefix}>
                   <Cell>
                     <TextCell>
-                      <StyledText>Validators</StyledText>
+                      <StyledText data-cy="main-nav-side-bar-validators-sub-menu">Validators</StyledText>
                     </TextCell>
                   </Cell>
                 </Link>
@@ -78,7 +78,7 @@ export const NavSidebar: React.FC = () => {
               <Cell>
                 <Icon.Flag />
                 <TextCell>
-                  <StyledText>Engagement</StyledText>
+                  <StyledText data-cy="main-nav-side-bar-engagement">Engagement</StyledText>
                   <Icon.TakeAway />
                 </TextCell>
               </Cell>
