@@ -78,6 +78,7 @@ And("I click Go to Engagement button", () => {
   cy.get(engagementPage.getTransactionResultScreenGoToEngagementButton()).click();
   Cypress.on("uncaught:exception", (err) => !err.message.includes("Failed to fetch"));
   // workaround probably bug in App
+  cy.wait(3000); //Workaround to wait transaction to finished
 });
 
 And("I type {string} address in Delegated withdrawal to field", (walletNumber) => {
