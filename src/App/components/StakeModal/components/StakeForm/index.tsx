@@ -149,7 +149,8 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
               <FormStack gap="s1">
                 <CurrentDataStack>
                   <Text>
-                    Your voting power is <BoldText>{votingPowerStr}%</BoldText>.
+                    Your voting power is{" "}
+                    <BoldText data-cy="stake-form-potential-voting-power-text">{votingPowerStr}%</BoldText>.
                   </Text>
                   <Text>
                     You have staked{" "}
@@ -189,6 +190,7 @@ export default function StakeForm({ setTxResult, reloadValidator }: StakeFormPro
                   disabled={!isValid || !liquidToStake}
                   loading={isSubmitting}
                   onClick={() => submitForm()}
+                  data-cy="stake-form-potential-voting-power-stake-token-button"
                 >
                   <div>Stake tokens</div>
                 </Button>

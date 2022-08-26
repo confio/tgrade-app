@@ -26,8 +26,8 @@ export default function ShowTxResult({ msg, error, children }: TxResultProps): J
         <ResultIcon alt="Result icon" src={error ? failIcon : successIcon} />
         {msg ? (
           <Stack gap="s-1">
-            <ResultText>Your transaction was approved!</ResultText>
-            <ResultDescription>{msg}</ResultDescription>
+            <ResultText data-cy="transaction-result-screen-text">Your transaction was approved!</ResultText>
+            <ResultDescription data-cy="transaction-result-screen-details">{msg}</ResultDescription>
           </Stack>
         ) : null}
         {error ? (

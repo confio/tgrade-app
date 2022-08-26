@@ -44,6 +44,7 @@ export interface StakedResponse {
 export interface Claim {
   readonly addr: string;
   readonly amount: string;
+  readonly vesting_amount?: string;
   readonly release_at: number;
   readonly creation_height: number;
 }
@@ -205,6 +206,28 @@ export class StakingContractQuerier {
     } catch {
       return { denom: this.config.feeToken, amount: "0" };
     }
+  }
+
+  async getClaims(validatorAddress: string, startAfter?: number): Promise<readonly Claim[]> {
+    await this.initAddress();
+    if (!this.stakingAddress) throw new Error("stakingAddress was not set");
+
+    const query = { claims: { address: validatorAddress, start_after: startAfter } };
+    const { claims }: ClaimsResponse = await this.client.queryContractSmart(this.stakingAddress, query);
+    return claims;
+  }
+
+  async getAllClaims(validatorAddress: string): Promise<readonly Claim[]> {
+    let claims: readonly Claim[] = [];
+    let nextClaims: readonly Claim[] = [];
+
+    do {
+      const lastClaimReleaseAt = claims[claims.length - 1]?.release_at;
+      nextClaims = await this.getClaims(validatorAddress, lastClaimReleaseAt);
+      claims = [...claims, ...nextClaims];
+    } while (nextClaims.length);
+
+    return claims;
   }
 }
 

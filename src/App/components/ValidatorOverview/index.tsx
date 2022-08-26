@@ -62,7 +62,7 @@ const columns: ColumnProps<ValidatorType>[] = [
         data-cy={`validator-name-${record.metadata?.moniker}`}
       >
         <b>{record.metadata?.moniker}</b>
-        <p>{ellipsifyAddress(record.operator)}</p>
+        <p data-cy="overview-page-validator-address">{ellipsifyAddress(record.operator)}</p>
       </div>
     ),
     sorter: (a: ValidatorType, b: ValidatorType) => {
@@ -149,7 +149,7 @@ const columns: ColumnProps<ValidatorType>[] = [
       const isSmallVotingPower = fixedVotingPower === "0.000" && votingPowerOrZero !== 0;
       const votingPower = isSmallVotingPower ? "~ 0.001" : fixedVotingPower;
 
-      return <p>{votingPower} %</p>;
+      return <p data-cy={`voting-power-for-validator-name-${record.metadata?.moniker}`}>{votingPower} %</p>;
     },
     sorter: (a: ValidatorType, b: ValidatorType) => (a.power ?? 0) - (b.power ?? 0),
   },

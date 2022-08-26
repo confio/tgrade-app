@@ -80,14 +80,14 @@ const tgradeInternal: NetworkConfig = {
     utgd: { denom: "TGD", fractionalDigits: 6 },
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
-  factoryAddress: "tgrade1657pee2jhf4jk8pq6yq64e758ngvum45gl866knmjkd83w6jgn3smag42h",
+  factoryAddress: "tgrade10v0hrjvwwlqwvk2yhwagm9m9h385spxa4s54f4aekhap0lxyekys20x6y2",
   codeIds: {
-    // The first 9 codeIds are reserved by tgrade automatically when launched
+    // The first 11 codeIds are reserved by tgrade automatically when launched
     tgradeDso: [2],
-    cw20Tokens: [45],
-    tgradeCw20: [11],
-    tgradeFactory: [12],
-    tgradePair: [13],
+    cw20Tokens: [13],
+    tgradeCw20: [14],
+    tgradeFactory: [15],
+    tgradePair: [16],
   },
 };
 

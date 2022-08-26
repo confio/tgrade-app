@@ -10,4 +10,28 @@ export class ValidatorDetailsDialog {
   getVotingPowerValue(): string {
     return '[data-cy="validator-detail-dialog-voting-power"]';
   }
+
+  getStakeButton(): string {
+    return '[data-cy="validator-details-stake-button"]';
+  }
+
+  getUnStakeButton(): string {
+    return '[data-cy="validator-details-unstake-button"]';
+  }
+
+  getCloseDialogButton(): string {
+    return '[data-cy="validator-dialog-close-button"]';
+  }
+
+  getClaimRewardsButton(): string {
+    return '[data-cy="validator-details-claim-rewards-button"]';
+  }
+
+  getDistributedRewardsValue(): string {
+    return '[data-cy="validators-details-distributed-rewards-value"]';
+  }
+
+  getDistributedPointValue(): string {
+    return '[data-cy="validators-details-distributed-points-value"]';
+  }
 }

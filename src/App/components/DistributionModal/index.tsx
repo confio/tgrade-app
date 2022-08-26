@@ -78,13 +78,20 @@ export default function DistributionModal({
             </Button>
           ) : null}
           <Button onClick={() => resetModal()}>
-            <span>Go to Validator details</span>
+            <span data-cy="validators-page-tx-dialog-go-to-validator-details-button">
+              Go to Validator details
+            </span>
           </Button>
         </ShowTxResult>
       ) : (
         <>
           <ModalHeader>
-            <img alt="Close button" src={closeIcon} onClick={() => resetModal()} />
+            <img
+              alt="Close button"
+              src={closeIcon}
+              onClick={() => resetModal()}
+              data-cy="validator-details-close-button"
+            />
           </ModalHeader>
           <Stack gap="s4">
             <TextStack>

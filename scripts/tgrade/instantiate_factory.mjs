@@ -21,9 +21,9 @@ const networkConfig = { // Get this information from Miguel
   feeDenom: "utgd",
   gasPrice: GasPrice.fromString("0.05utgd"),
   gasLimitCreateFactory: 500_000,
-  cw20LiquidityCodeId: 10,
-  factoryCodeId: 12,
-  pairCodeId: 13,
+  cw20LiquidityCodeId: 13,
+  factoryCodeId: 15,
+  pairCodeId: 16,
 };
 
 const localConfig = {

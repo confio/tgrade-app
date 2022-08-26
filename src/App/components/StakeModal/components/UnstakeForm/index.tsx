@@ -150,7 +150,8 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
               <FormStack gap="s1">
                 <CurrentDataStack>
                   <Text>
-                    Your voting power is <BoldText>{votingPowerStr}%</BoldText>.
+                    Your voting power is{" "}
+                    <BoldText data-cy="stake-form-potential-voting-power-text">{votingPowerStr}%</BoldText>.
                   </Text>
                   <Text>
                     You have staked{" "}
@@ -181,7 +182,7 @@ export default function UnstakeForm({ setTxResult, reloadValidator }: UnstakeFor
                 </Text>
                 {unstakeTime ? <Text>Your withdrawn tokens will be frozen for {unstakeTime}.</Text> : null}
                 <Button disabled={!isValid} loading={isSubmitting} onClick={() => submitForm()}>
-                  <div>Unstake tokens</div>
+                  <div data-cy="unstake-form-unstake-tokens-button">Unstake tokens</div>
                 </Button>
               </FormStack>
             </Form>

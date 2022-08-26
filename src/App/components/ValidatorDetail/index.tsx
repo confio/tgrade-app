@@ -3,8 +3,10 @@ import Button from "App/components/Button";
 import Stack from "App/components/Stack/style";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
+import { nativeCoinToDisplay } from "utils/currency";
 import { getErrorFromStackTrace } from "utils/errors";
-import { ValidatorContract, ValidatorSlashing } from "utils/validator";
+import { Claim, StakingContractQuerier } from "utils/staking";
+import { ValidatorContract, ValidatorContractQuerier, ValidatorSlashing } from "utils/validator";
 
 import AddressTag from "../AddressTag";
 import DistributionModal from "../DistributionModal";
@@ -21,11 +23,47 @@ import {
   Title,
 } from "./style";
 
-const columns = [
+const claimsColumns = [
+  {
+    title: "Created at height",
+    dataIndex: "creation_height",
+    key: "creation_height",
+    width: "20%",
+  },
+  {
+    title: "Liquid amount",
+    dataIndex: "amount",
+    key: "amount",
+  },
+  {
+    title: "Vesting amount",
+    dataIndex: "vesting_amount",
+    key: "vesting_amount",
+  },
+  {
+    title: "Expiration",
+    key: "release_at",
+    width: "10%",
+    render: (record: Claim) => {
+      const expiryTime = record.release_at / 1000000;
+      const formatedDate = new Date(expiryTime).toLocaleDateString();
+      const formatedTime = new Date(expiryTime).toLocaleTimeString();
+      return (
+        <>
+          <div>{formatedDate}</div>
+          <div>{formatedTime}</div>
+        </>
+      );
+    },
+  },
+];
+
+const slashingEventsColumns = [
   {
     title: "Slashed at height",
     dataIndex: "slash_height",
     key: "slash_height",
+    width: "20%",
   },
   {
     title: "Slashed portion",
@@ -51,28 +89,59 @@ export function ValidatorDetail({
 }: ModalProps): JSX.Element | null {
   const { handleError } = useError();
   const {
-    sdkState: { config, address, signingClient },
+    sdkState: { config, client, address, signingClient },
   } = useSdk();
 
   const [txResult, setTxResult] = useState<TxResult>();
   const [stakeModalState, setStakeModalState] = useState<StakeModalState>({ open: false });
   const [isDistributionModalOpen, setDistributionModalOpen] = useState(false);
+  const [claims, setClaims] = useState<readonly Claim[]>([]);
   const [slashingEvents, setSlashingEvents] = useState<readonly ValidatorSlashing[]>([]);
   const [isUnjailing, setUnjailing] = useState(false);
 
   useEffect(() => {
-    (async function getSlashingEvents() {
-      if (!validator || !signingClient) return;
+    (async function getClaims() {
+      if (!validator || !client) return;
 
       try {
-        const validatorContract = new ValidatorContract(config, signingClient);
+        const stakingContract = new StakingContractQuerier(config, client);
+        const claims = await stakingContract.getAllClaims(validator.operator);
+
+        const sortedClaims = claims.slice().sort((a, b) => b.release_at - a.release_at);
+
+        const humanClaims = sortedClaims.map((claim) => {
+          const displayAmount = nativeCoinToDisplay(
+            { denom: config.feeToken, amount: claim.amount },
+            config.coinMap,
+          ).amount;
+          const displayVestingAmount = nativeCoinToDisplay(
+            { denom: config.feeToken, amount: claim.vesting_amount ?? "0" },
+            config.coinMap,
+          ).amount;
+
+          return { ...claim, amount: displayAmount, vesting_amount: displayVestingAmount };
+        });
+
+        setClaims(humanClaims);
+      } catch {
+        // NOTE: the validator does not have claims, do nothing
+      }
+    })();
+  }, [client, config, validator]);
+
+  useEffect(() => {
+    (async function getSlashingEvents() {
+      if (!validator || !client) return;
+
+      try {
+        const validatorContract = new ValidatorContractQuerier(config, client);
         const slashingEvents = await validatorContract.getSlashingEvents(validator.operator);
         setSlashingEvents(slashingEvents);
       } catch {
         // NOTE: the validator does not have slashing events, do nothing
       }
     })();
-  }, [config, signingClient, validator]);
+  }, [client, config, validator]);
 
   if (!validator) return null;
 
@@ -140,7 +209,12 @@ export function ValidatorDetail({
           <ModalHeader>
             <Stack gap="s1"></Stack>
 
-            <img alt="Close button" src={closeIcon} onClick={onCancel} />
+            <img
+              alt="Close button"
+              src={closeIcon}
+              onClick={onCancel}
+              data-cy="validator-dialog-close-button"
+            />
           </ModalHeader>
           <div style={{ display: "flex", flexDirection: "column", minHeight: "530px" }}>
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
@@ -175,15 +249,20 @@ export function ValidatorDetail({
               <StyledCard>
                 <Title>Distributed points</Title>
                 <StyledInfoRow>
-                  <b>{validator.engagementPoints} /</b> <p> {blockchainValues.totalEgPoints}</p>
+                  <b data-cy="validators-details-distributed-points-value">{validator.engagementPoints} /</b>{" "}
+                  <p> {blockchainValues.totalEgPoints}</p>
                 </StyledInfoRow>
               </StyledCard>
               <StyledCard>
                 <Title>Distributed rewards, TGD</Title>
                 <StyledInfoRow>
-                  <b>{validator.rewards}</b>
+                  <b data-cy="validators-details-distributed-rewards-value">{validator.rewards}</b>
                 </StyledInfoRow>
-                <Button type="ghost" onClick={() => setDistributionModalOpen(true)}>
+                <Button
+                  type="ghost"
+                  onClick={() => setDistributionModalOpen(true)}
+                  data-cy="validator-details-claim-rewards-button"
+                >
                   Claim rewards
                 </Button>
               </StyledCard>
@@ -198,10 +277,14 @@ export function ValidatorDetail({
                     <Button
                       type="ghost"
                       onClick={() => setStakeModalState({ open: true, operation: "unstake" })}
+                      data-cy="validator-details-unstake-button"
                     >
                       Unstake
                     </Button>
-                    <Button onClick={() => setStakeModalState({ open: true, operation: "stake" })}>
+                    <Button
+                      onClick={() => setStakeModalState({ open: true, operation: "stake" })}
+                      data-cy="validator-details-stake-button"
+                    >
                       Stake
                     </Button>
                   </ButtonGroup>
@@ -213,12 +296,20 @@ export function ValidatorDetail({
               </StyledCard>
             </div>
             <div style={{ marginTop: "25px", marginBottom: "10px" }}>
+              <Title>Claims</Title>
+            </div>
+            <StyledTable
+              pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
+              dataSource={claims}
+              columns={claimsColumns}
+            />
+            <div style={{ marginTop: "25px", marginBottom: "10px" }}>
               <Title>Slashing events</Title>
             </div>
             <StyledTable
               pagination={{ position: ["bottomCenter"], hideOnSinglePage: true }}
               dataSource={slashingEvents}
-              columns={columns}
+              columns={slashingEventsColumns}
             />
           </div>
           <StakeModal

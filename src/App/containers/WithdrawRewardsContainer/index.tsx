@@ -126,15 +126,16 @@ export default function WithdrawRewardsContainer({
         <Row>
           <Cell>
             <Text>Engagement points</Text>
-            <Text>
+            <Text data-cy="engagement-page-engagement-points">
               <BoldText>{engagement} / </BoldText>
               {totalEngagement} ({((engagement / totalEngagement) * 100).toFixed(2)}%)
             </Text>
           </Cell>
           <Cell>
             <Text>Engagement rewards</Text>
-            <Text>
-              {withdrawableFunds?.amount || "—"} {withdrawableFunds?.denom || ""}
+            <Text data-cy="engagement-page-engagement-rewards">
+              <span data-cy="engagement-rewards-denom-amount">{withdrawableFunds?.amount || "—"}&nbsp;</span>
+              <span>{withdrawableFunds?.denom || ""}</span>
             </Text>
           </Cell>
         </Row>
@@ -142,7 +143,7 @@ export default function WithdrawRewardsContainer({
           <Row>
             <Cell>
               <Text>Last half-life event</Text>
-              <BoldText>{`${halflifeInfo?.lastHalflifeDate.toLocaleDateString()} ${halflifeInfo?.lastHalflifeDate.toLocaleTimeString()}`}</BoldText>
+              <BoldText data-cy="engagement-last-half-life-event-date">{`${halflifeInfo?.lastHalflifeDate.toLocaleDateString()} ${halflifeInfo?.lastHalflifeDate.toLocaleTimeString()}`}</BoldText>
             </Cell>
             <Cell>
               <Text>Next half-life event</Text>
