@@ -53,4 +53,8 @@ export class TMarketPage {
     // Should be improved by adding uniq id, name, role ...
     return ".ant-modal-body > .ant-col > .ant-btn";
   }
+
+  getCreateAssetButton(): string {
+    return '[data-cy="t-market-page-create-asset-button"]';
+  }
 }

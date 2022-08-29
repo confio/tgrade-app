@@ -1,7 +1,11 @@
+import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { And } from "cypress-cucumber-preprocessor/steps";
 
+import { config } from "../../src/config/network";
+import { createSigningClient } from "../../src/utils/sdk";
 import { selectWalletAddressByNumber } from "../fixtures/existingAccounts";
-import { selectRandomGeneratedAddressByNumber } from "../fixtures/randomGeneratedAccount";
+import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
 import { DistributedRewardsDialog } from "../page-object/DistributedRewardsDialog";
 
 const distributedRewardsDialog = new DistributedRewardsDialog();
@@ -39,11 +43,28 @@ And('I see initial "Address" field is pre-filled with {string} in the dialog', (
   );
 });
 
-And('I enter random {string} address to "Receiver address" field', (addressNumber) => {
-  const selectedRandomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
-  cy.get(distributedRewardsDialog.getReceiverAddressField()).type(selectedRandomAddress);
-});
+And(
+  'I enter address in the "Receiver address" field from {string} wallet distributed dialog',
+  async (mnemonicNumber) => {
+    const randomAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber);
+    cy.get(distributedRewardsDialog.getReceiverAddressField()).type(randomAddress);
+  },
+);
 
-And('I click on the "Withdraw rewards" button in the dialog', (addressName) => {
+And('I click on the "Withdraw rewards" button in the dialog', () => {
   cy.get(distributedRewardsDialog.getWithdrawRewardsButton()).click();
 });
+
+async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: string) {
+  const generatedMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonicNumber);
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(generatedMnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+  const walletAddress = (await wallet.getAccounts())[0].address;
+  const signingClient = await createSigningClient(config, wallet);
+
+  const walletBalanceUser = await signingClient.getBalance(walletAddress, config.feeToken);
+  expect(walletBalanceUser.amount).to.contains(0);
+  return walletAddress;
+}
