@@ -66,8 +66,8 @@ And("I see TGD balance {string} for random address", (expectedTokenBalance) => {
   });
 });
 
-And("I click on token with {string} name", (tokenName) => {
-  cy.get(connectWalletModal.getTokenNameFromTheList(tokenName)).click();
+And("I click on token with {string} symbol", (tokenSymbol) => {
+  cy.get(connectWalletModal.getTokenNameFromTheList(tokenSymbol)).click();
 });
 
 And("I see {string} balance for {string} token", () => {

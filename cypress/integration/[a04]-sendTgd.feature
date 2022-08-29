@@ -7,7 +7,7 @@ Feature: Send Tgrade tokens to an address
     * I see TGD balance "20" for random address
 
   Scenario: Send TGD
-    * I click on token with "Tgrade" name
+    * I click on token with "TGD" symbol
     * I see "20" balance for "TGD" token
     * I enter amount "4" to send
     * I enter recipient address from "randomMnemonic04"
