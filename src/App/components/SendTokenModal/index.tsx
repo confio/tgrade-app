@@ -136,7 +136,7 @@ export default function SendTokenModal({
             </Button>
           ) : null}
           <Button onClick={() => resetModal()}>
-            <span>Go to Wallet</span>
+            <span data-cy="wallet-dialog-send-token-modal-go-to-wallet-button">Go to Wallet</span>
           </Button>
         </ShowTxResult>
       ) : (
@@ -145,7 +145,11 @@ export default function SendTokenModal({
             <Stack gap="s1">
               <Title>Send tokens</Title>
               <Text>
-                Balance: {selectedToken.humanBalance} {selectedToken.symbol}
+                Balance:{" "}
+                <span data-cy="wallet-dialog-send-token-modal-balance-value">
+                  {selectedToken.humanBalance}
+                </span>
+                <span data-cy="wallet-dialog-send-token-modal-token-name">&nbsp;{selectedToken.symbol}</span>
               </Text>
             </Stack>
             {!isSubmitting ? <img alt="Close button" src={closeIcon} onClick={() => resetModal()} /> : null}
@@ -176,6 +180,7 @@ export default function SendTokenModal({
                       loading={isSubmitting}
                       disabled={!isValid}
                       onClick={() => submitForm()}
+                      data-cy="wallet-dialog-send-token-modal-send-token-button"
                     >
                       Send tokens
                     </Button>

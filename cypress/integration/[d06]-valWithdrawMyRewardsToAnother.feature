@@ -11,7 +11,6 @@ Feature: Withdraw my rewards to another address
     * I see validator's address "node1Account" with related account "node1Account" name
     * I see Distributed points "0" value and Distributed rewards "0" in validators details dialog
 
-
   Scenario: Withdraw rewards to another
 
     # Open Distributed rewards
