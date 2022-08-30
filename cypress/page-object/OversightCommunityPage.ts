@@ -10,4 +10,32 @@ export class OversightCommunityPage {
   getOcModalLeaveButton(): string {
     return '[data-cy="leave-oversight-community-modal-leave-button"]';
   }
+
+  getOversightCommunityAddress(): string {
+    return '[data-cy="address-copy-tooltip-tag-hash"]';
+  }
+
+  getVotingRulesQuorumValue(): string {
+    return '[data-cy="oc-voting-rules-quorum-value"]';
+  }
+
+  getVotingRulesThresholdValue(): string {
+    return '[data-cy="oc-voting-rules-threshold-value"]';
+  }
+
+  getVotingRulesVotingDurationValue(): string {
+    return '[data-cy="oc-voting-rules-voting-duration-value"]';
+  }
+
+  getVotingRulesVotingToEndEarlyValue(): string {
+    return '[data-cy="oc-voting-rules-allow-voting-to-end-early-value"]';
+  }
+
+  getVotingRulesMinimumEscrowValue(): string {
+    return '[data-cy="oc-voting-rules-мinimum-escrow-value"]';
+  }
+
+  getEngagementHalfLifeDurationValue(): string {
+    return '[data-cy="oc-page-engagement-half-life-duration-value"]';
+  }
 }

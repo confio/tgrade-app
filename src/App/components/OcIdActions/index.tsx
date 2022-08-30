@@ -82,15 +82,17 @@ export default function OcIdActions(): JSX.Element {
       <Separator />
       <VotingRules>
         <Text>Voting rules:</Text>
-        <Text>Quorum: {quorum}%</Text>
+        <Text data-cy="oc-voting-rules-quorum-value">Quorum: {quorum}%</Text>
         <VSeparator />
-        <Text>Threshold: {threshold}%</Text>
+        <Text data-cy="oc-voting-rules-threshold-value">Threshold: {threshold}%</Text>
         <VSeparator />
-        <Text>Voting duration: {votingDuration} days</Text>
+        <Text data-cy="oc-voting-rules-voting-duration-value">Voting duration: {votingDuration} days</Text>
         <VSeparator />
-        <Text>Allow voting to end early: {allowEndEarly}</Text>
+        <Text data-cy="oc-voting-rules-allow-voting-to-end-early-value">
+          Allow voting to end early: {allowEndEarly}
+        </Text>
         <VSeparator />
-        <Text>
+        <Text data-cy="oc-voting-rules-мinimum-escrow-value">
           Minimum escrow: {minimumEscrow?.amount} {minimumEscrow?.denom}
         </Text>
       </VotingRules>

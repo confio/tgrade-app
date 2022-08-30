@@ -45,7 +45,7 @@ export default function OcEngagement(): JSX.Element {
       </EgDataStack>
       <EgDataStack gap="s-4">
         <Text>Half-life duration:</Text>
-        <Text>{halflifeInfo?.halflifeDuration}</Text>
+        <Text data-cy="oc-page-engagement-half-life-duration-value">{halflifeInfo?.halflifeDuration}</Text>
       </EgDataStack>
       <EgDataStack gap="s-4">
         <Text>Last half-life event:</Text>

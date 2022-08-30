@@ -30,7 +30,7 @@ export default function AddressTag({
   } = useSdk();
 
   return (
-    <Tooltip trigger="click" title="Address Copied">
+    <Tooltip data-cy="tooltip-address-in-clipboard" trigger="click" title="Address Copied">
       <StyledAddressTag
         data-cy="address-copy-tooltip-tag-hash"
         icon={copyable ? <CopyIconImg /> : undefined}
