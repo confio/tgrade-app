@@ -64,14 +64,18 @@ export default function OcIdActions(): JSX.Element {
           <Dropdown
             overlay={
               <Menu>
-                <Menu.Item key="1" onClick={() => openLeaveOcModal(ocDispatch)}>
+                <Menu.Item
+                  key="1"
+                  onClick={() => openLeaveOcModal(ocDispatch)}
+                  data-cy="oversight-community-page-leave-option"
+                >
                   Leave Oversight Community
                 </Menu.Item>
               </Menu>
             }
             trigger={["click"]}
           >
-            <ActionsButton alt="Actions button" src={gearIcon} />
+            <ActionsButton alt="Actions button" src={gearIcon} data-cy="oversight-community-page-gear-icon" />
           </Dropdown>
         </div>
       </header>

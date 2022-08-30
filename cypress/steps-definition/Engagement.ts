@@ -50,35 +50,6 @@ And('I click on the "Withdraw rewards" button', () => {
   cy.get(engagementPage.getWithdrawRewardsButton()).click();
 });
 
-And("I see Tx success screen with address from {string}", async (mnemonicNumber) => {
-  const randomSelectedMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonicNumber);
-  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(randomSelectedMnemonic, {
-    hdPaths: [makeCosmoshubPath(0)],
-    prefix: config.addressPrefix,
-  });
-
-  const address = (await wallet.getAccounts())[0].address;
-
-  console.log("address" + address);
-  cy.log("address" + address);
-
-  await createSigningClient(config, wallet);
-  cy.get(engagementPage.getTransactionResultScreenText()).should(
-    "have.text",
-    "Your transaction was approved!",
-  );
-  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", address);
-});
-
-And("I see Tx success screen with existing {string} address", (walletNumber) => {
-  const walletAddress = selectWalletAddressByNumber(walletNumber);
-  cy.get(engagementPage.getTransactionResultScreenText()).should(
-    "have.text",
-    "Your transaction was approved!",
-  );
-  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", walletAddress);
-});
-
 And("I click Go to Engagement button", () => {
   cy.get(engagementPage.getTransactionResultScreenGoToEngagementButton()).click();
   Cypress.on("uncaught:exception", (err) => !err.message.includes("Failed to fetch"));
@@ -135,24 +106,6 @@ And(
 
 And('I click the "Set delegate" button', () => {
   cy.get(engagementPage.getSetDelegateButton()).click();
-});
-
-And("I see Tx success screen with {string} delegated address", (addressNumber) => {
-  const walletAddress = selectWalletAddressByNumber(addressNumber);
-  cy.get(engagementPage.getTransactionResultScreenText()).should(
-    "have.text",
-    "Your transaction was approved!",
-  );
-  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", walletAddress);
-});
-
-And("I see Tx success screen with initial {string} delegated address", (walletNumber) => {
-  const address = selectWalletAddressByNumber(walletNumber);
-  cy.get(engagementPage.getTransactionResultScreenText()).should(
-    "have.text",
-    "Your transaction was approved!",
-  );
-  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", address);
 });
 
 And("I see there is random {string} address set in Delegate withdrawal field", (addressNumber) => {
