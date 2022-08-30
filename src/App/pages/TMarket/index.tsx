@@ -21,7 +21,9 @@ export default function TMarketHome(): JSX.Element | null {
       <Stack gap="s4">
         <TitleWrapper>
           <Title>Welcome to {tMarketTitle}</Title>
-          <LightButton onClick={() => setModalOpen(true)}>Create Asset</LightButton>
+          <LightButton onClick={() => setModalOpen(true)} data-cy="t-market-page-create-asset-button">
+            Create Asset
+          </LightButton>
         </TitleWrapper>
         <NotificationsContainer id="notifications_container">
           <ToastContainer

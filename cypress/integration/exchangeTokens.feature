@@ -17,10 +17,10 @@ Feature: Trading pair
     # Create Asset
     * I visit T-Market page
     * I click on Create Asset button
-    * I enter token Symbol
-    * I enter token Name
-    * I enter Initial supply "1000"
-    * I enter decimals "1"
+    * I enter Token symbol "SUST"
+    * I enter Token name "Test Sustainability Asset"
+    * I enter "1000" to Initial supply field
+    * I enter "1" to Set decimal places field
     * I click Next button
     * I enter Trusted Circle address
     * I click on Create Asset button in modal dialog

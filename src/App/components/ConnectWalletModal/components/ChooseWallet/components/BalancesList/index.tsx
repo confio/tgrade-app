@@ -96,6 +96,7 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
             onClick={() => {
               setSelectedToken(token);
             }}
+            data-cy={`wallet-dialog-list-of-tokens-with-${token.symbol}`}
           >
             <TokenLogoName>
               <img alt="Token logo" src={token.img} />

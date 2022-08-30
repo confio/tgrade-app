@@ -65,3 +65,35 @@ And("I see TGD balance {string} for random address", (expectedTokenBalance) => {
     expect(extractedTokenValue).to.be.not.lessThan(parseInt(expectedTokenBalance));
   });
 });
+
+And("I click on token with {string} symbol", (tokenSymbol) => {
+  cy.get(connectWalletModal.getTokenNameFromTheList(tokenSymbol)).click();
+});
+
+And("I see {string} balance for {string} token", () => {
+  cy.get(connectWalletModal.getDisplayedTokenBalance()).click();
+  cy.get(connectWalletModal.getTokenName()).click();
+});
+
+And("I enter amount {string} to send", (amountToSend) => {
+  cy.get(connectWalletModal.getAmountToSendField()).type(amountToSend);
+});
+
+And("I enter recipient address from {string}", async (recipientMnemonic) => {
+  const randomSelectedMnemonicAddress = selectRandomGeneratedMnemonicByNumber(recipientMnemonic);
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(randomSelectedMnemonicAddress, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+
+  const randomAddress = (await wallet.getAccounts())[0].address;
+  cy.get(connectWalletModal.getRecipientAddressField()).type(randomAddress);
+});
+
+And("I click Send tokens button", () => {
+  cy.get(connectWalletModal.getSendButton()).click();
+});
+
+And("I click Go to Wallet button", () => {
+  cy.get(connectWalletModal.getGoToWalletButton()).click();
+});

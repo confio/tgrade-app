@@ -1,5 +1,11 @@
+import { FaucetClient } from "@cosmjs/faucet-client";
+import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { And, Given } from "cypress-cucumber-preprocessor/steps";
 
+import { config } from "../../src/config/network";
+import { createSigningClient } from "../../src/utils/sdk";
+import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
 import { EngagementPage } from "../page-object/EngagementPage";
 import { MainNavigationMenu } from "../page-object/MainNavigationMenu";
 
@@ -36,4 +42,32 @@ And("I open Governance menu", () => {
 
 And("I visit Validators page", () => {
   cy.get(mainNavigationMenu.getValidatorsSubMenuOption()).click();
+});
+
+And("Send 10 tokens to {string} address", async (mnemonic) => {
+  const selectedRandomMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonic);
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(selectedRandomMnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+
+  const signingClient_01 = await createSigningClient(config, wallet);
+  const walletAddress = (await wallet.getAccounts())[0].address;
+
+  console.log("wallet Address" + walletAddress);
+  cy.log("wallet Address" + walletAddress);
+
+  // Balance before send
+  const walletBalanceUser = await signingClient_01.getBalance(walletAddress, config.feeToken);
+  cy.log("Balance before send" + walletBalanceUser.amount);
+  console.log("Balance after send" + walletBalanceUser.amount);
+
+  const faucetClient = new FaucetClient(config.faucetUrl);
+  // Send 10 tokens
+  await faucetClient.credit(walletAddress, config.faucetTokens?.[0] ?? config.feeToken);
+
+  // Balance after send
+  const walletBalanceUserABeforeSend = await signingClient_01.getBalance(walletAddress, config.feeToken);
+  console.log("Balance after send" + walletBalanceUserABeforeSend.amount);
+  cy.log("Balance after send" + walletBalanceUserABeforeSend.amount);
 });

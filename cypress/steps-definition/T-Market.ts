@@ -1,32 +1,35 @@
 import { And } from "cypress-cucumber-preprocessor/steps";
 
+import { ConnectWalletModal } from "../page-object/ConnectWalletModal";
+import { EngagementPage } from "../page-object/EngagementPage";
 import { TMarketPage } from "../page-object/TMarketPage";
 import { TrustedCirclesPage } from "../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
 const tMarketPage = new TMarketPage();
-const tokenSymbol = "SUST";
+const engagementPage = new EngagementPage();
+const connectWalletModal = new ConnectWalletModal();
 const tokenName = "Test Sustainability Asset";
 
 And("I click on Create Asset button", () => {
-  cy.findByRole("button", { name: /Create Asset/i }).click();
+  cy.get(tMarketPage.getCreateAssetButton()).click();
 });
 
-And("I enter token Symbol", () => {
+And("I enter Token name {string}", (tokenName) => {
+  cy.findByPlaceholderText("Enter token name").type(tokenName);
+});
+
+And("I enter Token symbol {string}", (tokenSymbol) => {
   cy.get(trustedCirclesPage.getDialogHeaderName()).should("contain.text", "Create digital asset");
   cy.get(trustedCirclesPage.getDialogStepActiveNumber()).should("have.text", "1");
   cy.findByPlaceholderText("Enter token symbol").type(tokenSymbol);
 });
 
-And("I enter token Name", () => {
-  cy.findByPlaceholderText("Enter token name").type(tokenName);
-});
-
-And("I enter Initial supply {string}", (value) => {
+And("I enter {string} to Initial supply field", (value) => {
   cy.findByPlaceholderText("Enter initial supply").type(value);
 });
 
-And("I enter decimals {string}", (value) => {
+And("I enter {string} to Set decimal places field", (value) => {
   cy.findByPlaceholderText("Enter decimals").type(value);
 });
 
@@ -139,4 +142,22 @@ And("I click Ok button", () => {
 
 And("I redirected back to Provided Liquidity tab", () => {
   cy.url().should("include", "/tmarket/provide", { timeout: 3000 }); //workaround to fix failed step
+});
+
+And("I leave Trusted Circle to associate field empty", () => {
+  cy.get('[name="form-item-name-trusted-circle-to-associate-with"]').should("have.text", "");
+});
+
+And("I see Tx success screen with created {string} token name", (createdTokenName) => {
+  cy.get(engagementPage.getTransactionResultScreenText()).should(
+    "have.text",
+    "Your transaction was approved!",
+  );
+  cy.get(engagementPage.getTransactionResultScreenDetails()).should("contain.text", createdTokenName);
+});
+
+And("I see {string} balance of {string} token name", (tokenBalance, tokenSymbol) => {
+  cy.get(connectWalletModal.getTokenNameFromTheList(tokenSymbol))
+    .get(connectWalletModal.getTokenBalance())
+    .should("have.text", tokenBalance);
 });

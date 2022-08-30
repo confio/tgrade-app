@@ -50,14 +50,18 @@ And('I click on the "Withdraw rewards" button', () => {
   cy.get(engagementPage.getWithdrawRewardsButton()).click();
 });
 
-And("I see Tx success screen with address from {string}", async (walletNumber) => {
-  const addressMnemonic = selectRandomGeneratedMnemonicByNumber(walletNumber);
-  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
+And("I see Tx success screen with address from {string}", async (mnemonicNumber) => {
+  const randomSelectedMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonicNumber);
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(randomSelectedMnemonic, {
     hdPaths: [makeCosmoshubPath(0)],
     prefix: config.addressPrefix,
   });
 
   const address = (await wallet.getAccounts())[0].address;
+
+  console.log("address" + address);
+  cy.log("address" + address);
+
   await createSigningClient(config, wallet);
   cy.get(engagementPage.getTransactionResultScreenText()).should(
     "have.text",
@@ -95,7 +99,7 @@ And("I type address from {string} in Delegated withdrawal to field", async (wall
 And(
   "I use {string} to make query and check balance of this address {string}",
   async (receiveMnemonicAddress, tokenBalance) => {
-    cy.wait(9000); // Experimenting to find until transaction will be finished
+    cy.wait(9000); // Experimenting to find until transaction will be finished (CI problem)
     const addressMnemonic = selectRandomGeneratedMnemonicByNumber(receiveMnemonicAddress);
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(addressMnemonic, {
       hdPaths: [makeCosmoshubPath(0)],
