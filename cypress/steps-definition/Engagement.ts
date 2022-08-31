@@ -57,12 +57,12 @@ And("I click Go to Engagement button", () => {
   cy.wait(3000); //Workaround to wait transaction to finished
 });
 
-And("I type {string} address in Delegated withdrawal to field", (walletNumber) => {
+And("I enter {string} address in Delegated withdrawal to field", (walletNumber) => {
   const accountAddress = selectWalletAddressByNumber(walletNumber);
   cy.get(engagementPage.getDelegatedWithdrawalToField()).clear().type(accountAddress);
 });
 
-And("I type address from {string} in Delegated withdrawal to field", async (walletNumber) => {
+And("I enter address from {string} in Delegated withdrawal to field", async (walletNumber) => {
   const accountAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(walletNumber);
   cy.get(engagementPage.getDelegatedWithdrawalToField()).clear().type(accountAddress);
 });

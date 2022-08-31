@@ -10,7 +10,7 @@ Feature: Withdraw rewards as delegate
   Scenario: Delegate withdraws rewards
 
     # Set delegate account
-    * I type "fourthAccount" address in Delegated withdrawal to field
+    * I enter "fourthAccount" address in Delegated withdrawal to field
     * I click the "Set delegate" button
     * I see Tx success screen with existing "fourthAccount" address
     * I click Go to Engagement button

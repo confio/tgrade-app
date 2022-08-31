@@ -51,9 +51,29 @@ And(
   },
 );
 
+And(
+  "I enter address from {string} in Delegated withdrawal to field on Distributed rewards dialog",
+  async (walletNumber) => {
+    const accountAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(walletNumber);
+    cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField()).clear().type(accountAddress);
+  },
+);
+
 And('I click on the "Withdraw rewards" button in the dialog', () => {
   cy.get(distributedRewardsDialog.getWithdrawRewardsButton()).click();
 });
+
+And('I click the "Set delegate" button on Distributed rewards dialog', () => {
+  cy.get(distributedRewardsDialog.getSetDelegateButton()).click();
+});
+
+And(
+  "I see Delegate field is pre-field with address from {string} on Distributed rewards dialog",
+  async (addressNumber) => {
+    const walletAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(addressNumber);
+    cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField()).should("have.value", walletAddress);
+  },
+);
 
 async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: string) {
   const generatedMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonicNumber);
