@@ -54,7 +54,9 @@ export const NavSidebar: React.FC = () => {
                 <Link to={paths.oc.prefix}>
                   <Cell>
                     <TextCell>
-                      <StyledText>Oversight Community</StyledText>
+                      <StyledText data-cy="main-nav-side-bar-oversight-community-sub-menu">
+                        Oversight Community
+                      </StyledText>
                     </TextCell>
                   </Cell>
                 </Link>

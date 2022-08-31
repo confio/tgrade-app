@@ -15,6 +15,10 @@ export class MainNavigationMenu {
     return '[data-cy="main-nav-side-bar-governance"]';
   }
 
+  getOversightCommunitySubMenuOption(): string {
+    return '[data-cy="main-nav-side-bar-oversight-community-sub-menu"]';
+  }
+
   getValidatorsSubMenuOption(): string {
     return '[data-cy="main-nav-side-bar-validators-sub-menu"]';
   }

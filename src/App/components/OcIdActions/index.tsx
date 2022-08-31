@@ -64,29 +64,35 @@ export default function OcIdActions(): JSX.Element {
           <Dropdown
             overlay={
               <Menu>
-                <Menu.Item key="1" onClick={() => openLeaveOcModal(ocDispatch)}>
+                <Menu.Item
+                  key="1"
+                  onClick={() => openLeaveOcModal(ocDispatch)}
+                  data-cy="oversight-community-page-leave-option"
+                >
                   Leave Oversight Community
                 </Menu.Item>
               </Menu>
             }
             trigger={["click"]}
           >
-            <ActionsButton alt="Actions button" src={gearIcon} />
+            <ActionsButton alt="Actions button" src={gearIcon} data-cy="oversight-community-page-gear-icon" />
           </Dropdown>
         </div>
       </header>
       <Separator />
       <VotingRules>
         <Text>Voting rules:</Text>
-        <Text>Quorum: {quorum}%</Text>
+        <Text data-cy="oc-voting-rules-quorum-value">Quorum: {quorum}%</Text>
         <VSeparator />
-        <Text>Threshold: {threshold}%</Text>
+        <Text data-cy="oc-voting-rules-threshold-value">Threshold: {threshold}%</Text>
         <VSeparator />
-        <Text>Voting duration: {votingDuration} days</Text>
+        <Text data-cy="oc-voting-rules-voting-duration-value">Voting duration: {votingDuration} days</Text>
         <VSeparator />
-        <Text>Allow voting to end early: {allowEndEarly}</Text>
+        <Text data-cy="oc-voting-rules-allow-voting-to-end-early-value">
+          Allow voting to end early: {allowEndEarly}
+        </Text>
         <VSeparator />
-        <Text>
+        <Text data-cy="oc-voting-rules-мinimum-escrow-value">
           Minimum escrow: {minimumEscrow?.amount} {minimumEscrow?.denom}
         </Text>
       </VotingRules>

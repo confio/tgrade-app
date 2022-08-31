@@ -18,9 +18,6 @@ export class StakeFormDialog {
   getStakeTokensButton(): string {
     return '[data-cy="stake-form-potential-voting-power-stake-token-button"]';
   }
-  getTxSuccessScreen(): string {
-    return '[data-cy="transaction-result-screen-text"]';
-  }
 
   getGoBackToValidatorDetailsButton(): string {
     return '[data-cy="validator-page-go-back-to-validator-details-button"]';

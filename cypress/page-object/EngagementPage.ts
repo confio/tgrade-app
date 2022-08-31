@@ -19,14 +19,6 @@ export class EngagementPage {
     return '[data-cy="engagement-page-withdraw-rewards-button"]';
   }
 
-  getTransactionResultScreenText(): string {
-    return '[data-cy="transaction-result-screen-text"]';
-  }
-
-  getTransactionResultScreenDetails(): string {
-    return '[data-cy="transaction-result-screen-details"]';
-  }
-
   getTransactionResultScreenGoToEngagementButton(): string {
     return '[data-cy="transaction-result-screen-go-to-engagement-button"]';
   }

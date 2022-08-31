@@ -1,4 +1,5 @@
 enum Mnemonics {
+  adminMnemonic = "bone idea foster kid item private figure victory power reflect wrong bunker",
   node0Mnemonic = "fox orange tiger coach ski arm shrimp scrub quote reason visa better wait drift program burst mind assault develop canvas inspire battle odor visit",
   node1Mnemonic = "merit daring radio hospital exchange kitten skirt cry seven evil faculty lion cup inherit live host stable tuna convince tip blur sphere curve search",
   firstMnemonic = "move drastic law sustain decade parent stairs minor cry help worry minute bridge bone force found mimic frown burst foil avocado water kingdom picture",
@@ -62,6 +63,8 @@ export const selectWalletAddressByNumber = (walletNumber: string): string => {
 
 export const selectMnemonicByNumber = (mnemonicAddress: string): string => {
   switch (mnemonicAddress) {
+    case "adminAccount":
+      return Mnemonics.adminMnemonic;
     case "node0Mnemonic":
       return Mnemonics.node0Mnemonic;
     case "node1Mnemonic":

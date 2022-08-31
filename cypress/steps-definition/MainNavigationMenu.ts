@@ -44,6 +44,10 @@ And("I visit Validators page", () => {
   cy.get(mainNavigationMenu.getValidatorsSubMenuOption()).click();
 });
 
+And("I visit Oversight Community page", () => {
+  cy.get(mainNavigationMenu.getOversightCommunitySubMenuOption()).click();
+});
+
 And("Send 10 tokens to {string} address", async (mnemonic) => {
   const selectedRandomMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonic);
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(selectedRandomMnemonic, {

@@ -92,10 +92,6 @@ And('I click on the "Stake tokens" button', () => {
   cy.get(stakeFormDialog.getStakeTokensButton()).click();
 });
 
-And("I see Tx success screen", () => {
-  cy.get(stakeFormDialog.getTxSuccessScreen()).should("have.text", "Your transaction was approved!");
-});
-
 And("I click Go to Validator details page", () => {
   cy.get(stakeFormDialog.getGoBackToValidatorDetailsButton()).click();
   cy.wait(3000); //Wait for fetch to be finished and prevent opening validator details page

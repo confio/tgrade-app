@@ -104,7 +104,10 @@ export default function LeaveOcModal(): JSX.Element {
               <span>Try again</span>
             </Button>
           ) : null}
-          <Button onClick={() => resetModal()}>
+          <Button
+            onClick={() => resetModal()}
+            data-cy="oversight-community-tx-success-go-to-oc-details-button"
+          >
             <span>Go to Oversight Community details</span>
           </Button>
         </ShowTxResult>
@@ -142,6 +145,7 @@ export default function LeaveOcModal(): JSX.Element {
               loading={isSubmitting}
               danger={!!signer}
               onClick={signer ? () => submitLeaveOc() : () => setModalOpen(true)}
+              data-cy="leave-oversight-community-modal-leave-button"
             >
               {signer ? "Leave" : "Connect wallet"}
             </Button>

@@ -10,7 +10,6 @@ interface ShowTxResultProposalProps {
 
 export default function ShowTxResultProposal({
   txResult,
-  setTxResult,
   tryAgain,
   resetModal,
 }: ShowTxResultProposalProps): JSX.Element {
