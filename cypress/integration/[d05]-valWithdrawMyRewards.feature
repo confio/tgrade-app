@@ -7,7 +7,7 @@ Feature: Withdraw my rewards to my address
     * I close wallet dialog modal
     * I open Governance menu
     * I visit Validators page
-    * I click "node0Account" address on the list of validators
+    * I click on "node0Account" address on the list of validators
     * I see validator's address "node0Account" with related account "node0Account" name
     * I see Distributed points "18000" value and Distributed rewards "4600" in validators details dialog
 

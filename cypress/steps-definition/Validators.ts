@@ -9,12 +9,14 @@ import { DistributedRewardsDialog } from "../page-object/DistributedRewardsDialo
 import { StakeFormDialog } from "../page-object/StakeFormDialog";
 import { UnStakeFormDialog } from "../page-object/UnStakeFormDialog";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
+import { ValidatorsMainPage } from "../page-object/ValidatorsMainPage";
 import { ValidatorsOverviewPage } from "../page-object/ValidatorsOverviewPage";
 
 const validatorDetailsDialog = new ValidatorDetailsDialog();
 const stakeFormDialog = new StakeFormDialog();
 const unStakeFormDialog = new UnStakeFormDialog();
 const validatorsOverviewPage = new ValidatorsOverviewPage();
+const validatorsMainPage = new ValidatorsMainPage();
 const distributedRewardsDialog = new DistributedRewardsDialog();
 
 Given("I navigate to Validators page by url", () => {
@@ -31,13 +33,13 @@ And("I click on Validator name {string} to open Validator detail modal", (valida
   cy.findByText(validatorName).click();
 });
 
-And("I click {string} address on the list of validators", (validatorNumber) => {
+And("I click on {string} address on the list of validators", (validatorNumber) => {
   const mnemonic = selectWalletAddressByNumber(validatorNumber).slice(-6);
-  cy.get('[data-cy="overview-page-validator-address"]').contains(mnemonic).click();
+  cy.get(validatorsMainPage.getAllNamesFromValidatorNameColumn()).contains(mnemonic).click();
 });
 
 And("I verify presence of validator name {string} and address {string}", (validatorName, address) => {
-  cy.get(`[data-cy="validator-name-${validatorName}"]`)
+  cy.get(validatorsMainPage.getValidatorName(validatorName))
     .should("contain.text", validatorName)
     .should("contain.text", address);
 });
