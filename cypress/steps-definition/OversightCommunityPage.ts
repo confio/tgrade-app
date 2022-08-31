@@ -36,9 +36,26 @@ And("I click on the address of the OC", () => {
 });
 
 And("I check that my clipboard now contains the address of the OC", () => {
+  // Workaround to grand permission to compare copied address
+  cy.wrap(
+    Cypress.automation("remote:debugger:protocol", {
+      command: "Browser.grantPermissions",
+      params: {
+        permissions: ["clipboardReadWrite", "clipboardSanitizedWrite"],
+        // make the permission tighter by allowing the current origin only
+        // on "http://localhost:3000"
+        origin: window.location.origin,
+      },
+    }),
+  );
+
   cy.get(oversightCommunityPage.getOversightCommunityAddress()).then(($element) => {
     const extractedAddress = $element.text();
-    cy.window().its("navigator.clipboard").invoke("readText").should("equal", extractedAddress);
+    cy.window().then((win) => {
+      win.navigator.clipboard.readText().then((text) => {
+        expect(text).to.eq(extractedAddress);
+      });
+    });
   });
 });
 
