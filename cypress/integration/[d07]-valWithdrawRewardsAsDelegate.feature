@@ -4,7 +4,7 @@ Feature: Withdraw rewards as delegate
     * Set validator with "node0Mnemonic" mnemonic
     * Open wallet dialog from main menu
     * I see TGD balance "1000" for random address
-    * I use existing "node0Mnemonic" mnemonic to make query and check balance "100"
+    #* I use existing "node0Mnemonic" mnemonic to make query and check balance "100"
     * I close wallet dialog modal
     * I open Governance menu
     * I visit Validators page
