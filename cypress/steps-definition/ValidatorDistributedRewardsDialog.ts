@@ -5,13 +5,16 @@ import { And } from "cypress-cucumber-preprocessor/steps";
 import { config } from "../../src/config/network";
 import { createSigningClient } from "../../src/utils/sdk";
 import { selectWalletAddressByNumber } from "../fixtures/existingAccounts";
-import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
+import {
+  selectRandomGeneratedAddressByNumber,
+  selectRandomGeneratedMnemonicByNumber,
+} from "../fixtures/randomGeneratedAccount";
 import { DistributedRewardsDialog } from "../page-object/DistributedRewardsDialog";
 
 const distributedRewardsDialog = new DistributedRewardsDialog();
 
 And(
-  "I see Distributed Points {string} and Distributed Rewards {string} TGD",
+  "I see Distributed Points {string} and Distributed Rewards {string} TGD in Distributed rewards dialog",
   (expectedPoints, expectedRewards) => {
     cy.wait(3000); //Workaround wait until calculation will be finished
     cy.get(distributedRewardsDialog.getDistributedPointsValue()).should(($element) => {
@@ -52,28 +55,45 @@ And(
 );
 
 And(
-  "I enter address from {string} in Delegated withdrawal to field on Distributed rewards dialog",
+  "I enter address from {string} in Delegated withdrawal to field in Distributed rewards dialog",
   async (walletNumber) => {
     const accountAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(walletNumber);
     cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField()).clear().type(accountAddress);
   },
 );
 
-And('I click on the "Withdraw rewards" button in the dialog', () => {
+And('I click on the "Withdraw rewards" button in Distributed rewards dialog', () => {
   cy.get(distributedRewardsDialog.getWithdrawRewardsButton()).click();
 });
 
-And('I click the "Set delegate" button on Distributed rewards dialog', () => {
+And('I click the "Set delegate" button in Distributed rewards dialog', () => {
   cy.get(distributedRewardsDialog.getSetDelegateButton()).click();
 });
 
 And(
-  "I see Delegate field is pre-field with address from {string} on Distributed rewards dialog",
+  "I see Delegate field is pre-field with address from {string} in Distributed rewards dialog",
   async (addressNumber) => {
     const walletAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(addressNumber);
     cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField()).should("have.value", walletAddress);
   },
 );
+
+And("I enter {string} address to initial Address field of Distributed rewards dialog", (addressNumber) => {
+  const randomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
+  cy.get(distributedRewardsDialog.getInitialValidatorAddressField()).clear().type(randomAddress);
+});
+
+And(
+  "I enter existing {string} address to initial Address field in Distributed rewards dialog",
+  (addressNumber) => {
+    const existingAddress = selectWalletAddressByNumber(addressNumber);
+    cy.get(distributedRewardsDialog.getInitialValidatorAddressField()).clear().type(existingAddress);
+  },
+);
+
+And('I click on the "Clear delegate" button in Distributed rewards dialog', () => {
+  cy.get(distributedRewardsDialog.getClearDelegateButton()).click();
+});
 
 async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: string) {
   const generatedMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonicNumber);

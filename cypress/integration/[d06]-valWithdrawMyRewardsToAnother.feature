@@ -15,13 +15,13 @@ Feature: Withdraw my rewards to another address
 
     # Open Distributed rewards
     * I click on the "Claim rewards" button
-    * I see Distributed Points "1800" and Distributed Rewards '0.2' TGD
+    * I see Distributed Points "1800" and Distributed Rewards '0.2' TGD in Distributed rewards dialog
     * I see initial "Address" field is pre-filled with "node0Account" in the dialog
 
     # Enter Receiver address and Withdraw rewards
     * I enter address in the "Receiver address" field from "randomMnemonic02" wallet distributed dialog
     * I use "randomMnemonic02" to make query and check balance of this address "0"
-    * I click on the "Withdraw rewards" button in the dialog
+    * I click on the "Withdraw rewards" button in Distributed rewards dialog
     * I see Tx success screen with address from "randomMnemonic02"
     * I click on Go to Validator details button
 

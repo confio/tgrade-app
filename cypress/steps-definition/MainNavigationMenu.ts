@@ -19,6 +19,7 @@ Given("Open wallet dialog from main menu", () => {
 
 Given("I connect Web Demo wallet", () => {
   cy.visit("/");
+  Cypress.on("uncaught:exception", (err) => !err.message.includes("Failed to fetch"));
   cy.findByText("Connect wallet").click();
   cy.findByText("Web wallet (demo)").click();
   cy.findByText("Loading your Wallet").should("not.exist");

@@ -30,8 +30,10 @@ Given("I navigate to Validators page by url", () => {
 
 And("Set validator with {string} mnemonic", (walletNumber) => {
   const mnemonic = selectMnemonicByNumber(walletNumber);
+  cy.reload();
   localStorage.setItem("burner-wallet", mnemonic);
   cy.reload(); //workaround help to apply new mnemonic and exchange address
+  Cypress.on("uncaught:exception", (err) => !err.message.includes("Failed to fetch"));
 });
 
 And("I click on Validator name {string} to open Validator detail modal", (validatorName) => {
@@ -163,8 +165,3 @@ And(
     });
   },
 );
-
-/*And("I see Delegate field is pre-field with address from {string}", async (addressNumber) => {
-  const walletAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(addressNumber);
-  cy.get(engagementPage.getDelegatedWithdrawalToField()).should("have.value", walletAddress);
-});*/

@@ -155,6 +155,7 @@ And("Workaround to clear localstorage", () => {
   cy.clearLocalStorage("pinned-tokens-map");
   cy.clearLocalStorage("burner-wallet");
   cy.clearLocalStorage("last-wallet");
+  cy.wait(3000); // workaround it is needed 100%
 });
 
 async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: string) {

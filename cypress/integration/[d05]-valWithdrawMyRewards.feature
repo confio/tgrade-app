@@ -13,7 +13,7 @@ Feature: Withdraw my rewards to my address
 
   Scenario: Withdraw rewards
     * I click on the "Claim rewards" button
-    * I see Distributed Points "1800" and Distributed Rewards '4600' TGD
+    * I see Distributed Points "1800" and Distributed Rewards '4600' TGD in Distributed rewards dialog
     * I click on Withdraw rewards button
     * I see Tx success screen with existing "node0Account" address
     * I click on Go to Validator details button
