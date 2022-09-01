@@ -94,9 +94,9 @@
     "format": "prettier --write --loglevel warn \"./src/**/*.ts{,x}\" --ignore-path \"./.custom-prettierignore\"",
     "proto": "./scripts/proto/get-proto.sh && ./scripts/proto/codegen.sh && prettier --write --loglevel warn \"./src/codec/**/*.ts\"",
     "cy:open:local": "cypress open --config-file cypress/localhost-config.json",
-    "cy:run:local": "cypress run --browser chrome --config-file cypress/localhost-config.json",
-    "cy:job_01": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome  -e TAGS='@job_01' --config-file cypress/localhost-config.json",
-    "cy:job_02": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome  -e TAGS='@job_02' --config-file cypress/localhost-config.json --spec 'cypress/integration/volumeTests/**.ts'"
+    "cy:run:local": "cypress run --browser chrome --config-file cypress/localhost-config.json --config-file cypress/localhost-config.json",
+    "cy:job_01": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome -e TAGS='@job_01' --config-file cypress/localhost-config.json",
+    "cy:job_02": "yarn start:local & wait-on http://localhost:3000 && cypress run --browser chrome -e TAGS='@job_02' --config-file cypress/localhost-config.json"
   },
   "browserslist": [
     "last 2 chrome versions",
