@@ -1,3 +1,4 @@
+@job_02
 Feature: Trading pair
   Background:
     * I connect Web Demo wallet

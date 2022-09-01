@@ -1,3 +1,4 @@
+@job_01
 Feature: Withdraw rewards as delegate to another address
   Background:
     * I connect Web Demo wallet

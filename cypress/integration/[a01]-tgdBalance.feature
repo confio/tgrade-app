@@ -1,3 +1,4 @@
+@job_01
 Feature: See my Tgrade token balance
   Background:
     * I connect Web Demo wallet

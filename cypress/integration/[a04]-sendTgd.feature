@@ -1,3 +1,4 @@
+@job_01
 Feature: Send Tgrade tokens to an address
   Background:
     * I connect Web Demo wallet

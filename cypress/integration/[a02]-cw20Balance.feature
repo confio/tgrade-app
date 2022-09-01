@@ -1,3 +1,4 @@
+@job_01
 Feature: See my CW20 tokens that I have pinned and have non zero balance
   Background:
     * I connect Web Demo wallet

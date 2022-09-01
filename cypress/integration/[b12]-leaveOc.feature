@@ -1,3 +1,4 @@
+@job_01
 Feature: Leave the Oversight Community
   Background:
     * I connect Web Demo wallet

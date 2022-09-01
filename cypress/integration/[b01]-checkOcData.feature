@@ -1,3 +1,4 @@
+@job_01
 Feature: Check address, that address can be copied, voting rules, and half-life data of Oversight Community
   Background:
     * I connect Web Demo wallet

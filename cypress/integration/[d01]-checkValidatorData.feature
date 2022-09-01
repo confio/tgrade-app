@@ -1,3 +1,4 @@
+@job_02
 Feature: Check validator's data
   Background: Go to Validators page
     * I connect Web Demo wallet

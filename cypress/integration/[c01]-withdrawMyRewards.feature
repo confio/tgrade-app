@@ -1,3 +1,4 @@
+@job_01
 Feature: Withdraw my rewards to my address
   Background:
     * I connect Web Demo wallet

@@ -1,3 +1,4 @@
+@job_02
 Feature: Stake tokens
   Background:
     * I connect Web Demo wallet
