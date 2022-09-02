@@ -4,4 +4,4 @@ Feature: See my Tgrade token balance
     * Open wallet dialog from main menu
 
   Scenario: Check TGD balance
-    * I see TGD balance for "10" address
+    * I see TGD balance "10"

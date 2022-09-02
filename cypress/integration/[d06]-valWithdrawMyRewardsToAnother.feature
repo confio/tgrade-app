@@ -1,9 +1,10 @@
+@validator
 Feature: Withdraw my rewards to another address
   Background:
     * I connect Web Demo wallet
     * Set validator with "node0Mnemonic" mnemonic
     * Open wallet dialog from main menu
-    * I see TGD balance for "1000" address
+    * I see TGD balance "1000"
     * I close wallet dialog modal
     * I open Governance menu
     * I visit Validators page

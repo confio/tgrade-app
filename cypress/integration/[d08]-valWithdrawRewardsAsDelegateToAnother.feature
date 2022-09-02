@@ -1,9 +1,10 @@
+@validator
 Feature: Withdraw rewards as delegate to another address
   Background:
     * I connect Web Demo wallet
     * Set validator with "node0Mnemonic" mnemonic
     * Open wallet dialog from main menu
-    * I see TGD balance for "1000" address
+    * I see TGD balance "9"
     * I use existing "node0Mnemonic" mnemonic to make query and check balance "100"
     * I close wallet dialog modal
     * I open Governance menu
@@ -55,11 +56,12 @@ Feature: Withdraw rewards as delegate to another address
     * I click on the "Withdraw rewards" button in Distributed rewards dialog
     * I see Tx success screen with address from "randomMnemonic07"
     * I click on Go to Validator details button
+    * I see Distributed Points "1800" and Distributed Rewards '0.0' TGD in Distributed rewards dialog
     * I close validator details dialog
 
-    # check balance of
+    # check balance of Initial address after withdraw
     * Open wallet dialog from main menu
-    * I see TGD balance for "9" address
+    * I see TGD balance "9"
     * I close wallet dialog modal
     * I use existing "node0Mnemonic" mnemonic to make query and check balance "999"
 
@@ -70,6 +72,7 @@ Feature: Withdraw rewards as delegate to another address
     * I open Governance menu
     * I visit Validators page
     * I click on "node0Account" address on the list of validators
+    * I click on the "Claim rewards" button
     * I see Delegate field is pre-field with address from "randomMnemonic06" in Distributed rewards dialog
 
     * I click on the "Clear delegate" button in Distributed rewards dialog
@@ -83,7 +86,10 @@ Feature: Withdraw rewards as delegate to another address
     # I switch to Receiver address account
     * Workaround to clear localstorage
     * I connect Web Demo wallet
-    * Set "randomMnemonic06" wallet without Engagement Points and Engagement Rewards
+    * Set "randomMnemonic07" wallet without Engagement Points and Engagement Rewards
 
-
-    # TODO check balance of Receiver address
+    # check balance of Receiver address account
+    * Open wallet dialog from main menu
+    * I see TGD balance "5276"
+    * I close wallet dialog modal
+    * I use "randomMnemonic07" to make query and check balance of this address "12"

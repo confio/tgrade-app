@@ -100,7 +100,9 @@ And(
     const signingClient_01 = await createSigningClient(config, wallet);
 
     const walletBalanceUser = await signingClient_01.getBalance(walletUserA, config.feeToken);
-    expect(walletBalanceUser.amount.slice(0, 3)).to.contains(tokenBalance);
+    cy.log("walletBalanceUser.amount", walletBalanceUser.amount);
+    console.log("walletBalanceUser.amount", walletBalanceUser.amount);
+    expect(parseInt(walletBalanceUser.amount.slice(0, 3))).to.be.not.lessThan(parseInt(tokenBalance));
   },
 );
 

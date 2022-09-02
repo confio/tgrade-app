@@ -1,3 +1,4 @@
+@validator
 Feature: Unstake tokens
   Background:
     * I connect Web Demo wallet
