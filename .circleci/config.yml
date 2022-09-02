@@ -47,8 +47,8 @@ jobs:
       # As a consequence, we cannot use the circleci CLI for this job because "You cannot use the machine
       # executor in local jobs." (https://circleci.com/docs/2.0/local-cli/#limitations-of-running-jobs-locally)
       #
-      # Available images: https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
-      image: ubuntu-2004:202201-02
+      # Available images: https://circleci.com/developer/machine/image/ubuntu-2004
+      image: ubuntu-2004:2022.07.1
     steps:
       - checkout
       - run: # start early for less wait time below
@@ -114,8 +114,9 @@ jobs:
       # As a consequence, we cannot use the circleci CLI for this job because "You cannot use the machine
       # executor in local jobs." (https://circleci.com/docs/2.0/local-cli/#limitations-of-running-jobs-locally)
       #
-      # Available images: https://circleci.com/developer/images?imageType=machine
-      image: ubuntu-2004:202201-02
+      # Available images: https://circleci.com/developer/machine/image/ubuntu-2004
+      image: ubuntu-2004:2022.07.1
+
     steps:
       - checkout
       - run:

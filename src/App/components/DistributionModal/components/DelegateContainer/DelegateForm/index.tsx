@@ -47,7 +47,7 @@ export default function DelegateForm({
                   }
                   onClick={() => submitForm()}
                 >
-                  <div>Set delegate</div>
+                  <div data-cy="validators-distributed-rewards-set-delegate-button">Set delegate</div>
                 </Button>
                 <Button
                   disabled={isSubmitting || delegatedAddress === address}
@@ -60,7 +60,7 @@ export default function DelegateForm({
                     setSubmitting(false);
                   }}
                 >
-                  <div>Clear delegate</div>
+                  <div data-cy="validators-distributed-rewards-clear-delegate-button">Clear delegate</div>
                 </Button>
               </ButtonGroup>
             </DelegateStack>

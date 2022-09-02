@@ -22,4 +22,16 @@ export class DistributedRewardsDialog {
   getReceiverAddressField(): string {
     return '[name="form-item-name-receiver-address"]';
   }
+
+  getDelegatedWithdrawalToField(): string {
+    return '[name="form-item-name-delegated-withdrawal-to"]';
+  }
+
+  getSetDelegateButton(): string {
+    return '[data-cy="validators-distributed-rewards-set-delegate-button"]';
+  }
+
+  getClearDelegateButton(): string {
+    return '[data-cy="validators-distributed-rewards-clear-delegate-button"]';
+  }
 }

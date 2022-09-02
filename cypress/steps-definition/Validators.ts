@@ -1,20 +1,27 @@
+import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { And, Given } from "cypress-cucumber-preprocessor/steps";
 
+import { config } from "../../src/config/network";
+import { createSigningClient } from "../../src/utils/sdk";
 import {
   selectMnemonicByNumber,
   selectValidatorNameByAddressNumber,
   selectWalletAddressByNumber,
 } from "../fixtures/existingAccounts";
+import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
 import { DistributedRewardsDialog } from "../page-object/DistributedRewardsDialog";
 import { StakeFormDialog } from "../page-object/StakeFormDialog";
 import { UnStakeFormDialog } from "../page-object/UnStakeFormDialog";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
+import { ValidatorsMainPage } from "../page-object/ValidatorsMainPage";
 import { ValidatorsOverviewPage } from "../page-object/ValidatorsOverviewPage";
 
 const validatorDetailsDialog = new ValidatorDetailsDialog();
 const stakeFormDialog = new StakeFormDialog();
 const unStakeFormDialog = new UnStakeFormDialog();
 const validatorsOverviewPage = new ValidatorsOverviewPage();
+const validatorsMainPage = new ValidatorsMainPage();
 const distributedRewardsDialog = new DistributedRewardsDialog();
 
 Given("I navigate to Validators page by url", () => {
@@ -23,21 +30,23 @@ Given("I navigate to Validators page by url", () => {
 
 And("Set validator with {string} mnemonic", (walletNumber) => {
   const mnemonic = selectMnemonicByNumber(walletNumber);
+  cy.reload();
   localStorage.setItem("burner-wallet", mnemonic);
   cy.reload(); //workaround help to apply new mnemonic and exchange address
+  Cypress.on("uncaught:exception", (err) => !err.message.includes("Failed to fetch"));
 });
 
 And("I click on Validator name {string} to open Validator detail modal", (validatorName) => {
   cy.findByText(validatorName).click();
 });
 
-And("I click {string} address on the list of validators", (validatorNumber) => {
+And("I click on {string} address on the list of validators", (validatorNumber) => {
   const mnemonic = selectWalletAddressByNumber(validatorNumber).slice(-6);
-  cy.get('[data-cy="overview-page-validator-address"]').contains(mnemonic).click();
+  cy.get(validatorsMainPage.getAllNamesFromValidatorNameColumn()).contains(mnemonic).click();
 });
 
 And("I verify presence of validator name {string} and address {string}", (validatorName, address) => {
-  cy.get(`[data-cy="validator-name-${validatorName}"]`)
+  cy.get(validatorsMainPage.getValidatorName(validatorName))
     .should("contain.text", validatorName)
     .should("contain.text", address);
 });

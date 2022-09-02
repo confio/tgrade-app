@@ -6,7 +6,7 @@ Feature: Stake tokens
     * I visit Validators page
 
   Scenario: Stake
-    * I click "node0Account" address on the list of validators
+    * I click on "node0Account" address on the list of validators
     * I see validator's address "node0Account" with related account "node0Account" name
     * I click on the "Stake" button
 

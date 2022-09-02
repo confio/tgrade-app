@@ -10,7 +10,7 @@ Feature: Withdraw rewards as delegate to another address
   Scenario: Delegate withdraws rewards to another address
 
     # Set delegate account
-    * I type address from "randomMnemonic03" in Delegated withdrawal to field
+    * I enter address from "randomMnemonic03" in Delegated withdrawal to field
     * I click the "Set delegate" button
     * I see Tx success screen with address from "randomMnemonic03"
     * I click Go to Engagement button
