@@ -31,24 +31,52 @@ Feature: Withdraw rewards as delegate to another address
     * I click on the "Claim rewards" button
     * I see Delegate field is pre-field with address from "randomMnemonic06" in Distributed rewards dialog
 
+    # Switch to delegated account
+    * Workaround to clear localstorage
+    * I connect Web Demo wallet
+    * Set "randomMnemonic06" wallet without Engagement Points and Engagement Rewards
 
     # Withdraw rewards
-    * I change to the delegate account
-    * I visit Distributed
-    * I enter the initial account's address on the "Address" field
-    * I see the initial account's Distributed Points and Distributed Rewards
-    * I enter the address of the other account on the "Receiver address" field
-    * I click on the "Withdraw rewards" button
-    * I see Tx success screen and close it
-    * I check that the random account's TGD balance has gone up
+    * I open Governance menu
+    * I visit Validators page
+    * I click on "node0Account" address on the list of validators
+    * I see validator's address "node0Account" with related account "node0Account" name
+
+    * I click on the "Claim rewards" button
+    * I enter existing "node0Account" address to initial Address field in Distributed rewards dialog
+    * I see Distributed Points "1800" and Distributed Rewards '0.2' TGD in Distributed rewards dialog
+
+    * I enter address in the "Receiver address" field from "randomMnemonic06" wallet in Distributed rewards dialog
+
+    * I click on the "Withdraw rewards" button in Distributed rewards dialog
+
+    * I see Tx success screen with address from "randomMnemonic06"
+    * I click on Go to Validator details button
+    * I close validator details dialog
+
+
+    * Open wallet dialog from main menu
+    * I see TGD balance "10" for random address
+    * I close wallet dialog modal
+    * I use "randomMnemonic06" to make query and check balance of this address "12"
+
     # Clear delegate
-    * I change to the initial account
-    * I visit Distributed
-    * I see the delegate account's address prefilled on the "Delegated withdrawal to" field
-    * I click on the "Clear delegate" button
-    * I see Tx success screen and close it
-    * I change to the previously delegate account
-    * I visit Distributed
-    * I enter the initial account's address on the "Address" field
-    * I see the initial account's Distributed Points and Distributed Rewards
-    * I see I can no longer withdraw rewards for the initial account
+    * Workaround to clear localstorage
+    * I connect Web Demo wallet
+    * Set validator with "node0Mnemonic" mnemonic
+    * I open Governance menu
+    * I visit Validators page
+    * I click on "node0Account" address on the list of validators
+
+    * I click on the "Withdraw rewards" button in Distributed rewards dialog
+    * I see Delegate field is pre-field with address from "randomMnemonic06" in Distributed rewards dialog
+
+    * I click on the "Clear delegate" button in Distributed rewards dialog
+    * I see Tx success screen with existing "node0Account" address
+    * I click on Go to Validator details button
+    * I click on the "Claim rewards" button
+
+    * I see initial "Address" field is pre-filled with "node0Account" in the dialog
+    * I see Distributed Points "1800" and Distributed Rewards '0.0' TGD in Distributed rewards dialog
+
+    # TODO check balance of Receiver address

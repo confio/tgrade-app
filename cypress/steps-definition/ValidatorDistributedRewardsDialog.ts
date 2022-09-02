@@ -47,7 +47,7 @@ And('I see initial "Address" field is pre-filled with {string} in the dialog', (
 });
 
 And(
-  'I enter address in the "Receiver address" field from {string} wallet distributed dialog',
+  'I enter address in the "Receiver address" field from {string} wallet in Distributed rewards dialog',
   async (mnemonicNumber) => {
     const randomAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber);
     cy.get(distributedRewardsDialog.getReceiverAddressField()).type(randomAddress);

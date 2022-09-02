@@ -27,7 +27,11 @@ export default function EmptyDsos(): JSX.Element {
     <PageLayout>
       <StyledStack gap="s4">
         <Text>You have no Trusted Circles connected to your local profile.</Text>
-        <ButtonAddNew onClick={() => openAddDsoModal(dsoDispatch)} text="Add Trusted Circle" />
+        <ButtonAddNew
+          onClick={() => openAddDsoModal(dsoDispatch)}
+          text="Add Trusted Circle"
+          data-cy="trusted-circle-page-add-trusted-circle-button"
+        />
       </StyledStack>
     </PageLayout>
   );

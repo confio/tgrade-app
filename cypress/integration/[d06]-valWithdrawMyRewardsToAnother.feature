@@ -19,7 +19,7 @@ Feature: Withdraw my rewards to another address
     * I see initial "Address" field is pre-filled with "node0Account" in the dialog
 
     # Enter Receiver address and Withdraw rewards
-    * I enter address in the "Receiver address" field from "randomMnemonic02" wallet distributed dialog
+    * I enter address in the "Receiver address" field from "randomMnemonic02" wallet in Distributed rewards dialog
     * I use "randomMnemonic02" to make query and check balance of this address "0"
     * I click on the "Withdraw rewards" button in Distributed rewards dialog
     * I see Tx success screen with address from "randomMnemonic02"

@@ -16,7 +16,7 @@ Given("Go to Trusted Circle page", () => {
 
 When("I click on Add Trusted Circle button", () => {
   cy.url().should("not.include", "/trustedcircle/undefined"); //probably a bug of the App
-  cy.findByText(/Add Trusted Circle/i).click();
+  cy.get('[data-cy="trusted-circle-page-add-trusted-circle-button"]').click();
 });
 
 Then("I click on Create Trusted Circle button", () => {
