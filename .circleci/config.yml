@@ -115,7 +115,7 @@ jobs:
       # executor in local jobs." (https://circleci.com/docs/2.0/local-cli/#limitations-of-running-jobs-locally)
       #
       # Available images: https://circleci.com/developer/images?imageType=machine
-      image: ubuntu-2204:202208-01
+      image: ubuntu-2004:2022.07.1
 
     steps:
       - checkout
