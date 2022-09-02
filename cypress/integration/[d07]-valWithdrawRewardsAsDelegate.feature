@@ -52,7 +52,7 @@ Feature: Withdraw rewards as delegate
     * I close validator details dialog
 
     * Open wallet dialog from main menu
-    * I see TGD balance "10" for random address
+    * I see TGD balance for "10" address
     * I close wallet dialog modal
     * I use "randomMnemonic05" to make query and check balance of this address "12"
 

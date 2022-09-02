@@ -50,7 +50,7 @@ And(
   'I enter address in the "Receiver address" field from {string} wallet in Distributed rewards dialog',
   async (mnemonicNumber) => {
     const randomAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber);
-    cy.get(distributedRewardsDialog.getReceiverAddressField()).type(randomAddress);
+    cy.get(distributedRewardsDialog.getReceiverAddressField()).clear().type(randomAddress);
   },
 );
 
@@ -105,6 +105,6 @@ async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: st
   const signingClient = await createSigningClient(config, wallet);
 
   const walletBalanceUser = await signingClient.getBalance(walletAddress, config.feeToken);
-  expect(walletBalanceUser.amount).to.contains(0);
+  expect(parseInt(walletBalanceUser.amount)).to.be.not.lessThan(0);
   return walletAddress;
 }

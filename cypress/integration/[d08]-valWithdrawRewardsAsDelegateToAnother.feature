@@ -3,7 +3,8 @@ Feature: Withdraw rewards as delegate to another address
     * I connect Web Demo wallet
     * Set validator with "node0Mnemonic" mnemonic
     * Open wallet dialog from main menu
-    * I see TGD balance "1000" for random address
+    * I see TGD balance for "1000" address
+    * I use existing "node0Mnemonic" mnemonic to make query and check balance "100"
     * I close wallet dialog modal
     * I open Governance menu
     * I visit Validators page
@@ -46,19 +47,21 @@ Feature: Withdraw rewards as delegate to another address
     * I enter existing "node0Account" address to initial Address field in Distributed rewards dialog
     * I see Distributed Points "1800" and Distributed Rewards '0.2' TGD in Distributed rewards dialog
 
-    * I enter address in the "Receiver address" field from "randomMnemonic06" wallet in Distributed rewards dialog
+    # Enter "Receiver address" account
+    * I enter address in the "Receiver address" field from "randomMnemonic07" wallet in Distributed rewards dialog
+    * I use "randomMnemonic07" to make query and check balance of this address "000"
 
+    # click Withdraw
     * I click on the "Withdraw rewards" button in Distributed rewards dialog
-
-    * I see Tx success screen with address from "randomMnemonic06"
+    * I see Tx success screen with address from "randomMnemonic07"
     * I click on Go to Validator details button
     * I close validator details dialog
 
-
+    # check balance of
     * Open wallet dialog from main menu
-    * I see TGD balance "10" for random address
+    * I see TGD balance for "9" address
     * I close wallet dialog modal
-    * I use "randomMnemonic06" to make query and check balance of this address "12"
+    * I use existing "node0Mnemonic" mnemonic to make query and check balance "999"
 
     # Clear delegate
     * Workaround to clear localstorage
@@ -67,8 +70,6 @@ Feature: Withdraw rewards as delegate to another address
     * I open Governance menu
     * I visit Validators page
     * I click on "node0Account" address on the list of validators
-
-    * I click on the "Withdraw rewards" button in Distributed rewards dialog
     * I see Delegate field is pre-field with address from "randomMnemonic06" in Distributed rewards dialog
 
     * I click on the "Clear delegate" button in Distributed rewards dialog
@@ -78,5 +79,11 @@ Feature: Withdraw rewards as delegate to another address
 
     * I see initial "Address" field is pre-filled with "node0Account" in the dialog
     * I see Distributed Points "1800" and Distributed Rewards '0.0' TGD in Distributed rewards dialog
+
+    # I switch to Receiver address account
+    * Workaround to clear localstorage
+    * I connect Web Demo wallet
+    * Set "randomMnemonic06" wallet without Engagement Points and Engagement Rewards
+
 
     # TODO check balance of Receiver address

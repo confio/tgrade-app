@@ -58,7 +58,7 @@ And(
   },
 );
 
-And("I see TGD balance {string} for random address", (expectedTokenBalance) => {
+And("I see TGD balance for {string} address", (expectedTokenBalance) => {
   cy.wait(3000); // workaround to wait for balance to be visible
   cy.get(connectWalletModal.getTokenBalance()).then(($element) => {
     const extractedTokenValue = parseInt($element.text());
