@@ -1,4 +1,3 @@
-@validator
 Feature: Withdraw rewards as delegate to another address
   Background:
     * I connect Web Demo wallet

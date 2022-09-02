@@ -1,4 +1,3 @@
-@validator
 Feature: Stake tokens
   Background:
     * I connect Web Demo wallet
