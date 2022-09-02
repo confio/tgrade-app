@@ -1,17 +1,37 @@
 Feature: Withdraw rewards as delegate to another address
   Background:
-    * I connect to Web Demo wallet
-    * I have some Distributed Points and Distributed Rewards
-    * I check the balance of a random account
-    * I visit Validators
-    * I find my name and address on the list of validators and click on it
+    * I connect Web Demo wallet
+    * Set validator with "node0Mnemonic" mnemonic
+    * Open wallet dialog from main menu
+    * I see TGD balance "1000" for random address
+    * I close wallet dialog modal
+    * I open Governance menu
+    * I visit Validators page
+
+    # Open Validator account overview dialog
+    * I click on "node0Account" address on the list of validators
+    * I see validator's address "node0Account" with related account "node0Account" name
+
+    # Open Distributed rewards dialog
     * I click on the "Claim rewards" button
 
+    # Check account balance
+    * I see Distributed Points "1800" and Distributed Rewards '0.2' TGD in Distributed rewards dialog
+    * I see initial "Address" field is pre-filled with "node0Account" in the dialog
+
   Scenario: Delegate withdraws rewards to another address
+
     # Set delegate
-    * I enter the address of a known account on the "Delegated withdrawal to" field
-    * I click the "Set delegate" button
-    * I see Tx success screen and close it
+    * I enter address from "randomMnemonic06" in Delegated withdrawal to field in Distributed rewards dialog
+    * I click the "Set delegate" button in Distributed rewards dialog
+    * I see Tx success screen with address from "randomMnemonic06"
+    * I click on Go to Validator details button
+
+    # Open Distributed rewards dialog
+    * I click on the "Claim rewards" button
+    * I see Delegate field is pre-field with address from "randomMnemonic06" in Distributed rewards dialog
+
+
     # Withdraw rewards
     * I change to the delegate account
     * I visit Distributed
