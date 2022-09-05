@@ -9,6 +9,7 @@ import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { NetworkConfig } from "config/network";
 import { isChrome, isDesktop } from "react-device-detect";
+import { CodeIds } from "service/sdk";
 
 import { configKeplr } from "../config/keplr";
 import { Factory } from "./factory";
@@ -199,4 +200,17 @@ export async function getTrustedCircleCodeId(rpcUrl: string, client: CosmWasmCli
 export async function getTokenCodeId(client: CosmWasmClient, factoryAddress: string): Promise<number> {
   const { token_code_id } = await Factory.getConfig(client, factoryAddress);
   return token_code_id;
+}
+
+export async function getCodeIds(config: NetworkConfig, client: CosmWasmClient): Promise<CodeIds> {
+  const tcCodeId = await getTrustedCircleCodeId(config.rpcUrl, client);
+  const tokenCodeId = await getTokenCodeId(client, config.factoryAddress);
+
+  const codeIds: CodeIds = {
+    trustedCircle: tcCodeId,
+    token: tokenCodeId,
+    trustedToken: config.trustedTokenCodeId,
+  };
+
+  return codeIds;
 }
