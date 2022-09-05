@@ -54,10 +54,14 @@ export const StatusBlock = styled.div`
 export const StateParagraph = styled(Paragraph)<{ readonly state: string }>`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
 
   img {
     margin-right: 3px;
+
+    width: 100%;
+    height: auto;
+    max-width: 12px;
+    max-height: 12px;
   }
 
   &&.ant-typography {
