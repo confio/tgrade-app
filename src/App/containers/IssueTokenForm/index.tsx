@@ -23,7 +23,7 @@ interface IssueTokenFormProps {
 export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFormProps): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, address, signingClient },
+    sdkState: { codeIds, address, signingClient },
   } = useSdk();
   const {
     tokensState: { pinToken, loadToken },
@@ -53,13 +53,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
 
   async function submitTokenMarketing(values: FormMarketingFields) {
     gtagTokenAction("create_token_try");
-    if (
-      !signingClient ||
-      !address ||
-      !config.codeIds?.cw20Tokens?.length ||
-      !config.codeIds?.tgradeCw20?.length
-    )
-      return;
+    if (!signingClient || !address || !codeIds) return;
 
     try {
       const decimalsNumber = parseInt(decimals, 10);
@@ -71,7 +65,7 @@ export default function IssueTokenForm({ setTxResult, closeModal }: IssueTokenFo
       const canMint = mint === "fixed" || mint === "unlimited";
       const minter: MinterInterface | undefined = canMint ? { minter: address, cap } : undefined;
 
-      const codeId = values.dsoAddress ? config.codeIds.tgradeCw20[0] : config.codeIds.cw20Tokens[0];
+      const codeId = values.dsoAddress ? codeIds.trustedToken : codeIds.token;
       const logo: LogoType | undefined = logoUrl ? { url: logoUrl } : undefined;
       const marketing =
         values.project || values.description || logo
