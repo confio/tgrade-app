@@ -1,12 +1,17 @@
+import { Typography } from "antd";
 import Button from "App/components/Button";
 import Field from "App/components/Field";
 import { Formik } from "formik";
 import { Form } from "formik-antd";
+import { useSdk } from "service";
+import { Complaint } from "utils/arbiterPool";
 import { getFormItemName } from "utils/forms";
 import { isValidUrl } from "utils/query";
 import * as Yup from "yup";
 
 import { RenderStack, Separator } from "./style";
+
+const { Text } = Typography;
 
 const summaryLabel = "Summary";
 const ipfsLinkLabel = "IPFS link";
@@ -17,14 +22,23 @@ export interface FormRenderDecisionValues {
 }
 
 interface FormRenderDecisionProps extends FormRenderDecisionValues {
+  readonly complaint: Complaint | undefined;
   readonly handleSubmit: (values: FormRenderDecisionValues) => void;
 }
 
 export default function FormRenderDecision({
   summary,
   ipfsLink,
+  complaint,
   handleSubmit,
 }: FormRenderDecisionProps): JSX.Element {
+  const {
+    sdkState: { address },
+  } = useSdk();
+
+  const complaintIsNotProcessing = !complaint?.state.processing;
+  const isNotArbiters = !address || complaint?.state.processing?.arbiters !== address;
+
   const validationSchema = Yup.object().shape({
     [getFormItemName(summaryLabel)]: Yup.string()
       .typeError("Summary must be text")
@@ -56,10 +70,32 @@ export default function FormRenderDecision({
         <>
           <Form>
             <RenderStack gap="s1">
-              <Field label={summaryLabel} placeholder="Enter summary" textArea />
-              <Field label={ipfsLinkLabel} placeholder="Enter url" />
+              {complaintIsNotProcessing ? (
+                <Text style={{ color: "var(--color-error-form)" }}>
+                  The complaint must be on state "processing" for the decision to be rendered
+                </Text>
+              ) : null}
+              {isNotArbiters ? (
+                <Text style={{ color: "var(--color-error-form)" }}>
+                  The complaint can only be accepted by its arbiters
+                </Text>
+              ) : null}
+              <Field
+                disabled={complaintIsNotProcessing || isNotArbiters}
+                label={summaryLabel}
+                placeholder="Enter summary"
+                textArea
+              />
+              <Field
+                disabled={complaintIsNotProcessing || isNotArbiters}
+                label={ipfsLinkLabel}
+                placeholder="Enter url"
+              />
               <Separator />
-              <Button disabled={!isValid} onClick={() => submitForm()}>
+              <Button
+                disabled={!isValid || complaintIsNotProcessing || isNotArbiters}
+                onClick={() => submitForm()}
+              >
                 <div>Render decision</div>
               </Button>
             </RenderStack>

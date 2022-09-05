@@ -3,9 +3,9 @@ import closeIcon from "App/assets/icons/cross.svg";
 import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { ApContract } from "utils/arbiterPool";
+import { ApContract, ApContractQuerier, Complaint } from "utils/arbiterPool";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import ComplaintData from "./components/ComplaintData";
@@ -57,9 +57,10 @@ export default function ApComplaintDetailModal({
 }: ApComplaintDetailModalProps): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, signingClient, address },
+    sdkState: { config, client, signingClient, address },
   } = useSdk();
 
+  const [complaint, setComplaint] = useState<Complaint>();
   const [complaintActionStep, setComplaintActionStep] = useState<ComplaintActionStep>({
     type: ComplaintAction.AcceptComplaint,
   });
@@ -69,6 +70,17 @@ export default function ApComplaintDetailModal({
   const [reason, setReason] = useState("");
   const [summary, setSummary] = useState("");
   const [ipfsLink, setIpfsLink] = useState("");
+
+  useEffect(() => {
+    (async function () {
+      if (!client || complaintId === undefined) return;
+
+      const apContract = new ApContractQuerier(config, client);
+      const complaint = await apContract.getComplaint(complaintId);
+      console.log({ complaint });
+      setComplaint(complaint);
+    })();
+  }, [client, complaintId, config]);
 
   function tryAgain() {
     setComplaintActionStep(
@@ -197,13 +209,18 @@ export default function ApComplaintDetailModal({
                 setComplaintActionStep={setComplaintActionStep}
               />
               {complaintActionStep.type === ComplaintAction.AcceptComplaint ? (
-                <FormAcceptComplaint handleSubmit={submitAcceptComplaintForm} />
+                <FormAcceptComplaint complaint={complaint} handleSubmit={submitAcceptComplaintForm} />
               ) : null}
               {complaintActionStep.type === ComplaintAction.WithdrawComplaint ? (
-                <FormWithdrawComplaint reason={reason} handleSubmit={submitWithdrawComplaintForm} />
+                <FormWithdrawComplaint
+                  complaint={complaint}
+                  reason={reason}
+                  handleSubmit={submitWithdrawComplaintForm}
+                />
               ) : null}
               {complaintActionStep.type === ComplaintAction.RenderDecision ? (
                 <FormRenderDecision
+                  complaint={complaint}
                   summary={summary}
                   ipfsLink={ipfsLink}
                   handleSubmit={submitRenderDecisionForm}
