@@ -160,6 +160,14 @@ And("Workaround to clear localstorage", () => {
   cy.wait(3000); // workaround it is needed 100%
 });
 
+And(
+  "I enter address from {string} to initial Address field of Distributed rewards dialog",
+  async (mnemonicNumber) => {
+    const selectedRandomAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber);
+    cy.get(engagementPage.getInitialAddressInputField()).clear().type(selectedRandomAddress);
+  },
+);
+
 async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: string) {
   const generatedMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonicNumber);
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(generatedMnemonic, {

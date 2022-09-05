@@ -51,18 +51,18 @@ Feature: Withdraw rewards as delegate to another address
     * I enter address in the "Receiver address" field from "randomMnemonic07" wallet in Distributed rewards dialog
     * I use "randomMnemonic07" to make query and check balance of this address "000"
 
-    # click Withdraw
+    # Click Withdraw button
     * I click on the "Withdraw rewards" button in Distributed rewards dialog
     * I see Tx success screen with address from "randomMnemonic07"
     * I click on Go to Validator details button
     * I see Distributed Points "1800" and Distributed Rewards '0.0' TGD in Distributed rewards dialog
     * I close validator details dialog
 
-    # check balance of Initial address after withdraw
+    # Check balance of Initial address after withdraw
     * Open wallet dialog from main menu
     * I see TGD balance "9"
     * I close wallet dialog modal
-    * I use existing "node0Mnemonic" mnemonic to make query and check balance "999"
+    * I use existing "node0Mnemonic" mnemonic to make query and check balance "628"
 
     # Clear delegate
     * Workaround to clear localstorage
@@ -87,8 +87,7 @@ Feature: Withdraw rewards as delegate to another address
     * I connect Web Demo wallet
     * Set "randomMnemonic07" wallet without Engagement Points and Engagement Rewards
 
-    # check balance of Receiver address account
-    * Open wallet dialog from main menu
-    * I see TGD balance "5276"
-    * I close wallet dialog modal
-    * I use "randomMnemonic07" to make query and check balance of this address "12"
+    # Check Rewards of Receiver address account
+    * I visit Engagement page
+    * I enter address from "randomMnemonic07" to initial Address field of Distributed rewards dialog
+    * I see Engagement Points "0 / 2034 (0.00%)" and Engagement Rewards "546" TGD

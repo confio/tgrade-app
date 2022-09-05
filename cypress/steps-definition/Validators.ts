@@ -1,15 +1,10 @@
-import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { And, Given } from "cypress-cucumber-preprocessor/steps";
 
-import { config } from "../../src/config/network";
-import { createSigningClient } from "../../src/utils/sdk";
 import {
   selectMnemonicByNumber,
   selectValidatorNameByAddressNumber,
   selectWalletAddressByNumber,
 } from "../fixtures/existingAccounts";
-import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
 import { DistributedRewardsDialog } from "../page-object/DistributedRewardsDialog";
 import { StakeFormDialog } from "../page-object/StakeFormDialog";
 import { UnStakeFormDialog } from "../page-object/UnStakeFormDialog";
