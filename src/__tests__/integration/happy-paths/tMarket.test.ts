@@ -6,7 +6,7 @@ import tempImgUrl from "App/assets/icons/token-placeholder.png";
 import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
-import { createSigningClient, generateMnemonic, loadOrCreateWallet } from "utils/sdk";
+import { createSigningClient, generateMnemonic, getCodeIds, loadOrCreateWallet } from "utils/sdk";
 import { Pool, ProvideFormValues, SwapFormValues, Token } from "utils/tokens";
 
 const mnemonic = generateMnemonic();
@@ -30,7 +30,7 @@ describe("T-Market", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
-    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+    const codeIds = await getCodeIds(config, signingClient);
 
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
@@ -39,7 +39,7 @@ describe("T-Market", () => {
     // Creat contract with CW20
     const cw20tokenAddress = await Contract20WS.createContract(
       signingClient,
-      codeId,
+      codeIds.token,
       address,
       tokenName,
       tokenSymbol,
@@ -83,7 +83,7 @@ describe("T-Market", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
-    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+    const codeIds = await getCodeIds(config, signingClient);
 
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
@@ -92,7 +92,7 @@ describe("T-Market", () => {
     // Create digital asset
     const cw20tokenAddress = await Contract20WS.createContract(
       signingClient,
-      codeId,
+      codeIds.token,
       address,
       tokenName,
       tokenSymbol,
@@ -103,7 +103,7 @@ describe("T-Market", () => {
       undefined,
     );
 
-    const tokens = await Contract20WS.getAll(config, signingClient, address);
+    const tokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
     const cw20tokenInfo = tokens[cw20tokenAddress];
 
     const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
@@ -154,7 +154,7 @@ describe("T-Market", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
-    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+    const codeIds = await getCodeIds(config, signingClient);
 
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
@@ -163,7 +163,7 @@ describe("T-Market", () => {
     // Create digital asset
     const cw20tokenAddress = await Contract20WS.createContract(
       signingClient,
-      codeId,
+      codeIds.token,
       address,
       tokenName,
       tokenSymbol,
@@ -174,7 +174,7 @@ describe("T-Market", () => {
       undefined,
     );
 
-    const tokens = await Contract20WS.getAll(config, signingClient, address);
+    const tokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
     const cw20tokenInfo = tokens[cw20tokenAddress];
 
     const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
@@ -242,7 +242,7 @@ describe("T-Market", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
-    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+    const codeIds = await getCodeIds(config, signingClient);
 
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
@@ -251,7 +251,7 @@ describe("T-Market", () => {
     // Create digital asset
     const cw20tokenAddress = await Contract20WS.createContract(
       signingClient,
-      codeId,
+      codeIds.token,
       address,
       tokenName,
       tokenSymbol,
@@ -263,7 +263,7 @@ describe("T-Market", () => {
       undefined,
     );
 
-    const tokens = await Contract20WS.getAll(config, signingClient, address);
+    const tokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
     const cw20tokenInfo = tokens[cw20tokenAddress];
 
     const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);

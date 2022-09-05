@@ -3,7 +3,7 @@ import { Decimal, Uint64 } from "@cosmjs/math";
 import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
-import { createSigningClient, loadOrCreateWallet } from "utils/sdk";
+import { createSigningClient, getCodeIds, loadOrCreateWallet } from "utils/sdk";
 import { Pool, ProvideFormValues, SwapFormValues, Token, WithdrawFormValues } from "utils/tokens";
 import { TcContract } from "utils/trustedCircle";
 
@@ -28,7 +28,7 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
   const tokenDecimals = 6;
   const tokenInitialSupply = "100000000";
 
-  const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+  const codeIds = await getCodeIds(config, signingClient);
 
   const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
     .multiply(Uint64.fromNumber(10 ** tokenDecimals))
@@ -36,7 +36,7 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
 
   const cw20tokenAddress = await Contract20WS.createContract(
     signingClient,
-    codeId,
+    codeIds.token,
     address,
     tokenName,
     tokenSymbol,
@@ -48,7 +48,7 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
   );
   expect(cw20tokenAddress.startsWith(config.addressPrefix)).toBeTruthy();
 
-  const tokens = await Contract20WS.getAll(config, signingClient, address);
+  const tokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
   const cw20tokenInfo = tokens[cw20tokenAddress];
 
   const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
@@ -107,7 +107,7 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
   expect(swappedStatus).toBeTruthy();
 
   // Withdraw liquidity
-  const allTokens = await Contract20WS.getAll(config, signingClient, address);
+  const allTokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
   const lpTokenAddress = pair.liquidity_token;
   const lpToken = allTokens[lpTokenAddress];
   expect(lpToken).toBeTruthy();
@@ -145,9 +145,11 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
   const members: readonly string[] = ["tgrade1uuy629yfuw2mf383t33x0jk2qwtf6rvv4dhmxs"];
   const allowEndEarly = true;
 
+  const codeIds = await getCodeIds(config, signingClient);
+
   const dsoAddress = await TcContract.createTc(
     signingClient,
-    config.codeIds?.tgradeDso?.[0] ?? 0,
+    codeIds.trustedCircle,
     address,
     dsoName,
     escrowAmount,
@@ -167,15 +169,13 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
   const tokenDecimals = 6;
   const tokenInitialSupply = "100000000";
 
-  const codeId = config.codeIds?.tgradeCw20?.[0] ?? 0;
-
   const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
     .multiply(Uint64.fromNumber(10 ** tokenDecimals))
     .toString();
 
   const cw20tokenAddress = await Contract20WS.createContract(
     signingClient,
-    codeId,
+    codeIds.trustedToken,
     address,
     tokenName,
     tokenSymbol,
@@ -187,7 +187,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
   );
   expect(cw20tokenAddress.startsWith(config.addressPrefix)).toBeTruthy();
 
-  const tokens = await Contract20WS.getAll(config, signingClient, address);
+  const tokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
   const cw20tokenInfo = tokens[cw20tokenAddress];
 
   const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
@@ -254,7 +254,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
   expect(swappedStatus).toBeTruthy();
 
   // Withdraw liquidity
-  const allTokens = await Contract20WS.getAll(config, signingClient, address);
+  const allTokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
   const lpTokenAddress = pair.liquidity_token;
   const lpToken = allTokens[lpTokenAddress];
   expect(lpToken).toBeTruthy();
