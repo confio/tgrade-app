@@ -1,5 +1,6 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { calculateFee, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { fromAscii, toAscii } from "@cosmjs/encoding";
+import { calculateFee, Coin, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
@@ -27,9 +28,16 @@ export interface VoterListResponse {
 
 export type VoteOption = "yes" | "no" | "abstain";
 
-export interface ApoolProposal {
-  readonly text?: Record<string, never>;
+export interface AssignedArbiters {
+  readonly case_id: number;
+  readonly arbiters: readonly string[];
 }
+
+export type ApoolProposal = {
+  readonly text?: Record<string, never>;
+} & {
+  readonly propose_arbiters?: AssignedArbiters;
+};
 
 export type Expiration = {
   readonly at_height: number;
@@ -54,7 +62,7 @@ export interface ProposalResponse {
   readonly description: string;
   readonly proposal: ApoolProposal;
   readonly status: "pending" | "open" | "rejected" | "passed" | "executed";
-  readonly expires: Expiration;
+  readonly expires: number;
   /// This is the threshold that is applied to this proposal. Both the rules of the voting contract,
   /// as well as the total_points of the voting group may have changed since this time. That means
   /// that the generic `Threshold{}` query does not provide valid information for existing proposals.
@@ -129,7 +137,7 @@ export class ApContractQuerier {
   constructor(readonly config: NetworkConfig, protected readonly client: CosmWasmClient) {}
 
   protected async initAddress(): Promise<void> {
-    if (this.arbiterPoolVotingAddress || this.arbiterPoolVotingAddress) return;
+    if (this.arbiterPoolAddress || this.arbiterPoolVotingAddress) return;
 
     const tendermintClient = await Tendermint34Client.connect(this.config.rpcUrl);
     const queryClient = new QueryClient(tendermintClient);
@@ -143,8 +151,18 @@ export class ApContractQuerier {
       contractType: PoEContractType.ARBITER_POOL_VOTING,
     });
 
-    this.arbiterPoolVotingAddress = arbiterPoolAddress;
+    this.arbiterPoolAddress = arbiterPoolAddress;
     this.arbiterPoolVotingAddress = arbiterPoolVotingAddress;
+  }
+
+  async getDisputeCost(): Promise<Coin> {
+    await this.initAddress();
+    if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
+
+    const rawConfig = await this.client.queryContractRaw(this.arbiterPoolVotingAddress, toAscii("ap_config"));
+    const config = rawConfig ? JSON.parse(fromAscii(rawConfig)) : {};
+    const disputeCost: Coin = config?.dispute_cost ?? { denom: "utgd", amount: "0" };
+    return disputeCost;
   }
 
   async getVotingRules(): Promise<VotingRules> {
@@ -386,13 +404,14 @@ export class ApContract extends ApContractQuerier {
     if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const msg = { register_complaint: { title, description, defendant } };
+    const disputeCost = await this.getDisputeCost();
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
       this.arbiterPoolVotingAddress,
       msg,
       calculateFee(ApContract.GAS_REGISTER_COMPLAINT, this.config.gasPrice),
       undefined,
-      [{ denom: "utgd", amount: "1000000" }], // TODO: figure out how to get this
+      [disputeCost],
     );
     return transactionHash;
 
@@ -405,11 +424,14 @@ export class ApContract extends ApContractQuerier {
     if (!this.arbiterPoolVotingAddress) throw new Error("arbiterPoolVotingAddress was not set");
 
     const msg = { accept_complaint: { complaint_id: complaintId } };
+    const disputeCost = await this.getDisputeCost();
     const { transactionHash } = await this.#signingClient.execute(
       senderAddress,
       this.arbiterPoolVotingAddress,
       msg,
       calculateFee(ApContract.GAS_ACCEPT_COMPLAINT, this.config.gasPrice),
+      undefined,
+      [disputeCost],
     );
     return transactionHash;
   }
