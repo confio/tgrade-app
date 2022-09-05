@@ -198,6 +198,49 @@ export class Contract20WS {
     return contractsResponse;
   }
 
+  static async getAll(
+    config: NetworkConfig,
+    client: CosmWasmClient,
+    clientAddress: string,
+  ): Promise<{ [key: string]: TokenProps }> {
+    const tokensMap: { [key: string]: TokenProps } = {};
+
+    // Add feeToken to lists
+    const feeTokenInfo = await this.getTokenInfo(client, clientAddress, config.feeToken, config);
+    tokensMap[config.feeToken] = feeTokenInfo;
+
+    // Get cw20 and tgrade token addresses
+    const cw20TokensAddressesPromise = config.codeIds?.cw20Tokens?.length
+      ? client.getContracts(config.codeIds.cw20Tokens[0])
+      : Promise.resolve([]);
+    const tgradeCw20AddressesPromise = config.codeIds?.tgradeCw20?.length
+      ? client.getContracts(config.codeIds.tgradeCw20[0])
+      : Promise.resolve([]);
+    const tokenAddresses = (
+      await Promise.all([cw20TokensAddressesPromise, tgradeCw20AddressesPromise])
+    ).flat();
+
+    // Get batched token infos
+    const tokensInfos: TokenProps[] = [];
+
+    while (tokensInfos.length < tokenAddresses.length) {
+      const nextTokensInfos = await Promise.all(
+        tokenAddresses
+          .slice(tokensInfos.length, 300 + tokensInfos.length)
+          .map((address) => this.getTokenInfo(client, clientAddress, address, config)),
+      );
+
+      tokensInfos.unshift(...nextTokensInfos);
+    }
+
+    // Fill map with tokens info
+    tokensInfos.forEach((tokenInfo) => {
+      tokensMap[tokenInfo.address] = tokenInfo;
+    });
+
+    return tokensMap;
+  }
+
   static async getLPTokens(
     client: CosmWasmClient,
     clientAddress: string,
