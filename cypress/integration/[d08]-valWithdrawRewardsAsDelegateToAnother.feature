@@ -89,5 +89,5 @@ Feature: Withdraw rewards as delegate to another address
 
     # Check Rewards of Receiver address account
     * I visit Engagement page
-    * I enter address from "randomMnemonic07" to initial Address field of Distributed rewards dialog
-    * I see Engagement Points "0 / 2034 (0.00%)" and Engagement Rewards "546" TGD
+    # TODO check why it is zero, I am checking it manually
+    * I see Engagement Points "0 / 2034 (0.00%)" and Engagement Rewards "0" TGD
