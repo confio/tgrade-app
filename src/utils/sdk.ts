@@ -5,12 +5,12 @@ import { DirectSecp256k1HdWallet, isOfflineDirectSigner, OfflineDirectSigner } f
 import { createProtobufRpcClient, makeCosmoshubPath, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
-import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
-import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { NetworkConfig } from "config/network";
 import { isChrome, isDesktop } from "react-device-detect";
 import { CodeIds } from "service/sdk";
 
+import { PoEContractType } from "../codec/confio/poe/v1beta1/poe";
+import { QueryClientImpl } from "../codec/confio/poe/v1beta1/query";
 import { configKeplr } from "../config/keplr";
 import { Factory } from "./factory";
 
