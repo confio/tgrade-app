@@ -78,6 +78,14 @@ And(
   },
 );
 
+And("I see Delegate field is pre-field with address {string} in Distributed rewards dialog", (address) => {
+  const selectedValidatorAddress = selectWalletAddressByNumber(address);
+  cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField()).should(
+    "have.value",
+    selectedValidatorAddress,
+  );
+});
+
 And("I enter {string} address to initial Address field of Distributed rewards dialog", (addressNumber) => {
   const randomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
   cy.get(distributedRewardsDialog.getInitialValidatorAddressField()).clear().type(randomAddress);

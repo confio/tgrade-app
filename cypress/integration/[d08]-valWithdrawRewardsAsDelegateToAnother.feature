@@ -16,10 +16,6 @@ Feature: Withdraw rewards as delegate to another address
     # Open Distributed rewards dialog
     * I click on the "Claim rewards" button
 
-    # Check account balance
-    * I see Distributed Points "1800" and Distributed Rewards '0.2' TGD in Distributed rewards dialog
-    * I see initial "Address" field is pre-filled with "node0Account" in the dialog
-
   Scenario: Delegate withdraws rewards to another address
 
     # Set delegate
@@ -27,44 +23,38 @@ Feature: Withdraw rewards as delegate to another address
     * I click the "Set delegate" button in Distributed rewards dialog
     * I see Tx success screen with address from "randomMnemonic06"
     * I click on Go to Validator details button
-
-    # Open Distributed rewards dialog
     * I click on the "Claim rewards" button
     * I see Delegate field is pre-field with address from "randomMnemonic06" in Distributed rewards dialog
-
-    # Switch to delegated account
-    * Workaround to clear localstorage
-    * I connect Web Demo wallet
-    * Set "randomMnemonic06" wallet without Engagement Points and Engagement Rewards
-
-    # Withdraw rewards
-    * I open Governance menu
-    * I visit Validators page
-    * I click on "node0Account" address on the list of validators
-    * I see validator's address "node0Account" with related account "node0Account" name
-
-    * I click on the "Claim rewards" button
-    * I enter existing "node0Account" address to initial Address field in Distributed rewards dialog
-    * I see Distributed Points "1800" and Distributed Rewards '0.2' TGD in Distributed rewards dialog
 
     # Enter "Receiver address" account
     * I enter address in the "Receiver address" field from "randomMnemonic07" wallet in Distributed rewards dialog
     * I use "randomMnemonic07" to make query and check balance of this address "000"
 
-    # Click Withdraw button
+    # Click Withdraw rewards button
     * I click on the "Withdraw rewards" button in Distributed rewards dialog
     * I see Tx success screen with address from "randomMnemonic07"
     * I click on Go to Validator details button
     * I see Distributed Points "1800" and Distributed Rewards '0.0' TGD in Distributed rewards dialog
     * I close validator details dialog
 
-    # Check balance of Initial address after withdraw
+    # Check current balance of Initial account
     * Open wallet dialog from main menu
-    * I see TGD balance "9"
+    * I see TGD balance "999"
     * I close wallet dialog modal
-    * I use existing "node0Mnemonic" mnemonic to make query and check balance "628"
 
-    # Clear delegate
+    # I switch to Receiver address account
+    * Workaround to clear localstorage
+    * I connect Web Demo wallet
+    * Set "randomMnemonic07" wallet without Engagement Points and Engagement Rewards
+
+    # Check Rewards of Receiver address account
+    * Open wallet dialog from main menu
+    * I see TGD balance "5450"
+    * I close wallet dialog modal
+    * I use "randomMnemonic07" to make query and check balance of this address "540"
+
+    # I switch back To Initial validator account
+    # To clear delegate address
     * Workaround to clear localstorage
     * I connect Web Demo wallet
     * Set validator with "node0Mnemonic" mnemonic
@@ -78,16 +68,15 @@ Feature: Withdraw rewards as delegate to another address
     * I see Tx success screen with existing "node0Account" address
     * I click on Go to Validator details button
     * I click on the "Claim rewards" button
+    * I see Delegate field is pre-field with address "node0Account" in Distributed rewards dialog
 
-    * I see initial "Address" field is pre-filled with "node0Account" in the dialog
-    * I see Distributed Points "1800" and Distributed Rewards '0.0' TGD in Distributed rewards dialog
-
-    # I switch to Receiver address account
+    # Switch to Delegated account
     * Workaround to clear localstorage
     * I connect Web Demo wallet
-    * Set "randomMnemonic07" wallet without Engagement Points and Engagement Rewards
+    * Set "randomMnemonic06" wallet without Engagement Points and Engagement Rewards
 
-    # Check Rewards of Receiver address account
-    * I visit Engagement page
-    # TODO check why it is zero, I am checking it manually
-    * I see Engagement Points "0 / 2034 (0.00%)" and Engagement Rewards "0" TGD
+    # Check balance of Delegated account
+    * Open wallet dialog from main menu
+    * I see TGD balance "9"
+    * I close wallet dialog modal
+    * I use existing "node0Mnemonic" mnemonic to make query and check balance "628"
