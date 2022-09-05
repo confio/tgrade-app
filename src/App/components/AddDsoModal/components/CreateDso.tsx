@@ -40,7 +40,7 @@ export default function CreateDso({
 }: CreateDsoProps): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, address, signingClient },
+    sdkState: { config, codeIds, address, signingClient },
   } = useSdk();
   const { dsoDispatch } = useDso();
 
@@ -61,7 +61,7 @@ export default function CreateDso({
 
   async function handleSubmitPayment({ escrowAmount }: FormDsoPaymentValues) {
     gtagDsoAction("create_try");
-    if (!signingClient || !address || !config.codeIds?.tgradeDso?.length) return;
+    if (!signingClient || !address || !codeIds) return;
 
     setSubmitting(true);
 
@@ -70,7 +70,7 @@ export default function CreateDso({
 
       const contractAddress = await TcContract.createTc(
         signingClient,
-        config.codeIds?.tgradeDso[0],
+        codeIds.trustedCircle,
         address,
         createDsoData.dsoName,
         nativeEscrowAmount,
