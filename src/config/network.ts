@@ -14,13 +14,7 @@ export interface NetworkConfig {
   readonly coinMap: CoinMap;
   readonly gasPrice: GasPrice;
   readonly factoryAddress: string;
-  readonly codeIds?: {
-    readonly tgradeDso?: readonly [number, ...number[]];
-    readonly cw20Tokens?: readonly [number, ...number[]];
-    readonly tgradeCw20?: readonly [number, ...number[]];
-    readonly tgradeFactory?: readonly [number, ...number[]];
-    readonly tgradePair?: readonly [number, ...number[]];
-  };
+  readonly trustedTokenCodeId: number;
 }
 
 export interface NetworkConfigs {
@@ -56,14 +50,7 @@ const local: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
   factoryAddress: "tgrade1657pee2jhf4jk8pq6yq64e758ngvum45gl866knmjkd83w6jgn3smag42h",
-  codeIds: {
-    // The first 9 codeIds are reserved by tgrade automatically when launched
-    tgradeDso: [2],
-    cw20Tokens: [10],
-    tgradeCw20: [11],
-    tgradeFactory: [12],
-    tgradePair: [13],
-  },
+  trustedTokenCodeId: 11,
 };
 
 const tgradeInternal: NetworkConfig = {
@@ -81,14 +68,7 @@ const tgradeInternal: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
   factoryAddress: "tgrade10v0hrjvwwlqwvk2yhwagm9m9h385spxa4s54f4aekhap0lxyekys20x6y2",
-  codeIds: {
-    // The first 11 codeIds are reserved by tgrade automatically when launched
-    tgradeDso: [2],
-    cw20Tokens: [13],
-    tgradeCw20: [14],
-    tgradeFactory: [15],
-    tgradePair: [16],
-  },
+  trustedTokenCodeId: 14,
 };
 
 const tgradeTestnet: NetworkConfig = {
@@ -106,14 +86,7 @@ const tgradeTestnet: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
   factoryAddress: "tgrade1657pee2jhf4jk8pq6yq64e758ngvum45gl866knmjkd83w6jgn3smag42h",
-  codeIds: {
-    // The first 9 codeIds are reserved by tgrade automatically when launched
-    tgradeDso: [2],
-    cw20Tokens: [10],
-    tgradeCw20: [11],
-    tgradeFactory: [12],
-    tgradePair: [13],
-  },
+  trustedTokenCodeId: 11,
 };
 
 const tgradeMainnet: NetworkConfig = {
@@ -131,14 +104,7 @@ const tgradeMainnet: NetworkConfig = {
   },
   gasPrice: GasPrice.fromString("0.05utgd"),
   factoryAddress: "tgrade1657pee2jhf4jk8pq6yq64e758ngvum45gl866knmjkd83w6jgn3smag42h",
-  codeIds: {
-    // The first 9 codeIds are reserved by tgrade automatically when launched
-    tgradeDso: [2],
-    cw20Tokens: [10],
-    tgradeCw20: [11],
-    tgradeFactory: [12],
-    tgradePair: [13],
-  },
+  trustedTokenCodeId: 11,
 };
 
 const configs: NetworkConfigs = { local, tgradeInternal, tgradeTestnet, tgradeMainnet };
