@@ -9,9 +9,8 @@ import { Faucet } from "utils/faucet";
 import {
   createClient,
   createSigningClient,
+  getCodeIds,
   getLastConnectedWallet,
-  getTokenCodeId,
-  getTrustedCircleCodeId,
   isKeplrAvailable,
   isKeplrSigner,
   isLedgerAvailable,
@@ -205,14 +204,7 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
       try {
         if (!sdkState.client) return;
 
-        const tcCodeId = await getTrustedCircleCodeId(sdkState.config.rpcUrl, sdkState.client);
-        const tokenCodeId = await getTokenCodeId(sdkState.client, sdkState.config.factoryAddress);
-
-        const codeIds: CodeIds = {
-          trustedCircle: tcCodeId,
-          token: tokenCodeId,
-          trustedToken: sdkState.config.trustedTokenCodeId,
-        };
+        const codeIds = await getCodeIds(sdkState.config, sdkState.client);
 
         if (mounted) sdkDispatch({ type: "setCodeIds", payload: codeIds });
       } catch (error) {
@@ -224,13 +216,7 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
     return () => {
       mounted = false;
     };
-  }, [
-    handleError,
-    sdkState.client,
-    sdkState.config.factoryAddress,
-    sdkState.config.rpcUrl,
-    sdkState.config.trustedTokenCodeId,
-  ]);
+  }, [handleError, sdkState.client, sdkState.config]);
 
   /*
       NOTE: we use useCallback to provide referential stability so that window.addEventListener
