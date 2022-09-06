@@ -41,6 +41,42 @@
       media="print"
       onload="this.media='all'"
     />
+    <!-- Start Hotjar Tracking Code -->
+    <script>
+      (function (h, o, t, j, a, r) {
+        let hjid = 0;
+        const domain = window.location.href.split("//")[1].split(".")[0];
+        switch (domain) {
+          case "dev":
+            hjid = 3144187;
+            break;
+          case "staging":
+            hjid = 3144191;
+            break;
+          case "demo":
+            hjid = 3144195;
+            break;
+          case "dapp":
+            hjid = 3144193;
+            break;
+          default:
+            return;
+        }
+
+        h.hj =
+          h.hj ||
+          function () {
+            (h.hj.q = h.hj.q || []).push(arguments);
+          };
+        h._hjSettings = { hjid, hjsv: 6 };
+        a = o.getElementsByTagName("head")[0];
+        r = o.createElement("script");
+        r.async = 1;
+        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+        a.appendChild(r);
+      })(window, document, "https://static.hotjar.com/c/hotjar-", ".js?sv=");
+    </script>
+    <!-- End Hotjar Tracking Code -->
     <!-- Start Dummy function if Google Analytics should not be used -->
     <script>
       function gtag() {}
