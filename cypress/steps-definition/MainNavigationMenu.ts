@@ -13,7 +13,6 @@ const mainNavigationMenu = new MainNavigationMenu();
 const engagementPage = new EngagementPage();
 
 Given("Open wallet dialog from main menu", () => {
-  cy.wait(3000); //Workaround wait until amount will be fetched
   cy.get(mainNavigationMenu.getConnectWalletIcon()).click();
 });
 

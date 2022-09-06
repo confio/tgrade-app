@@ -59,8 +59,10 @@ And(
 );
 
 And("I see TGD balance {string}", (expectedTokenBalance) => {
-  cy.wait(3000); // workaround to wait for balance to be visible
   cy.get(connectWalletModal.getTokenBalance()).then(($element) => {
+    if ($element.text() === "") {
+      cy.wait(3000); // workaround to wait for balance to be visible
+    }
     const extractedTokenValue = parseInt($element.text());
     expect(extractedTokenValue).to.be.not.lessThan(parseInt(expectedTokenBalance));
   });
