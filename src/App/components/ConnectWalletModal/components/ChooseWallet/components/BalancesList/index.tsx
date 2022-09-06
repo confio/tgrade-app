@@ -2,6 +2,7 @@ import { SendOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
 import pinDarkIcon from "App/assets/icons/pin-dark.svg";
 import pinLightIcon from "App/assets/icons/pin-light.svg";
+import LoadingSpinner from "App/components/LoadingSpinner";
 import SendTokenModal from "App/components/SendTokenModal";
 import Stack from "App/components/Stack/style";
 import TooltipWrapper from "App/components/TooltipWrapper";
@@ -89,51 +90,63 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
         onChange={({ target }) => setSearchText(target.value)}
         style={{ width: "100%", borderRadius: "100%" }}
       />
-      <BalancesContainer>
-        {tokenList.map((token) => (
-          <BalancesItem
-            key={token.address}
-            onClick={() => {
-              setSelectedToken(token);
-            }}
-            data-cy={`wallet-dialog-list-of-tokens-with-${token.symbol}`}
-          >
-            <TokenLogoName>
-              <img alt="Token logo" src={token.img} />
-              <div>
-                <Text>Send </Text>
-                <Text>{token.symbol}</Text>
-              </div>
-              <SendOutlined color="red" />
-            </TokenLogoName>
-            <TokenDetailPin>
-              <div>
-                <Text data-cy="connect-wallet-modal-token-balance">{token.humanBalance}</Text>
-                <Text
-                  onClick={(event) => {
-                    event?.stopPropagation();
-                  }}
-                  copyable={
-                    token.address === "utgd" ? false : { text: token.address, tooltips: "Copy token address" }
-                  }
-                >
-                  {token.address === "utgd" ? "Tgrade token" : `…${token.address.slice(-10)}`}
-                </Text>
-              </div>
-              {token.address !== config.feeToken ? (
-                <img
-                  src={pinnedTokens.includes(token.address) ? pinDarkIcon : pinLightIcon}
-                  alt={pinnedTokens.includes(token.address) ? "Unpin token" : "Pin token"}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    pinUnpinToken?.(token.address);
-                  }}
-                />
-              ) : null}
-            </TokenDetailPin>
-          </BalancesItem>
-        ))}
-      </BalancesContainer>
+      {tokenList.length !== 0 ? (
+        <BalancesContainer>
+          {tokenList.map((token) => (
+            <BalancesItem
+              key={token.address}
+              onClick={() => {
+                setSelectedToken(token);
+              }}
+              data-cy={`wallet-dialog-list-of-tokens-with-${token.symbol}`}
+            >
+              <TokenLogoName>
+                <img alt="Token logo" src={token.img} />
+                <div>
+                  <Text>Send </Text>
+                  <Text>{token.symbol}</Text>
+                </div>
+                <SendOutlined color="red" />
+              </TokenLogoName>
+              <TokenDetailPin>
+                <div>
+                  <Text data-cy="connect-wallet-modal-token-balance">
+                    {!token.humanBalance || token.humanBalance.length <= 0 ? (
+                      <LoadingSpinner />
+                    ) : (
+                      token.humanBalance
+                    )}
+                  </Text>
+                  <Text
+                    onClick={(event) => {
+                      event?.stopPropagation();
+                    }}
+                    copyable={
+                      token.address === "utgd"
+                        ? false
+                        : { text: token.address, tooltips: "Copy token address" }
+                    }
+                  >
+                    {token.address === "utgd" ? "Tgrade token" : `…${token.address.slice(-10)}`}
+                  </Text>
+                </div>
+                {token.address !== config.feeToken ? (
+                  <img
+                    src={pinnedTokens.includes(token.address) ? pinDarkIcon : pinLightIcon}
+                    alt={pinnedTokens.includes(token.address) ? "Unpin token" : "Pin token"}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      pinUnpinToken?.(token.address);
+                    }}
+                  />
+                ) : null}
+              </TokenDetailPin>
+            </BalancesItem>
+          ))}
+        </BalancesContainer>
+      ) : (
+        <Text style={{ textAlign: "right" }}>{"No balance found for pinned tokens"}</Text>
+      )}
       <SendTokenModal
         isModalOpen={!!selectedToken}
         closeModal={() => {
