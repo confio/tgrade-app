@@ -4,6 +4,7 @@ import { calculateFee, GasPrice } from "@cosmjs/stargate";
 import tgdIcon from "App/assets/icons/tgrade-icon-gradient.svg";
 import tempImgUrl from "App/assets/icons/token-placeholder.png";
 import { NetworkConfig } from "config/network";
+import { CodeIds } from "service/sdk";
 
 import { UINT128_MAX } from "./currency";
 import { PairProps, TokenProps } from "./tokens";
@@ -200,6 +201,7 @@ export class Contract20WS {
 
   static async getAll(
     config: NetworkConfig,
+    codeIds: CodeIds,
     client: CosmWasmClient,
     clientAddress: string,
   ): Promise<{ [key: string]: TokenProps }> {
@@ -210,12 +212,8 @@ export class Contract20WS {
     tokensMap[config.feeToken] = feeTokenInfo;
 
     // Get cw20 and tgrade token addresses
-    const cw20TokensAddressesPromise = config.codeIds?.cw20Tokens?.length
-      ? client.getContracts(config.codeIds.cw20Tokens[0])
-      : Promise.resolve([]);
-    const tgradeCw20AddressesPromise = config.codeIds?.tgradeCw20?.length
-      ? client.getContracts(config.codeIds.tgradeCw20[0])
-      : Promise.resolve([]);
+    const cw20TokensAddressesPromise = client.getContracts(codeIds.token);
+    const tgradeCw20AddressesPromise = client.getContracts(codeIds.trustedToken);
     const tokenAddresses = (
       await Promise.all([cw20TokensAddressesPromise, tgradeCw20AddressesPromise])
     ).flat();

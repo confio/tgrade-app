@@ -5,7 +5,7 @@ import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
-import { createSigningClient, generateMnemonic } from "utils/sdk";
+import { createSigningClient, generateMnemonic, getCodeIds } from "utils/sdk";
 import { Pool, ProvideFormValues, SwapFormValues } from "utils/tokens";
 import { TcContract } from "utils/trustedCircle";
 
@@ -39,10 +39,12 @@ describe("T-Market with Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     // Create Trusted Circle
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -66,15 +68,13 @@ describe("T-Market with Trusted Circle", () => {
     const tokenDecimals = 6;
     const tokenInitialSupply = "100000000";
 
-    const codeId = config.codeIds?.tgradeCw20?.[0] ?? 0;
-
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
       .toString();
 
     const tcTokenAddress = await Contract20WS.createContract(
       signingClient,
-      codeId,
+      codeIds.trustedToken,
       address,
       tokenName,
       tokenSymbol,
@@ -86,7 +86,7 @@ describe("T-Market with Trusted Circle", () => {
     );
     expect(tcTokenAddress.startsWith(config.addressPrefix)).toBeTruthy();
 
-    const tokens = await Contract20WS.getAll(config, signingClient, address);
+    const tokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
     const cw20tokenInfo = tokens[tcTokenAddress];
 
     const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
@@ -170,10 +170,12 @@ describe("T-Market with Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     // Create Trusted Circle
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -197,9 +199,6 @@ describe("T-Market with Trusted Circle", () => {
     const tokenDecimals = 6;
     const tokenInitialSupply = "100000000";
 
-    // select 'tgradeCw20' as Trusted token
-    const codeId = config.codeIds?.tgradeCw20?.[0] ?? 0;
-
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
       .toString();
@@ -207,7 +206,7 @@ describe("T-Market with Trusted Circle", () => {
     // Create digital Asset
     const tcTokenAddress = await Contract20WS.createContract(
       signingClient,
-      codeId,
+      codeIds.trustedToken,
       address,
       tokenName,
       tokenSymbol,
@@ -219,7 +218,7 @@ describe("T-Market with Trusted Circle", () => {
     );
     expect(tcTokenAddress.startsWith(config.addressPrefix)).toBeTruthy();
 
-    const tokens = await Contract20WS.getAll(config, signingClient, address);
+    const tokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
     const cw20tokenInfo = tokens[tcTokenAddress];
 
     const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
