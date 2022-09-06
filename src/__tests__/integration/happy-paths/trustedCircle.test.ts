@@ -7,7 +7,7 @@ import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
-import { createSigningClient, generateMnemonic } from "utils/sdk";
+import { createSigningClient, generateMnemonic, getCodeIds } from "utils/sdk";
 import { SwapFormValues } from "utils/tokens";
 import { Punishment, TcContract, TcContractQuerier } from "utils/trustedCircle";
 
@@ -40,9 +40,11 @@ describe("Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -84,9 +86,11 @@ describe("Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -133,9 +137,11 @@ describe("Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -183,9 +189,11 @@ describe("Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -240,10 +248,12 @@ describe("Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     // Create TC and add non voting member
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -294,9 +304,11 @@ describe("Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -355,9 +367,11 @@ describe("Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -420,9 +434,11 @@ describe("Trusted Circle", () => {
     const faucetClient = new FaucetClient(config.faucetUrl);
     await faucetClient.credit(address, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       address,
       tcName,
       escrowAmount,
@@ -446,8 +462,6 @@ describe("Trusted Circle", () => {
     const tokenDecimals = 6;
     const tokenInitialSupply = "100000000";
 
-    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
-
     const amount = Decimal.fromUserInput(tokenInitialSupply, tokenDecimals)
       .multiply(Uint64.fromNumber(10 ** tokenDecimals))
       .toString();
@@ -455,7 +469,7 @@ describe("Trusted Circle", () => {
     // Creat contract with trusted token
     const tcTokenAddress = await Contract20WS.createContract(
       signingClient,
-      codeId,
+      codeIds.token,
       address,
       tokenName,
       tokenSymbol,
@@ -471,7 +485,7 @@ describe("Trusted Circle", () => {
       tcContractAddress,
     );
 
-    const tokens = await Contract20WS.getAll(config, signingClient, address);
+    const tokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
     const tcTokenInfo = tokens[tcTokenAddress];
     const { amount: balance_utgd } = await signingClient.getBalance(address, config.feeToken);
 

@@ -4,7 +4,7 @@ import { FaucetClient } from "@cosmjs/faucet-client";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
-import { createSigningClient, generateMnemonic } from "utils/sdk";
+import { createSigningClient, generateMnemonic, getCodeIds } from "utils/sdk";
 import { TcContract } from "utils/trustedCircle";
 
 const tcName = "Trusted Circle #1";
@@ -53,9 +53,11 @@ describe("Trusted Circle with two members", () => {
     const faucetClient_02 = new FaucetClient(config.faucetUrl);
     await faucetClient_02.credit(walletUserB, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient_01);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient_01,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       walletUserA,
       tcName,
       escrowAmount,
@@ -129,9 +131,11 @@ describe("Trusted Circle with two members", () => {
     const faucetClient_02 = new FaucetClient(config.faucetUrl);
     await faucetClient_02.credit(walletUserB, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient_01);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient_01,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       walletUserA,
       tcName,
       escrowAmount,
@@ -206,9 +210,11 @@ describe("Trusted Circle with two members", () => {
     const faucetClient_02 = new FaucetClient(config.faucetUrl);
     await faucetClient_02.credit(walletUserB, config.faucetTokens?.[0] ?? config.feeToken);
 
+    const codeIds = await getCodeIds(config, signingClient_01);
+
     const tcContractAddress = await TcContract.createTc(
       signingClient_01,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       walletUserA,
       tcName,
       escrowAmount,
