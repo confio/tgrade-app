@@ -55,7 +55,7 @@ describe("T-Market", () => {
       undefined,
     );
 
-    const tokens = await Contract20WS.getAll(config, signingClient, address);
+    const tokens = await Contract20WS.getAll(config, codeIds, signingClient, address);
     expect(tokens[cw20tokenAddress].name).toBe(tokenName);
     expect(tokens[cw20tokenAddress].symbol).toBe(tokenSymbol);
     expect(tokens[cw20tokenAddress].decimals).toBe(tokenDecimals);
