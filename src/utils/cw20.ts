@@ -159,8 +159,6 @@ export class Contract20WS {
     config: NetworkConfig,
   ): Promise<TokenProps> {
     if (contractAddress === "utgd") {
-      console.log("LOG CLIENT");
-      console.log(client);
       const { amount: balance_utgd } = await client.getBalance(address, "utgd");
       return {
         address: "utgd",
