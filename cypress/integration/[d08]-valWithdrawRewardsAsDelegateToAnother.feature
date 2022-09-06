@@ -49,9 +49,11 @@ Feature: Withdraw rewards as delegate to another address
 
     # Check Rewards of Receiver address account
     * Open wallet dialog from main menu
-    * I see TGD balance "5450"
+    # TODO improve after getting more validator issues/789
+    * I see TGD balance "0.1"
     * I close wallet dialog modal
-    * I use "randomMnemonic07" to make query and check balance of this address "540"
+    # TODO improve after getting more validator issues/789
+    * I use "randomMnemonic07" to make query and check balance of this address "0"
 
     # I switch back To Initial validator account
     # To clear delegate address
@@ -77,6 +79,8 @@ Feature: Withdraw rewards as delegate to another address
 
     # Check balance of Delegated account
     * Open wallet dialog from main menu
-    * I see TGD balance "9"
+    # TODO improve after getting more validator issues/789
+    * I see TGD balance "0"
     * I close wallet dialog modal
-    * I use existing "node0Mnemonic" mnemonic to make query and check balance "628"
+    # TODO improve after getting more validator issues/789
+    * I use existing "node0Mnemonic" mnemonic to make query and check balance "0"
