@@ -208,6 +208,18 @@ describe("Wallet", () => {
     )) as unknown as { balance: string };
     expect(parseInt(walletBalanceUserBBeforeSend.balance)).toBe(0);
 
+    // Add User_B to the Trusted Circle
+    const tcContract = new TcContract(tcContractAddress, signingClient_01, config.gasPrice);
+    const txHash = await tcContract.propose(walletUserA, "Add User_B to TC", {
+      add_remove_non_voting_members: { add: [walletUserB], remove: [] },
+    });
+    expect(txHash.proposalId).toBeTruthy();
+    if (!txHash.proposalId) return;
+
+    await tcContract.executeProposal(walletUserA, txHash.proposalId);
+    const executedProposal = await tcContract.getProposal(txHash.proposalId);
+    expect(executedProposal.status).toBe("executed");
+
     // Send tokens
     await Contract20WS.sendTokens(signingClient_01, walletUserA, cw20tokenAddress, walletUserB, "5250");
 
