@@ -187,6 +187,9 @@ workflows:
     jobs:
       - lint
       - cy-local
+      - test:
+          # https://circleci.com/docs/2.0/env-vars/
+          context: Testing-Env-Vars
       - build:
           requires:
             - lint
