@@ -36,16 +36,20 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
     tokensState: { pinnedTokens, pinUnpinToken, reloadPinnedTokensOnly, tokens },
   } = useTokens();
 
+  const [queryTokensState, setQueryTokensState] = useState<"initial" | "loading" | "loaded">("initial");
   const [searchText, setSearchText] = useState("");
   const [tokenList, setTokenList] = useState<readonly TokenProps[]>([]);
   const [selectedToken, setSelectedToken] = useState<TokenProps>();
 
   useEffect(() => {
     (async function () {
-      await reloadPinnedTokensOnly?.();
+      if (!reloadPinnedTokensOnly || queryTokensState !== "initial") return;
+
+      setQueryTokensState("loading");
+      await reloadPinnedTokensOnly();
+      setQueryTokensState("loaded");
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [queryTokensState, reloadPinnedTokensOnly]);
 
   useEffect(() => {
     const tokenList = tokensMapToArray(tokens, config.feeToken);
@@ -84,13 +88,18 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
       >
         <Text style={{ color: "black" }}>Available tokens to send</Text>
       </TooltipWrapper>
-      <SearchToken
-        placeholder="Search token"
-        allowClear
-        onChange={({ target }) => setSearchText(target.value)}
-        style={{ width: "100%", borderRadius: "100%" }}
-      />
-      {tokenList.length !== 0 ? (
+      {queryTokensState === "loaded" && tokenList.length ? (
+        <SearchToken
+          placeholder="Search token"
+          allowClear
+          onChange={({ target }) => setSearchText(target.value)}
+          style={{ width: "100%", borderRadius: "100%" }}
+        />
+      ) : null}
+      {queryTokensState === "loading" ? (
+        <LoadingSpinner spinProps={{ style: { height: "75px" }, delay: 500 }} />
+      ) : null}
+      {queryTokensState === "loaded" && tokenList.length ? (
         <BalancesContainer>
           {tokenList.map((token) => (
             <BalancesItem
@@ -110,13 +119,7 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
               </TokenLogoName>
               <TokenDetailPin>
                 <div>
-                  <Text data-cy="connect-wallet-modal-token-balance">
-                    {!token.humanBalance || token.humanBalance.length <= 0 ? (
-                      <LoadingSpinner />
-                    ) : (
-                      token.humanBalance
-                    )}
-                  </Text>
+                  <Text data-cy="connect-wallet-modal-token-balance">{token.humanBalance}</Text>
                   <Text
                     onClick={(event) => {
                       event?.stopPropagation();
@@ -144,9 +147,10 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
             </BalancesItem>
           ))}
         </BalancesContainer>
-      ) : (
-        <Text style={{ textAlign: "right" }}>{"No balance found for pinned tokens"}</Text>
-      )}
+      ) : null}
+      {queryTokensState === "loaded" && !tokenList.length ? (
+        <Text>No balance found for pinned tokens</Text>
+      ) : null}
       <SendTokenModal
         isModalOpen={!!selectedToken}
         closeModal={() => {
