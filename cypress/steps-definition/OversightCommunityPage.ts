@@ -1,5 +1,12 @@
+import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { And } from "cypress-cucumber-preprocessor/steps";
 
+import { config } from "../../src/config/network";
+import { OcContract } from "../../src/utils/oversightCommunity";
+import { createSigningClient } from "../../src/utils/sdk";
+import { selectMnemonicByNumber } from "../fixtures/existingAccounts";
+import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
 import { OversightCommunityPage } from "../page-object/OversightCommunityPage";
 
 const oversightCommunityPage = new OversightCommunityPage();
@@ -70,3 +77,65 @@ And("I see the current voting rules for the Oversight Community", () => {
 And("I see the half-life data for the Oversight Community", () => {
   cy.get(oversightCommunityPage.getEngagementHalfLifeDurationValue()).should("contain.text", "180 days");
 });
+
+And("Execute proposal in OC with {string} member", async (randomMnemonic) => {
+  const selectedRandomMnemonic = selectRandomGeneratedMnemonicByNumber(randomMnemonic);
+  await executeProposeWithRandomMember(selectedRandomMnemonic);
+});
+
+And("I don't see Add proposal button available", () => {
+  cy.get(oversightCommunityPage.getAddProposalButton()).should("not.exist");
+});
+
+And("I click on Deposit escrow button", () => {
+  cy.get(oversightCommunityPage.getDepositEscrowButton()).click();
+});
+
+And("I see how much escrow {string} I need to deposit in the Deposit escrow modal", (requiredEscrow) => {
+  cy.get(oversightCommunityPage.getRequiredEscrowValue()).should("have.text", requiredEscrow);
+});
+
+And("I enter {string} escrow to Escrow amount field", (escrowAmount) => {
+  cy.get(oversightCommunityPage.getEscrowAmountField()).clear().type(escrowAmount);
+});
+
+And("I click Pay escrow button", () => {
+  cy.get(oversightCommunityPage.getPayEscrowButton()).click();
+});
+
+And("I see Add proposal button is available", () => {
+  cy.reload(); // Workaround probably a bug, button only visible after reload the page
+  cy.get(oversightCommunityPage.getAddProposalButton()).should("be.visible");
+});
+
+async function executeProposeWithRandomMember(randomMnemonic: string) {
+  const mnemonic = selectMnemonicByNumber("adminAccount");
+  const comment = "Add new member with random generated mnemonic";
+
+  const adminWallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+
+  const wallet_member = await DirectSecp256k1HdWallet.fromMnemonic(randomMnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+
+  await createSigningClient(config, wallet_member);
+  const addressRandomMember = (await wallet_member.getAccounts())[0].address;
+
+  const signingClient = await createSigningClient(config, adminWallet);
+  const { address } = (await adminWallet.getAccounts())[0];
+
+  const OcCommunity = new OcContract(config, signingClient);
+
+  const oC = await OcCommunity.propose(address, comment, {
+    add_voting_members: {
+      voters: [addressRandomMember],
+    },
+  });
+
+  if (!oC.proposalId) return;
+  await OcCommunity.executeProposal(address, oC.proposalId);
+}

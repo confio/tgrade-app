@@ -12,13 +12,12 @@ const mnemonic_01 = generateMnemonic();
 const mnemonic_02 = generateMnemonic();
 const mnemonic_03 = generateMnemonic();
 const mnemonic_04 = generateMnemonic();
-const addressPrefix = "tgrade";
 
 describe("Wallet", () => {
   it("Send native token", async () => {
     const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
       hdPaths: [makeCosmoshubPath(0)],
-      prefix: addressPrefix,
+      prefix: config.addressPrefix,
     });
 
     const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_02, {
@@ -64,7 +63,7 @@ describe("Wallet", () => {
 
     const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
       hdPaths: [makeCosmoshubPath(0)],
-      prefix: addressPrefix,
+      prefix: config.addressPrefix,
     });
 
     const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_03, {
@@ -140,7 +139,7 @@ describe("Wallet", () => {
 
     const wallet_01 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_01, {
       hdPaths: [makeCosmoshubPath(0)],
-      prefix: addressPrefix,
+      prefix: config.addressPrefix,
     });
 
     const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic_04, {

@@ -65,6 +65,14 @@ And("I see Tx success screen with created {string} token name", (createdTokenNam
   cy.get(txSuccessScreen.getTransactionResultScreenDetails()).should("contain.text", createdTokenName);
 });
 
+And("I see Tx success screen with {string} amount of Deposit escrow", (escrowAmount) => {
+  cy.get(txSuccessScreen.getTransactionResultScreenText()).should(
+    "have.text",
+    "Your transaction was approved!",
+  );
+  cy.get(txSuccessScreen.getTransactionResultScreenDetails()).should("contain.text", escrowAmount);
+});
+
 And("I see Tx success screen", () => {
   cy.get(txSuccessScreen.getTransactionResultScreenText()).should(
     "have.text",
@@ -74,4 +82,8 @@ And("I see Tx success screen", () => {
 
 And("I click on Go to Oversight Community details button", () => {
   cy.get(txSuccessScreen.getGoToOcDetailsButton()).click();
+});
+
+And("I click on Go to Oversight Community details button in Escrow modal", () => {
+  cy.get(txSuccessScreen.getEscrowModalGoToOcDetailsButton()).click();
 });

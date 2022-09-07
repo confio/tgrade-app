@@ -118,7 +118,7 @@ export default function DepositOcEscrowModal({
             </Button>
           ) : null}
           <Button onClick={() => resetModal()}>
-            <span>Go to Oversight Community details</span>
+            <span data-cy="oc-escrow-modal-go-to-oc-details-button">Go to Oversight Community details</span>
           </Button>
         </ShowTxResult>
       ) : (
@@ -127,7 +127,9 @@ export default function DepositOcEscrowModal({
             <Stack gap="s1">
               <Title>Deposit escrow in the Oversight Community?</Title>
               <Text>
-                Required escrow: {requiredEscrow} {feeDenom}
+                Required escrow:{" "}
+                <span data-cy="deposit-escrow-modal-required-escrow-value">{requiredEscrow}</span>
+                <span>&nbsp;{feeDenom}</span>
               </Text>
               <Text>
                 Your current escrow: {userEscrow} {feeDenom}
@@ -160,7 +162,11 @@ export default function DepositOcEscrowModal({
                       danger={!!signer}
                       onClick={signer ? () => submitForm() : () => setConnectWalletModalOpen(true)}
                     >
-                      {signer ? "Pay escrow" : "Connect wallet"}
+                      {signer ? (
+                        <span data-cy="deposit-escrow-modal-pay-escrow-button">"Pay escrow"</span>
+                      ) : (
+                        "Connect wallet"
+                      )}
                     </Button>
                   </ButtonGroup>
                 </Stack>

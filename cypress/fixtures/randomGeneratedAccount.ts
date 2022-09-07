@@ -14,6 +14,7 @@ const randomMnemonic04 = generateMnemonic();
 const randomMnemonic05 = generateMnemonic();
 const randomMnemonic06 = generateMnemonic();
 const randomMnemonic07 = generateMnemonic();
+const randomMnemonic08 = generateMnemonic();
 
 const randomAddress01 = makeRandomTgradeAddress();
 const randomAddress02 = makeRandomTgradeAddress();
@@ -39,6 +40,8 @@ export const selectRandomGeneratedMnemonicByNumber = (addressMnemonic: string): 
       return randomMnemonic06;
     case "randomMnemonic07":
       return randomMnemonic07;
+    case "randomMnemonic08":
+      return randomMnemonic08;
     default:
       return "no mnemonic was provided";
   }

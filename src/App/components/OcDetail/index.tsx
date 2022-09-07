@@ -178,7 +178,11 @@ export default function OcDetail(): JSX.Element {
               Proposals
             </Title>
             {isVotingMember && (
-              <ButtonAddNew text="Add proposal" onClick={() => setCreateProposalModalOpen(true)} />
+              <ButtonAddNew
+                text="Add proposal"
+                onClick={() => setCreateProposalModalOpen(true)}
+                data-cy="oc-page-add-proposal-button"
+              />
             )}
           </header>
           <Table

@@ -217,6 +217,7 @@ export default function OcEscrow(): JSX.Element {
           <Button
             disabled={membership === undefined || !!membership?.non_voting}
             onClick={() => setDepositModalOpen(true)}
+            data-cy="oc-page-deposit-escrow-button"
           >
             Deposit escrow
           </Button>
