@@ -4,11 +4,12 @@ import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
 import { createSigningClient, generateMnemonic } from "utils/sdk";
 
+import { selectMnemonicByNumber } from "../../../../cypress/fixtures/existingAccounts";
 import { PoEContractType } from "../../../codec/confio/poe/v1beta1/poe";
 import { OcContract } from "../../../utils/oversightCommunity";
 import { EngagementContract, EngagementContractQuerier } from "../../../utils/poeEngagement";
 
-const adminMnemonic = process.env.SECRET_MNEMONIC || ""; //member of OC
+const adminMnemonic = selectMnemonicByNumber("adminAccount");
 const mnemonic_01 =
   "move drastic law sustain decade parent stairs minor cry help worry minute bridge bone force found mimic frown burst foil avocado water kingdom picture";
 const comment = "Comment message" + new Date();

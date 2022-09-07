@@ -1,21 +1,30 @@
-import { Random } from "@cosmjs/crypto";
-import { Bech32 } from "@cosmjs/encoding";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
 import { OcContract } from "utils/oversightCommunity";
-import { createSigningClient } from "utils/sdk";
+import { createSigningClient, generateMnemonic } from "utils/sdk";
 
-const mnemonic = process.env.SECRET_MNEMONIC || ""; // to run locally use real mnemonic instead
-const addressPrefix = "tgrade";
-const comment = "Add new member";
-const memberToAdd = makeRandomAddress();
+import { selectMnemonicByNumber } from "../../../../cypress/fixtures/existingAccounts";
+
+const mnemonic = selectMnemonicByNumber("adminAccount");
+const comment = "Add new member with random generated mnemonic";
+const randomMnemonic = generateMnemonic();
 
 it("creates OC proposal with Oversight Community member", async () => {
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
     hdPaths: [makeCosmoshubPath(0)],
-    prefix: addressPrefix,
+    prefix: config.addressPrefix,
   });
+
+  const wallet_member = await DirectSecp256k1HdWallet.fromMnemonic(randomMnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+
+  console.log(randomMnemonic);
+
+  await createSigningClient(config, wallet_member);
+  const walletMemberAddress = (await wallet_member.getAccounts())[0].address;
 
   const signingClient = await createSigningClient(config, wallet);
   const { address } = (await wallet.getAccounts())[0];
@@ -24,7 +33,7 @@ it("creates OC proposal with Oversight Community member", async () => {
 
   const oC = await OcCommunity.propose(address, comment, {
     add_voting_members: {
-      voters: [memberToAdd],
+      voters: [walletMemberAddress],
     },
   });
 
@@ -34,8 +43,4 @@ it("creates OC proposal with Oversight Community member", async () => {
   const txHash = await OcCommunity.executeProposal(address, oC.proposalId);
 
   expect(txHash).toBeTruthy();
-}, 10000);
-
-function makeRandomAddress(): string {
-  return Bech32.encode("tgrade", Random.getBytes(20));
-}
+}, 20000);
