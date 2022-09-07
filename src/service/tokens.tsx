@@ -243,7 +243,7 @@ export const useTokens = (): TokensContextType => {
 export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, client, address },
+    sdkState: { config, codeIds, client, address },
   } = useSdk();
 
   const [loadedAddress, setLoadedAddress] = useState(address);
@@ -515,18 +515,18 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
   // Set up tokensState.loadNextTokens
   useEffect(() => {
     async function loadNextTokens() {
-      if (!client || !address) return;
+      if (!client || !codeIds || !address) return;
 
       try {
         // Get next contract addresses
         const cw20Response = await Contract20WS.getContracts(
-          config.codeIds?.cw20Tokens?.[0] ?? 0,
+          codeIds.token,
           client,
           paginationState.cw20PaginationKey,
         );
 
         const trustedTokenResponse = await Contract20WS.getContracts(
-          config.codeIds?.tgradeCw20?.[0] ?? 0,
+          codeIds.trustedToken,
           client,
           paginationState.trustedTokenPaginationKey,
         );
@@ -566,6 +566,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
   }, [
     address,
     client,
+    codeIds,
     config,
     handleError,
     paginationState.cw20PaginationKey,

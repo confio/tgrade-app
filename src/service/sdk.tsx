@@ -9,6 +9,7 @@ import { Faucet } from "utils/faucet";
 import {
   createClient,
   createSigningClient,
+  getCodeIds,
   getLastConnectedWallet,
   isKeplrAvailable,
   isKeplrSigner,
@@ -23,9 +24,16 @@ import { retry } from "utils/ui";
 
 import { useError } from "./error";
 
+export interface CodeIds {
+  readonly trustedCircle: number;
+  readonly token: number;
+  readonly trustedToken: number;
+}
+
 export type SdkState = {
   readonly config: NetworkConfig;
   readonly client?: CosmWasmClient;
+  readonly codeIds?: CodeIds;
   readonly signer?: OfflineDirectSigner | LedgerSigner;
   readonly address?: string;
   readonly signingClient?: SigningCosmWasmClient;
@@ -45,6 +53,10 @@ type SdkAction =
   | {
       readonly type: "setClient";
       readonly payload: CosmWasmClient;
+    }
+  | {
+      readonly type: "setCodeIds";
+      readonly payload: CodeIds;
     }
   | {
       readonly type: "setSigner";
@@ -75,6 +87,7 @@ function sdkReducer(state: SdkState, action: SdkAction): SdkState {
       return {
         config: action.payload ?? state.config,
         client: action.payload ? undefined : state.client,
+        codeIds: undefined,
         signer: undefined,
         address: undefined,
         signingClient: undefined,
@@ -87,6 +100,9 @@ function sdkReducer(state: SdkState, action: SdkAction): SdkState {
     }
     case "setClient": {
       return { ...state, client: action.payload };
+    }
+    case "setCodeIds": {
+      return { ...state, codeIds: action.payload };
     }
     case "setSigner": {
       return { ...state, signer: action.payload };
@@ -155,6 +171,7 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
   const [sdkState, sdkDispatch] = useReducer(sdkReducer, {
     config,
     client: undefined,
+    codeIds: undefined,
     signer: undefined,
     address: undefined,
     signingClient: undefined,
@@ -179,6 +196,27 @@ export default function SdkProvider({ config, children }: SdkProviderProps): JSX
       mounted = false;
     };
   }, [handleError, sdkState.config.rpcUrl]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    (async function setCodeIds(): Promise<void> {
+      try {
+        if (!sdkState.client) return;
+
+        const codeIds = await getCodeIds(sdkState.config, sdkState.client);
+
+        if (mounted) sdkDispatch({ type: "setCodeIds", payload: codeIds });
+      } catch (error) {
+        if (!(error instanceof Error)) return;
+        handleError(error);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, [handleError, sdkState.client, sdkState.config]);
 
   /*
       NOTE: we use useCallback to provide referential stability so that window.addEventListener

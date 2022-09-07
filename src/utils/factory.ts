@@ -3,6 +3,16 @@ import { calculateFee, GasPrice } from "@cosmjs/stargate";
 
 import { PairProps, SwapFormValues, tokenObj } from "./tokens";
 
+export interface Config {
+  readonly owner: string;
+  readonly pair_code_id: number;
+  readonly token_code_id: number;
+  readonly default_commission: string;
+  // Our migrate admin (part of wasm's `ContractInfo`).
+  // Stored here for convenience (used during instantiation of pair contracts)
+  readonly migrate_admin?: string | undefined;
+}
+
 export async function getPairsEager(
   client: CosmWasmClient,
   factoryAddress: string,
@@ -108,5 +118,10 @@ export class Factory {
     } catch {
       return undefined;
     }
+  }
+
+  static async getConfig(client: CosmWasmClient, factoryAddress: string): Promise<Config> {
+    const config: Config = await client.queryContractSmart(factoryAddress, { config: {} });
+    return config;
   }
 }

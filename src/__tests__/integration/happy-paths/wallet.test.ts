@@ -5,7 +5,7 @@ import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { config } from "config/network";
 import { sendTokens } from "utils/currency";
 import { Contract20WS } from "utils/cw20";
-import { createSigningClient, generateMnemonic } from "utils/sdk";
+import { createSigningClient, generateMnemonic, getCodeIds } from "utils/sdk";
 import { TcContract } from "utils/trustedCircle";
 
 const mnemonic_01 = generateMnemonic();
@@ -80,14 +80,14 @@ describe("Wallet", () => {
     const signingClient_02 = await createSigningClient(config, wallet_02);
     const { address: walletUserB } = (await wallet_02.getAccounts())[0];
 
-    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+    const codeIds = await getCodeIds(config, signingClient_01);
 
     const amount = Decimal.fromUserInput("1000", 6).atomics;
 
     // Create digital asset
     const cw20tokenAddress = await Contract20WS.createContract(
       signingClient_01,
-      codeId,
+      codeIds.token,
       walletUserA,
       tokenName,
       tokenSymbol,
@@ -156,12 +156,12 @@ describe("Wallet", () => {
     const signingClient_02 = await createSigningClient(config, wallet_02);
     const { address: walletUserB } = (await wallet_02.getAccounts())[0];
 
-    const codeId = config.codeIds?.cw20Tokens?.[0] ?? 0;
+    const codeIds = await getCodeIds(config, signingClient_01);
 
     // Create Trusted Circle
     const tcContractAddress = await TcContract.createTc(
       signingClient_01,
-      config.codeIds?.tgradeDso?.[0] ?? 0,
+      codeIds.trustedCircle,
       walletUserA,
       tcName,
       escrowAmount,
@@ -184,7 +184,7 @@ describe("Wallet", () => {
     // Create digital asset
     const cw20tokenAddress = await Contract20WS.createContract(
       signingClient_01,
-      codeId,
+      codeIds.trustedToken,
       walletUserA,
       tokenName,
       tokenSymbol,
@@ -206,6 +206,18 @@ describe("Wallet", () => {
       walletUserB,
     )) as unknown as { balance: string };
     expect(parseInt(walletBalanceUserBBeforeSend.balance)).toBe(0);
+
+    // Add User_B to the Trusted Circle
+    const tcContract = new TcContract(tcContractAddress, signingClient_01, config.gasPrice);
+    const txHash = await tcContract.propose(walletUserA, "Add User_B to TC", {
+      add_remove_non_voting_members: { add: [walletUserB], remove: [] },
+    });
+    expect(txHash.proposalId).toBeTruthy();
+    if (!txHash.proposalId) return;
+
+    await tcContract.executeProposal(walletUserA, txHash.proposalId);
+    const executedProposal = await tcContract.getProposal(txHash.proposalId);
+    expect(executedProposal.status).toBe("executed");
 
     // Send tokens
     await Contract20WS.sendTokens(signingClient_01, walletUserA, cw20tokenAddress, walletUserB, "5250");
