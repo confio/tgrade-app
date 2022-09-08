@@ -66,7 +66,7 @@ export default function ChooseWallet({
 
   return (
     <>
-      <ModalHeader data-cy="choose-wallet-modal">
+      <ModalHeader data-cy="connect-wallet-modal">
         <img
           alt="Close button"
           data-cy="connect-wallet-modal-close-icon"

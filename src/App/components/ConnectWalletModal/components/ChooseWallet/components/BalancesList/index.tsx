@@ -150,7 +150,7 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
         </BalancesContainer>
       ) : null}
       {queryTokensState === "loaded" && !tokenList.length ? (
-        <Text data-cy="choose-wallet-modal-no-pinned-tokens-found-text">
+        <Text data-cy="connect-wallet-modal-no-pinned-tokens-found-text">
           No balance found for pinned tokens
         </Text>
       ) : null}

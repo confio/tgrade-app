@@ -17,7 +17,7 @@ const connectWalletModal = new ConnectWalletModal();
 Given("Open wallet dialog from main menu", () => {
   cy.get(mainNavigationMenu.getConnectedWalletButtonWithWalletAddress()).click();
   cy.get('[data-cy="loader-spinner-icon"]').should("not.exist");
-  cy.get('[data-cy="choose-wallet-modal"]').then((tgdTokens) => {
+  cy.get('[data-cy="connect-wallet-modal"]').then((tgdTokens) => {
     cy.wait(3000); //Workaround to wait until amount will be fetched
     if (tgdTokens.find('[data-cy="pinned-list-of-tokens"]').length < 0) {
       cy.get(connectWalletModal.getCloseIcon()).click();

@@ -7,10 +7,12 @@ import { createSigningClient } from "../../src/utils/sdk";
 import { selectMnemonicByNumber, selectWalletAddressByNumber } from "../fixtures/existingAccounts";
 import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
 import { ConnectWalletModal } from "../page-object/ConnectWalletModal";
+import { MainNavigationMenu } from "../page-object/MainNavigationMenu";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
 
 const connectWalletModal = new ConnectWalletModal();
 const validatorDetailsDialog = new ValidatorDetailsDialog();
+const mainNavigationMenu = new MainNavigationMenu();
 
 Given("Set existing {string} wallet with Engagement Points and Engagement Rewards", async (walletNumber) => {
   const mnemonic = selectMnemonicByNumber(walletNumber);
@@ -50,7 +52,7 @@ And(
   (expectedTokenBalance, accountAddress) => {
     const selectedAccountAddress = selectWalletAddressByNumber(accountAddress);
     cy.get(validatorDetailsDialog.getAddressTooltipTagHash()).should("contain.text", selectedAccountAddress);
-    cy.wait(2000); // workaround to wait until full balance will be displayed
+    workaroundToWaitForPinnedTokenToBePresent();
     cy.get(connectWalletModal.getTokenBalance()).then(($element) => {
       const extractedTokenValue = parseInt($element.text());
       expect(extractedTokenValue).to.be.not.lessThan(parseInt(expectedTokenBalance));
@@ -58,8 +60,20 @@ And(
   },
 );
 
+function workaroundToWaitForPinnedTokenToBePresent() {
+  cy.get('[data-cy="loader-spinner-icon"]').should("not.exist");
+  cy.get('[data-cy="connect-wallet-modal-no-pinned-tokens-found-text"]').then(($text) => {
+    const getText = $text.text();
+    if (getText.includes("No balance found for pinned tokens")) {
+      cy.get(connectWalletModal.getCloseIcon()).click();
+      cy.get(mainNavigationMenu.getConnectedWalletButtonWithWalletAddress()).click();
+      cy.get('[data-cy="loader-spinner-icon"]').should("not.exist");
+    }
+  });
+}
+
 And("I see TGD balance {string} for random address", (expectedTokenBalance) => {
-  cy.wait(3000); // workaround to wait for balance to be visible
+  workaroundToWaitForPinnedTokenToBePresent();
   cy.get(connectWalletModal.getTokenBalance()).then(($element) => {
     const extractedTokenValue = parseInt($element.text());
     expect(extractedTokenValue).to.be.not.lessThan(parseInt(expectedTokenBalance));
