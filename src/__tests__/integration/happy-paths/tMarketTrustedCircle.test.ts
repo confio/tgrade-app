@@ -149,7 +149,7 @@ describe("T-Market with Trusted Circle", () => {
       config.gasPrice,
     );
     expect(provideStatus).toBeTruthy();
-  }, 30000);
+  }, 40000);
 
   it("should fail to pair with a proposal of the Trusted Circle", async () => {
     /**
