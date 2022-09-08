@@ -6,16 +6,29 @@ import PageLayout from "../PageLayout";
 
 const loadingIcon = <LoadingOutlined style={{ color: "var(--color-primary)", fontSize: 50 }} spin />;
 
-type LoadingSpinnerProps =
-  | ({ readonly fullPage: true } & ComponentProps<typeof PageLayout>)
-  | { readonly fullPage?: false };
+type LoadingSpinnerProps = {
+  readonly spinProps?: ComponentProps<typeof Spin>;
+} & (
+  | {
+      readonly fullPage: true;
+      readonly pageLayoutProps?: ComponentProps<typeof PageLayout>;
+    }
+  | {
+      readonly fullPage?: false | undefined;
+      readonly pageLayoutProps?: undefined;
+    }
+);
 
-export default function LoadingSpinner({ fullPage, ...restProps }: LoadingSpinnerProps): JSX.Element {
+export default function LoadingSpinner({
+  spinProps,
+  fullPage,
+  pageLayoutProps,
+}: LoadingSpinnerProps): JSX.Element {
   return fullPage ? (
-    <PageLayout {...restProps}>
-      <Spin indicator={loadingIcon} />
+    <PageLayout {...pageLayoutProps}>
+      <Spin indicator={loadingIcon} {...spinProps} />
     </PageLayout>
   ) : (
-    <Spin indicator={loadingIcon} />
+    <Spin indicator={loadingIcon} {...spinProps} />
   );
 }
