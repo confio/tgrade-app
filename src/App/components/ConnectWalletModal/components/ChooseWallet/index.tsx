@@ -65,8 +65,8 @@ export default function ChooseWallet({
   const walletLogo = getWalletLogo();
 
   return (
-    <>
-      <ModalHeader data-cy="connect-wallet-modal">
+    <div data-cy="connect-wallet-modal">
+      <ModalHeader>
         <img
           alt="Close button"
           data-cy="connect-wallet-modal-close-icon"
@@ -152,6 +152,6 @@ export default function ChooseWallet({
           </ChooseButtons>
         </Stack>
       )}
-    </>
+    </div>
   );
 }

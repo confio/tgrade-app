@@ -61,32 +61,30 @@ And(
 );
 
 function workaroundToWaitForPinnedTokenToBePresent() {
-  cy.get('[data-cy="loader-spinner-icon"]').should("not.exist");
-  cy.get('[data-cy="connect-wallet-modal-no-pinned-tokens-found-text"]').then(($text) => {
-    const getText = $text.text();
-    if (getText.includes("No balance found for pinned tokens")) {
+  cy.wait(2000);
+  cy.get(connectWalletModal.getLoaderSpinnerIcon()).should("not.exist");
+  cy.get(connectWalletModal.getConnectWalletModal()).then(($el) => {
+    if ($el.find(connectWalletModal.getNoBalanceFoundForPinnedTokensText()).length > 0) {
       cy.get(connectWalletModal.getCloseIcon()).click();
+      cy.wait(3000); // Waiting for token list to be appeared
       cy.get(mainNavigationMenu.getConnectedWalletButtonWithWalletAddress()).click();
-      cy.get('[data-cy="loader-spinner-icon"]').should("not.exist");
+      cy.get(connectWalletModal.getLoaderSpinnerIcon()).should("not.exist");
     }
   });
 }
-
-And("I see TGD balance {string} for random address", (expectedTokenBalance) => {
-  workaroundToWaitForPinnedTokenToBePresent();
-  cy.get(connectWalletModal.getTokenBalance()).then(($element) => {
-    const extractedTokenValue = parseInt($element.text());
-    expect(extractedTokenValue).to.be.not.lessThan(parseInt(expectedTokenBalance));
-  });
-});
 
 And("I click on token with {string} symbol", (tokenSymbol) => {
   cy.get(connectWalletModal.getTokenNameFromTheList(tokenSymbol)).click();
 });
 
-And("I see {string} balance for {string} token", () => {
-  cy.get(connectWalletModal.getDisplayedTokenBalance()).click();
-  cy.get(connectWalletModal.getTokenName()).click();
+And("I see {string} balance for {string} token", (tokenBalance, tokenSymbol) => {
+  workaroundToWaitForPinnedTokenToBePresent();
+  cy.get(connectWalletModal.getTokenNameFromTheList(tokenSymbol))
+    .find(connectWalletModal.getTokenBalance())
+    .then(($element) => {
+      const extractedTokenValue = parseInt($element.text());
+      expect(extractedTokenValue).to.be.not.lessThan(parseInt(tokenBalance));
+    });
 });
 
 And("I enter amount {string} to send", (amountToSend) => {

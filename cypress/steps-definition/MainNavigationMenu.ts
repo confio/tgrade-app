@@ -6,25 +6,14 @@ import { And, Given } from "cypress-cucumber-preprocessor/steps";
 import { config } from "../../src/config/network";
 import { createSigningClient } from "../../src/utils/sdk";
 import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
-import { ConnectWalletModal } from "../page-object/ConnectWalletModal";
 import { EngagementPage } from "../page-object/EngagementPage";
 import { MainNavigationMenu } from "../page-object/MainNavigationMenu";
 
 const mainNavigationMenu = new MainNavigationMenu();
 const engagementPage = new EngagementPage();
-const connectWalletModal = new ConnectWalletModal();
 
 Given("Open wallet dialog from main menu", () => {
   cy.get(mainNavigationMenu.getConnectedWalletButtonWithWalletAddress()).click();
-  cy.get('[data-cy="loader-spinner-icon"]').should("not.exist");
-  cy.get('[data-cy="connect-wallet-modal"]').then((tgdTokens) => {
-    cy.wait(3000); //Workaround to wait until amount will be fetched
-    if (tgdTokens.find('[data-cy="pinned-list-of-tokens"]').length < 0) {
-      cy.get(connectWalletModal.getCloseIcon()).click();
-      cy.get(mainNavigationMenu.getConnectedWalletButtonWithWalletAddress()).click();
-      cy.get('[data-cy="loader-spinner-icon"]').should("not.exist");
-    }
-  });
 });
 
 Given("I connect Web Demo wallet", () => {
@@ -32,7 +21,7 @@ Given("I connect Web Demo wallet", () => {
   Cypress.on("uncaught:exception", (err) => !err.message.includes("Failed to fetch"));
   cy.get(mainNavigationMenu.getConnectWalletIcon()).click();
   cy.findByText("Web wallet (demo)").click();
-  cy.findByText("Loading your Wallet").should("not.exist");
+  cy.get("Loading your Wallet").should("not.exist");
   cy.get(mainNavigationMenu.getConnectedWalletButtonWithWalletAddress(), { timeout: 7000 }).should("exist");
   // workaround to wait for wallet connection (critical ~4000)
   // and to wait until account will be existed on chain

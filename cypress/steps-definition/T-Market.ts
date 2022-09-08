@@ -1,12 +1,10 @@
 import { And } from "cypress-cucumber-preprocessor/steps";
 
-import { ConnectWalletModal } from "../page-object/ConnectWalletModal";
 import { TMarketPage } from "../page-object/TMarketPage";
 import { TrustedCirclesPage } from "../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
 const tMarketPage = new TMarketPage();
-const connectWalletModal = new ConnectWalletModal();
 const tokenName = "Test Sustainability Asset";
 
 And("I click on Create Asset button", () => {
@@ -144,10 +142,4 @@ And("I redirected back to Provided Liquidity tab", () => {
 
 And("I leave Trusted Circle to associate field empty", () => {
   cy.get('[name="form-item-name-trusted-circle-to-associate-with"]').should("have.text", "");
-});
-
-And("I see {string} balance of {string} token name", (tokenBalance, tokenSymbol) => {
-  cy.get(connectWalletModal.getTokenNameFromTheList(tokenSymbol))
-    .find(connectWalletModal.getTokenBalance())
-    .should("have.text", tokenBalance);
 });
