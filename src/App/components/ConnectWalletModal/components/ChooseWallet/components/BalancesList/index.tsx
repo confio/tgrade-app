@@ -94,13 +94,14 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
           allowClear
           onChange={({ target }) => setSearchText(target.value)}
           style={{ width: "100%", borderRadius: "100%" }}
+          data-cy="available-token-search-field"
         />
       ) : null}
       {queryTokensState === "loading" ? (
         <LoadingSpinner spinProps={{ style: { height: "75px" }, delay: 500 }} />
       ) : null}
       {queryTokensState === "loaded" && tokenList.length ? (
-        <BalancesContainer>
+        <BalancesContainer data-cy="pinned-list-of-tokens">
           {tokenList.map((token) => (
             <BalancesItem
               key={token.address}
@@ -149,7 +150,9 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
         </BalancesContainer>
       ) : null}
       {queryTokensState === "loaded" && !tokenList.length ? (
-        <Text>No balance found for pinned tokens</Text>
+        <Text data-cy="choose-wallet-modal-no-pinned-tokens-found-text">
+          No balance found for pinned tokens
+        </Text>
       ) : null}
       <SendTokenModal
         isModalOpen={!!selectedToken}

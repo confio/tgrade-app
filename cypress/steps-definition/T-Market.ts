@@ -147,7 +147,6 @@ And("I leave Trusted Circle to associate field empty", () => {
 });
 
 And("I see {string} balance of {string} token name", (tokenBalance, tokenSymbol) => {
-  cy.get('[data-cy="loader-spinner-icon"]').should("not.exist");
   cy.get(connectWalletModal.getTokenNameFromTheList(tokenSymbol))
     .find(connectWalletModal.getTokenBalance())
     .should("have.text", tokenBalance);

@@ -1,5 +1,5 @@
 export class MainNavigationMenu {
-  getConnectedWalletButton(): string {
+  getConnectedWalletButtonWithWalletAddress(): string {
     return 'img[alt="Demo wallet icon"]';
   }
 
