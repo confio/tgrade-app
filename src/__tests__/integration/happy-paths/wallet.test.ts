@@ -55,7 +55,7 @@ describe("Wallet", () => {
     // User_B wallet after send
     const walletBalanceUserBAfterSend = await signingClient_02.getBalance(walletUserB, config.feeToken);
     expect(parseInt(walletBalanceUserBAfterSend.amount)).toBe(200000);
-  }, 10000);
+  }, 20000);
 
   it("Send CW20 token", async () => {
     const tokenSymbol = "SUST";
@@ -236,5 +236,5 @@ describe("Wallet", () => {
       walletUserB,
     )) as unknown as { balance: string };
     expect(parseInt(walletBalanceAfterSend.balance)).toBe(5250);
-  }, 20000);
+  }, 25000);
 });

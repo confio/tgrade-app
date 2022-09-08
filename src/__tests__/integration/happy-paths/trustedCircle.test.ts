@@ -175,7 +175,7 @@ describe("Trusted Circle", () => {
     await tcContract.executeProposal(address, txHash.proposalId);
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
     expect(executedProposal.status).toBe("executed");
-  }, 15000);
+  }, 20000);
 
   it("Create and execute TC proposal for editing trusted circle", async () => {
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
@@ -539,7 +539,7 @@ describe("Trusted Circle", () => {
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
     expect(executedProposal.description).toBe("Whitelist with pair TGS <-> TST");
     expect(executedProposal.status).toBe("executed");
-  }, 20000);
+  }, 25000);
 });
 
 function makeRandomAddress(): string {
