@@ -26,7 +26,7 @@ export default function LoadingSpinner({
 }: LoadingSpinnerProps): JSX.Element {
   return fullPage ? (
     <PageLayout {...pageLayoutProps}>
-      <Spin indicator={loadingIcon} {...spinProps} />
+      <Spin indicator={loadingIcon} {...spinProps} data-cy="loader-spinner-icon" />
     </PageLayout>
   ) : (
     <Spin indicator={loadingIcon} {...spinProps} />
