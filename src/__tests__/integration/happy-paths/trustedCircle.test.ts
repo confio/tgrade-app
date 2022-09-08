@@ -539,7 +539,7 @@ describe("Trusted Circle", () => {
     const executedProposal = await tcContract.getProposal(txHash.proposalId);
     expect(executedProposal.description).toBe("Whitelist with pair TGS <-> TST");
     expect(executedProposal.status).toBe("executed");
-  }, 20000);
+  }, 30000);
 });
 
 function makeRandomAddress(): string {
