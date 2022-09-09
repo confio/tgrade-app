@@ -74,4 +74,6 @@ And("Send 10 tokens to {string} address", async (mnemonic) => {
   const walletBalanceUserABeforeSend = await signingClient_01.getBalance(walletAddress, config.feeToken);
   console.log("Balance after send" + walletBalanceUserABeforeSend.amount);
   cy.log("Balance after send" + walletBalanceUserABeforeSend.amount);
+
+  cy.wait(5000); //For some reason UI display +10 with delay
 });

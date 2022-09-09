@@ -58,7 +58,11 @@ And(
   "I enter address from {string} in Delegated withdrawal to field in Distributed rewards dialog",
   async (walletNumber) => {
     const accountAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(walletNumber);
-    cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField()).clear().type(accountAddress);
+    cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField())
+      .wait(2000)
+      .should("have.text", "")
+      .clear()
+      .type(accountAddress);
   },
 );
 
