@@ -42,4 +42,16 @@ export class TrustedCirclesPage {
   getCurrentTrustedCircleAddress(): string {
     return ".address-actions-container";
   }
+
+  getAddTrustedCircleButton(): string {
+    return '[data-cy="trusted-circle-page-add-trusted-circle-button"] span';
+  }
+
+  getOrCreateTrustedCircleButton(): string {
+    return '[data-cy="or-create-trusted-circle-button"]';
+  }
+
+  getTrustedCircleNameAddressField(): string {
+    return '[name="form-item-name-trusted-circle-name"]';
+  }
 }
