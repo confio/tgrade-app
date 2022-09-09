@@ -1,9 +1,11 @@
 import { And, Given, Then, When } from "cypress-cucumber-preprocessor/steps";
 import moment from "moment";
 
+import { MainNavigationMenu } from "../page-object/MainNavigationMenu";
 import { TrustedCirclesPage } from "../page-object/TrustedCirclesPage";
 
 const trustedCirclesPage = new TrustedCirclesPage();
+const mainNavigationMenu = new MainNavigationMenu();
 const currentTime = moment().unix();
 
 Given("I visit Trusted Circle page", () => {
@@ -17,15 +19,18 @@ Given("Go to Trusted Circle page", () => {
 When("I click on Add Trusted Circle button", () => {
   cy.url().should("not.include", "/trustedcircle/undefined"); //probably a bug of the App
   cy.url().should("include", "/trustedcircle");
-  cy.get('[data-cy="trusted-circle-page-add-trusted-circle-button"]').click();
+  cy.get('[data-cy="loader-spinner-icon"]').should("not.exist");
+  cy.get(mainNavigationMenu.getConnectedWalletButtonWithWalletAddress()).should("be.visible");
+  cy.wait(2000);
+  cy.get(trustedCirclesPage.getAddTrustedCircleButton()).click({ force: true });
 });
 
-Then("I click on Create Trusted Circle button", () => {
-  cy.findByText(/Create Trusted Circle/i).click();
+Then("I click on or Create Trusted Circle button", () => {
+  cy.get(trustedCirclesPage.getOrCreateTrustedCircleButton()).click();
 });
 
 And("I enter Trusted Circle name as {string}", (text) => {
-  cy.findByPlaceholderText(/Enter Trusted Circle name/i)
+  cy.get(trustedCirclesPage.getTrustedCircleNameAddressField())
     .type(text + currentTime)
     .should("contain.value", "My Trusted Circle #");
 });

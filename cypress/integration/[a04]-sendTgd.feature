@@ -4,7 +4,7 @@ Feature: Send Tgrade tokens to an address
     * Set "randomMnemonic03" wallet without Engagement Points and Engagement Rewards
     * Send 10 tokens to "randomMnemonic03" address
     * Open wallet dialog from main menu
-    * I see TGD balance "20"
+    * I see "20" balance for "TGD" token
 
   Scenario: Send TGD
     * I click on token with "TGD" symbol
@@ -15,4 +15,4 @@ Feature: Send Tgrade tokens to an address
     * I see Tx success screen with address from "randomMnemonic04"
     * I click Go to Wallet button
     * I use "randomMnemonic04" to make query and check balance of this address "400"
-    * I see TGD balance "15.99"
+    * I see "15.99" balance for "TGD" token

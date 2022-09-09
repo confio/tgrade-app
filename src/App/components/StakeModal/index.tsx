@@ -49,14 +49,12 @@ export default function StakeModal({
       bgTransparent={!!txResult}
       style={{
         right: "-40px",
-        maxWidth: "40rem",
+        maxWidth: "55rem",
         paddingRight: "60px",
       }}
       bodyStyle={{
         position: "relative",
-        padding: "0",
-        paddingTop: "4px",
-        paddingBottom: "20px",
+        padding: "var(--s1)",
         borderRadius: "16px",
         backgroundColor: "var(--bg-body)",
       }}
