@@ -13,6 +13,7 @@ const randomMnemonic03 = generateMnemonic();
 const randomMnemonic04 = generateMnemonic();
 const randomMnemonic05 = generateMnemonic();
 const randomMnemonic06 = generateMnemonic();
+const randomMnemonic07 = generateMnemonic();
 
 const randomAddress01 = makeRandomTgradeAddress();
 const randomAddress02 = makeRandomTgradeAddress();
@@ -20,6 +21,7 @@ const randomAddress03 = makeRandomTgradeAddress();
 const randomAddress04 = makeRandomTgradeAddress();
 const randomAddress05 = makeRandomTgradeAddress();
 const randomAddress06 = makeRandomTgradeAddress();
+const randomAddress07 = makeRandomTgradeAddress();
 
 export const selectRandomGeneratedMnemonicByNumber = (addressMnemonic: string): string => {
   switch (addressMnemonic) {
@@ -35,6 +37,8 @@ export const selectRandomGeneratedMnemonicByNumber = (addressMnemonic: string): 
       return randomMnemonic05;
     case "randomMnemonic06":
       return randomMnemonic06;
+    case "randomMnemonic07":
+      return randomMnemonic07;
     default:
       return "no mnemonic was provided";
   }
@@ -54,6 +58,8 @@ export const selectRandomGeneratedAddressByNumber = (number: string): string => 
       return randomAddress05;
     case "randomAddress06":
       return randomAddress06;
+    case "randomAddress07":
+      return randomAddress07;
     default:
       return "no number was provided";
   }

@@ -47,10 +47,10 @@ And('I see initial "Address" field is pre-filled with {string} in the dialog', (
 });
 
 And(
-  'I enter address in the "Receiver address" field from {string} wallet distributed dialog',
+  'I enter address in the "Receiver address" field from {string} wallet in Distributed rewards dialog',
   async (mnemonicNumber) => {
     const randomAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber);
-    cy.get(distributedRewardsDialog.getReceiverAddressField()).type(randomAddress);
+    cy.get(distributedRewardsDialog.getReceiverAddressField()).clear().type(randomAddress);
   },
 );
 
@@ -58,7 +58,11 @@ And(
   "I enter address from {string} in Delegated withdrawal to field in Distributed rewards dialog",
   async (walletNumber) => {
     const accountAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(walletNumber);
-    cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField()).clear().type(accountAddress);
+    cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField())
+      .wait(2000)
+      .should("have.text", "")
+      .clear()
+      .type(accountAddress);
   },
 );
 
@@ -77,6 +81,14 @@ And(
     cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField()).should("have.value", walletAddress);
   },
 );
+
+And("I see Delegate field is pre-field with address {string} in Distributed rewards dialog", (address) => {
+  const selectedValidatorAddress = selectWalletAddressByNumber(address);
+  cy.get(distributedRewardsDialog.getDelegatedWithdrawalToField()).should(
+    "have.value",
+    selectedValidatorAddress,
+  );
+});
 
 And("I enter {string} address to initial Address field of Distributed rewards dialog", (addressNumber) => {
   const randomAddress = selectRandomGeneratedAddressByNumber(addressNumber);
@@ -105,6 +117,6 @@ async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: st
   const signingClient = await createSigningClient(config, wallet);
 
   const walletBalanceUser = await signingClient.getBalance(walletAddress, config.feeToken);
-  expect(walletBalanceUser.amount).to.contains(0);
+  expect(parseInt(walletBalanceUser.amount)).to.be.not.lessThan(0);
   return walletAddress;
 }

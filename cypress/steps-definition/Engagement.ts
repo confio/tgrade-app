@@ -100,7 +100,9 @@ And(
     const signingClient_01 = await createSigningClient(config, wallet);
 
     const walletBalanceUser = await signingClient_01.getBalance(walletUserA, config.feeToken);
-    expect(walletBalanceUser.amount.slice(0, 3)).to.contains(tokenBalance);
+    cy.log("walletBalanceUser.amount", walletBalanceUser.amount);
+    console.log("walletBalanceUser.amount", walletBalanceUser.amount);
+    expect(parseInt(walletBalanceUser.amount.slice(0, 3))).to.be.not.lessThan(parseInt(tokenBalance));
   },
 );
 
@@ -157,6 +159,14 @@ And("Workaround to clear localstorage", () => {
   cy.clearLocalStorage("last-wallet");
   cy.wait(3000); // workaround it is needed 100%
 });
+
+And(
+  "I enter address from {string} to initial Address field of Distributed rewards dialog",
+  async (mnemonicNumber) => {
+    const selectedRandomAddress = await returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber);
+    cy.get(engagementPage.getInitialAddressInputField()).clear().type(selectedRandomAddress);
+  },
+);
 
 async function returnAddressOfRandomGeneratedMnemonicByNumber(mnemonicNumber: string) {
   const generatedMnemonic = selectRandomGeneratedMnemonicByNumber(mnemonicNumber);
