@@ -19,8 +19,9 @@ Feature: Get voting rights after depositing escrow and claim back exceeding
     * I see Add proposal button is available
 
     # Claim back exceeding
-    #* I see a "Claim escrow" button and click on it
-    #* I see the "Claim back escrow" modal with required, deposited, and exceeding escrow
-    #* I click on the "Claim escrow" button
-    #* I see Tx success screen and close it
-    #* I check that I still have voting rights
+    * I click on "Claim escrow" button
+    * I see required "1", current "2" and escrow I can claim "1"
+    * I click on the "Claim escrow" button
+    * I see Tx success screen
+    * I click on Go to Oversight Community details button in Escrow modal
+    * I check that I still have voting rights

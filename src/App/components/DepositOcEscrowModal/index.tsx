@@ -148,7 +148,7 @@ export default function DepositOcEscrowModal({
               submitDepositEscrow({ escrowAmount: values[getFormItemName(escrowAmountLabel)] })
             }
           >
-            {({ values, isValid, submitForm }) => (
+            {({ isValid, submitForm }) => (
               <Form>
                 <Stack gap="s1">
                   <Field label={escrowAmountLabel} placeholder="Enter amount" units="TGD" />
@@ -163,7 +163,7 @@ export default function DepositOcEscrowModal({
                       onClick={signer ? () => submitForm() : () => setConnectWalletModalOpen(true)}
                     >
                       {signer ? (
-                        <span data-cy="deposit-escrow-modal-pay-escrow-button">"Pay escrow"</span>
+                        <span data-cy="deposit-escrow-modal-pay-escrow-button">Pay escrow</span>
                       ) : (
                         "Connect wallet"
                       )}

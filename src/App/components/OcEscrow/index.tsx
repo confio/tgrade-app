@@ -228,6 +228,7 @@ export default function OcEscrow(): JSX.Element {
             disabled={membership === undefined || !!membership?.non_voting}
             type="ghost"
             onClick={() => setReturnModalOpen(true)}
+            data-cy="oc-page-claim-escrow-button"
           >
             Claim escrow
           </Button>

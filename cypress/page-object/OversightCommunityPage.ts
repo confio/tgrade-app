@@ -58,4 +58,8 @@ export class OversightCommunityPage {
   getPayEscrowButton(): string {
     return '[data-cy="deposit-escrow-modal-pay-escrow-button"]';
   }
+
+  getClaimEscrowButton(): string {
+    return '[data-cy="oc-page-claim-escrow-button"]';
+  }
 }

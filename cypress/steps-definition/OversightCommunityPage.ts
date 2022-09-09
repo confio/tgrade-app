@@ -7,9 +7,11 @@ import { OcContract } from "../../src/utils/oversightCommunity";
 import { createSigningClient } from "../../src/utils/sdk";
 import { selectMnemonicByNumber } from "../fixtures/existingAccounts";
 import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
+import { OcClaimBackYourEscrowModal } from "../page-object/OcClaimBackYourEscrowModal";
 import { OversightCommunityPage } from "../page-object/OversightCommunityPage";
 
 const oversightCommunityPage = new OversightCommunityPage();
+const ocClaimBackYourEscrowModal = new OcClaimBackYourEscrowModal();
 
 And("I click on the gear icon and on Leave Oversight Community", () => {
   cy.get(oversightCommunityPage.getGearLeaveIcon()).click();
@@ -104,7 +106,28 @@ And("I click Pay escrow button", () => {
 });
 
 And("I see Add proposal button is available", () => {
-  cy.reload(); // Workaround probably a bug, button only visible after reload the page
+  cy.reload(); //Bug issues/844
+  cy.get(oversightCommunityPage.getAddProposalButton()).should("be.visible");
+});
+
+And('I click on "Claim escrow" button', () => {
+  cy.get(oversightCommunityPage.getClaimEscrowButton()).click();
+});
+
+And(
+  "I see required {string}, current {string} and escrow I can claim {string}",
+  (requiredValue, currentValue, youCanClaimValue) => {
+    cy.get(ocClaimBackYourEscrowModal.getRequiredEscrowValue()).should("have.text", requiredValue);
+    cy.get(ocClaimBackYourEscrowModal.getYourCurrentEscrowValue()).should("have.text", currentValue);
+    cy.get(ocClaimBackYourEscrowModal.getEscrowYouCanClaim()).should("have.text", youCanClaimValue);
+  },
+);
+
+And('I click on the "Claim escrow" button', () => {
+  cy.get(ocClaimBackYourEscrowModal.getClaimEscrowButton()).click();
+});
+
+And("I check that I still have voting rights", () => {
   cy.get(oversightCommunityPage.getAddProposalButton()).should("be.visible");
 });
 
