@@ -7,10 +7,12 @@ import { createSigningClient } from "../../src/utils/sdk";
 import { selectMnemonicByNumber, selectWalletAddressByNumber } from "../fixtures/existingAccounts";
 import { selectRandomGeneratedMnemonicByNumber } from "../fixtures/randomGeneratedAccount";
 import { ConnectWalletModal } from "../page-object/ConnectWalletModal";
+import { MainNavigationMenu } from "../page-object/MainNavigationMenu";
 import { ValidatorDetailsDialog } from "../page-object/ValidatorDetailsDialog";
 
 const connectWalletModal = new ConnectWalletModal();
 const validatorDetailsDialog = new ValidatorDetailsDialog();
+const mainNavigationMenu = new MainNavigationMenu();
 
 Given("Set existing {string} wallet with Engagement Points and Engagement Rewards", async (walletNumber) => {
   const mnemonic = selectMnemonicByNumber(walletNumber);
@@ -50,7 +52,7 @@ And(
   (expectedTokenBalance, accountAddress) => {
     const selectedAccountAddress = selectWalletAddressByNumber(accountAddress);
     cy.get(validatorDetailsDialog.getAddressTooltipTagHash()).should("contain.text", selectedAccountAddress);
-    cy.wait(2000); // workaround to wait until full balance will be displayed
+    workaroundToWaitForPinnedTokenToBePresent();
     cy.get(connectWalletModal.getTokenBalance()).then(($element) => {
       const extractedTokenValue = parseInt($element.text());
       expect(extractedTokenValue).to.be.not.lessThan(parseInt(expectedTokenBalance));
@@ -58,21 +60,31 @@ And(
   },
 );
 
-And("I see TGD balance {string}", (expectedTokenBalance) => {
-  cy.wait(3000); // workaround to wait for balance to be visible
-  cy.get(connectWalletModal.getTokenBalance()).then(($element) => {
-    const extractedTokenValue = parseInt($element.text());
-    expect(extractedTokenValue).to.be.not.lessThan(parseInt(expectedTokenBalance));
+function workaroundToWaitForPinnedTokenToBePresent() {
+  cy.wait(2000);
+  cy.get(connectWalletModal.getLoaderSpinnerIcon()).should("not.exist");
+  cy.get(connectWalletModal.getConnectWalletModal()).then(($el) => {
+    if ($el.find(connectWalletModal.getNoBalanceFoundForPinnedTokensText()).length > 0) {
+      cy.get(connectWalletModal.getCloseIcon()).click();
+      cy.wait(3000); // Waiting for token list to be appeared
+      cy.get(mainNavigationMenu.getConnectedWalletButtonWithWalletAddress()).click();
+      cy.get(connectWalletModal.getLoaderSpinnerIcon()).should("not.exist");
+    }
   });
-});
+}
 
 And("I click on token with {string} symbol", (tokenSymbol) => {
   cy.get(connectWalletModal.getTokenNameFromTheList(tokenSymbol)).click();
 });
 
-And("I see {string} balance for {string} token", () => {
-  cy.get(connectWalletModal.getDisplayedTokenBalance()).click();
-  cy.get(connectWalletModal.getTokenName()).click();
+And("I see {string} balance for {string} token", (tokenBalance, tokenSymbol) => {
+  workaroundToWaitForPinnedTokenToBePresent();
+  cy.get(connectWalletModal.getTokenNameFromTheList(tokenSymbol))
+    .find(connectWalletModal.getTokenBalance())
+    .then(($element) => {
+      const extractedTokenValue = parseInt($element.text());
+      expect(extractedTokenValue).to.be.not.lessThan(parseInt(tokenBalance));
+    });
 });
 
 And("I enter amount {string} to send", (amountToSend) => {

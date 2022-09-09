@@ -5,7 +5,7 @@ Feature: Trading pair
   Scenario: Create Trading pair
     # Create TC
     * I click on Add Trusted Circle button
-    * I click on Create Trusted Circle button
+    * I click on or Create Trusted Circle button
     * I enter Trusted Circle name as "My Trusted Circle # "
     * I click on Next button Step#1 in modal dialog
     * I click on Next button Step#2 in modal dialog

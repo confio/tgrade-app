@@ -63,7 +63,10 @@ export default function FormDsoAddExisting({
               <Separator />
               <ButtonGroup>
                 <Text>
-                  or <Text onClick={() => goToCreateDso()}>Create Trusted Circle</Text>
+                  or{" "}
+                  <Text onClick={() => goToCreateDso()} data-cy="or-create-trusted-circle-button">
+                    Create Trusted Circle
+                  </Text>
                 </Text>
                 <Button disabled={!isValid} onClick={() => submitForm()}>
                   <div>Enter</div>

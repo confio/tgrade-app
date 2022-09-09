@@ -17,4 +17,4 @@ Feature: See my CW20 tokens that I have pinned and have non zero balance
 
   Scenario: Check CWA balance
     * Open wallet dialog from main menu
-    * I see "100" balance of "CWA" token name
+    * I see "100" balance for "CWA" token

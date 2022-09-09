@@ -43,7 +43,7 @@ Feature: Withdraw rewards as delegate
     * I see Engagement Points "4 / 2034 (0.20%)" and Engagement Rewards "9" TGD
     * I use existing "fourthMnemonic" mnemonic to make query and check balance "100"
     * Open wallet dialog from main menu
-    * I see TGD balance "1006"
+    * I see "1006" balance for "TGD" token
     * I close wallet dialog modal
 
     # Switch to Initial wallet address

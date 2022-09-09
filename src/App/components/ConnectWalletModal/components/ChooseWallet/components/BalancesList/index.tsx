@@ -2,6 +2,7 @@ import { SendOutlined } from "@ant-design/icons";
 import { Typography } from "antd";
 import pinDarkIcon from "App/assets/icons/pin-dark.svg";
 import pinLightIcon from "App/assets/icons/pin-light.svg";
+import LoadingSpinner from "App/components/LoadingSpinner";
 import SendTokenModal from "App/components/SendTokenModal";
 import Stack from "App/components/Stack/style";
 import TooltipWrapper from "App/components/TooltipWrapper";
@@ -35,16 +36,20 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
     tokensState: { pinnedTokens, pinUnpinToken, reloadPinnedTokensOnly, tokens },
   } = useTokens();
 
+  const [queryTokensState, setQueryTokensState] = useState<"initial" | "loading" | "loaded">("initial");
   const [searchText, setSearchText] = useState("");
   const [tokenList, setTokenList] = useState<readonly TokenProps[]>([]);
   const [selectedToken, setSelectedToken] = useState<TokenProps>();
 
   useEffect(() => {
     (async function () {
-      await reloadPinnedTokensOnly?.();
+      if (!reloadPinnedTokensOnly || queryTokensState !== "initial") return;
+
+      setQueryTokensState("loading");
+      await reloadPinnedTokensOnly();
+      setQueryTokensState("loaded");
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [queryTokensState, reloadPinnedTokensOnly]);
 
   useEffect(() => {
     const tokenList = tokensMapToArray(tokens, config.feeToken);
@@ -83,57 +88,72 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
       >
         <Text style={{ color: "black" }}>Available tokens to send</Text>
       </TooltipWrapper>
-      <SearchToken
-        placeholder="Search token"
-        allowClear
-        onChange={({ target }) => setSearchText(target.value)}
-        style={{ width: "100%", borderRadius: "100%" }}
-      />
-      <BalancesContainer>
-        {tokenList.map((token) => (
-          <BalancesItem
-            key={token.address}
-            onClick={() => {
-              setSelectedToken(token);
-            }}
-            data-cy={`wallet-dialog-list-of-tokens-with-${token.symbol}`}
-          >
-            <TokenLogoName>
-              <img alt="Token logo" src={token.img} />
-              <div>
-                <Text>Send </Text>
-                <Text>{token.symbol}</Text>
-              </div>
-              <SendOutlined color="red" />
-            </TokenLogoName>
-            <TokenDetailPin>
-              <div>
-                <Text data-cy="connect-wallet-modal-token-balance">{token.humanBalance}</Text>
-                <Text
-                  onClick={(event) => {
-                    event?.stopPropagation();
-                  }}
-                  copyable={
-                    token.address === "utgd" ? false : { text: token.address, tooltips: "Copy token address" }
-                  }
-                >
-                  {token.address === "utgd" ? "Tgrade token" : `…${token.address.slice(-10)}`}
-                </Text>
-              </div>
-              {token.address !== config.feeToken ? (
-                <img
-                  src={pinnedTokens.includes(token.address) ? pinDarkIcon : pinLightIcon}
-                  alt={pinnedTokens.includes(token.address) ? "Unpin token" : "Pin token"}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    pinUnpinToken?.(token.address);
-                  }}
-                />
-              ) : null}
-            </TokenDetailPin>
-          </BalancesItem>
-        ))}
-      </BalancesContainer>
+      {queryTokensState === "loaded" && tokenList.length ? (
+        <SearchToken
+          placeholder="Search token"
+          allowClear
+          onChange={({ target }) => setSearchText(target.value)}
+          style={{ width: "100%", borderRadius: "100%" }}
+          data-cy="available-token-search-field"
+        />
+      ) : null}
+      {queryTokensState === "loading" ? (
+        <LoadingSpinner spinProps={{ style: { height: "75px" }, delay: 500 }} />
+      ) : null}
+      {queryTokensState === "loaded" && tokenList.length ? (
+        <BalancesContainer data-cy="pinned-list-of-tokens">
+          {tokenList.map((token) => (
+            <BalancesItem
+              key={token.address}
+              onClick={() => {
+                setSelectedToken(token);
+              }}
+              data-cy={`wallet-dialog-list-of-tokens-with-${token.symbol}`}
+            >
+              <TokenLogoName>
+                <img alt="Token logo" src={token.img} />
+                <div>
+                  <Text>Send </Text>
+                  <Text>{token.symbol}</Text>
+                </div>
+                <SendOutlined color="red" />
+              </TokenLogoName>
+              <TokenDetailPin>
+                <div>
+                  <Text data-cy="connect-wallet-modal-token-balance">{token.humanBalance}</Text>
+                  <Text
+                    onClick={(event) => {
+                      event?.stopPropagation();
+                    }}
+                    copyable={
+                      token.address === "utgd"
+                        ? false
+                        : { text: token.address, tooltips: "Copy token address" }
+                    }
+                  >
+                    {token.address === "utgd" ? "Tgrade token" : `…${token.address.slice(-10)}`}
+                  </Text>
+                </div>
+                {token.address !== config.feeToken ? (
+                  <img
+                    src={pinnedTokens.includes(token.address) ? pinDarkIcon : pinLightIcon}
+                    alt={pinnedTokens.includes(token.address) ? "Unpin token" : "Pin token"}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      pinUnpinToken?.(token.address);
+                    }}
+                  />
+                ) : null}
+              </TokenDetailPin>
+            </BalancesItem>
+          ))}
+        </BalancesContainer>
+      ) : null}
+      {queryTokensState === "loaded" && !tokenList.length ? (
+        <Text data-cy="connect-wallet-modal-no-pinned-tokens-found-text">
+          No balance found for pinned tokens
+        </Text>
+      ) : null}
       <SendTokenModal
         isModalOpen={!!selectedToken}
         closeModal={() => {
