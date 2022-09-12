@@ -151,7 +151,8 @@ describe("Engagement", () => {
     expect(parseInt(walletBalanceBeforeWithdraw.amount)).toBe(0);
 
     const withdrawableRewardsBefore = await egContract.getWithdrawableRewards(walletUserB);
-    expect(parseInt(withdrawableRewardsBefore.amount)).toBe(0);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    expect(parseInt(withdrawableRewardsBefore.amount)).toBe(0); //Prevent failures in CI
 
     const engagementPointsBefore = await egContract.getEngagementPoints(walletUserB);
     expect(engagementPointsBefore).toBeGreaterThan(0);
