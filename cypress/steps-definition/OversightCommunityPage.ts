@@ -3,6 +3,7 @@ import { makeCosmoshubPath } from "@cosmjs/stargate";
 import { And } from "cypress-cucumber-preprocessor/steps";
 
 import { config } from "../../src/config/network";
+import { displayAmountToNative } from "../../src/utils/currency";
 import { OcContract } from "../../src/utils/oversightCommunity";
 import { createSigningClient } from "../../src/utils/sdk";
 import { selectMnemonicByNumber } from "../fixtures/existingAccounts";
@@ -82,7 +83,12 @@ And("I see the half-life data for the Oversight Community", () => {
 
 And("Execute proposal in OC with {string} member", async (randomMnemonic) => {
   const selectedRandomMnemonic = selectRandomGeneratedMnemonicByNumber(randomMnemonic);
-  await executeProposeWithRandomMember(selectedRandomMnemonic);
+  await executeProposalWithRandomMember(selectedRandomMnemonic);
+});
+
+And("Execute proposal and Deposit Escrow with {string} member", async (randomMnemonic) => {
+  const selectedRandomMnemonic = selectRandomGeneratedMnemonicByNumber(randomMnemonic);
+  await executeProposalAndDepositEscrowForMemberWith(selectedRandomMnemonic);
 });
 
 And("I don't see Add proposal button available", () => {
@@ -131,9 +137,9 @@ And("I check that I still have voting rights", () => {
   cy.get(oversightCommunityPage.getAddProposalButton()).should("be.visible");
 });
 
-async function executeProposeWithRandomMember(randomMnemonic: string) {
+async function executeProposalWithRandomMember(randomMnemonic: string) {
   const mnemonic = selectMnemonicByNumber("adminAccount");
-  const comment = "Add new member with random generated mnemonic";
+  const comment = `Add new member with random generated mnemonic = " ${randomMnemonic} "`;
 
   const adminWallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
     hdPaths: [makeCosmoshubPath(0)],
@@ -162,3 +168,49 @@ async function executeProposeWithRandomMember(randomMnemonic: string) {
   if (!oC.proposalId) return;
   await OcCommunity.executeProposal(address, oC.proposalId);
 }
+
+async function executeProposalAndDepositEscrowForMemberWith(randomMnemonic: string) {
+  const mnemonic = selectMnemonicByNumber("adminAccount");
+  const comment = `Add new member with random generated mnemonic = " ${randomMnemonic} "`;
+
+  const adminWallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+
+  const memberWallet = await DirectSecp256k1HdWallet.fromMnemonic(randomMnemonic, {
+    hdPaths: [makeCosmoshubPath(0)],
+    prefix: config.addressPrefix,
+  });
+
+  await createSigningClient(config, memberWallet);
+  const addressRandomMember = (await memberWallet.getAccounts())[0].address;
+
+  const signingWithAdminMnemonic = await createSigningClient(config, adminWallet);
+  const adminAddress = (await adminWallet.getAccounts())[0].address;
+
+  const signingWithMemberMnemonic = await createSigningClient(config, memberWallet);
+  const memberAddress = (await memberWallet.getAccounts())[0].address;
+
+  const OcCommunity = new OcContract(config, signingWithAdminMnemonic);
+
+  const oC = await OcCommunity.propose(adminAddress, comment, {
+    add_voting_members: {
+      voters: [addressRandomMember],
+    },
+  });
+
+  if (!oC.proposalId) return;
+  const txHash = await OcCommunity.executeProposal(adminAddress, oC.proposalId);
+
+  const ocContract = new OcContract(config, signingWithMemberMnemonic);
+  const nativeEscrow = displayAmountToNative("2", config.coinMap, config.feeToken);
+  const transactionHash = await ocContract.depositEscrow(memberAddress, [
+    { denom: config.feeToken, amount: nativeEscrow },
+  ]);
+  cy.log("transactionHash", transactionHash);
+}
+
+And("I click on the Add proposal button", () => {
+  //TODO
+});

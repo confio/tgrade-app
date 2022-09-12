@@ -1,4 +1,5 @@
 import { createContext, HTMLAttributes, useContext, useReducer } from "react";
+
 import {
   GlobalAntOverride,
   GlobalColors,
@@ -6,9 +7,9 @@ import {
   GlobalOverrideCookieyes,
   GlobalReset,
   GlobalSpacing,
-} from "theme/GlobalStyle";
-import { ThemeDark } from "theme/GlobalStyle/ThemeDark";
-import { ThemeLight } from "theme/GlobalStyle/ThemeLight";
+} from "../theme/GlobalStyle";
+import { ThemeDark } from "../theme/GlobalStyle/ThemeDark";
+import { ThemeLight } from "../theme/GlobalStyle/ThemeLight";
 
 type ThemeVariant = "light" | "dark";
 

@@ -4,8 +4,9 @@ import { OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Coin } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import { createContext, useCallback, useContext, useEffect, useReducer } from "react";
-import { gtagConnectWallet, gtagSendWalletInfo } from "utils/analytics";
-import { Faucet } from "utils/faucet";
+
+import { gtagConnectWallet, gtagSendWalletInfo } from "../utils/analytics";
+import { Faucet } from "../utils/faucet";
 import {
   createClient,
   createSigningClient,
@@ -19,9 +20,8 @@ import {
   loadLedgerWallet,
   loadOrCreateWallet,
   setLastConnectedWallet,
-} from "utils/sdk";
-import { retry } from "utils/ui";
-
+} from "../utils/sdk";
+import { retry } from "../utils/ui";
 import { useError } from "./error";
 
 export interface CodeIds {

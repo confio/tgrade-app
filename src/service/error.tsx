@@ -1,6 +1,7 @@
-import ErrorBanner from "App/components/ErrorBanner";
 import { createContext, HTMLAttributes, useContext, useState } from "react";
-import { getErrorFromStackTrace } from "utils/errors";
+
+import ErrorBanner from "../App/components/ErrorBanner";
+import { getErrorFromStackTrace } from "../utils/errors";
 
 interface ErrorContextType {
   readonly error?: string;

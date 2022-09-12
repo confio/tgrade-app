@@ -3,7 +3,8 @@ import { Decimal } from "@cosmjs/math";
 import { assertIsDeliverTxSuccess, calculateFee, Coin, GasPrice, StdFee } from "@cosmjs/stargate";
 import { NetworkConfig } from "config/network";
 import { useEffect, useState } from "react";
-import { useSdk } from "service";
+
+import { useSdk } from "../service";
 
 // NARROW NO-BREAK SPACE (U+202F)
 const thinSpace = "\u202F";

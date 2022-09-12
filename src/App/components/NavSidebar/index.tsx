@@ -1,12 +1,12 @@
-import { paths } from "App/paths";
 import { lazy, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { paths } from "../../paths";
 import ButtonConnectWallet from "../ButtonConnectWallet";
 import * as Icon from "./icons";
 import { Cell, LinkWrapper, Navbar, StyledCollapse, StyledPanel, StyledText, TextCell } from "./style";
 
-const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
+const ConnectWalletModal = lazy(() => import("../../../App/components/ConnectWalletModal"));
 
 export const NavSidebar: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);

@@ -1,12 +1,13 @@
-import AddDsoModal from "App/components/AddDsoModal";
-import LeaveDsoModal from "App/components/LeaveDsoModal";
-import { paths } from "App/paths";
 import * as React from "react";
 import { createContext, HTMLAttributes, useContext, useEffect, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useSdk } from "service";
-import { useLocalStorage } from "utils/storage";
-import { TcContractQuerier } from "utils/trustedCircle";
+
+import AddDsoModal from "../App/components/AddDsoModal";
+import LeaveDsoModal from "../App/components/LeaveDsoModal";
+import { paths } from "../App/paths";
+import { useLocalStorage } from "../utils/storage";
+import { TcContractQuerier } from "../utils/trustedCircle";
+import { useSdk } from "./sdk"; //not sure
 
 interface DsoId {
   readonly address: string;

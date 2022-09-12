@@ -1,8 +1,9 @@
 import { BackProps } from "App/components/BackButtonOrLink";
-import { NavSidebar } from "App/components/NavSidebar";
-import { paths } from "App/paths";
 import { createContext, HTMLAttributes, useContext, useReducer } from "react";
 import { useLocation } from "react-router-dom";
+
+import { NavSidebar } from "../App/components/NavSidebar";
+import { paths } from "../App/paths";
 
 type ViewTitles = {
   readonly viewTitle?: string;

@@ -1,8 +1,8 @@
 import { Tooltip, Typography } from "antd";
-import closeIcon from "App/assets/icons/cross-tab.svg";
 import copyToClipboard from "clipboard-copy";
 import { useError } from "service";
 
+import closeIcon from "../../../App/assets/icons/cross-tab.svg";
 import copyIcon from "../../assets/icons/copy.svg";
 import Stack from "../Stack/style";
 import { BannerContents, StyledErrorBanner } from "./style";

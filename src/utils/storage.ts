@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useError } from "service";
+
+import { useError } from "../service";
 
 export function useLocalStorage<T>(
   key: string,

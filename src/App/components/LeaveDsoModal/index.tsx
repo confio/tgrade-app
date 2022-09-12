@@ -1,20 +1,20 @@
 import { Typography } from "antd";
-import closeIcon from "App/assets/icons/cross.svg";
-import Button from "App/components/Button";
-import Stack from "App/components/Stack/style";
 import { DsoHomeParams } from "App/pages/DsoHome";
-import { paths } from "App/paths";
 import { lazy, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getDsoName, useDso, useError, useSdk } from "service";
-import { closeLeaveDsoModal } from "service/dsos";
-import { getErrorFromStackTrace } from "utils/errors";
-import { MemberStatus, TcContract, TcContractQuerier } from "utils/trustedCircle";
 
+import closeIcon from "../../../App/assets/icons/cross.svg";
+import Button from "../../../App/components/Button";
+import Stack from "../../../App/components/Stack/style";
+import { closeLeaveDsoModal } from "../../../service/dsos";
+import { getErrorFromStackTrace } from "../../../utils/errors";
+import { MemberStatus, TcContract, TcContractQuerier } from "../../../utils/trustedCircle";
+import { paths } from "../../paths";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StyledLeaveDsoModal, { ButtonGroup, ModalHeader, Separator } from "./style";
 
-const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
+const ConnectWalletModal = lazy(() => import("../../../App/components/ConnectWalletModal"));
 const { Title, Text } = Typography;
 
 export default function LeaveDsoModal(): JSX.Element | null {

@@ -1,14 +1,14 @@
 import { Typography } from "antd";
-import closeIcon from "App/assets/icons/cross.svg";
-import Button from "App/components/Button";
-import ConnectWalletModal from "App/components/ConnectWalletModal";
-import Stack from "App/components/Stack/style";
 import { useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { closeLeaveOcModal, useOc } from "service/oversightCommunity";
-import { getErrorFromStackTrace } from "utils/errors";
-import { MemberStatus, OcContract, OcContractQuerier } from "utils/oversightCommunity";
 
+import closeIcon from "../../../App/assets/icons/cross.svg";
+import Button from "../../../App/components/Button";
+import ConnectWalletModal from "../../../App/components/ConnectWalletModal";
+import Stack from "../../../App/components/Stack/style";
+import { closeLeaveOcModal, useOc } from "../../../service";
+import { getErrorFromStackTrace } from "../../../utils/errors";
+import { MemberStatus, OcContract, OcContractQuerier } from "../../../utils/oversightCommunity";
 import ShowTxResult, { TxResult } from "../ShowTxResult";
 import StyledLeaveOcModal, { ButtonGroup, ModalHeader, Separator } from "./style";
 

@@ -1,12 +1,12 @@
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import LeaveOcModal from "App/components/LeaveOcModal";
 import { createContext, HTMLAttributes, useContext, useEffect, useReducer } from "react";
-import { useSdk } from "service";
-import { useOcAddress, useOcProposalsAddress } from "utils/storage";
 
+import LeaveOcModal from "../App/components/LeaveOcModal";
 import { PoEContractType } from "../codec/confio/poe/v1beta1/poe";
 import { QueryClientImpl } from "../codec/confio/poe/v1beta1/query";
+import { useOcAddress, useOcProposalsAddress } from "../utils/storage";
+import { useSdk } from "./sdk"; //not sure
 
 type ModalState = "open" | "closed";
 
