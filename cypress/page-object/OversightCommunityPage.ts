@@ -38,4 +38,28 @@ export class OversightCommunityPage {
   getEngagementHalfLifeDurationValue(): string {
     return '[data-cy="oc-page-engagement-half-life-duration-value"]';
   }
+
+  getAddProposalButton(): string {
+    return "[data-cy='oc-page-add-proposal-button']";
+  }
+
+  getDepositEscrowButton(): string {
+    return '[data-cy="oc-page-deposit-escrow-button"]';
+  }
+
+  getRequiredEscrowValue(): string {
+    return '[data-cy="deposit-escrow-modal-required-escrow-value"]';
+  }
+
+  getEscrowAmountField(): string {
+    return '[name="form-item-name-escrow-amount"]';
+  }
+
+  getPayEscrowButton(): string {
+    return '[data-cy="deposit-escrow-modal-pay-escrow-button"]';
+  }
+
+  getClaimEscrowButton(): string {
+    return '[data-cy="oc-page-claim-escrow-button"]';
+  }
 }

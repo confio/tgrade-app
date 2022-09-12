@@ -10,4 +10,8 @@ export class TxSuccessScreen {
   getGoToOcDetailsButton(): string {
     return '[data-cy="oversight-community-tx-success-go-to-oc-details-button"]';
   }
+
+  getEscrowModalGoToOcDetailsButton(): string {
+    return '[data-cy="oc-escrow-modal-go-to-oc-details-button"]';
+  }
 }

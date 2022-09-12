@@ -1,10 +1,10 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, Coin, createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { PoEContractType } from "codec/confio/poe/v1beta1/poe";
-import { QueryClientImpl } from "codec/confio/poe/v1beta1/query";
 import { NetworkConfig } from "config/network";
 
+import { PoEContractType } from "../codec/confio/poe/v1beta1/poe";
+import { QueryClientImpl } from "../codec/confio/poe/v1beta1/query";
 import { TcProposal, TcProposalResponse } from "./trustedCircle";
 
 /**

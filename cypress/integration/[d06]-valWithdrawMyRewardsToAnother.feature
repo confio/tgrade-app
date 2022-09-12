@@ -31,4 +31,4 @@ Feature: Withdraw my rewards to another address
     * Open wallet dialog from main menu
 
     # Check balance of Receiver address
-    * I use "randomMnemonic02" to make query and check balance of this address "192"
+    * I use "randomMnemonic02" to make query and check balance of this address "144"

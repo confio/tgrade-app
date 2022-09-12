@@ -97,7 +97,7 @@ export default function ReturnOcEscrowModal({
               <span>Try again</span>
             </Button>
           ) : null}
-          <Button onClick={() => resetModal()}>
+          <Button onClick={() => resetModal()} data-cy="oc-escrow-modal-go-to-oc-details-button">
             <span>Go to Oversight Community details</span>
           </Button>
         </ShowTxResult>
@@ -107,13 +107,17 @@ export default function ReturnOcEscrowModal({
             <Stack gap="s1">
               <Title>Claim back your exceeding escrow for Oversight Community?</Title>
               <Text>
-                Required escrow: {requiredEscrow} {feeDenom}
+                Required escrow:{" "}
+                <span data-cy="oc-claim-back-modal-required-escrow-value">{requiredEscrow}</span> {feeDenom}
               </Text>
               <Text>
-                Your current escrow: {userEscrow} {feeDenom}
+                Your current escrow:{" "}
+                <span data-cy="oc-claim-back-modal-your-current-escrow-value">{userEscrow}</span> {feeDenom}
               </Text>
               <Text>
-                Exceeding escrow you can claim: {exceedingEscrow} {feeDenom}
+                Exceeding escrow you can claim:{" "}
+                <span data-cy="oc-claim-back-modal-you-can-claim-escrow-value">{exceedingEscrow}</span>{" "}
+                {feeDenom}
               </Text>
             </Stack>
             {!isSubmitting ? <img alt="Close button" src={closeIcon} onClick={() => closeModal()} /> : null}
@@ -126,6 +130,7 @@ export default function ReturnOcEscrowModal({
               loading={isSubmitting}
               danger={!!signer}
               onClick={signer ? () => submitReturnEscrow() : () => setConnectWalletModalOpen(true)}
+              data-cy="oc-claim-back-modal-next-action-button"
             >
               {signer ? "Claim escrow" : "Connect wallet"}
             </Button>

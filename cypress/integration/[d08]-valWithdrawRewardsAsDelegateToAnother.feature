@@ -3,8 +3,8 @@ Feature: Withdraw rewards as delegate to another address
     * I connect Web Demo wallet
     * Set validator with "node0Mnemonic" mnemonic
     * Open wallet dialog from main menu
-    #* I see "9" balance for "TGD" token
-    #* I use existing "node0Mnemonic" mnemonic to make query and check balance "100"
+    * I see "9" balance for "TGD" token
+    * I use existing "node0Mnemonic" mnemonic to make query and check balance "100"
     * I close wallet dialog modal
     * I open Governance menu
     * I visit Validators page
