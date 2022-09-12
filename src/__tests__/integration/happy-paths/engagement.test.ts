@@ -102,74 +102,77 @@ describe("Engagement", () => {
     responseTimeout,
   );
 
-  it("Claim my own rewards and send them to another address", async () => {
-    const randomMnemonic = generateMnemonic();
-    /**
-     * execute a grant engagement proposal from the OC
-     * withdraw all Rewards to the User_B wallet address
-     * send them to another address
-     * Check that balance Wallet
-     * of User_B is equal zero before withdraw
-     * of User_B is NOT equal zero after withdraw
-     *
-     * */
+  it(
+    "Claim my own rewards and send them to another address",
+    async () => {
+      const randomMnemonicUserB = generateMnemonic();
+      /**
+       * execute a grant engagement proposal from the OC
+       * withdraw all Rewards to the User_B wallet address
+       * send them to another address
+       * Check that balance Wallet
+       * of User_B is equal zero before withdraw
+       * of User_B is NOT equal zero after withdraw
+       *
+       * */
 
-    const walletAdmin = await DirectSecp256k1HdWallet.fromMnemonic(adminMnemonic, {
-      hdPaths: [makeCosmoshubPath(0)],
-      prefix: config.addressPrefix,
-    });
+      const walletAdmin = await DirectSecp256k1HdWallet.fromMnemonic(adminMnemonic, {
+        hdPaths: [makeCosmoshubPath(0)],
+        prefix: config.addressPrefix,
+      });
 
-    const signingClient_01 = await createSigningClient(config, walletAdmin);
-    const { address: walletUserA } = (await walletAdmin.getAccounts())[0];
+      const signingClient_01 = await createSigningClient(config, walletAdmin);
+      const walletUserA = (await walletAdmin.getAccounts())[0].address;
 
-    const faucetClient_01 = new FaucetClient(config.faucetUrl);
-    await faucetClient_01.credit(walletUserA, config.faucetTokens?.[1] ?? config.feeToken);
+      const faucetClient_01 = new FaucetClient(config.faucetUrl);
+      await faucetClient_01.credit(walletUserA, config.faucetTokens?.[1] ?? config.feeToken);
 
-    const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(randomMnemonic, {
-      hdPaths: [makeCosmoshubPath(0)],
-      prefix: config.addressPrefix,
-    });
+      const wallet_02 = await DirectSecp256k1HdWallet.fromMnemonic(randomMnemonicUserB, {
+        hdPaths: [makeCosmoshubPath(0)],
+        prefix: config.addressPrefix,
+      });
 
-    const signingClient_02 = await createSigningClient(config, wallet_02);
-    const { address: walletUserB } = (await wallet_02.getAccounts())[0];
+      const signingClient_02 = await createSigningClient(config, wallet_02);
+      const walletUserB = (await wallet_02.getAccounts())[0].address;
 
-    const OcCommunity = new OcContract(config, signingClient_01);
-    const oC = await OcCommunity.propose(walletUserA, comment, {
-      grant_engagement: {
-        member: walletUserB,
-        points: parseInt("1000", 10),
-      },
-    });
+      const OcCommunity = new OcContract(config, signingClient_01);
+      const oC = await OcCommunity.propose(walletUserA, comment, {
+        grant_engagement: {
+          member: walletUserB,
+          points: parseInt("1000", 10),
+        },
+      });
 
-    if (!oC.proposalId) return;
-    const txHash = await OcCommunity.executeProposal(walletUserA, oC.proposalId);
-    expect(txHash).toBeTruthy();
-    const egContract = new EngagementContract(config, PoEContractType.ENGAGEMENT, signingClient_01);
+      if (!oC.proposalId) return;
+      const txHash = await OcCommunity.executeProposal(walletUserA, oC.proposalId);
+      expect(txHash).toBeTruthy();
+      const egContract = new EngagementContract(config, PoEContractType.ENGAGEMENT, signingClient_01);
 
-    // Before Withdraw Rewards step
-    const walletBalanceBeforeWithdraw = await signingClient_02.getBalance(walletUserB, config.feeToken);
-    expect(parseInt(walletBalanceBeforeWithdraw.amount)).toBe(0);
+      // Before Withdraw Rewards step
+      const walletBalanceBeforeWithdraw = await signingClient_02.getBalance(walletUserB, config.feeToken);
+      expect(parseInt(walletBalanceBeforeWithdraw.amount)).toBe(0);
 
-    const withdrawableRewardsBefore = await egContract.getWithdrawableRewards(walletUserB);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    expect(parseInt(withdrawableRewardsBefore.amount)).toBe(0); //Prevent failures in CI
+      const withdrawableRewardsBefore = await egContract.getWithdrawableRewards(walletUserB);
+      expect(parseInt(withdrawableRewardsBefore.amount)).toBe(0);
 
-    const engagementPointsBefore = await egContract.getEngagementPoints(walletUserB);
-    expect(engagementPointsBefore).toBeGreaterThan(0);
+      const engagementPointsBefore = await egContract.getEngagementPoints(walletUserB);
+      expect(engagementPointsBefore).toBeGreaterThan(0);
 
-    // Withdraw Rewards
-    await egContract.withdrawRewards(walletUserA, walletUserA, walletUserB);
+      // Withdraw Rewards
+      await egContract.withdrawRewards(walletUserA, walletUserA, walletUserB);
 
-    // After Withdraw Rewards step
-    const engagementPointsAfter = await egContract.getEngagementPoints(walletUserB);
-    expect(engagementPointsAfter).toBe(engagementPointsBefore);
+      // After Withdraw Rewards step
+      const engagementPointsAfter = await egContract.getEngagementPoints(walletUserB);
+      expect(engagementPointsAfter).toBe(engagementPointsBefore);
 
-    const withdrawableRewardsAfter = await egContract.getWithdrawableRewards(walletUserB);
-    expect(withdrawableRewardsAfter.amount).toBe("0");
+      const withdrawableRewardsAfter = await egContract.getWithdrawableRewards(walletUserB);
+      expect(withdrawableRewardsAfter.amount).toBe("0");
 
-    const walletBalanceAfterWithdraw = await signingClient_02.getBalance(walletUserB, config.feeToken);
-    expect(parseInt(walletBalanceAfterWithdraw.amount)).toBeGreaterThan(0);
-  }, 25000);
+      const walletBalanceAfterWithdraw = await signingClient_02.getBalance(walletUserB, config.feeToken);
+      expect(parseInt(walletBalanceAfterWithdraw.amount)).toBeGreaterThan(0);
+    },
+    responseTimeout,
+  );
 
   it(
     "Set another account as my delegate",
