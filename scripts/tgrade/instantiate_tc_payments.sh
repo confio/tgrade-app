@@ -20,10 +20,17 @@ contract="tgrade_tc_payments"
 
 # Instantiate contract
 # 1. Store contract
-#rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
-#  --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
-#codeId=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
-codeId=18
+rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
+  --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
+codeId=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
+
+period="daily" # Used for tests
+#period="monthly"
+#period="yearly"
+
+amount=10000000 # 10 TGD
+[ "$period" = "monthly" ] && amount=$[amount * 10]
+[ "$period" = "yearly" ] && amount=$[amount * 10 * 12]
 
 echo "Code Id: $codeId"
 if echo $0 | grep -q store_
@@ -51,8 +58,8 @@ initMsg="{
   \"ap_addr\": \"$apAddr\",
   \"engagement_addr\": \"$engagementAddr\",
   \"denom\": \"utgd\",
-  \"payment_amount\": \"1000000\",
-  \"payment_period\": { \"daily\": {} }
+  \"payment_amount\": \"$amount\",
+  \"payment_period\": { \"$period\": {} }
 }"
 echo "$initMsg" | jq '.'
 rsp=$(tgrade tx wasm instantiate $codeId "$initMsg" --label "$contract" --admin "$valVotingAddr" --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
