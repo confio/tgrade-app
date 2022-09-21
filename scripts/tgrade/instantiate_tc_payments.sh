@@ -20,11 +20,12 @@ contract="tgrade_tc_payments"
 
 # Instantiate contract
 # 1. Store contract
-rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
-  --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
-codeID=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
+#rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
+#  --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
+#codeId=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
+codeId=18
 
-echo "Code Id: $codeID"
+echo "Code Id: $codeId"
 if echo $0 | grep -q store_
 then
   exit 0
@@ -50,11 +51,11 @@ initMsg="{
   \"ap_addr\": \"$apAddr\",
   \"engagement_addr\": \"$engagementAddr\",
   \"denom\": \"utgd\",
-  \"payment_amount\": \"100000000\",
-  \"payment_period\": { \"monthly\": {} }
+  \"payment_amount\": \"1000000\",
+  \"payment_period\": { \"daily\": {} }
 }"
 echo "$initMsg" | jq '.'
-rsp=$(tgrade tx wasm instantiate $codeID "$initMsg" --label "$contract" --admin "$valVotingAddr" --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
+rsp=$(tgrade tx wasm instantiate $codeId "$initMsg" --label "$contract" --admin "$valVotingAddr" --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
 
 address=$(echo "$rsp" | jq -er '.logs[0].events[0].attributes[0].value')
 echo "$contract instance address: $address"
