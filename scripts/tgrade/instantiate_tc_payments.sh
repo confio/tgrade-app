@@ -18,12 +18,11 @@ key="tgrade-v5-reserve-internal-14"
 
 contract="tgrade_tc_payments"
 
-# Instantiate a fixed-multisig contract
+# Instantiate contract
 # 1. Store contract
-#rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
-#  --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
-#codeID=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
-codeID=18
+rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
+  --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
+codeID=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
 
 echo "Code Id: $codeID"
 if echo $0 | grep -q store_
