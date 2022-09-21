@@ -10,8 +10,8 @@ import { getErrorFromStackTrace } from "utils/errors";
 import { Factory } from "utils/factory";
 import {
   DetailProvide,
-  PairProps,
-  Pool,
+  Pair,
+  PoolContract,
   ProvideFormValues,
   SimulationProvide,
   SwapFormValues,
@@ -22,7 +22,7 @@ export const handleValidation = async (
   client: CosmWasmClient | undefined,
   address: string | undefined,
   factoryAddress: string,
-  setPair: (pair: PairProps | undefined) => void,
+  setPair: (pair: Pair | undefined) => void,
   setErrors: (errors: FormErrors) => void,
   setIsApprovedA: (needAllowance: boolean) => void,
   setIsApprovedB: (needAllowance: boolean) => void,
@@ -134,7 +134,7 @@ export const handleSubmit = async (
   client: CosmWasmClient | undefined,
   address: string | undefined,
   setLoading: any,
-  selectedPair: PairProps | undefined,
+  selectedPair: Pair | undefined,
   config: NetworkConfig,
   simulation: SimulationProvide | undefined,
   setSimulation: (a: SimulationProvide | undefined) => void,
@@ -160,7 +160,7 @@ export const handleSubmit = async (
         return;
       try {
         setLoading(true);
-        const provide_result = await Pool.ProvideLiquidity(
+        const txHash = await PoolContract.ProvideLiquidity(
           signingClient,
           selectedPair.contract_addr,
           address,
@@ -174,7 +174,7 @@ export const handleSubmit = async (
             providedA: `${values.assetA} ${values.selectFrom.symbol}`,
             providedB: `${values.assetB} ${values.selectTo.symbol}`,
             received: `${simulation.spread_amount} ${values.selectTo.symbol}`,
-            txHash: provide_result.transactionHash,
+            txHash: txHash ?? "",
             fee: (Number(config.gasPrice.amount) / 2).toString(),
           });
         } else {
@@ -183,7 +183,7 @@ export const handleSubmit = async (
             providedA: `${values.assetA} ${values.selectFrom.symbol}`,
             providedB: `${values.assetB} ${values.selectTo.symbol}`,
             received: `~`,
-            txHash: provide_result.transactionHash,
+            txHash: txHash ?? "",
             fee: (Number(config.gasPrice.amount) / 2).toString(),
           });
         }

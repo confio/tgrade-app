@@ -15,7 +15,7 @@ import {
   TokenContainer,
 } from "./style";
 
-const SelectTokenModal = lazy(() => import("../SelecTokenModal"));
+const SelectTokenModal = lazy(() => import("App/components/SelectTokenModal"));
 
 export const EmptyCol = (): JSX.Element => <Col>&nbsp;</Col>;
 

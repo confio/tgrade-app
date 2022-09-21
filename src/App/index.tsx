@@ -25,6 +25,7 @@ const Dso = lazy(() => import("./routes/Dso"));
 const Engagement = lazy(() => import("./pages/Engagement"));
 const OcHome = lazy(() => import("./pages/OcHome"));
 const TMarketHome = lazy(() => import("App/pages/TMarket"));
+const NewTMarket = lazy(() => import("App/pages/NewTMarket"));
 const NotFound = lazy(() => import("App/pages/NotFound"));
 
 export default function App(): JSX.Element {
@@ -75,6 +76,9 @@ export default function App(): JSX.Element {
                                   <TMarketProvider>
                                     <TMarketHome />
                                   </TMarketProvider>
+                                </Route>
+                                <Route path={`${paths.newtmarket.prefix}`}>
+                                  <NewTMarket />
                                 </Route>
                                 <Route path={`${paths.documentation.prefix}`}>
                                   <DocumentationPage />

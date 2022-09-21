@@ -13,7 +13,7 @@ import { displayAmountToNative, sendTokens } from "utils/currency";
 import { Contract20WS } from "utils/cw20";
 import { getErrorFromStackTrace } from "utils/errors";
 import { getFormItemName, isValidAddress } from "utils/forms";
-import { TokenProps } from "utils/tokens";
+import { TokenHuman } from "utils/tokens";
 import * as Yup from "yup";
 
 import Field from "../Field";
@@ -33,7 +33,7 @@ interface FormSendTokensValues {
 interface SendTokenModalProps {
   readonly isModalOpen: boolean;
   readonly closeModal: () => void;
-  readonly selectedToken?: TokenProps;
+  readonly selectedToken?: TokenHuman;
 }
 
 export default function SendTokenModal({

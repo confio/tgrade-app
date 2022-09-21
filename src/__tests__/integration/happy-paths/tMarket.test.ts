@@ -7,7 +7,7 @@ import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
 import { createSigningClient, generateMnemonic, getCodeIds, loadOrCreateWallet } from "utils/sdk";
-import { Pool, ProvideFormValues, SwapFormValues, Token } from "utils/tokens";
+import { PoolContract, ProvideFormValues, SwapFormValues, TokenContract } from "utils/tokens";
 
 const mnemonic = generateMnemonic();
 const responseTimeout = 30000;
@@ -228,8 +228,8 @@ describe("T-Market", () => {
       const pair = pairs[`${tgradeToken.address}-${cw20tokenInfo.address}`];
       const pairAddress = pair.contract_addr;
 
-      await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
-      const provideStatus = await Pool.ProvideLiquidity(
+      await Contract20WS.approve(signingClient, cw20tokenInfo.address, address, pairAddress);
+      const provideStatus = await PoolContract.ProvideLiquidity(
         signingClient,
         pairAddress,
         address,
@@ -321,8 +321,8 @@ describe("T-Market", () => {
       const pair = pairs[`${tgradeToken.address}-${cw20tokenInfo.address}`];
       const pairAddress = pair.contract_addr;
 
-      await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
-      const provideStatus = await Pool.ProvideLiquidity(
+      await Contract20WS.approve(signingClient, cw20tokenInfo.address, address, pairAddress);
+      const provideStatus = await PoolContract.ProvideLiquidity(
         signingClient,
         pairAddress,
         address,
@@ -339,7 +339,13 @@ describe("T-Market", () => {
         selectFrom: tgradeToken,
         selectTo: cw20tokenInfo,
       };
-      const swappedStatus = await Token.Swap(signingClient, address, pair, swapPairValues, config.gasPrice);
+      const swappedStatus = await TokenContract.Swap(
+        signingClient,
+        address,
+        pair,
+        swapPairValues,
+        config.gasPrice,
+      );
       expect(swappedStatus).toBeTruthy();
     },
     responseTimeout,

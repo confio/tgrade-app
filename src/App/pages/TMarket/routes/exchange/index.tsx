@@ -24,7 +24,7 @@ import {
   useExchange,
 } from "service/exchange";
 import { useTokens } from "service/tokens";
-import { DetailSwap, PairProps, SimulatedSwap, SwapFormValues, Token } from "utils/tokens";
+import { DetailSwap, Pair, SimulatedSwap, SwapFormValues, TokenContract } from "utils/tokens";
 
 import { ExtraInfo, FromToken, ToToken } from "./components";
 import ExchangeResultModal from "./components/ExchangeResultModal";
@@ -46,7 +46,7 @@ export default function Exchange(): JSX.Element {
 
   const setLoadingButton = (loading: boolean) => setLoading(exchangeDispatch, loading);
   const setSwapButtonState = (button: SwapButtonState) => setSwapButton(exchangeDispatch, button);
-  const setPair = (pair: PairProps | undefined) => setSelectedPair(exchangeDispatch, pair);
+  const setPair = (pair: Pair | undefined) => setSelectedPair(exchangeDispatch, pair);
   const setSimulation = (simulation: SimulatedSwap | undefined) =>
     setSimulatedSwap(exchangeDispatch, simulation);
   const setDetail = (detail: DetailSwap | undefined) => setDetailSwap(exchangeDispatch, detail);
@@ -114,7 +114,7 @@ export default function Exchange(): JSX.Element {
             </MiddleRow>
             <ToToken />
             <Divider />
-            <ExtraInfo fee={calculateFee(Token.GAS_SWAP, sdkState.config.gasPrice)} />
+            <ExtraInfo fee={calculateFee(TokenContract.GAS_SWAP, sdkState.config.gasPrice)} />
             <EstimatedMessage />
             <SubmitButton
               disabled={

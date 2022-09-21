@@ -1,6 +1,6 @@
 import { UserError } from "App/pages/TMarket/utils";
 import { createContext, HTMLAttributes, useContext, useReducer } from "react";
-import { DetailProvide, ExtraInfoProvide, PairProps, PoolProps, SimulationProvide } from "utils/tokens";
+import { DetailProvide, ExtraInfoProvide, Pair, PoolContract, SimulationProvide } from "utils/tokens";
 
 export type FormErrors = {
   from: UserError | undefined;
@@ -29,7 +29,7 @@ type ProvideAction =
     }
   | {
       readonly type: "setSelectedPair";
-      readonly payload: PairProps | undefined;
+      readonly payload: Pair | undefined;
     }
   | {
       readonly type: "setLoading";
@@ -57,7 +57,7 @@ type ProvideAction =
     }
   | {
       readonly type: "setPool";
-      readonly payload: PoolProps | undefined;
+      readonly payload: PoolContract | undefined;
     }
   | {
       readonly type: "setExtraInfo";
@@ -70,13 +70,13 @@ type ProvideState = {
   readonly isTokenApprovedB: boolean;
   readonly isPoolEmpty: boolean;
   readonly displayTip: boolean;
-  readonly selectedPair: PairProps | undefined;
+  readonly selectedPair: Pair | undefined;
   readonly extraInfo: ExtraInfoProvide | undefined;
   readonly loading: boolean;
   readonly provideButtonState: provideButtonState;
   readonly simulationProvide: SimulationProvide | undefined;
   readonly detailProvide: DetailProvide | undefined;
-  readonly pool: PoolProps | undefined;
+  readonly pool: PoolContract | undefined;
   readonly errors: FormErrors;
 };
 
@@ -137,7 +137,7 @@ export function setLoading(dispatch: ProvideDispatch, loading: boolean): void {
   dispatch({ type: "setLoading", payload: loading });
 }
 
-export function setSelectedPair(dispatch: ProvideDispatch, selectedPair: PairProps | undefined): void {
+export function setSelectedPair(dispatch: ProvideDispatch, selectedPair: Pair | undefined): void {
   dispatch({ type: "setSelectedPair", payload: selectedPair });
 }
 export function setSimulationProvide(
@@ -152,7 +152,7 @@ export function setDetailProvide(dispatch: ProvideDispatch, detailProvide: Detai
 export function setErrors(dispatch: ProvideDispatch, errors: FormErrors): void {
   dispatch({ type: "setErrors", payload: errors });
 }
-export function setPool(dispatch: ProvideDispatch, pool: PoolProps | undefined): void {
+export function setPool(dispatch: ProvideDispatch, pool: PoolContract | undefined): void {
   dispatch({ type: "setPool", payload: pool });
 }
 export function setIsTokenApprovedA(dispatch: ProvideDispatch, pool: boolean): void {

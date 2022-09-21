@@ -7,7 +7,8 @@ import { lazy, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
 import { useTokens } from "service/tokens";
 import { getDisplayAmountFromFee } from "utils/currency";
-import { tokenObj, TokenProps } from "utils/tokens";
+import { AssetInfos } from "utils/factory";
+import { TokenHuman } from "utils/tokens";
 import { TcContract } from "utils/trustedCircle";
 import { ellipsifyAddress } from "utils/ui";
 
@@ -40,8 +41,8 @@ export default function ConfirmationWhitelistPair({
   } = useTokens();
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const [assetInfos, setAssetInfos] = useState<readonly [tokenObj, tokenObj]>();
-  const [tokenProps, setTokenProps] = useState<readonly [TokenProps | undefined, TokenProps | undefined]>();
+  const [assetInfos, setAssetInfos] = useState<AssetInfos>();
+  const [tokenProps, setTokenProps] = useState<readonly [TokenHuman | undefined, TokenHuman | undefined]>();
   const [txFee, setTxFee] = useState("0");
   const feeTokenDenom = config.coinMap[config.feeToken].denom || "";
 

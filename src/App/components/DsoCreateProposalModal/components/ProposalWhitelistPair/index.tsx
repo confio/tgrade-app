@@ -77,8 +77,8 @@ export default function ProposalWhitelistPair({
       const markedTokensPerPairs: readonly TokensPerPair[] = await Promise.all(
         tokensPerPairs.map(async (pairAssets) => {
           const { pairAddress, tokenA, tokenB } = pairAssets;
-          const dsoAddressA = await Contract20WS.getDsoAddress(client, tokenA.address);
-          const dsoAddressB = await Contract20WS.getDsoAddress(client, tokenB.address);
+          const dsoAddressA = await Contract20WS.getTcAddress(client, tokenA.address);
+          const dsoAddressB = await Contract20WS.getTcAddress(client, tokenB.address);
           // Remove if no token is associated to current TC
           if (dsoAddressA !== dsoAddress && dsoAddressB !== dsoAddress) {
             return { ...pairAssets, pairAddress: "none" };

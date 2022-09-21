@@ -22,15 +22,8 @@ import {
   useProvide,
 } from "service/provide";
 import { useTokens } from "service/tokens";
-import { Factory } from "utils/factory";
-import {
-  DetailProvide,
-  PairProps,
-  ProvideFormValues,
-  SimulationProvide,
-  Token,
-  tokenObj,
-} from "utils/tokens";
+import { AssetInfo, Factory } from "utils/factory";
+import { DetailProvide, Pair, ProvideFormValues, SimulationProvide, TokenContract } from "utils/tokens";
 
 import { ApproveTokensRow, EmptyPoolTip, ExtraInfo, FromToken, ToToken, WhitelistHelp } from "./components";
 import ProvideResultModal from "./components/ProvideResultModal";
@@ -67,7 +60,7 @@ export default function Provide(): JSX.Element {
   } = provideState;
 
   const setLoadingButton = (loading: boolean) => setLoading(provideDispatch, loading);
-  const setPair = (pair: PairProps | undefined) => setSelectedPair(provideDispatch, pair);
+  const setPair = (pair: Pair | undefined) => setSelectedPair(provideDispatch, pair);
   const setSimulation = (s: SimulationProvide | undefined) => setSimulationProvide(provideDispatch, s);
   const setNewError = (e: FormErrors) => setErrors(provideDispatch, e);
   const setDetail = (detail: DetailProvide | undefined) => setDetailProvide(provideDispatch, detail);
@@ -139,11 +132,11 @@ export default function Provide(): JSX.Element {
           // Update pair
           if (!client) return;
 
-          const assetA: tokenObj =
+          const assetA: AssetInfo =
             values.selectFrom.address === config.feeToken
               ? { native: values.selectFrom.address }
               : { token: values.selectFrom.address };
-          const assetB: tokenObj =
+          const assetB: AssetInfo =
             values.selectTo.address === config.feeToken
               ? { native: values.selectTo.address }
               : { token: values.selectTo.address };
@@ -168,7 +161,7 @@ export default function Provide(): JSX.Element {
               <ToToken />
               <Divider />
               <EmptyPoolTip />
-              <ExtraInfo fee={calculateFee(Token.GAS_PROVIDE_LIQUIDITY, config.gasPrice)} />
+              <ExtraInfo fee={calculateFee(TokenContract.GAS_PROVIDE_LIQUIDITY, config.gasPrice)} />
               <ApproveTokensRow />
               <WhitelistHelp />
               <EstimatedMessage />

@@ -1,7 +1,6 @@
 export { default as EstimatedMessage } from "./EstimatedMessage";
 export { default as MenuAMM } from "./Menu";
 export { default as MiddleRow } from "./MiddleRow";
-export { default as SelecTokenModal } from "./SelecTokenModal";
 export { default as SelectTokenTrigger } from "./SelectTokenTrigger";
 export { default as SubmitButton } from "./SubmitButton";
 export { default as SwitchTokensButton } from "./SwitchButton";

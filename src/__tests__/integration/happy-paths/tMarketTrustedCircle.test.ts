@@ -6,7 +6,7 @@ import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
 import { createSigningClient, generateMnemonic, getCodeIds } from "utils/sdk";
-import { Pool, ProvideFormValues, SwapFormValues } from "utils/tokens";
+import { PoolContract, ProvideFormValues, SwapFormValues } from "utils/tokens";
 import { TcContract } from "utils/trustedCircle";
 
 const tcName = "Trusted Circle #1";
@@ -140,8 +140,8 @@ describe("T-Market with Trusted Circle", () => {
     expect(txHash).toBeTruthy();
 
     // Provide liquidity
-    await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
-    const provideStatus = await Pool.ProvideLiquidity(
+    await Contract20WS.approve(signingClient, cw20tokenInfo.address, address, pairAddress);
+    const provideStatus = await PoolContract.ProvideLiquidity(
       signingClient,
       pairAddress,
       address,
@@ -262,9 +262,15 @@ describe("T-Market with Trusted Circle", () => {
     const pair = pairs[`${tgradeToken.address}-${cw20tokenInfo.address}`];
     const pairAddress = pair.contract_addr;
 
-    await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
+    await Contract20WS.approve(signingClient, cw20tokenInfo.address, address, pairAddress);
     try {
-      await Pool.ProvideLiquidity(signingClient, pairAddress, address, provideValues, config.gasPrice);
+      await PoolContract.ProvideLiquidity(
+        signingClient,
+        pairAddress,
+        address,
+        provideValues,
+        config.gasPrice,
+      );
     } catch (error) {
       // failed to execute message; message index: 0: dispatch: submessages: Unauthorized: execute wasm contract failed
       expect(error).toBeTruthy();

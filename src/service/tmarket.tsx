@@ -1,6 +1,6 @@
 import { UserError } from "App/pages/TMarket/utils";
 import { createContext, HTMLAttributes, useContext, useReducer } from "react";
-import { PoolProps } from "utils/tokens";
+import { PoolContract } from "utils/tokens";
 
 export type FormErrors = {
   from: UserError | undefined;
@@ -14,7 +14,7 @@ type tMarketAction =
     }
   | {
       readonly type: "setPool";
-      readonly payload: PoolProps | undefined;
+      readonly payload: PoolContract | undefined;
     }
   | {
       readonly type: "setEstimatingFromA";
@@ -28,7 +28,7 @@ type tMarketAction =
 type tMarketDispatch = (action: tMarketAction) => void;
 type tMarketState = {
   readonly searchText: string | undefined;
-  readonly pool: PoolProps | undefined;
+  readonly pool: PoolContract | undefined;
   readonly estimatingFromA: boolean;
   readonly estimatingFromB: boolean;
 };
@@ -65,7 +65,7 @@ function tMarketReducer(tMarketState: tMarketState, action: tMarketAction): tMar
 export function setSearchText(dispatch: tMarketDispatch, text: string | undefined): void {
   dispatch({ type: "setSearchText", payload: text });
 }
-export function setPool(dispatch: tMarketDispatch, pool: PoolProps): void {
+export function setPool(dispatch: tMarketDispatch, pool: PoolContract): void {
   dispatch({ type: "setPool", payload: pool });
 }
 export function setEstimatingFromA(dispatch: tMarketDispatch): void {

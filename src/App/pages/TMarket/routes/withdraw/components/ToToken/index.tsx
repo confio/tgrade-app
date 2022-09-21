@@ -1,12 +1,12 @@
 import { TokenRowWithdraw } from "App/pages/TMarket/components";
 import { useFormikContext } from "formik";
 import { useWithdraw } from "service/withdraw";
-import { SwapFormValues, TokenProps } from "utils/tokens";
+import { SwapFormValues, TokenHuman } from "utils/tokens";
 
 const ToToken = (): JSX.Element => {
   const { values, setValues } = useFormikContext<SwapFormValues>();
   const { withdrawState } = useWithdraw();
-  const setToken = (token: TokenProps) => {
+  const setToken = (token: TokenHuman) => {
     setValues({
       ...values,
       selectTo: token,

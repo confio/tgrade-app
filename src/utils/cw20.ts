@@ -7,7 +7,7 @@ import { NetworkConfig } from "config/network";
 import { CodeIds } from "service/sdk";
 
 import { UINT128_MAX } from "./currency";
-import { PairProps, TokenProps } from "./tokens";
+import { Pair, TokenHuman } from "./tokens";
 
 export interface InstantiateMsg {
   readonly name: string;
@@ -68,9 +68,23 @@ interface PageResponse {
   nextKey: Uint8Array;
   total: Long;
 }
+
 interface QueryContractsByCodeResponse {
   contracts: string[];
   pagination?: PageResponse;
+}
+
+export type Expiration = {
+  readonly at_height: number;
+} & {
+  readonly at_time: string;
+} & {
+  readonly never: Record<string, unknown>;
+};
+
+interface AllowanceResponse {
+  readonly allowance: string;
+  readonly expires: Expiration;
 }
 
 export class Contract20WS {
@@ -157,7 +171,7 @@ export class Contract20WS {
     address: string,
     contractAddress: string,
     config: NetworkConfig,
-  ): Promise<TokenProps> {
+  ): Promise<TokenHuman> {
     if (contractAddress === "utgd") {
       const { amount: balance_utgd } = await client.getBalance(address, "utgd");
       return {
@@ -204,8 +218,8 @@ export class Contract20WS {
     codeIds: CodeIds,
     client: CosmWasmClient,
     clientAddress: string,
-  ): Promise<{ [key: string]: TokenProps }> {
-    const tokensMap: { [key: string]: TokenProps } = {};
+  ): Promise<{ [key: string]: TokenHuman }> {
+    const tokensMap: { [key: string]: TokenHuman } = {};
 
     // Add feeToken to lists
     const feeTokenInfo = await this.getTokenInfo(client, clientAddress, config.feeToken, config);
@@ -219,7 +233,7 @@ export class Contract20WS {
     ).flat();
 
     // Get batched token infos
-    const tokensInfos: TokenProps[] = [];
+    const tokensInfos: TokenHuman[] = [];
 
     while (tokensInfos.length < tokenAddresses.length) {
       const nextTokensInfos = await Promise.all(
@@ -242,17 +256,17 @@ export class Contract20WS {
   static async getLPTokens(
     client: CosmWasmClient,
     clientAddress: string,
-    pairs: { [key: string]: PairProps },
-    tokens: { [key: string]: TokenProps },
+    pairs: { [key: string]: Pair },
+    tokens: { [key: string]: TokenHuman },
     config: NetworkConfig,
-  ): Promise<{ [id: string]: { token: TokenProps; pair: PairProps } }> {
-    const tokensMap: { [key: string]: { token: TokenProps; pair: PairProps } } = {};
+  ): Promise<{ [id: string]: { token: TokenHuman; pair: Pair } }> {
+    const tokensMap: { [key: string]: { token: TokenHuman; pair: Pair } } = {};
 
     Object.keys(pairs).map(async (address): Promise<void> => {
       const pair = pairs[address];
       const identifierA = pair.asset_infos[0].native || pair.asset_infos[0].token;
       const identifierB = pair.asset_infos[1].native || pair.asset_infos[1].token;
-      const token_info: TokenProps = await this.getTokenInfo(
+      const token_info: TokenHuman = await this.getTokenInfo(
         client,
         clientAddress,
         pair.liquidity_token,
@@ -286,7 +300,7 @@ export class Contract20WS {
     });
     return result_allowance.allowance;
   }
-  static async getDsoAddress(client: CosmWasmClient, contractAddress?: string): Promise<string | undefined> {
+  static async getTcAddress(client: CosmWasmClient, contractAddress?: string): Promise<string | undefined> {
     if (!contractAddress) return undefined;
 
     try {
@@ -298,11 +312,9 @@ export class Contract20WS {
   }
   static async isWhitelisted(
     client: CosmWasmClient,
-    contractAddress?: string,
-    pairAddress?: string,
-  ): Promise<boolean | undefined> {
-    if (!contractAddress) return;
-
+    contractAddress: string,
+    pairAddress: string,
+  ): Promise<boolean> {
     try {
       const { whitelisted }: { whitelisted: boolean } = await client.queryContractSmart(contractAddress, {
         is_whitelisted: { address: pairAddress },
@@ -330,12 +342,36 @@ export class Contract20WS {
 
     return result.transactionHash;
   }
-  static async Authorized(
+  static async isApproved(
+    client: CosmWasmClient,
+    contractAddress: string,
+    address: string,
+    pairAddress: string,
+  ): Promise<boolean> {
+    try {
+      const { allowance, expires }: AllowanceResponse = await client.queryContractSmart(contractAddress, {
+        allowance: { owner: address, spender: pairAddress },
+      });
+      const expiryTime = Number(typeof expires === "string" ? expires : expires.at_time) / 1000000;
+      const expiryDate = new Date(expiryTime);
+
+      if (expiryDate < new Date()) return false;
+
+      const currentAllowance = Number(allowance);
+      const maxAllowance = Number(UINT128_MAX);
+      if (currentAllowance < maxAllowance / 2) return false;
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  static async approve(
     signingClient: SigningCosmWasmClient,
     contractAddress: string,
     address: string,
     pairAddress: string,
-  ): Promise<any> {
+  ): Promise<string> {
     const result = await signingClient.execute(
       address,
       contractAddress,
@@ -348,6 +384,6 @@ export class Contract20WS {
       calculateFee(500_000, GasPrice.fromString("0.05utgd")),
     );
 
-    return result;
+    return result.transactionHash;
   }
 }

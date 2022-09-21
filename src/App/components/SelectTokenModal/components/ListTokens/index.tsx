@@ -4,7 +4,7 @@ import pinLightIcon from "App/assets/icons/pin-light.svg";
 import tempImgUrl from "App/assets/icons/token-placeholder.png";
 import { useSdk } from "service";
 import { useTokens } from "service/tokens";
-import { TokenProps } from "utils/tokens";
+import { TokenHuman } from "utils/tokens";
 
 import {
   ContainerLogoNames,
@@ -23,8 +23,8 @@ function loadDefaultImg(event: React.SyntheticEvent<HTMLImageElement, Event>): v
 }
 
 interface ListTokensProps {
-  readonly tokensList: readonly TokenProps[];
-  readonly setToken: (t: TokenProps) => void;
+  readonly tokensList: readonly TokenHuman[];
+  readonly setToken: (t: TokenHuman) => void;
   readonly closeModal: () => void;
 }
 
@@ -41,7 +41,7 @@ export default function ListTokens({ tokensList, setToken, closeModal }: ListTok
       pagination={{ pageSize: 8, hideOnSinglePage: true, showSizeChanger: false }}
       dataSource={[...tokensList]}
       renderItem={(item: any) => {
-        const token: TokenProps = item;
+        const token: TokenHuman = item;
         return (
           <TokenListItem
             onClick={() => {

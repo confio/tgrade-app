@@ -1,6 +1,6 @@
 import { UserError } from "App/pages/TMarket/utils";
 import { createContext, HTMLAttributes, useContext, useReducer } from "react";
-import { DetailSwap, PairProps, PoolProps, SimulatedSwap, TokenProps } from "utils/tokens";
+import { DetailSwap, Pair, PoolContract, SimulatedSwap, TokenHuman } from "utils/tokens";
 
 export type FormErrors = {
   from: UserError | undefined;
@@ -18,15 +18,15 @@ export type SwapButtonState =
 type ExchangeAction =
   | {
       readonly type: "setTokens";
-      readonly payload: readonly TokenProps[];
+      readonly payload: readonly TokenHuman[];
     }
   | {
       readonly type: "setPairs";
-      readonly payload: readonly PairProps[];
+      readonly payload: readonly Pair[];
     }
   | {
       readonly type: "setSelectedPair";
-      readonly payload: PairProps | undefined;
+      readonly payload: Pair | undefined;
     }
   | {
       readonly type: "setLoading";
@@ -50,12 +50,12 @@ type ExchangeAction =
     }
   | {
       readonly type: "setPool";
-      readonly payload: PoolProps | undefined;
+      readonly payload: PoolContract | undefined;
     };
 
 type ExchangeDispatch = (action: ExchangeAction) => void;
 type ExchangeState = {
-  readonly selectedPair: PairProps | undefined;
+  readonly selectedPair: Pair | undefined;
   readonly loading: boolean;
   readonly swapButton: SwapButtonState;
   readonly simulatedSwap: SimulatedSwap | undefined;
@@ -104,7 +104,7 @@ export function setLoading(dispatch: ExchangeDispatch, loading: boolean): void {
 export function setSwapButton(dispatch: ExchangeDispatch, buttonState: SwapButtonState): void {
   dispatch({ type: "setSwapButton", payload: buttonState });
 }
-export function setSelectedPair(dispatch: ExchangeDispatch, selectedPair: PairProps | undefined): void {
+export function setSelectedPair(dispatch: ExchangeDispatch, selectedPair: Pair | undefined): void {
   dispatch({ type: "setSelectedPair", payload: selectedPair });
 }
 export function setSimulatedSwap(dispatch: ExchangeDispatch, simulatedSwap: SimulatedSwap | undefined): void {
@@ -116,7 +116,7 @@ export function setDetailSwap(dispatch: ExchangeDispatch, detailSwap: DetailSwap
 export function setErrors(dispatch: ExchangeDispatch, errors: FormErrors): void {
   dispatch({ type: "setErrors", payload: errors });
 }
-export function setPool(dispatch: ExchangeDispatch, pool: PoolProps): void {
+export function setPool(dispatch: ExchangeDispatch, pool: PoolContract): void {
   dispatch({ type: "setPool", payload: pool });
 }
 export const useExchange = (): NonNullable<ExchangeContextType> => {

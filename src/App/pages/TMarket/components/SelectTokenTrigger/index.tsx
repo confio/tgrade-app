@@ -1,6 +1,6 @@
 import { Row, Typography } from "antd";
 import { MouseEventHandler } from "react";
-import { TokenProps } from "utils/tokens";
+import { TokenHuman } from "utils/tokens";
 
 import arrowDownIcon from "./assets/arrow-down-icon.svg";
 import StyledSelectTokenButton, { Image, SelectTokenParagraph } from "./style";
@@ -9,7 +9,7 @@ const SelectTokenTrigger = ({
   Token,
   openModal,
 }: {
-  Token: TokenProps | undefined;
+  Token: TokenHuman | undefined;
   openModal: MouseEventHandler<HTMLButtonElement>;
 }): JSX.Element => {
   return (

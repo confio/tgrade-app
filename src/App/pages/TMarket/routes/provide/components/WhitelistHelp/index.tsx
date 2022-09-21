@@ -28,17 +28,17 @@ export default function WhitelistHelp(): JSX.Element | null {
 
       const tokenAddressA = selectedPair?.asset_infos[0].token;
       const tokenAddressB = selectedPair?.asset_infos[1].token;
-      const tcAddressA = await Contract20WS.getDsoAddress(client, tokenAddressA);
-      const tcAddressB = await Contract20WS.getDsoAddress(client, tokenAddressB);
+      const tcAddressA = await Contract20WS.getTcAddress(client, tokenAddressA);
+      const tcAddressB = await Contract20WS.getTcAddress(client, tokenAddressB);
       const isPairWhitelistedInTcA = await Contract20WS.isWhitelisted(
         client,
-        tokenAddressA,
-        selectedPair?.contract_addr,
+        tokenAddressA || "",
+        selectedPair?.contract_addr || "",
       );
       const isPairWhitelistedInTcB = await Contract20WS.isWhitelisted(
         client,
-        tokenAddressB,
-        selectedPair?.contract_addr,
+        tokenAddressB || "",
+        selectedPair?.contract_addr || "",
       );
 
       const warnings: WhitelistWarnings = {};

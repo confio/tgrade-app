@@ -28,7 +28,7 @@ const ApproveTokensRow = (): JSX.Element | null => {
 
     try {
       setApprovingTokenA(true);
-      await Contract20WS.Authorized(
+      await Contract20WS.approve(
         signingClient,
         values.selectFrom.address,
         address,
@@ -49,12 +49,7 @@ const ApproveTokensRow = (): JSX.Element | null => {
 
     try {
       setApprovingTokenB(true);
-      await Contract20WS.Authorized(
-        signingClient,
-        values.selectTo.address,
-        address,
-        selectedPair.contract_addr,
-      );
+      await Contract20WS.approve(signingClient, values.selectTo.address, address, selectedPair.contract_addr);
       setIsTokenApprovedB(provideDispatch, true);
     } catch (error) {
       console.error(`Error when approving token ${values.selectTo.symbol}`);

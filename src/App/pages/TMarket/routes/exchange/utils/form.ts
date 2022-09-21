@@ -7,7 +7,15 @@ import { FormErrors } from "service/tmarket";
 import { gtagTMarketAction } from "utils/analytics";
 import { getErrorFromStackTrace } from "utils/errors";
 import { Factory } from "utils/factory";
-import { DetailSwap, PairProps, Pool, PoolProps, SimulatedSwap, SwapFormValues, Token } from "utils/tokens";
+import {
+  DetailSwap,
+  Pair,
+  Pool,
+  PoolContract,
+  SimulatedSwap,
+  SwapFormValues,
+  TokenContract,
+} from "utils/tokens";
 
 export const handleValidation = async (
   values: SwapFormValues,
@@ -15,7 +23,7 @@ export const handleValidation = async (
   address: string | undefined,
   swapButton: SwapButtonState,
   factoryAddress: string,
-  setPair: (pair: PairProps | undefined) => void,
+  setPair: (pair: Pair | undefined) => void,
   setSwapButtonState: (button: SwapButtonState) => void,
   setErrors: (errors: FormErrors) => void,
 ): Promise<void> => {
@@ -35,7 +43,7 @@ export const handleValidation = async (
   if (!pair && swapButton.type !== "not_exits") {
     setSwapButtonState({ title: "Pair doesn't exist", type: "not_exits" });
   } else if (pair) {
-    const pool: PoolProps = await Pool.queryPool(client, pair?.contract_addr);
+    const pool: Pool = await PoolContract.queryPool(client, pair?.contract_addr);
     if (parseFloat(pool.total_share) === 0) {
       setSwapButtonState({ title: "Insufficient Liquidity", type: "no_liquidity" });
     } else {
@@ -61,7 +69,7 @@ export const handleSubmit = async (
   client: CosmWasmClient | undefined,
   address: string | undefined,
   setLoading: (loading: boolean) => void,
-  selectedPair: PairProps | undefined,
+  selectedPair: Pair | undefined,
   config: NetworkConfig,
   simulation: SimulatedSwap | undefined,
   setSimulation: (a: SimulatedSwap | undefined) => void,
@@ -79,7 +87,13 @@ export const handleSubmit = async (
 
   if (values.From && signingClient && selectedPair && simulation) {
     try {
-      const swap_result = await Token.Swap(signingClient, address, selectedPair, values, config.gasPrice);
+      const swap_result = await TokenContract.Swap(
+        signingClient,
+        address,
+        selectedPair,
+        values,
+        config.gasPrice,
+      );
       gtagTMarketAction("exchange_success");
 
       setDetailSwap({

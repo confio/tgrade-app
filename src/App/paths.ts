@@ -34,6 +34,9 @@ export const paths = {
       result: "/result",
     },
   },
+  newtmarket: {
+    prefix: "/newtmarket",
+  },
   documentation: {
     prefix: "/docs",
   },

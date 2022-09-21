@@ -4,7 +4,13 @@ import { config } from "config/network";
 import { Contract20WS } from "utils/cw20";
 import { Factory } from "utils/factory";
 import { createSigningClient, getCodeIds, loadOrCreateWallet } from "utils/sdk";
-import { Pool, ProvideFormValues, SwapFormValues, Token, WithdrawFormValues } from "utils/tokens";
+import {
+  PoolContract,
+  ProvideFormValues,
+  SwapFormValues,
+  TokenContract,
+  WithdrawFormValues,
+} from "utils/tokens";
 import { TcContract } from "utils/trustedCircle";
 
 /**
@@ -86,8 +92,8 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
   const pair = pairs[`${tgradeToken.address}-${cw20tokenInfo.address}`];
   const pairAddress = pair.contract_addr;
 
-  await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
-  const provideStatus = await Pool.ProvideLiquidity(
+  await Contract20WS.approve(signingClient, cw20tokenInfo.address, address, pairAddress);
+  const provideStatus = await PoolContract.ProvideLiquidity(
     signingClient,
     pairAddress,
     address,
@@ -103,7 +109,13 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
-  const swappedStatus = await Token.Swap(signingClient, address, pair, swapPairValues, config.gasPrice);
+  const swappedStatus = await TokenContract.Swap(
+    signingClient,
+    address,
+    pair,
+    swapPairValues,
+    config.gasPrice,
+  );
   expect(swappedStatus).toBeTruthy();
 
   // Withdraw liquidity
@@ -119,7 +131,7 @@ it("creates a CW20 token, swaps it with TGD, withdraws liquidity", async () => {
     selectTo: undefined,
   };
 
-  const withdrawStatus = await Pool.WithdrawLiquidity(
+  const withdrawStatus = await PoolContract.WithdrawLiquidity(
     signingClient,
     address,
     pair,
@@ -233,8 +245,8 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
     selectTo: cw20tokenInfo,
   };
 
-  await Contract20WS.Authorized(signingClient, cw20tokenInfo.address, address, pairAddress);
-  const provideStatus = await Pool.ProvideLiquidity(
+  await Contract20WS.approve(signingClient, cw20tokenInfo.address, address, pairAddress);
+  const provideStatus = await PoolContract.ProvideLiquidity(
     signingClient,
     pairAddress,
     address,
@@ -250,7 +262,13 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
     selectFrom: tgradeToken,
     selectTo: cw20tokenInfo,
   };
-  const swappedStatus = await Token.Swap(signingClient, address, pair, swapPairValues, config.gasPrice);
+  const swappedStatus = await TokenContract.Swap(
+    signingClient,
+    address,
+    pair,
+    swapPairValues,
+    config.gasPrice,
+  );
   expect(swappedStatus).toBeTruthy();
 
   // Withdraw liquidity
@@ -266,7 +284,7 @@ it("creates a TC token, swaps it with TGD, withdraws liquidity", async () => {
     selectTo: undefined,
   };
 
-  const withdrawStatus = await Pool.WithdrawLiquidity(
+  const withdrawStatus = await PoolContract.WithdrawLiquidity(
     signingClient,
     address,
     pair,

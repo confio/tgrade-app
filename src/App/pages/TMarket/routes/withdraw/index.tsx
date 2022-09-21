@@ -10,7 +10,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSdk } from "service";
 import { useTokens } from "service/tokens";
 import { setDetailWithdraw, setLoading, setWithdrawButtonState, useWithdraw } from "service/withdraw";
-import { DetailWithdraw, Token, WithdrawFormValues } from "utils/tokens";
+import { DetailWithdraw, TokenContract, WithdrawFormValues } from "utils/tokens";
 
 import { FromToken, ToToken } from "./components";
 import ExtraInfo from "./components/ExtraInfo";
@@ -103,7 +103,7 @@ export default function Withdraw(): JSX.Element {
             </MiddleRow>
             <ToToken />
             <Divider />
-            <ExtraInfo fee={calculateFee(Token.GAS_WITHDRAW_LIQUIDITY, config.gasPrice)} />
+            <ExtraInfo fee={calculateFee(TokenContract.GAS_WITHDRAW_LIQUIDITY, config.gasPrice)} />
             <EstimatedMessage />
             <SubmitButton
               disabled={errors.to !== undefined || errors.from !== undefined}

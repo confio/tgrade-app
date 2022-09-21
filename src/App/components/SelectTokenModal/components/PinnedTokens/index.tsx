@@ -10,12 +10,12 @@ import {
   tokensMapToArray,
   useTokens,
 } from "service/tokens";
-import { TokenProps } from "utils/tokens";
+import { TokenHuman } from "utils/tokens";
 
 import ListTokens from "../ListTokens";
 
 interface PinnedTokensProps {
-  readonly setToken: (t: TokenProps) => void;
+  readonly setToken: (t: TokenHuman) => void;
   readonly closeModal: () => void;
   readonly tokenFilter: "exclude-lp" | "lp-only";
 }
@@ -31,7 +31,7 @@ export default function PinnedTokens({ setToken, closeModal, tokenFilter }: Pinn
     tMarketState: { searchText },
   } = useTMarket();
 
-  const [tokensList, setTokensList] = useState<readonly TokenProps[]>([]);
+  const [tokensList, setTokensList] = useState<readonly TokenHuman[]>([]);
 
   useEffect(() => {
     const tokensList = tokensMapToArray(tokens, config.feeToken);

@@ -1,10 +1,10 @@
-import { PairProps, TokenProps } from "utils/tokens";
+import { PairContract, TokenHuman } from "utils/tokens";
 
 export const getTokensList = (
-  tokens: { [key: string]: TokenProps },
+  tokens: { [key: string]: TokenHuman },
   searchText: string | undefined,
-): TokenProps[] => {
-  let result: TokenProps[];
+): TokenHuman[] => {
+  let result: TokenHuman[];
   if (!searchText) {
     result = Object.keys(tokens).map((k) => tokens[k]);
   } else {
@@ -22,10 +22,10 @@ export const getTokensList = (
   return result;
 };
 export const getLPTokensList = (
-  tokens: { [key: string]: { token: TokenProps; pair: PairProps } },
+  tokens: { [key: string]: { token: TokenHuman; pair: PairContract } },
   searchText: string | undefined,
-): TokenProps[] => {
-  let result: TokenProps[];
+): TokenHuman[] => {
+  let result: TokenHuman[];
   if (!searchText) {
     result = Object.keys(tokens).map((addr) => tokens[addr].token);
   } else {

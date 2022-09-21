@@ -7,7 +7,7 @@ import { useTMarket } from "service/tmarket";
 import { useTokens } from "service/tokens";
 import { FormErrors, setDetailWithdraw, setErrors, setSelectedLP, useWithdraw } from "service/withdraw";
 import { Contract20WS } from "utils/cw20";
-import { Pool, PoolProps, TokenProps, WithdrawFormValues } from "utils/tokens";
+import { Pool, PoolContract, TokenHuman, WithdrawFormValues } from "utils/tokens";
 
 const FromToken = (): JSX.Element => {
   const { values, setValues, setFieldValue } = useFormikContext<WithdrawFormValues>();
@@ -20,7 +20,7 @@ const FromToken = (): JSX.Element => {
   const { withdrawState, withdrawDispatch } = useWithdraw();
   const { sdkState } = useSdk();
   const { address, client, config } = sdkState;
-  const setToken = (value: TokenProps) => {
+  const setToken = (value: TokenHuman) => {
     setValues({
       ...values,
       selectFrom: value,
@@ -50,7 +50,7 @@ const FromToken = (): JSX.Element => {
       const pair = Array.from(pairs.values()).find((pair) => pair.liquidity_token === lpToken.address);
       if (!pair) return;
 
-      const result: PoolProps = await Pool.queryPool(client, pair.contract_addr);
+      const result: Pool = await PoolContract.queryPool(client, pair.contract_addr);
       const total_supply = Decimal.fromAtomics(lpToken.total_supply, lpToken.decimals).toFloatApproximation();
       if (Number(values.From) > total_supply) {
         errors.from = "Insufficient liquidity for withdrawing this quantity";

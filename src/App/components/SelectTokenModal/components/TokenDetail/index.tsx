@@ -67,7 +67,7 @@ export default function TokenDetail(): JSX.Element | null {
       }
 
       try {
-        const tcAddress = await Contract20WS.getDsoAddress(client, searchText);
+        const tcAddress = await Contract20WS.getTcAddress(client, searchText);
         setTcAddress(tcAddress);
       } catch {
         setTcAddress(undefined);

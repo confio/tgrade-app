@@ -4,11 +4,13 @@ import { Decimal } from "@cosmjs/math";
 import { calculateFee, GasPrice } from "@cosmjs/stargate";
 import { MouseEventHandler } from "react";
 
+import { AssetInfos } from "./factory";
+
 type Position = "Top" | "Bottom";
 export interface TokenRowProps {
   title: string;
   id?: string;
-  token: TokenProps | undefined;
+  token: TokenHuman | undefined;
   maxButton?: boolean;
   error?: string;
   position: Position;
@@ -16,7 +18,7 @@ export interface TokenRowProps {
   onMaxClick?: MouseEventHandler;
   hideSelectToken?: boolean;
   setToken: any;
-  setPair?: (pair: PairProps) => void;
+  setPair?: (pair: Pair) => void;
   onChange?: () => void;
   disabledInput?: boolean;
 }
@@ -24,32 +26,28 @@ export interface TokenRowProps {
 export interface SwapFormValues {
   To: string;
   From: string;
-  selectFrom: TokenProps | undefined;
-  selectTo: TokenProps | undefined;
+  selectFrom: TokenHuman | undefined;
+  selectTo: TokenHuman | undefined;
 }
 export interface WithdrawFormValues {
   To: string;
   From: string;
-  selectFrom: TokenProps | undefined;
-  selectTo: TokenProps | undefined;
+  selectFrom: TokenHuman | undefined;
+  selectTo: TokenHuman | undefined;
 }
 export interface ProvideFormValues {
   assetA: string;
   assetB: string;
-  selectFrom: TokenProps | undefined;
-  selectTo: TokenProps | undefined;
+  selectFrom: TokenHuman | undefined;
+  selectTo: TokenHuman | undefined;
 }
-export interface tokenObj {
-  token?: string;
-  native?: string;
-}
-export interface PairProps {
-  asset_infos: [tokenObj, tokenObj];
+export interface Pair {
+  asset_infos: AssetInfos;
   contract_addr: string;
   liquidity_token: string;
   commission: string;
 }
-export interface TokenProps {
+export interface TokenHuman {
   address: string;
   balance: string;
   humanBalance: string;
@@ -68,7 +66,7 @@ export interface MinterInterface {
   minter: string;
   cap: number;
 }
-export class Token {
+export class TokenContract {
   static readonly GAS_SWAP = 800_000;
   static readonly GAS_PROVIDE_LIQUIDITY = 800_000;
   static readonly GAS_WITHDRAW_LIQUIDITY = 800_000;
@@ -81,7 +79,7 @@ export class Token {
 
   static async getSimulation(
     client: CosmWasmClient,
-    pair: PairProps,
+    pair: Pair,
     form: SwapFormValues,
   ): Promise<SimulatedSwap | null> {
     if (!form.selectFrom || !form.selectTo) return null;
@@ -145,7 +143,7 @@ export class Token {
   }
   static async getSimulationReverse(
     client: CosmWasmClient,
-    pair: PairProps,
+    pair: Pair,
     form: SwapFormValues,
   ): Promise<SimulatedSwap | null> {
     if (!form.selectFrom || !form.selectTo) return null;
@@ -211,7 +209,7 @@ export class Token {
   static async Swap(
     singingClient: SigningCosmWasmClient,
     address: string,
-    pair: PairProps,
+    pair: Pair,
     form: SwapFormValues,
     gasPrice: GasPrice,
   ): Promise<any> {
@@ -239,7 +237,7 @@ export class Token {
             },
           },
         },
-        calculateFee(Token.GAS_SWAP, gasPrice),
+        calculateFee(TokenContract.GAS_SWAP, gasPrice),
         "",
         [{ denom: "utgd", amount: amount }],
       );
@@ -256,34 +254,30 @@ export class Token {
             msg: toBase64(toUtf8('{"swap":{"max_spread":"0.25"}}')),
           },
         },
-        calculateFee(Token.GAS_SWAP, gasPrice),
+        calculateFee(TokenContract.GAS_SWAP, gasPrice),
       );
       return result;
     }
   }
 }
 
-export class Pair {
-  static async queryPair(client: CosmWasmClient, pairAddress: string): Promise<PairProps | undefined> {
+export class PairContract {
+  static async queryPair(client: CosmWasmClient, pairAddress: string): Promise<Pair | undefined> {
     try {
-      const result: PairProps = await client.queryContractSmart(pairAddress, { pair: {} });
+      const result: Pair = await client.queryContractSmart(pairAddress, { pair: {} });
       return result;
     } catch {
       return undefined;
     }
   }
-  static getPair(
-    pairs: { [key: string]: PairProps },
-    addressA: string,
-    addressB: string,
-  ): PairProps | undefined {
+  static getPair(pairs: { [key: string]: Pair }, addressA: string, addressB: string): Pair | undefined {
     return pairs[`${addressA}-${addressB}`] || pairs[`${addressB}-${addressA}`];
   }
 }
 
-export class Pool {
-  static async queryPool(client: CosmWasmClient, pairAddress: string): Promise<any> {
-    const result = await client.queryContractSmart(pairAddress, {
+export class PoolContract {
+  static async queryPool(client: CosmWasmClient, pairAddress: string): Promise<Pool> {
+    const result: Pool = await client.queryContractSmart(pairAddress, {
       pool: {},
     });
 
@@ -293,10 +287,10 @@ export class Pool {
     client: CosmWasmClient,
     pairAddress: string,
     values: ProvideFormValues,
-    _pool?: PoolProps,
+    _pool?: Pool,
   ): Promise<ExtraInfoProvide | null> {
     if (!values.selectTo || !values.selectFrom || !client) return null;
-    let pool: PoolProps | undefined;
+    let pool: Pool | undefined;
     if (!_pool) {
       pool = await this.queryPool(client, pairAddress);
     } else {
@@ -352,7 +346,7 @@ export class Pool {
     address: string,
     values: ProvideFormValues,
     gasPrice: GasPrice,
-  ): Promise<any> {
+  ): Promise<string | undefined> {
     if (!values.selectTo || !values.selectFrom || !values.assetA || !values.assetB) return;
     const keyTokenA = values.selectFrom?.address === "utgd" ? "native" : "token";
     const keyTokenB = values.selectTo?.address === "utgd" ? "native" : "token";
@@ -391,20 +385,20 @@ export class Pool {
         ? [{ denom: "utgd", amount: demon }]
         : [];
 
-    const result = await signingClient.execute(
+    const { transactionHash } = await signingClient.execute(
       address,
       contractAddress,
       provideMessage,
-      calculateFee(Token.GAS_PROVIDE_LIQUIDITY, gasPrice),
+      calculateFee(TokenContract.GAS_PROVIDE_LIQUIDITY, gasPrice),
       `Add liquidity to ${values.selectFrom.symbol}-${values.selectTo.symbol} pool`,
       funds,
     );
-    return result;
+    return transactionHash;
   }
   static async WithdrawLiquidity(
     signingClient: SigningCosmWasmClient,
     address: string,
-    pair: PairProps,
+    pair: Pair,
     values: WithdrawFormValues,
     gasPrice: GasPrice,
   ): Promise<any> {
@@ -425,7 +419,7 @@ export class Pool {
       address,
       pair.liquidity_token,
       withdrawMsj,
-      calculateFee(Token.GAS_WITHDRAW_LIQUIDITY, gasPrice),
+      calculateFee(TokenContract.GAS_WITHDRAW_LIQUIDITY, gasPrice),
       `Withdraw liquidity from ${values.selectFrom.name}`,
     );
     return result;
@@ -468,7 +462,7 @@ export interface DetailProvide {
   txHash: string;
   fee: string;
 }
-export interface PoolProps {
+export interface Pool {
   assets: Array<{
     amount: string;
     info: {
@@ -479,8 +473,8 @@ export interface PoolProps {
   total_share: string;
 }
 export interface LPToken {
-  token: TokenProps;
-  pair: PairProps;
+  token: TokenHuman;
+  pair: Pair;
 }
 export interface DetailWithdraw {
   withdrawTokenA: string;

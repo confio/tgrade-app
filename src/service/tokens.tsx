@@ -8,9 +8,9 @@ import {
   useState,
 } from "react";
 import { Contract20WS } from "utils/cw20";
-import { Factory } from "utils/factory";
+import { AssetInfos, Factory } from "utils/factory";
 import { useLocalStorage } from "utils/storage";
-import { Pair, PairProps, tokenObj, TokenProps } from "utils/tokens";
+import { Pair, PairContract, TokenHuman } from "utils/tokens";
 
 import { useError } from "./error";
 import { useSdk } from "./sdk";
@@ -24,9 +24,11 @@ type PinnedTokensByUserMap = Map<string, readonly string[]>;
 
 type TokensState = {
   readonly pinnedTokens: readonly string[];
-  readonly tokens: Map<string, TokenProps>;
+  readonly tokens: Map<string, TokenHuman>;
   readonly canLoadNextTokens: boolean;
-  readonly pairs: Map<string, PairProps>;
+  readonly pairs: Map<string, Pair>;
+  readonly selectedTokenFrom?: string | undefined;
+  readonly selectedTokenTo?: string | undefined;
   readonly pinToken?: (tokenAddress: string) => void;
   readonly unpinToken?: (tokenAddress: string) => void;
   readonly pinUnpinToken?: (tokenAddress: string) => void;
@@ -34,7 +36,7 @@ type TokensState = {
   readonly reloadTokens?: () => Promise<void>;
   readonly reloadPinnedTokensOnly?: () => Promise<void>;
   readonly loadNextTokens?: () => Promise<void>;
-  readonly loadPair?: (pairAddressOrAssetInfos: string | [tokenObj, tokenObj]) => Promise<void>;
+  readonly loadPair?: (pairAddressOrAssetInfos: string | AssetInfos) => Promise<void>;
   readonly reloadPairs?: () => Promise<void>;
 };
 
@@ -45,11 +47,11 @@ type TokensAction =
     }
   | {
       readonly type: "setTokens";
-      readonly payload: Map<string, TokenProps>;
+      readonly payload: Map<string, TokenHuman>;
     }
   | {
       readonly type: "setToken";
-      readonly payload: TokenProps;
+      readonly payload: TokenHuman;
     }
   | {
       readonly type: "setCanLoadNextTokens";
@@ -57,11 +59,19 @@ type TokensAction =
     }
   | {
       readonly type: "setPairs";
-      readonly payload: Map<string, PairProps>;
+      readonly payload: Map<string, Pair>;
     }
   | {
       readonly type: "setPair";
-      readonly payload: PairProps;
+      readonly payload: Pair;
+    }
+  | {
+      readonly type: "setSelectedTokenFrom";
+      readonly payload?: string | undefined;
+    }
+  | {
+      readonly type: "setSelectedTokenTo";
+      readonly payload?: string | undefined;
     }
   | {
       readonly type: "setPinToken";
@@ -93,7 +103,7 @@ type TokensAction =
     }
   | {
       readonly type: "setLoadPair";
-      readonly payload: (pairAddressOrAssetInfos: string | [tokenObj, tokenObj]) => Promise<void>;
+      readonly payload: (pairAddressOrAssetInfos: string | AssetInfos) => Promise<void>;
     }
   | {
       readonly type: "setReloadPairs";
@@ -125,6 +135,12 @@ function tokensReducer(state: TokensState, action: TokensAction): TokensState {
       const pairs = new Map(state.pairs);
       pairs.set(action.payload.contract_addr, action.payload);
       return { ...state, pairs };
+    }
+    case "setSelectedTokenFrom": {
+      return { ...state, selectedTokenFrom: action.payload };
+    }
+    case "setSelectedTokenTo": {
+      return { ...state, selectedTokenTo: action.payload };
     }
     case "setPinToken": {
       return { ...state, pinToken: action.payload };
@@ -159,8 +175,16 @@ function tokensReducer(state: TokensState, action: TokensAction): TokensState {
   }
 }
 
-export function tokensMapToArray(tokens: Map<string, TokenProps>, feeTokenDenom?: string): TokenProps[] {
-  function tokensComparator(a: TokenProps, b: TokenProps): -1 | 0 | 1 {
+export function setSelectedTokenFrom(tokenAddress: string | undefined, dispatch: TokensDispatch): void {
+  dispatch({ type: "setSelectedTokenFrom", payload: tokenAddress });
+}
+
+export function setSelectedTokenTo(tokenAddress: string | undefined, dispatch: TokensDispatch): void {
+  dispatch({ type: "setSelectedTokenTo", payload: tokenAddress });
+}
+
+export function tokensMapToArray(tokens: Map<string, TokenHuman>, feeTokenDenom?: string): TokenHuman[] {
+  function tokensComparator(a: TokenHuman, b: TokenHuman): -1 | 0 | 1 {
     if (feeTokenDenom && feeTokenDenom === a.address) return -1;
     if (feeTokenDenom && feeTokenDenom === b.address) return 1;
 
@@ -176,11 +200,11 @@ export function tokensMapToArray(tokens: Map<string, TokenProps>, feeTokenDenom?
   return Array.from(tokens.values()).sort(tokensComparator);
 }
 
-export function excludeLpTokens(tokens: TokenProps[]): TokenProps[] {
+export function excludeLpTokens(tokens: TokenHuman[]): TokenHuman[] {
   return tokens.filter((token) => token.symbol !== "uLP" && token.name !== "tfi liquidity token");
 }
 
-export function includeOnlyLpTokens(tokens: TokenProps[]): TokenProps[] {
+export function includeOnlyLpTokens(tokens: TokenHuman[]): TokenHuman[] {
   return tokens.filter((token) => {
     return (
       (token.symbol === "uLP" && token.name === "tfi liquidity token") ||
@@ -189,7 +213,7 @@ export function includeOnlyLpTokens(tokens: TokenProps[]): TokenProps[] {
   });
 }
 
-export function formatLpTokens(tokens: TokenProps[], pairs: PairProps[]): TokenProps[] {
+export function formatLpTokens(tokens: TokenHuman[], pairs: Pair[]): TokenHuman[] {
   const formattedTokens = tokens.map((token) => {
     // Check if token is Liquidity Token
     const pair = pairs.find((pair) => pair.liquidity_token === token.address);
@@ -212,7 +236,7 @@ export function formatLpTokens(tokens: TokenProps[], pairs: PairProps[]): TokenP
   return formattedTokens;
 }
 
-export function filterTokensByText(tokens: TokenProps[], searchText?: string | undefined): TokenProps[] {
+export function filterTokensByText(tokens: TokenHuman[], searchText?: string | undefined): TokenHuman[] {
   if (!searchText) return tokens;
 
   return tokens.filter(
@@ -332,10 +356,10 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
         // Fill tokens map with TokenProps
 
         const tokenProps = (await Promise.allSettled(tokenPropsPromises))
-          .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+          .filter((result): result is PromiseFulfilledResult<TokenHuman> => result.status === "fulfilled")
           .map((result) => result.value);
 
-        const tokensToInit: Map<string, TokenProps> = new Map();
+        const tokensToInit: Map<string, TokenHuman> = new Map();
 
         for (const tokenProp of tokenProps) {
           tokensToInit.set(tokenProp.address, tokenProp);
@@ -460,10 +484,10 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
         );
 
         const tokenProps = (await Promise.allSettled(tokenPropsPromises))
-          .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+          .filter((result): result is PromiseFulfilledResult<TokenHuman> => result.status === "fulfilled")
           .map((result) => result.value);
 
-        const newTokens: Map<string, TokenProps> = new Map();
+        const newTokens: Map<string, TokenHuman> = new Map();
 
         for (const tokenProp of tokenProps) {
           newTokens.set(tokenProp.address, tokenProp);
@@ -492,10 +516,10 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
         );
 
         const tokenProps = (await Promise.allSettled(tokenPropsPromises))
-          .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+          .filter((result): result is PromiseFulfilledResult<TokenHuman> => result.status === "fulfilled")
           .map((result) => result.value);
 
-        const pinnedTokensMap: Map<string, TokenProps> = new Map();
+        const pinnedTokensMap: Map<string, TokenHuman> = new Map();
 
         for (const tokenProp of tokenProps) {
           pinnedTokensMap.set(tokenProp.address, tokenProp);
@@ -540,10 +564,10 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
         );
 
         const tokenProps = (await Promise.allSettled(tokenPropsPromises))
-          .filter((result): result is PromiseFulfilledResult<TokenProps> => result.status === "fulfilled")
+          .filter((result): result is PromiseFulfilledResult<TokenHuman> => result.status === "fulfilled")
           .map((result) => result.value);
 
-        const newTokens: Map<string, TokenProps> = new Map();
+        const newTokens: Map<string, TokenHuman> = new Map();
 
         for (const tokenProp of tokenProps) {
           newTokens.set(tokenProp.address, tokenProp);
@@ -576,13 +600,13 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
   // Set up tokensState.loadPair
   useEffect(() => {
-    async function loadPair(pairAddressOrAssetInfos: string | [tokenObj, tokenObj]) {
+    async function loadPair(pairAddressOrAssetInfos: string | AssetInfos) {
       if (!client) return;
 
       try {
         const queryPair =
           typeof pairAddressOrAssetInfos === "string"
-            ? () => Pair.queryPair(client, pairAddressOrAssetInfos)
+            ? () => PairContract.queryPair(client, pairAddressOrAssetInfos)
             : () => Factory.getPair(client, config.factoryAddress, pairAddressOrAssetInfos);
 
         const pair = await queryPair();
@@ -604,7 +628,7 @@ export default function TokensProvider({ children }: HTMLAttributes<HTMLElement>
 
       try {
         const pairs = await Factory.getPairs(client, config.factoryAddress);
-        const pairsMap = new Map<string, PairProps>();
+        const pairsMap = new Map<string, Pair>();
 
         for (const pairKey in pairs) {
           pairsMap.set(pairs[pairKey].contract_addr, pairs[pairKey]);

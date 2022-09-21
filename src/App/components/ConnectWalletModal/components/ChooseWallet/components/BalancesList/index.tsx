@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSdk } from "service";
 import { tokensMapToArray, useTokens } from "service/tokens";
-import { TokenProps } from "utils/tokens";
+import { TokenHuman } from "utils/tokens";
 
 import {
   BalancesContainer,
@@ -36,8 +36,8 @@ export function BalancesList({ closeModal }: BalancesListProps): JSX.Element {
   } = useTokens();
 
   const [searchText, setSearchText] = useState("");
-  const [tokenList, setTokenList] = useState<readonly TokenProps[]>([]);
-  const [selectedToken, setSelectedToken] = useState<TokenProps>();
+  const [tokenList, setTokenList] = useState<readonly TokenHuman[]>([]);
+  const [selectedToken, setSelectedToken] = useState<TokenHuman>();
 
   useEffect(() => {
     (async function () {

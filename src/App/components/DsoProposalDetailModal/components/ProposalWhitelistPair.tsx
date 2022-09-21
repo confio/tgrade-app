@@ -1,7 +1,8 @@
 import AddressTag from "App/components/AddressTag";
 import { useEffect, useState } from "react";
 import { useTokens } from "service/tokens";
-import { tokenObj, TokenProps } from "utils/tokens";
+import { AssetInfos } from "utils/factory";
+import { TokenHuman } from "utils/tokens";
 import { ellipsifyAddress } from "utils/ui";
 
 import { AddressField, TextValue } from "../style";
@@ -17,8 +18,8 @@ export default function ProposalWhitelistPair({
     tokensState: { pairs, tokens },
   } = useTokens();
 
-  const [assetInfos, setAssetInfos] = useState<readonly [tokenObj, tokenObj]>();
-  const [tokenProps, setTokenProps] = useState<readonly [TokenProps | undefined, TokenProps | undefined]>();
+  const [assetInfos, setAssetInfos] = useState<AssetInfos>();
+  const [tokenProps, setTokenProps] = useState<readonly [TokenHuman | undefined, TokenHuman | undefined]>();
 
   useEffect(() => {
     (async function () {

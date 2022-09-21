@@ -1,7 +1,8 @@
 import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { calculateFee, GasPrice } from "@cosmjs/stargate";
+import { NetworkConfig } from "config/network";
 
-import { PairProps, SwapFormValues, tokenObj } from "./tokens";
+import { Pair, SwapFormValues } from "./tokens";
 
 export interface Config {
   readonly owner: string;
@@ -13,12 +14,24 @@ export interface Config {
   readonly migrate_admin?: string | undefined;
 }
 
+export type AssetInfo =
+  | {
+      readonly native: string;
+      readonly token?: undefined;
+    }
+  | {
+      readonly token: string;
+      readonly native?: undefined;
+    };
+
+export type AssetInfos = [AssetInfo, AssetInfo];
+
 export async function getPairsEager(
   client: CosmWasmClient,
   factoryAddress: string,
-  start_after?: [tokenObj, tokenObj],
-): Promise<PairProps[]> {
-  const { pairs }: { pairs: PairProps[] } = await client.queryContractSmart(factoryAddress, {
+  start_after?: [AssetInfo, AssetInfo],
+): Promise<Pair[]> {
+  const { pairs }: { pairs: Pair[] } = await client.queryContractSmart(factoryAddress, {
     pairs: { start_after, limit: 30 },
   });
 
@@ -88,13 +101,37 @@ export class Factory {
     return response;
   }
 
-  static async getPairs(
-    client: CosmWasmClient,
+  static async newCreatePair(
+    signingClient: SigningCosmWasmClient,
+    creatorAddress: string,
     factoryAddress: string,
-  ): Promise<{ [key: string]: PairProps }> {
+    tokenAddresses: [string, string],
+    config: NetworkConfig,
+  ): Promise<string> {
+    const { 0: tokenAddressA, 1: tokenAddressB } = tokenAddresses;
+    const assetA: AssetInfo =
+      tokenAddressA === config.feeToken ? { native: tokenAddressA } : { token: tokenAddressA };
+    const assetB: AssetInfo =
+      tokenAddressB === config.feeToken ? { native: tokenAddressB } : { token: tokenAddressB };
+    const assetInfos = [assetA, assetB];
+
+    const { transactionHash } = await signingClient.execute(
+      creatorAddress,
+      factoryAddress,
+      { create_pair: { asset_infos: assetInfos } },
+      calculateFee(Factory.GAS_CREATE_PAIR, config.gasPrice),
+      "Create Pair",
+    );
+
+    //TODO: Return pairAddress from events
+
+    return transactionHash;
+  }
+
+  static async getPairs(client: CosmWasmClient, factoryAddress: string): Promise<{ [key: string]: Pair }> {
     const pairs = await getPairsEager(client, factoryAddress);
-    const pairsMap: { [key: string]: PairProps } = {};
-    pairs.forEach((pair: PairProps) => {
+    const pairsMap: { [key: string]: Pair } = {};
+    pairs.forEach((pair: Pair) => {
       if (pair.asset_infos.length < 2) return;
       const a = pair.asset_infos[0].native || pair.asset_infos[0].token;
       const b = pair.asset_infos[1].native || pair.asset_infos[1].token;
@@ -108,10 +145,10 @@ export class Factory {
   static async getPair(
     client: CosmWasmClient,
     factoryAddress: string,
-    assetInfos: [tokenObj, tokenObj],
-  ): Promise<PairProps | undefined> {
+    assetInfos: [AssetInfo, AssetInfo],
+  ): Promise<Pair | undefined> {
     try {
-      const pair: PairProps = await client.queryContractSmart(factoryAddress, {
+      const pair: Pair = await client.queryContractSmart(factoryAddress, {
         pair: { asset_infos: assetInfos },
       });
       return pair;

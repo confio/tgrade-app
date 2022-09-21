@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useSdk } from "service";
 import { setSimulatedSwap, useExchange } from "service/exchange";
 import { setEstimatingFromB, useTMarket } from "service/tmarket";
-import { SimulatedSwap, SwapFormValues, Token, TokenProps } from "utils/tokens";
+import { SimulatedSwap, SwapFormValues, TokenContract, TokenHuman } from "utils/tokens";
 
 const ToToken = (): JSX.Element => {
   const { values, setValues, setFieldValue } = useFormikContext<SwapFormValues>();
@@ -14,7 +14,7 @@ const ToToken = (): JSX.Element => {
   const { client, address } = sdkState;
   const { swapButton, selectedPair } = exchangeState;
   const { estimatingFromB } = tMarketState;
-  const setToken = (token: TokenProps) => {
+  const setToken = (token: TokenHuman) => {
     setValues({
       ...values,
       selectTo: token,
@@ -28,7 +28,7 @@ const ToToken = (): JSX.Element => {
       if (!client || !address || !values.selectFrom || !values.selectTo || !estimatingFromB) return;
 
       if (Number(values.To) > 0 && swapButton.type === "swap" && selectedPair) {
-        const simulation_result: SimulatedSwap | null = await Token.getSimulationReverse(
+        const simulation_result: SimulatedSwap | null = await TokenContract.getSimulationReverse(
           client,
           selectedPair,
           values,

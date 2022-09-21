@@ -6,7 +6,7 @@ import { TokenRowProps } from "utils/tokens";
 import SelectTokenTrigger from "../SelectTokenTrigger";
 import Input, { BalanceParagraph, ErrorContainer, TitleParagraph, TokenContainer } from "./style";
 
-const SelectTokenModal = lazy(() => import("../SelecTokenModal"));
+const SelectTokenModal = lazy(() => import("App/components/SelectTokenModal"));
 
 export const EmptyCol = (): JSX.Element => <Col>&nbsp;</Col>;
 

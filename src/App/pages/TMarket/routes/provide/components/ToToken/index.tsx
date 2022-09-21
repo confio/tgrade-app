@@ -7,12 +7,12 @@ import { setEstimatingFromB, useTMarket } from "service/tmarket";
 import {
   ExtraInfoProvide,
   Pool,
-  PoolProps,
+  PoolContract,
   ProvideFormValues,
   SimulatedSwap,
   SwapFormValues,
-  Token,
-  TokenProps,
+  TokenContract,
+  TokenHuman,
 } from "utils/tokens";
 
 const ToToken = (): JSX.Element => {
@@ -24,7 +24,7 @@ const ToToken = (): JSX.Element => {
   const { estimatingFromB } = tMarketState;
   const { selectedPair, provideButtonState, isTokenApprovedB } = provideState;
 
-  const setToken = (token: TokenProps) => {
+  const setToken = (token: TokenHuman) => {
     setValues({
       ...values,
       selectTo: token,
@@ -44,14 +44,14 @@ const ToToken = (): JSX.Element => {
           From: values.assetA,
           To: values.assetB,
         };
-        const pool_result: PoolProps = await Pool.queryPool(client, selectedPair?.contract_addr);
+        const pool_result: Pool = await PoolContract.queryPool(client, selectedPair?.contract_addr);
         if (parseFloat(pool_result.total_share) === 0) {
           setIsPoolEmpty(provideDispatch, true);
           return;
         } else {
           setIsPoolEmpty(provideDispatch, false);
         }
-        const simulation_result: SimulatedSwap | null = await Token.getSimulationReverse(
+        const simulation_result: SimulatedSwap | null = await TokenContract.getSimulationReverse(
           client,
           selectedPair,
           val,
@@ -60,7 +60,7 @@ const ToToken = (): JSX.Element => {
         setSimulationProvide(provideDispatch, simulation_result);
         setPool(provideDispatch, pool_result);
         setFieldValue("assetA", parseFloat(simulation_result.return_amount));
-        const extraInfo: ExtraInfoProvide | null = await Pool.getPoolExtraInfo(
+        const extraInfo: ExtraInfoProvide | null = await PoolContract.getPoolExtraInfo(
           client,
           selectedPair.contract_addr,
           values,
