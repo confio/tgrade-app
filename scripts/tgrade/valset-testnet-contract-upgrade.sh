@@ -44,7 +44,15 @@ echo "* New code id: $newCodeId"
 title="Migrate $poeContract contract to code id $newCodeId"
 description="Migrate '$poeContract' contract with address '$contractAddr' to code id '$newCodeId'"
 text_proposal=$(cat <<EOF
-{"propose": {"title": "$title", "description": "$description", "proposal": {"text": {}} }}
+{ "propose":
+  {
+    "title": "$title",
+    "description": "$description",
+    "proposal": {
+      "text": {}
+    }
+  }
+}
 EOF
 )
 
@@ -72,7 +80,19 @@ echo "$migrateMsg" | jq '.'
 
 # Prepare migration proposal message
 upgrade_proposal=$(cat <<EOF
-{"propose": {"title": "$title", "description": "$description", "proposal": {"migrate_contract": {"contract":"$contractAddr", "code_id": $newCodeId, "migrate_msg": "$(echo -n "$migrateMsg" | base64)"}} }}
+{
+  "propose": {
+    "title": "$title",
+    "description": "$description",
+    "proposal": {
+      "migrate_contract": {
+        "contract":"$contractAddr",
+        "code_id": $newCodeId,
+        "migrate_msg": "$(echo -n "$migrateMsg" | base64 -w0)"
+      }
+    }
+  }
+}
 EOF
 )
 
