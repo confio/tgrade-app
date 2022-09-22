@@ -4,6 +4,11 @@ export interface KeplrCoin {
   readonly coinDenom: string;
   readonly coinMinimalDenom: string;
   readonly coinDecimals: number;
+  readonly gasPriceStep: {
+    readonly low: number;
+    readonly average: number;
+    readonly high: number;
+  };
 }
 
 export interface KeplrConfig {
@@ -22,11 +27,6 @@ export interface KeplrConfig {
   readonly currencies: KeplrCoin[];
   readonly feeCurrencies: KeplrCoin[];
   readonly stakeCurrency: KeplrCoin;
-  readonly gasPriceStep: {
-    readonly low: number;
-    readonly average: number;
-    readonly high: number;
-  };
   readonly bip44: { readonly coinType: number };
   readonly coinType: number;
 }
@@ -50,11 +50,11 @@ export function configKeplr(config: NetworkConfig): KeplrConfig {
         coinDenom: config.coinMap[config.feeToken].denom,
         coinMinimalDenom: config.feeToken,
         coinDecimals: config.coinMap[config.feeToken].fractionalDigits,
-      },
-      {
-        coinDenom: config.coinMap[config.stakingToken].denom,
-        coinMinimalDenom: config.stakingToken,
-        coinDecimals: config.coinMap[config.stakingToken].fractionalDigits,
+        gasPriceStep: {
+          low: config.gasPrice.amount.toFloatApproximation(),
+          average: config.gasPrice.amount.toFloatApproximation() * 1.5,
+          high: config.gasPrice.amount.toFloatApproximation() * 2,
+        },
       },
     ],
     feeCurrencies: [
@@ -62,17 +62,22 @@ export function configKeplr(config: NetworkConfig): KeplrConfig {
         coinDenom: config.coinMap[config.feeToken].denom,
         coinMinimalDenom: config.feeToken,
         coinDecimals: config.coinMap[config.feeToken].fractionalDigits,
+        gasPriceStep: {
+          low: config.gasPrice.amount.toFloatApproximation(),
+          average: config.gasPrice.amount.toFloatApproximation() * 1.5,
+          high: config.gasPrice.amount.toFloatApproximation() * 2,
+        },
       },
     ],
     stakeCurrency: {
       coinDenom: config.coinMap[config.stakingToken].denom,
       coinMinimalDenom: config.stakingToken,
       coinDecimals: config.coinMap[config.stakingToken].fractionalDigits,
-    },
-    gasPriceStep: {
-      low: config.gasPrice.amount.toFloatApproximation(),
-      average: config.gasPrice.amount.toFloatApproximation() * 1.5,
-      high: config.gasPrice.amount.toFloatApproximation() * 2,
+      gasPriceStep: {
+        low: config.gasPrice.amount.toFloatApproximation(),
+        average: config.gasPrice.amount.toFloatApproximation() * 1.5,
+        high: config.gasPrice.amount.toFloatApproximation() * 2,
+      },
     },
     bip44: { coinType: 118 },
     coinType: 118,
