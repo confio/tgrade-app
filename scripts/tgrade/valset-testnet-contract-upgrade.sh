@@ -23,7 +23,7 @@ poeContract="VALSET"
 contract="tgrade_valset"
 
 # TODO: Automate. Based by example on (latest) tcPaymentsLabel
-tcPaymentsCodeId=18
+tcPaymentsCodeId=26
 
 # Get address
 contractAddr=$(tgrade q poe contract-address "$poeContract" -o json --node="$nodeUrl" | jq -re '.address')
@@ -52,6 +52,7 @@ EOF
 # Engagement address
 engagementAddr=$(tgrade q poe contract-address ENGAGEMENT -o json --node="$nodeUrl" | jq -re ".address")
 # TC Payments address
+# Assumes the most recent version is the valid one
 tcPaymentsAddr=$(tgrade query wasm list-contract-by-code "$tcPaymentsCodeId" -o json --node="$nodeUrl" | jq -r '.contracts[-1]')
 
 # Valset address
