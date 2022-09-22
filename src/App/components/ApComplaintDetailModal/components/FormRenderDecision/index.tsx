@@ -77,7 +77,7 @@ export default function FormRenderDecision({
               ) : null}
               {isNotArbiters ? (
                 <Text style={{ color: "var(--color-error-form)" }}>
-                  The complaint can only be accepted by its arbiters
+                  A decision can only be rendered by its arbiters
                 </Text>
               ) : null}
               <Field
