@@ -92,6 +92,30 @@ async function main() {
   );
   console.info(`Upload Pair Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptPair)}`);
 
+  // Multisig Contract: 14
+  console.info("Uploading Multisig wasm...");
+  const multisig = "cw3_fixed_multisig.wasm";
+  let wasmMultisig = fs.readFileSync(path.join(process.cwd(), "contracts", multisig));
+  const uploadReceiptMultisig = await client.upload(
+    address,
+    wasmMultisig,
+    calculateFee(25000000, config.gasPrice),
+    "upload multisig wasm",
+  );
+  console.info(`Upload Multisig Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptMultisig)}`);
+
+  // AP Voting Contract: 15
+  console.info("Uploading AP Voting wasm...");
+  const apVoting = "tgrade_ap_voting.wasm";
+  let wasmApVoting = fs.readFileSync(path.join(process.cwd(), "contracts", apVoting));
+  const uploadReceiptApVoting = await client.upload(
+    address,
+    wasmApVoting,
+    calculateFee(25000000, config.gasPrice),
+    "upload ap voting wasm",
+  );
+  console.info(`Upload AP Voting Contract succeeded. Receipt: ${JSON.stringify(uploadReceiptApVoting)}`);
+
   const codes = await client.getCodes();
   console.info("codes", codes);
 }
