@@ -87,7 +87,7 @@ async function main() {
     calculateFee(config.gasLimit, config.gasPrice),
   );
 
-  // Vote for the proposal
+  // Execute the proposal
   const proposalIdAttr = logs
     .flatMap((log) => log.events)
     .flatMap((event) => event.attributes)
@@ -95,15 +95,6 @@ async function main() {
 
   const proposalId = proposalIdAttr ? Number(proposalIdAttr.value) : 0;
 
-  /* const voteProposalMsg = { vote: { proposal_id: proposalId, vote: "yes" } };
-  await client.execute(
-    address,
-    validatorVotingAddress,
-    voteProposalMsg,
-    calculateFee(config.gasLimit, config.gasPrice),
-  ); */
-
-  // Execute the proposal
   const executeProposalMsg = { execute: { proposal_id: proposalId } };
   await client.execute(
     address,
