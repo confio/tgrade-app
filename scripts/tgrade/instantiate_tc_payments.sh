@@ -24,8 +24,8 @@ rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
   --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
 codeId=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
 
-period="daily" # Used for tests
-#period="monthly"
+#period="daily" # Used for tests
+period="monthly"
 #period="yearly"
 
 amount=10000000 # 10 TGD
