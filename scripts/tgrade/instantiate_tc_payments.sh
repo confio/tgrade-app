@@ -14,7 +14,7 @@ read A
 [ "$A" != "y" ] && echo "Abort." && exit 1
 
 key="tgrade-v5-reserve-internal-14"
-#key="burner3-mainnet-1"
+#key="burner1-mainnet-1"
 
 contract="tgrade_tc_payments"
 
@@ -33,7 +33,7 @@ amount=10000000 # 10 TGD
 [ "$period" = "yearly" ] && amount=$[amount * 10 * 12]
 
 echo "Code Id: $codeId"
-if echo $0 | grep -q store_
+if echo "$0" | grep -q '/store[_-]'
 then
   exit 0
 fi

@@ -16,6 +16,7 @@ read -r A
 
 # Keys for voting / execution (must be validators)
 key="validator1-$chainSuffix"
+#key="burner1-mainnet-1"
 otherKey1="validator2-$chainSuffix"
 otherKey2="validator3-$chainSuffix"
 
@@ -36,6 +37,10 @@ rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
   --from "$key" --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" "$keyringBackend" -b block -o json)
 newCodeId=$(echo "$rsp" | jq -r '.logs[0].events[1].attributes[-1].value')
 echo "* New code id: $newCodeId"
+if echo "$0" | grep -q '/store[_-]'
+then
+  exit 0
+fi
 
 # Try with a text proposal first
 title="Migrate $poeContract contract to code id $newCodeId"

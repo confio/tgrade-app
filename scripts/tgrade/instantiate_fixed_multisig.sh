@@ -24,7 +24,7 @@ rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
   --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
 codeID=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
 echo "Fixed-Multisig Code Id: $codeID"
-if echo $0 | grep -q store_fixed_multisig
+if echo "$0" | grep -q '/store[_-]'
 then
   exit 0
 fi
