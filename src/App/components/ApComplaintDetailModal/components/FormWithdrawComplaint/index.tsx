@@ -40,7 +40,7 @@ export default function FormWithdrawComplaint({
     sdkState: { address },
   } = useSdk();
 
-  const complaintIsNotInitiatedOrWaiting = !complaint?.state.initiated || !complaint?.state.waiting;
+  const complaintIsNotInitiatedOrWaiting = !complaint?.state.initiated && !complaint?.state.waiting;
   const userIsNotPlaintiff = !address || complaint?.plaintiff !== address;
 
   return (
@@ -62,7 +62,7 @@ export default function FormWithdrawComplaint({
             <WithdrawStack gap="s1">
               {complaintIsNotInitiatedOrWaiting ? (
                 <Text style={{ color: "var(--color-error-form)" }}>
-                  The complaint must be on state "initiated" or "waited" to be withdrawn
+                  The complaint must be on state "initiated" or "waiting" to be withdrawn
                 </Text>
               ) : null}
               {userIsNotPlaintiff ? (
