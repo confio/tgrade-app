@@ -20,6 +20,7 @@ import {
   ProposalsContainer,
   StateParagraph,
   StatusBlock,
+  StatusParagraph,
 } from "./style";
 
 const ApRegisterComplaintModal = lazy(() => import("App/components/ApRegisterComplaintModal"));
@@ -32,10 +33,10 @@ const Table = lazy(() => import("App/components/Table"));
 const { Title, Paragraph } = Typography;
 
 function getImgSrcFromState(state: ComplaintState) {
-  if (state.initiated || state.waiting || state.processing) return { src: pendingIcon };
-  if (state.aborted || state.closed) return { src: rejectedIcon };
+  if (state.closed) return { src: passedIcon };
+  if (state.aborted) return { src: rejectedIcon };
 
-  return { src: passedIcon };
+  return { src: pendingIcon };
 }
 
 const complaintsColumns = [
@@ -133,10 +134,10 @@ const proposalsColumns = [
     width: "10%",
     render: (record: ProposalResponse) => (
       <StatusBlock>
-        <StateParagraph state={record.status}>
+        <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
           {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-        </StateParagraph>
+        </StatusParagraph>
         <Paragraph>Yes: {record.votes.yes}</Paragraph>
         <Paragraph>No: {record.votes.no}</Paragraph>
         <Paragraph>Abstained: {record.votes.abstain}</Paragraph>

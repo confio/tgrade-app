@@ -67,10 +67,38 @@ export const StateParagraph = styled(Paragraph)<{ readonly state: string }>`
   &&.ant-typography {
     color: ${({ state: status }) => {
       switch (status) {
-        case "accepted":
-          return "var(--color-result-success)";
         case "closed":
+          return "var(--color-result-success)";
         case "aborted":
+          return "var(--color-result-failure)";
+        default:
+          return "var(--color-warning)";
+      }
+    }};
+  }
+`;
+
+export const StatusParagraph = styled(Paragraph)<{ readonly status: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  img {
+    margin-right: 3px;
+
+    width: 100%;
+    height: auto;
+    max-width: 12px;
+    max-height: 12px;
+  }
+
+  &&.ant-typography {
+    color: ${({ status }) => {
+      switch (status) {
+        case "executed":
+        case "passed":
+          return "var(--color-result-success)";
+        case "rejected":
           return "var(--color-result-failure)";
         default:
           return "var(--color-warning)";
