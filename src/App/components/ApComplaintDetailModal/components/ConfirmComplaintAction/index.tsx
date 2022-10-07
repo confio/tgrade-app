@@ -19,8 +19,6 @@ function getGasFromStep(complaintActionStep: ComplaintActionStep): number {
       return ApContract.GAS_ACCEPT_COMPLAINT;
     case ComplaintAction.WithdrawComplaint:
       return ApContract.GAS_WITHDRAW_COMPLAINT;
-    case ComplaintAction.RenderDecision:
-      return ApContract.GAS_RENDER_DECISION;
     default:
       return ApContract.GAS_EXECUTE;
   }
@@ -29,8 +27,6 @@ function getGasFromStep(complaintActionStep: ComplaintActionStep): number {
 interface ConfirmComplaintActionProps {
   readonly complaintActionStep: ComplaintActionStep;
   readonly reason: string;
-  readonly summary: string;
-  readonly ipfsLink: string;
   readonly isSubmitting: boolean;
   readonly goBack: () => void;
   readonly submitForm: () => void;
@@ -39,8 +35,6 @@ interface ConfirmComplaintActionProps {
 export default function ConfirmComplaintAction({
   complaintActionStep,
   reason,
-  summary,
-  ipfsLink,
   isSubmitting,
   goBack,
   submitForm,
@@ -76,18 +70,6 @@ export default function ConfirmComplaintAction({
           <Text>Reason: </Text>
           <Text>{reason}</Text>
         </ConfirmField>
-      ) : null}
-      {complaintActionStep.type === ComplaintAction.RenderDecision ? (
-        <>
-          <ConfirmField>
-            <Text>Summary: </Text>
-            <Text>{summary}</Text>
-          </ConfirmField>
-          <ConfirmField>
-            <Text>IPFS link: </Text>
-            <Text>{ipfsLink}</Text>
-          </ConfirmField>
-        </>
       ) : null}
       {complaintActionStep.type !== ComplaintAction.AcceptComplaint ? <Separator /> : null}
       <ButtonGroup>

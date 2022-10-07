@@ -11,7 +11,6 @@ import { getErrorFromStackTrace } from "utils/errors";
 import ComplaintData from "./components/ComplaintData";
 import ConfirmComplaintAction from "./components/ConfirmComplaintAction";
 import FormAcceptComplaint from "./components/FormAcceptComplaint";
-import FormRenderDecision, { FormRenderDecisionValues } from "./components/FormRenderDecision";
 import FormWithdrawComplaint, { FormWithdrawComplaintValues } from "./components/FormWithdrawComplaint";
 import SelectComplaintAction from "./components/SelectComplaintAction";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
@@ -23,13 +22,11 @@ const { Step } = Steps;
 export enum ComplaintAction {
   AcceptComplaint = "accept-complaint",
   WithdrawComplaint = "withdraw-complaint",
-  RenderDecision = "render-decision",
 }
 
 export const complaintActionTitles = {
   [ComplaintAction.AcceptComplaint]: "Accept complaint",
   [ComplaintAction.WithdrawComplaint]: "Withdraw complaint",
-  [ComplaintAction.RenderDecision]: "Render decision",
 };
 
 export type ComplaintActionStep = { type: ComplaintAction; confirmation?: true };
@@ -66,10 +63,7 @@ export default function ApComplaintDetailModal({
   });
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
-
   const [reason, setReason] = useState("");
-  const [summary, setSummary] = useState("");
-  const [ipfsLink, setIpfsLink] = useState("");
 
   useEffect(() => {
     (async function () {
@@ -106,12 +100,6 @@ export default function ApComplaintDetailModal({
     setComplaintActionStep({ type: ComplaintAction.WithdrawComplaint, confirmation: true });
   }
 
-  function submitRenderDecisionForm({ summary, ipfsLink }: FormRenderDecisionValues) {
-    setSummary(summary);
-    setIpfsLink(ipfsLink);
-    setComplaintActionStep({ type: ComplaintAction.RenderDecision, confirmation: true });
-  }
-
   const submitConfirmation = useCallback(async () => {
     if (!signingClient || !address || complaintId === undefined) return;
     setSubmitting(true);
@@ -132,13 +120,6 @@ export default function ApComplaintDetailModal({
           msg: `Withdrawn complaint ${complaintId} in Arbiter Pool. Transaction ID: ${txHash}`,
         });
       }
-
-      if (complaintActionStep.type === ComplaintAction.RenderDecision) {
-        const txHash = await apContract.renderDecision(address, complaintId, summary, ipfsLink);
-        setTxResult({
-          msg: `Rendered decision for complaint ${complaintId} in Arbiter Pool. Transaction ID: ${txHash}`,
-        });
-      }
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
@@ -146,17 +127,7 @@ export default function ApComplaintDetailModal({
     } finally {
       setSubmitting(false);
     }
-  }, [
-    address,
-    complaintActionStep.type,
-    complaintId,
-    config,
-    handleError,
-    ipfsLink,
-    reason,
-    signingClient,
-    summary,
-  ]);
+  }, [address, complaintActionStep.type, complaintId, config, handleError, reason, signingClient]);
 
   return (
     <StyledModal
@@ -218,21 +189,11 @@ export default function ApComplaintDetailModal({
                   handleSubmit={submitWithdrawComplaintForm}
                 />
               ) : null}
-              {complaintActionStep.type === ComplaintAction.RenderDecision ? (
-                <FormRenderDecision
-                  complaint={complaint}
-                  summary={summary}
-                  ipfsLink={ipfsLink}
-                  handleSubmit={submitRenderDecisionForm}
-                />
-              ) : null}
             </>
           ) : (
             <ConfirmComplaintAction
               complaintActionStep={complaintActionStep}
               reason={reason}
-              summary={summary}
-              ipfsLink={ipfsLink}
               isSubmitting={isSubmitting}
               goBack={() => {
                 setComplaintActionStep((prevStep) => ({ type: prevStep.type }));
