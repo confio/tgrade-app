@@ -7,19 +7,13 @@ export const Separator = styled.hr`
   border-top: 1px solid var(--color-input-border);
 `;
 
-export const RenderStack = styled(Stack)`
+export const FormStack = styled(Stack)`
   & .ant-input-textarea {
-    width: 100%;
+    flex-basis: 100%;
   }
-`;
 
-export const FieldGroup = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-
-  & .ant-form-item {
-    flex-basis: 18rem;
+  & .ant-form-item-has-error .ant-input-textarea::after {
+    color: var(--color-error-form);
   }
 `;
 

@@ -7,38 +7,24 @@ import { useError, useSdk } from "service";
 import { ApContract } from "utils/arbiterPool";
 import { getDisplayAmountFromFee } from "utils/currency";
 
-import { ComplaintAction, ComplaintActionStep, complaintActionTitles } from "../..";
-import { ButtonGroup, ConfirmField, FeeGroup, Separator } from "./style";
+import { ButtonGroup, FeeGroup, ProposalText, Separator } from "./style";
 
 const ConnectWalletModal = lazy(() => import("App/components/ConnectWalletModal"));
-const { Text, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
-function getGasFromStep(complaintActionStep: ComplaintActionStep): number {
-  switch (complaintActionStep.type) {
-    case ComplaintAction.AcceptComplaint:
-      return ApContract.GAS_ACCEPT_COMPLAINT;
-    case ComplaintAction.WithdrawComplaint:
-      return ApContract.GAS_WITHDRAW_COMPLAINT;
-    default:
-      return ApContract.GAS_EXECUTE;
-  }
-}
-
-interface ConfirmComplaintActionProps {
-  readonly complaintActionStep: ComplaintActionStep;
-  readonly reason: string;
+interface ConfirmationOpenTextProps {
+  readonly text: string;
   readonly isSubmitting: boolean;
   readonly goBack: () => void;
   readonly submitForm: () => void;
 }
 
-export default function ConfirmComplaintAction({
-  complaintActionStep,
-  reason,
+export default function ConfirmationOpenText({
+  text,
   isSubmitting,
   goBack,
   submitForm,
-}: ConfirmComplaintActionProps): JSX.Element | null {
+}: ConfirmationOpenTextProps): JSX.Element {
   const { handleError } = useError();
   const {
     sdkState: { config, signer, signingClient },
@@ -52,26 +38,19 @@ export default function ConfirmComplaintAction({
     if (!signingClient) return;
 
     try {
-      const fee = calculateFee(getGasFromStep(complaintActionStep), config.gasPrice);
+      const fee = calculateFee(ApContract.GAS_PROPOSE, config.gasPrice);
       const txFee = getDisplayAmountFromFee(fee, config);
       setTxFee(txFee);
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
     }
-  }, [complaintActionStep, config, handleError, signingClient]);
-
-  if (!complaintActionStep.confirmation) return null;
+  }, [config, handleError, signingClient]);
 
   return (
     <>
-      {complaintActionStep.type === ComplaintAction.WithdrawComplaint ? (
-        <ConfirmField>
-          <Text>Reason: </Text>
-          <Text>{reason}</Text>
-        </ConfirmField>
-      ) : null}
-      {complaintActionStep.type !== ComplaintAction.AcceptComplaint ? <Separator /> : null}
+      <ProposalText>{text}</ProposalText>
+      <Separator />
       <ButtonGroup>
         <BackButtonOrLink disabled={isSubmitting} onClick={() => goBack()} text="Back" />
         <FeeGroup>
@@ -80,9 +59,7 @@ export default function ConfirmComplaintAction({
             <Paragraph>{`~${txFee} ${feeTokenDenom}`}</Paragraph>
           </Typography>
           <Button loading={isSubmitting} onClick={signer ? () => submitForm() : () => setModalOpen(true)}>
-            <div>
-              {signer ? `Confirm ${complaintActionTitles[complaintActionStep.type]}` : "Connect wallet"}
-            </div>
+            <div>{signer ? "Confirm proposal" : "Connect wallet"}</div>
           </Button>
         </FeeGroup>
       </ButtonGroup>

@@ -2,13 +2,14 @@
 set -o errexit -o nounset -o pipefail -x
 command -v shellcheck > /dev/null && shellcheck "$0"
 
-if [ $# -ne 2 ]; then
-  echo "Usage: ./download_releases.sh cwplus_tag tfi_tag"
+if [ $# -ne 3 ]; then
+  echo "Usage: ./download_releases.sh tgd_tag cwplus_tag tfi_tag"
   exit 1
 fi
 
-cwplus_tag="$1"
-tfi_tag="$2"
+tgd_tag="$1"
+cwplus_tag="$2"
+tfi_tag="$3"
 
 # load token from OS keychain when not set via ENV
 GITHUB_API_TOKEN=${GITHUB_API_TOKEN:-"$(security find-generic-password -a "$USER" -s "github_api_key" -w)"}
@@ -17,7 +18,17 @@ GITHUB_API_TOKEN=${GITHUB_API_TOKEN:-"$(security find-generic-password -a "$USER
 rm -f *.wasm
 rm -f version.txt
 
-CWPLUS="cw20_base"
+TGD="tgrade_ap_voting"
+for contract in $TGD; do
+  list_asset_url="https://api.github.com/repos/confio/tgrade-contracts/releases/tags/${tgd_tag}"
+  # get url for artifact with name==${contract}.wasm
+  artifact_url=$(curl -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $GITHUB_API_TOKEN" "${list_asset_url}" | jq -r ".assets[] | select(.name==\"${contract}.wasm\") | .url")
+  # download the artifact
+  curl -LJO -H 'Accept: application/octet-stream' -H "Authorization: token $GITHUB_API_TOKEN" "$artifact_url"
+done
+echo "TGD_TAG=$tgd_tag" >> version.txt
+
+CWPLUS="cw20_base cw3_fixed_multisig"
 for contract in $CWPLUS; do
   list_asset_url="https://api.github.com/repos/CosmWasm/cw-plus/releases/tags/${cwplus_tag}"
   # get url for artifact with name==${contract}.wasm

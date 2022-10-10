@@ -3,15 +3,14 @@ import closeIcon from "App/assets/icons/cross.svg";
 import { TxResult } from "App/components/ShowTxResult";
 import Stack from "App/components/Stack/style";
 import Steps from "App/components/Steps";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useError, useSdk } from "service";
-import { ApContract } from "utils/arbiterPool";
+import { ApContract, ApContractQuerier, Complaint } from "utils/arbiterPool";
 import { getErrorFromStackTrace } from "utils/errors";
 
 import ComplaintData from "./components/ComplaintData";
 import ConfirmComplaintAction from "./components/ConfirmComplaintAction";
 import FormAcceptComplaint from "./components/FormAcceptComplaint";
-import FormRenderDecision, { FormRenderDecisionValues } from "./components/FormRenderDecision";
 import FormWithdrawComplaint, { FormWithdrawComplaintValues } from "./components/FormWithdrawComplaint";
 import SelectComplaintAction from "./components/SelectComplaintAction";
 import ShowTxResultProposal from "./components/ShowTxResultProposal";
@@ -23,13 +22,11 @@ const { Step } = Steps;
 export enum ComplaintAction {
   AcceptComplaint = "accept-complaint",
   WithdrawComplaint = "withdraw-complaint",
-  RenderDecision = "render-decision",
 }
 
 export const complaintActionTitles = {
   [ComplaintAction.AcceptComplaint]: "Accept complaint",
   [ComplaintAction.WithdrawComplaint]: "Withdraw complaint",
-  [ComplaintAction.RenderDecision]: "Render decision",
 };
 
 export type ComplaintActionStep = { type: ComplaintAction; confirmation?: true };
@@ -57,18 +54,27 @@ export default function ApComplaintDetailModal({
 }: ApComplaintDetailModalProps): JSX.Element {
   const { handleError } = useError();
   const {
-    sdkState: { config, signingClient, address },
+    sdkState: { config, client, signingClient, address },
   } = useSdk();
 
+  const [complaint, setComplaint] = useState<Complaint>();
   const [complaintActionStep, setComplaintActionStep] = useState<ComplaintActionStep>({
     type: ComplaintAction.AcceptComplaint,
   });
   const [isSubmitting, setSubmitting] = useState(false);
   const [txResult, setTxResult] = useState<TxResult>();
-
   const [reason, setReason] = useState("");
-  const [summary, setSummary] = useState("");
-  const [ipfsLink, setIpfsLink] = useState("");
+
+  useEffect(() => {
+    (async function () {
+      if (!client || complaintId === undefined) return;
+
+      const apContract = new ApContractQuerier(config, client);
+      const complaint = await apContract.getComplaint(complaintId);
+      console.log({ complaint });
+      setComplaint(complaint);
+    })();
+  }, [client, complaintId, config]);
 
   function tryAgain() {
     setComplaintActionStep(
@@ -94,12 +100,6 @@ export default function ApComplaintDetailModal({
     setComplaintActionStep({ type: ComplaintAction.WithdrawComplaint, confirmation: true });
   }
 
-  function submitRenderDecisionForm({ summary, ipfsLink }: FormRenderDecisionValues) {
-    setSummary(summary);
-    setIpfsLink(ipfsLink);
-    setComplaintActionStep({ type: ComplaintAction.RenderDecision, confirmation: true });
-  }
-
   const submitConfirmation = useCallback(async () => {
     if (!signingClient || !address || complaintId === undefined) return;
     setSubmitting(true);
@@ -120,13 +120,6 @@ export default function ApComplaintDetailModal({
           msg: `Withdrawn complaint ${complaintId} in Arbiter Pool. Transaction ID: ${txHash}`,
         });
       }
-
-      if (complaintActionStep.type === ComplaintAction.RenderDecision) {
-        const txHash = await apContract.renderDecision(address, complaintId, summary, ipfsLink);
-        setTxResult({
-          msg: `Rendered decision for complaint ${complaintId} in Arbiter Pool. Transaction ID: ${txHash}`,
-        });
-      }
     } catch (error) {
       if (!(error instanceof Error)) return;
       handleError(error);
@@ -134,17 +127,7 @@ export default function ApComplaintDetailModal({
     } finally {
       setSubmitting(false);
     }
-  }, [
-    address,
-    complaintActionStep.type,
-    complaintId,
-    config,
-    handleError,
-    ipfsLink,
-    reason,
-    signingClient,
-    summary,
-  ]);
+  }, [address, complaintActionStep.type, complaintId, config, handleError, reason, signingClient]);
 
   return (
     <StyledModal
@@ -197,16 +180,13 @@ export default function ApComplaintDetailModal({
                 setComplaintActionStep={setComplaintActionStep}
               />
               {complaintActionStep.type === ComplaintAction.AcceptComplaint ? (
-                <FormAcceptComplaint handleSubmit={submitAcceptComplaintForm} />
+                <FormAcceptComplaint complaint={complaint} handleSubmit={submitAcceptComplaintForm} />
               ) : null}
               {complaintActionStep.type === ComplaintAction.WithdrawComplaint ? (
-                <FormWithdrawComplaint reason={reason} handleSubmit={submitWithdrawComplaintForm} />
-              ) : null}
-              {complaintActionStep.type === ComplaintAction.RenderDecision ? (
-                <FormRenderDecision
-                  summary={summary}
-                  ipfsLink={ipfsLink}
-                  handleSubmit={submitRenderDecisionForm}
+                <FormWithdrawComplaint
+                  complaint={complaint}
+                  reason={reason}
+                  handleSubmit={submitWithdrawComplaintForm}
                 />
               ) : null}
             </>
@@ -214,8 +194,6 @@ export default function ApComplaintDetailModal({
             <ConfirmComplaintAction
               complaintActionStep={complaintActionStep}
               reason={reason}
-              summary={summary}
-              ipfsLink={ipfsLink}
               isSubmitting={isSubmitting}
               goBack={() => {
                 setComplaintActionStep((prevStep) => ({ type: prevStep.type }));

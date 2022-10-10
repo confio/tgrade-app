@@ -59,7 +59,7 @@ export default function ComplaintData({ complaintId }: ComplaintDataProps): JSX.
         {complaint?.plaintiff ? <AddressTag address={complaint.plaintiff} /> : null}
       </ComplaintField>
       <ComplaintField>
-        <Text>Plaintiff: </Text>
+        <Text>State: </Text>
         <Text>{capitalizedState}</Text>
       </ComplaintField>
     </Stack>

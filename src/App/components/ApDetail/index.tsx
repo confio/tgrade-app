@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import pendingIcon from "App/assets/icons/clock.svg";
-import rejectedIcon from "App/assets/icons/cross.svg";
+import rejectedIcon from "App/assets/icons/cross-red.svg";
 import passedIcon from "App/assets/icons/tick.svg";
 import ButtonAddNew from "App/components/ButtonAddNew";
 import { lazy, useCallback, useEffect, useState } from "react";
@@ -20,25 +20,23 @@ import {
   ProposalsContainer,
   StateParagraph,
   StatusBlock,
+  StatusParagraph,
 } from "./style";
 
 const ApRegisterComplaintModal = lazy(() => import("App/components/ApRegisterComplaintModal"));
 const ApComplaintDetailModal = lazy(() => import("App/components/ApComplaintDetailModal"));
+const ApCreateProposalModal = lazy(() => import("App/components/ApCreateProposalModal"));
+const ApProposalDetailModal = lazy(() => import("App/components/ApProposalDetailModal"));
 const ApIdActions = lazy(() => import("App/components/ApIdActions"));
 const Table = lazy(() => import("App/components/Table"));
 
 const { Title, Paragraph } = Typography;
 
 function getImgSrcFromState(state: ComplaintState) {
-  switch (state) {
-    case "accepted":
-      return { src: passedIcon };
-    case "closed":
-    case "aborted":
-      return { src: rejectedIcon };
-    default:
-      return { src: pendingIcon };
-  }
+  if (state.closed) return { src: passedIcon };
+  if (state.aborted) return { src: rejectedIcon };
+
+  return { src: pendingIcon };
 }
 
 const complaintsColumns = [
@@ -115,7 +113,7 @@ const proposalsColumns = [
     key: "expires",
     width: "10%",
     render: (record: ProposalResponse) => {
-      const dateObj = new Date(parseInt(record.expires.at_time, 10) / 1000000);
+      const dateObj = new Date(record.expires / 1000000);
       return (
         <>
           <div>{dateObj.toLocaleDateString()}</div>
@@ -124,8 +122,8 @@ const proposalsColumns = [
       );
     },
     sorter: (a: ProposalResponse, b: ProposalResponse) => {
-      const aDate = new Date(parseInt(a.expires.at_time, 10) / 1000000);
-      const bDate = new Date(parseInt(b.expires.at_time, 10) / 1000000);
+      const aDate = new Date(a.expires / 1000000);
+      const bDate = new Date(b.expires / 1000000);
       return bDate.getTime() - aDate.getTime();
     },
     defaultSortOrder: "ascend",
@@ -136,10 +134,10 @@ const proposalsColumns = [
     width: "10%",
     render: (record: ProposalResponse) => (
       <StatusBlock>
-        <StateParagraph state={record.status}>
+        <StatusParagraph status={record.status}>
           <img alt="" {...getImgSrcFromStatus(record.status)} />
           {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-        </StateParagraph>
+        </StatusParagraph>
         <Paragraph>Yes: {record.votes.yes}</Paragraph>
         <Paragraph>No: {record.votes.no}</Paragraph>
         <Paragraph>Abstained: {record.votes.abstain}</Paragraph>
@@ -178,12 +176,12 @@ export default function ApDetail(): JSX.Element {
   const [isComplaintsTableLoading, setComplaintsTableLoading] = useState(true);
   const [isProposalsTableLoading, setProposalsTableLoading] = useState(true);
   const [isRegisterComplaintModalOpen, setRegisterComplaintModalOpen] = useState(false);
-  const [, setCreateProposalModalOpen] = useState(false);
+  const [isCreateProposalModalOpen, setCreateProposalModalOpen] = useState(false);
 
   const [complaints, setComplaints] = useState<readonly Complaint[]>([]);
   const [proposals, setProposals] = useState<readonly ProposalResponse[]>([]);
   const [clickedComplaint, setClickedComplaint] = useState<number>();
-  const [, setClickedProposal] = useState<number>();
+  const [clickedProposal, setClickedProposal] = useState<number>();
   const [isVotingMember, setVotingMember] = useState(false);
 
   const refreshComplaints = useCallback(async () => {
@@ -192,7 +190,6 @@ export default function ApDetail(): JSX.Element {
     try {
       const apContract = new ApContractQuerier(config, client);
       const complaints = await apContract.getAllComplaints();
-      console.log({ complaints });
       setComplaints(complaints);
     } catch (error) {
       if (!(error instanceof Error)) return;
@@ -234,9 +231,7 @@ export default function ApDetail(): JSX.Element {
             <Title level={2} style={{ fontSize: "var(--s1)" }}>
               Complaints
             </Title>
-            {isVotingMember && (
-              <ButtonAddNew text="Register complaint" onClick={() => setRegisterComplaintModalOpen(true)} />
-            )}
+            <ButtonAddNew text="Register complaint" onClick={() => setRegisterComplaintModalOpen(true)} />
           </header>
           <Table
             loading={isComplaintsTableLoading}
@@ -280,6 +275,17 @@ export default function ApDetail(): JSX.Element {
         closeModal={() => setClickedComplaint(undefined)}
         complaintId={clickedComplaint}
         refreshComplaints={refreshComplaints}
+      />
+      <ApCreateProposalModal
+        isModalOpen={isCreateProposalModalOpen}
+        closeModal={() => setCreateProposalModalOpen(false)}
+        refreshProposals={refreshProposals}
+      />
+      <ApProposalDetailModal
+        isModalOpen={clickedProposal !== undefined}
+        closeModal={() => setClickedProposal(undefined)}
+        proposalId={clickedProposal}
+        refreshProposals={refreshProposals}
       />
     </>
   );
