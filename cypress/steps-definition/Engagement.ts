@@ -96,10 +96,10 @@ And(
       prefix: config.addressPrefix,
     });
 
-    const { address: walletUserA } = (await wallet.getAccounts())[0];
+    const walletUser = (await wallet.getAccounts())[0].address;
     const signingClient_01 = await createSigningClient(config, wallet);
 
-    const walletBalanceUser = await signingClient_01.getBalance(walletUserA, config.feeToken);
+    const walletBalanceUser = await signingClient_01.getBalance(walletUser, config.feeToken);
     cy.log("walletBalanceUser.amount", walletBalanceUser.amount);
     console.log("walletBalanceUser.amount", walletBalanceUser.amount);
     expect(parseInt(walletBalanceUser.amount.slice(0, 3))).to.be.not.lessThan(parseInt(tokenBalance));
