@@ -24,7 +24,7 @@ contract="tgrade_ap_voting"
 apConfigKey="ap_config"
 
 # TODO: Automate
-multisigCodeId=28
+multisigCodeId=31 # tgrade_dispute_multisig
 
 # Get address
 contractAddr=$(tgrade q poe contract-address "$poeContract" -o json --node="$nodeUrl" | jq -re '.address')
