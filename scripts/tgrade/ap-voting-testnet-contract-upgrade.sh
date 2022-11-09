@@ -20,32 +20,30 @@ otherKey1="validator2-$chainSuffix"
 otherKey2="validator3-$chainSuffix"
 
 poeContract="ARBITER_POOL_VOTING"
-apVotingContract="tgrade_ap_voting.wasm"
+contract="tgrade_ap_voting"
 apConfigKey="ap_config"
 
 # TODO: Automate
 multisigCodeId=28
 
 # Get address
-apVotingAddr=$(tgrade q poe contract-address "$poeContract" -o json --node="$nodeUrl" | jq -re '.address')
+contractAddr=$(tgrade q poe contract-address "$poeContract" -o json --node="$nodeUrl" | jq -re '.address')
 
 # Get code id
-apVotingCodeId=$(tgrade q wasm contract "$apVotingAddr" -o json --node="$nodeUrl" | jq -re '.contract_info.code_id')
-echo "* Original code id: $apVotingCodeId"
+originalCodeId=$(tgrade q wasm contract "$contractAddr" -o json --node="$nodeUrl" | jq -re '.contract_info.code_id')
+echo "* Original code id: $originalCodeId"
 
-apVotingAddr=$(tgrade q wasm list-contract-by-code "$apVotingCodeId" --node="$nodeUrl" -o json | jq -r '.contracts[0]')
+echo "# Migrate $contract"
 
-echo "# Migrate ap voting"
-
-echo "## Upload new ap voting contract"
-rsp=$(tgrade tx wasm store "$DIR/contracts/$apVotingContract" \
+echo "## Upload new $contract contract"
+rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
   --from "$key" --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" "$keyringBackend" -b block -o json)
 codeId=$(echo "$rsp" | jq -r '.logs[0].events[1].attributes[-1].value')
 echo "* Code id: $codeId"
 
 # Try with a text proposal first
 title="Migrate $poeContract contract to code id $codeId"
-description="Migrate '$poeContract' contract with address '$apVotingAddr' to code id '$codeId'"
+description="Migrate '$poeContract' contract with address '$contractAddr' to code id '$codeId'"
 text_proposal=$(cat <<EOF
 {"propose": {"title": "$title", "description": "$description", "proposal": {"text": {}} }}
 EOF
@@ -53,7 +51,7 @@ EOF
 
 # Prepare migration proposal message
 upgrade_proposal=$(cat <<EOF
-{"propose": {"title": "$title", "description": "$description", "proposal": {"migrate_contract": {"contract":"$apVotingAddr", "code_id": $codeId, "migrate_msg": "$(echo -n "{ \"multisig_code\": $multisigCodeId, \"waiting_period\": 604800 }" | base64)"}} }}
+{"propose": {"title": "$title", "description": "$description", "proposal": {"migrate_contract": {"contract":"$contractAddr", "code_id": $codeId, "migrate_msg": "$(echo -n "{ \"multisig_code\": $multisigCodeId, \"waiting_period\": 604800 }" | base64)"}} }}
 EOF
 )
 
@@ -120,13 +118,13 @@ tgrade tx wasm execute \
   --from "$key" --gas auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" "$keyringBackend" -b block -o json
 
 echo "--------------------------------------------------------------------------------------------"
-echo "## AP voting migration completed"
+echo "## $contract voting migration completed"
 echo "--------------------------------------------------------------------------------------------"
 
 # Verifications
 
 # Verify contract is set to new code id
-rsp=$(tgrade q wasm contract "$apVotingAddr" -o json --node="$nodeUrl")
+rsp=$(tgrade q wasm contract "$contractAddr" -o json --node="$nodeUrl")
 echo "$rsp" | jq .
 
 newCodeID=$(echo "$rsp" | jq -r '.contract_info.code_id')
@@ -136,10 +134,11 @@ then
   exit 1
 fi
 
+# Contract specific verification
 # Verify *multisig* code id is also set/updated
 echo "AP config ('$apConfigKey'): "
 rawKey=$(echo -n $apConfigKey | xxd -p -u)
-data=$(tgrade query wasm contract-state raw "$apVotingAddr" "$rawKey" --node="$nodeUrl" --output=json | jq -r '.data' | base64 -d)
+data=$(tgrade query wasm contract-state raw "$contractAddr" "$rawKey" --node="$nodeUrl" --output=json | jq -r '.data' | base64 -d)
 echo "$data" | jq '.'
 apConfigMultisigCodeId=$(echo "$data" | jq -r '.multisig_code_id')
 if [ "$A" = "y" ] && [ "$apConfigMultisigCodeId" != "$multisigCodeId" ]
