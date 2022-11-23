@@ -18,25 +18,24 @@ key="tgrade-v5-reserve-internal-14"
 
 contract="tgrade_tc_payments"
 
-# Instantiate contract
 # 1. Store contract
 rsp=$(tgrade tx wasm store "$DIR/contracts/$contract.wasm" \
   --from $key --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend")
 codeId=$(echo "$rsp" | jq -er '.logs[0].events[1].attributes[-1].value')
-
-#period="daily" # Used for tests
-period="monthly"
-#period="yearly"
-
-amount=10000000 # 10 TGD
-[ "$period" = "monthly" ] && amount=$[amount * 10]
-[ "$period" = "yearly" ] && amount=$[amount * 10 * 12]
 
 echo "Code Id: $codeId"
 if echo "$0" | grep -q '/store[_-]'
 then
   exit 0
 fi
+
+#period="daily" # Used for tests
+period="monthly"
+#period="yearly"
+
+amount=275000000 # 275 TGD
+[ "$period" = "monthly" ] && amount=$[amount * 10]
+[ "$period" = "yearly" ] && amount=$[amount * 10 * 12]
 
 keyAddr=$(tgrade keys show "$key" "$keyringBackend" | grep address: | cut -f4 -d\ )
 
