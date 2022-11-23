@@ -13,5 +13,5 @@ C=$1
 echo $C:
 # Download wasm and get contract name and version from it
 tgrade q wasm code "$C" "./contracts/$C.wasm" --node=$nodeUrl 2>/dev/null
-strings "./contracts/$C.wasm" | sed -E -n '/(^|[^ ])crates.io:/s/.*crates.io:([a-zA-Z0-9._-].*)([0-9]\.[0-9][0-9]*\.[0-9][0-9]*).*/\1-\2/p'
+strings "./contracts/$C.wasm" | sed -E -n '/(^|[^ ])crates.io:/s/.*crates.io:([a-zA-Z0-9._-]*)([0-9]\.[0-9][0-9]*\.[0-9][0-9]*).*/\1-\2/p'
 rm -f "./contracts/$C.wasm"
