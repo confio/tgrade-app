@@ -6,4 +6,4 @@ NS="$1"
 
 S=$(echo "$NS" | sed -E 's/([0-9]{9})$/.\1/')
 
-date --date "1970-01-01 + $S seconds"
+date --date "1970-01-01 UTC + $S seconds"
