@@ -24,9 +24,6 @@ otherKey2="validator3-$chainSuffix"
 poeContract="STAKING"
 stakeContract="tg4_stake.wasm"
 
-# Get key address
-keyAddr=$(tgrade keys show "$key" "$keyringBackend" | grep address: | cut -f4 -d\ )
-
 # Get stake address
 stakeAddr=$(tgrade q poe contract-address "$poeContract" -o json --node="$nodeUrl" | jq -re '.address')
 
