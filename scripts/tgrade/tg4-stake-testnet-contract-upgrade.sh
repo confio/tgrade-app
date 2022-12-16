@@ -36,17 +36,6 @@ echo "* Original code id: $stakeCodeId"
 
 stakeAddr=$(tgrade q wasm list-contract-by-code "$stakeCodeId" --node="$nodeUrl" -o json | jq -r '.contracts[0]')
 
-# Create a claim before migration (to confirm claims migration work)
-echo "# Creating claim to validate claims migrations"
-# Bond some liquid tokens
-tgrade tx wasm execute "$stakeAddr" "{ \"bond\": { } }" --amount 1000000utgd --from $key --gas auto --gas-prices=0.1utgd --gas-adjustment=1.3 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend" | jq .
-
-## Unbond them
-tgrade tx wasm execute "$stakeAddr" "{ \"unbond\": { \"tokens\": { \"amount\": \"1000000\", \"denom\": \"utgd\" } } }" --from $key --gas auto --gas-prices=0.1utgd --gas-adjustment=1.3 -y --chain-id="$chainId" --node="$nodeUrl" -b block -o json "$keyringBackend" | jq .
-
-# List claims
-claimsV1=$(tgrade query wasm contract-state smart "$stakeAddr" "{\"claims\": { \"address\": \"$keyAddr\" } }" -o json --node="$nodeUrl" | jq '.data')
-
 echo "# Migrate stake"
 echo "## Upload new stake contract"
 rsp=$(tgrade tx wasm store "$DIR/contracts/$stakeContract" \
@@ -145,14 +134,4 @@ if [ "$A" = "y" ] && [ "$newCodeID" != "$codeId" ]
 then
   echo "Unexpected code id: $newCodeID"
   exit 1
-fi
-
-# Verify *claims* are also migrated (for non-text proposal)
-if [ "$A" = "y" ]
-then
-  claimsV2=$(tgrade query wasm contract-state smart "$stakeAddr" "{\"claims\": { \"address\": \"$keyAddr\" } }" -o json --node="$nodeUrl" | jq '.data')
-  echo "claims V1:"
-  echo "$claimsV1" | jq .
-  echo "claims V2:"
-  echo "$claimsV2" | jq .
 fi
