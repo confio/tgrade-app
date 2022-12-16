@@ -52,8 +52,21 @@ EOF
 )
 
 # Prepare migration proposal message
+migrateMsg="{}"
+
 upgrade_proposal=$(cat <<EOF
-{"propose": {"title": "$title", "description": "$description", "proposal": {"migrate_contract": {"contract":"$stakeAddr", "code_id": $codeId, "migrate_msg": "$(echo -n "{ }" | base64)"}} }}
+{ "propose":
+  { "title": "$title",
+    "description": "$description",
+    "proposal": {
+      "migrate_contract": {
+        "contract":"$stakeAddr",
+          "code_id": $codeId,
+          "migrate_msg": "$(echo -n "$migrateMsg" | base64 -w0)"
+      }
+    }
+  }
+}
 EOF
 )
 
