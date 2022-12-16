@@ -33,7 +33,10 @@ echo "* Original code id: $stakeCodeId"
 
 stakeAddr=$(tgrade q wasm list-contract-by-code "$stakeCodeId" --node="$nodeUrl" -o json | jq -r '.contracts[0]')
 
-echo "# Migrate stake"
+echo "# Migrate $poeContract"
+# Get contract version for reference
+contractVersion=$(./get_contract_version.sh "$DIR/contracts/$stakeContract" | tail -1)
+echo "New contract version: $contractVersion"
 echo "## Upload new stake contract"
 rsp=$(tgrade tx wasm store "$DIR/contracts/$stakeContract" \
   --from "$key" --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" "$keyringBackend" -b block -o json)
@@ -42,7 +45,7 @@ echo "* Code id: $codeId"
 
 # Try with a text proposal first
 title="Migrate $poeContract contract to code id $codeId"
-description="Migrate '$poeContract' contract with address '$stakeAddr' to code id '$codeId'"
+description="Migrate '$poeContract' contract with address '$stakeAddr' to code id '$codeId' (version $contractVersion)"
 text_proposal=$(cat <<EOF
 {"propose": {"title": "$title", "description": "$description", "proposal": {"text": {}} }}
 EOF
@@ -57,9 +60,9 @@ upgrade_proposal=$(cat <<EOF
     "description": "$description",
     "proposal": {
       "migrate_contract": {
-        "contract":"$stakeAddr",
-          "code_id": $codeId,
-          "migrate_msg": "$(echo -n "$migrateMsg" | base64 -w0)"
+        "contract": "$stakeAddr",
+        "code_id": $codeId,
+        "migrate_msg": "$(echo -n "$migrateMsg" | base64 -w0)"
       }
     }
   }
