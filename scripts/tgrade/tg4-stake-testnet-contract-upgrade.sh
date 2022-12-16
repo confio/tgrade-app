@@ -52,7 +52,9 @@ EOF
 )
 
 # Prepare migration proposal message
-migrateMsg="{}"
+migrateMsg="{
+  \"unbonding_period\": 86400
+}"
 
 upgrade_proposal=$(cat <<EOF
 { "propose":
