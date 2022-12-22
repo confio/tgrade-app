@@ -16,7 +16,7 @@ stakeAddr=$(tgrade q poe contract-address STAKING -o json --node="$nodeUrl" | jq
 start_after=null
 while [ -n "$start_after" ]
 do
-  members=$(tgrade query wasm contract-state smart $stakeAddr "{ \"list_members\": { \"limit\": 30, \"start_after\": $start_after } }" -o json --node="$nodeUrl" | jq .data.members[].addr)
+  members=$(tgrade query wasm contract-state smart $stakeAddr "{ \"list_members\": { \"limit\": 30, \"start_after\": $start_after } }" -o json --node="$nodeUrl" "$H" | jq .data.members[].addr)
   if [ -n "$members" ]
   then
     for member in $members
