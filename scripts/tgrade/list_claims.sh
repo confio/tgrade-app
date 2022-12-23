@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+#set -o errexit -o nounset -o pipefail
+set -o errexit -o pipefail
+command -v shellcheck >/dev/null && shellcheck -x "$0"
 #set -x
 
 #source ./env.sh
@@ -16,15 +18,17 @@ stakeAddr=$(tgrade q poe contract-address STAKING -o json --node="$nodeUrl" | jq
 start_after=null
 while [ -n "$start_after" ]
 do
-  members=$(tgrade query wasm contract-state smart $stakeAddr "{ \"list_members\": { \"limit\": 30, \"start_after\": $start_after } }" -o json --node="$nodeUrl" "$H" | jq .data.members[].addr)
+  # shellcheck disable=SC2116,SC2086
+  members=$(tgrade query wasm contract-state smart "$stakeAddr" "{ \"list_members\": { \"limit\": 30, \"start_after\": $start_after } }" -o json --node="$nodeUrl" $H | jq .data.members[].addr)
   if [ -n "$members" ]
   then
     for member in $members
     do
-      echo $member:
-      tgrade query wasm contract-state smart $stakeAddr "{ \"claims\": { \"address\": $member } }" -o json --node="$nodeUrl" "$H" | jq '.'
+      echo "$member:"
+      # shellcheck disable=SC2116,SC2086
+      tgrade query wasm contract-state smart "$stakeAddr" "{ \"claims\": { \"address\": $member } }" -o json --node="$nodeUrl" $H | jq '.'
     done
-    start_after=$(echo $members | jq . 2>/dev/null | tail -1)
+    start_after=$(echo "$members" | jq . 2>/dev/null | tail -1)
   else
     start_after=''
   fi
