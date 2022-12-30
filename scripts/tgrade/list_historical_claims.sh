@@ -20,7 +20,7 @@ stakingAddr=$(tgrade q poe contract-address "STAKING" -o json --node="${nodeUrl:
 INTERVAL=$(tgrade query wasm contract-state smart "$stakingAddr" '{ "configuration": {} }' -o json --node="$nodeUrl" | jq -r '.data.unbonding_period')
 
 # Compute ts for comparison
-TS=$(date '+%s' --date "$D")
+TS=$(TZ="UTC" date '+%s' --date "$D")
 CURRENT_TS=$(date '+%s')
 
 LOG="$BASE-${chainId:?}".txt
@@ -45,7 +45,7 @@ do
   echo "done."
 
   # Compute next date (with a safety margin)
-  D=$(date --date "$D + $INTERVAL seconds - 1 day")
+  D=$(TZ="UTC" date --date "$D + $INTERVAL seconds - 1 day")
   # Compute ts
-  TS=$(date '+%s' --date "$D")
+  TS=$(TZ="UTC" date '+%s' --date "$D")
 done
