@@ -10,8 +10,14 @@ H="$1"
 if [ -n "$H" ]
 then
   [ -z "$archUrl" ] && echo "archUrl env var not set!" && exit 1
+  avgBlockTime=5.926 # [seconds]
+  completionTime=$((21 * 24 * 60 * 60)) # [seconds]
+  blocks=$(echo "scale=0;$completionTime / $avgBlockTime + 1" | bc -l)
   nodeUrl="$archUrl"
+  memberH=$((H - blocks))
+  [ $memberH -lt 1 ] && memberH=1
   H="--height=$H"
+  memberH="--height=$memberH"
 fi
 
 stakeAddr=$(tgrade q poe contract-address STAKING -o json --node="$nodeUrl" | jq -re ".address")
@@ -19,7 +25,7 @@ start_after=null
 while [ -n "$start_after" ]
 do
   # shellcheck disable=SC2116,SC2086
-  members=$(tgrade query wasm contract-state smart "$stakeAddr" "{ \"list_members\": { \"limit\": 30, \"start_after\": $start_after } }" -o json --node="$nodeUrl" $H | jq .data.members[].addr)
+  members=$(tgrade query wasm contract-state smart "$stakeAddr" "{ \"list_members\": { \"limit\": 30, \"start_after\": $start_after } }" -o json --node="$nodeUrl" $memberH | jq .data.members[].addr)
   if [ -n "$members" ]
   then
     for member in $members
