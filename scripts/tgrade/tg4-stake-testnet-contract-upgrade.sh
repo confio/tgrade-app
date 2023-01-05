@@ -24,6 +24,9 @@ otherKey2="validator3-$chainSuffix"
 poeContract="STAKING"
 stakeContract="tg4_stake.wasm"
 
+# Get validator1 address
+keyAddr=$(tgrade keys show "$key" "$keyringBackend" | grep address: | cut -f4 -d\ )
+
 # Get stake address
 stakeAddr=$(tgrade q poe contract-address "$poeContract" -o json --node="$nodeUrl" | jq -re '.address')
 
@@ -53,6 +56,9 @@ EOF
 
 # Prepare migration proposal message
 migrateMsg="{}"
+#migrateMsg="{
+#  \"undelegations\": [ { \"addr\": \"$keyAddr\", \"amount\": \"1000000\" } ]
+#}"
 
 upgrade_proposal=$(cat <<EOF
 { "propose":
