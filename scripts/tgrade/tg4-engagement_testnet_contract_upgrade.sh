@@ -31,8 +31,6 @@ contractAddr=$(tgrade q poe contract-address "$poeContract" -o json --node="$nod
 contractCodeId=$(tgrade q wasm contract "$contractAddr" -o json --node="$nodeUrl" | jq -re '.contract_info.code_id')
 echo "* Original code id: $contractCodeId"
 
-contractAddr=$(tgrade q wasm list-contract-by-code "$contractCodeId" --node="$nodeUrl" -o json | jq -r '.contracts[0]')
-
 echo "# Migrate $poeContract"
 # Get contract version for reference
 contractVersion=$(./get_contract_version.sh "$DIR/contracts/$contract" | tail -1)
