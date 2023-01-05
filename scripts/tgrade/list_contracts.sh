@@ -14,11 +14,14 @@ fi
 C=1
 while true
 do
-  A=$(tgrade query wasm list-contract-by-code "$C" -o json --node="$nodeUrl" | jq -r '.contracts[0]')
-  if [ "$A" != "null" ]
+  ADDRS=$(tgrade query wasm list-contract-by-code "$C" -o json --node="$nodeUrl" | jq -r '.contracts[]')
+  if [ -n "$ADDRS" ]
   then
     echo $C:
-    tgrade q wasm contract $A -o json --node="$nodeUrl" 2>/dev/null| jq -re '.'
+    for ADDR in $ADDRS
+    do
+      tgrade q wasm contract $ADDR -o json --node="$nodeUrl" 2>/dev/null| jq -re '.'
+    done
   elif [ "$O" = "-i" ] || [ "$O" = "--instances" ]
   then
     echo $C:
