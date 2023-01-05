@@ -50,12 +50,11 @@ EOF
 )
 
 # Prepare migration proposal message
-#migrateMsg="{}"
+migrateMsg="{}"
 # Change halflife to three months (for testing half-life adjustments)
-migrateMsg="{
-  \"halflife\": 15552000
-}"
-
+#migrateMsg="{
+#  \"halflife\": 15552000
+#}"
 upgrade_proposal=$(cat <<EOF
 { "propose":
   { "title": "$title",

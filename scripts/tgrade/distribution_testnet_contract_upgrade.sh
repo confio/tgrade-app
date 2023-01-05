@@ -50,11 +50,11 @@ EOF
 )
 
 # Prepare migration proposal message
-#migrateMsg="{}"
+migrateMsg="{}"
 # Remove half-life (for fixing wrong contract migration)
-migrateMsg="{
-  \"halflife\": 0
-}"
+#migrateMsg="{
+#  \"halflife\": 0
+#}"
 
 upgrade_proposal=$(cat <<EOF
 { "propose":
