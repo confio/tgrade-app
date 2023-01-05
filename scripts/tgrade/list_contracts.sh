@@ -26,10 +26,10 @@ do
   then
     echo $C:
     # Download wasm and skip it (just to errexit)
-    tgrade q wasm code "$C" /dev/null --node=$nodeUrl >/dev/null 2>&1
+    tgrade q wasm code "$C" /dev/null --node=$nodeUrl >/dev/null 2>&1 || exit 0
   else
     # Download wasm and get contract name and version from it
-    ./get_contract_version.sh $C
+    ./get_contract_version.sh $C || exit 0
   fi
   C=$[C + 1]
 done
