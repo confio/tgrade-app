@@ -53,7 +53,7 @@ EOF
 #migrateMsg="{}"
 # Change halflife to three months (for testing half-life adjustments)
 migrateMsg="{
-  \"halflife\": 7776000
+  \"halflife\": 15552000
 }"
 
 upgrade_proposal=$(cat <<EOF
