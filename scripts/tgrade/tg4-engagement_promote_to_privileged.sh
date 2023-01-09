@@ -3,7 +3,7 @@ set -o errexit -o nounset -o pipefail
 command -v shellcheck >/dev/null && shellcheck -x "$0"
 
 # Link this to testnet's env file
-source ./env.sh
+#source ./env.sh
 
 echo "Tgrade home: $TGRADE_HOME"
 echo "Chain id: $chainId"
@@ -17,13 +17,11 @@ key="validator1-$chainSuffix"
 otherKey1="validator2-$chainSuffix"
 otherKey2="validator3-$chainSuffix"
 
-# Automated, based on label
-contractLabel="engagement"
+poeContract="ENGAGEMENT"
 
 # Get address
-# Assumes the engagement contract is the first 10 code ids
-echo "Getting $contractLabel contract address..."
-contractAddr=$(./list_contracts.sh -i -m 10 | grep -B5 "\"label\": \"$contractLabel\"" | grep '"address":' | cut -f4 -d\")
+echo "Getting $poeContract contract address..."
+contractAddr=$(tgrade q poe contract-address "$poeContract" -o json --node="$nodeUrl" | jq -re ".address")
 echo "done."
 
 echo "# Promote contract address $contractAddr"
