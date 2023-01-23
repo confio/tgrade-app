@@ -152,7 +152,7 @@ $
         </Text>
         <CopyBlock
           text={`
-$ stakeAddr=$(trade q poe contract-address STAKING -o json --node="$nodeUrl" | jq -re ".address")
+$ stakeAddr=$(tgrade q poe contract-address STAKING -o json --node="$nodeUrl" | jq -re ".address")
 $ echo $stakeAddr
 tgrade17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgsmsjtzp
 $
