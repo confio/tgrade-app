@@ -19,5 +19,5 @@ then
   C="./contracts/$C.wasm"
   D=1
 fi
-strings "$C" | sed -E -n '/(^|[^ ])crates.io:/s/.*crates.io:([a-zA-Z0-9._-]*)([0-9]\.[0-9][0-9]*\.[0-9][0-9]*).*/\1-\2/p'
+strings "$C" | sed -E -n '/(^|[^ ])crates.io:/s/.*crates.io:([a-zA-Z0-9_-]*)([0-9]\.[0-9][0-9]*\.[0-9][0-9]*).*/\1-\2/p'
 [ "$D" = "1" ] && rm -f "$C" || exit 0
