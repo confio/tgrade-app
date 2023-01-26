@@ -48,6 +48,10 @@ rsp=$(tgrade tx wasm store "$DIR/contracts/$contract" \
   --from "$key" --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" "$keyringBackend" -b block -o json)
 codeId=$(echo "$rsp" | jq -r '.logs[0].events[1].attributes[-1].value')
 echo "* Code id: $codeId"
+if echo "$0" | grep -q '/store[_-]'
+then
+  exit 0
+fi
 
 # Try with a text proposal first
 title="Migrate $poeContract contract to code id $codeId"
