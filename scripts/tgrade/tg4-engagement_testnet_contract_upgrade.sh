@@ -35,6 +35,14 @@ echo "# Migrate $poeContract"
 # Get contract version for reference
 contractVersion=$(./get_contract_version.sh "$DIR/contracts/$contract" | tail -1)
 echo "New contract version: $contractVersion"
+if echo "$contractVersion" | grep -q "^tg4-engagement-0.17.1$"
+then
+  # Store original mixer and distribution points
+  mixerAddr=$(tgrade q poe contract-address "MIXER" -o json --node="$nodeUrl" | jq -re '.address')
+  distrAddr=$(tgrade q poe contract-address "DISTRIBUTION" -o json --node="$nodeUrl" | jq -re '.address')
+  tgrade query wasm contract-state smart "$mixerAddr" "{ \"list_members_by_points\": {} }" -o json --node="$nodeUrl" | jq '.' >mixer_points-ori.json
+  tgrade query wasm contract-state smart "$distrAddr" "{ \"list_members_by_points\": {} }" -o json --node="$nodeUrl" | jq '.' >distr_points-ori.json
+fi
 echo "## Upload new $poeContract contract"
 rsp=$(tgrade tx wasm store "$DIR/contracts/$contract" \
   --from "$key" --gas=auto --gas-prices=0.1utgd --gas-adjustment=1.2 -y --chain-id="$chainId" --node="$nodeUrl" "$keyringBackend" -b block -o json)
@@ -148,4 +156,17 @@ if [ "$A" = "y" ] && [ "$newCodeID" != "$codeId" ]
 then
   echo "Unexpected code id: $newCodeID"
   exit 1
+fi
+
+# Extra verifications (for 0.17.0 -> 0.17.1 migration)
+if echo "$contractVersion" | grep -q "^tg4-engagement-0.17.1$"
+then
+  echo "Mixer and distribution points should now be reduced!"
+  # Get new mixer and distribution points
+  tgrade query wasm contract-state smart "$mixerAddr" "{ \"list_members_by_points\": {} }" -o json --node="$nodeUrl" | jq '.' >mixer_points-new.json
+  tgrade query wasm contract-state smart "$distrAddr" "{ \"list_members_by_points\": {} }" -o json --node="$nodeUrl" | jq '.' >distr_points-new.json
+  echo "mixer points diff:"
+  diff mixer_points-ori.json mixer_points-new.json
+  echo "distr points diff:"
+  diff distr_points-ori.json distr_points-new.json
 fi
