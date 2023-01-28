@@ -6,7 +6,7 @@ set -o errexit -o nounset -o pipefail
 
 distributionAddr=$(tgrade q poe contract-address DISTRIBUTION -o json --node="$nodeUrl" | jq -re ".address")
 start_after=null
-echo "member,account_type,total_balance,delegated_free,delegated_vesting"
+echo "member,points,account_type,total_balance,delegated_free,delegated_vesting"
 while [ -n "$start_after" ]
 do
   members=$(tgrade query wasm contract-state smart $distributionAddr "{ \"list_members\": { \"limit\": 30, \"start_after\": $start_after } }" -o json --node="$nodeUrl" | jq .data.members[].addr)
