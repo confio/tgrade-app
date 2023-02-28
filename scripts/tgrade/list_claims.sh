@@ -16,6 +16,11 @@ then
   nodeUrl="$archUrl"
   memberH=$((H - blocks))
   [ $memberH -lt 1 ] && memberH=1
+  # Round heights to lowest hundred
+  # shellcheck disable=SC2001
+  H=$(echo "$H" | sed 's/[0-9][0-9]$/00/')
+  # shellcheck disable=SC2001
+  memberH=$(echo "$memberH" | sed 's/[0-9][0-9]$/00/')
   H="--height=$H"
   memberH="--height=$memberH"
 fi
