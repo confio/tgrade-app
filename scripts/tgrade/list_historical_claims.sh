@@ -9,7 +9,7 @@ command -v shellcheck >/dev/null && shellcheck -x "$0"
 #set -x
 
 D="$1"
-[ "$D" = "-h" ] || [ "$D" = "--help" ] || [ -z "$D" ] && echo "Usage: $0 <date (UTC>" && exit 1
+[ "$D" = "-h" ] || [ "$D" = "--help" ] || [ -z "$D" ] && echo "Usage: $0 <date (UTC)>" && exit 1
 [ -z "$archUrl" ] && echo "archUrl env var not set!" && exit 1
 
 BASE=$(basename "$0" .sh)
