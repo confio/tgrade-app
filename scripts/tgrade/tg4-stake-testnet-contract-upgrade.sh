@@ -56,10 +56,10 @@ EOF
 )
 
 # Prepare migration proposal message
-#migrateMsg="{}"
-migrateMsg="{
-  \"undelegations\": [ { \"addr\": \"$keyAddr\", \"amount\": \"1000000\" }, { \"addr\": \"$otherKeyAddr\", \"amount\": \"2000000\" } ]
-}"
+migrateMsg="{}"
+#migrateMsg="{
+#  \"undelegations\": [ { \"addr\": \"$keyAddr\", \"amount\": \"1000000\" }, { \"addr\": \"$otherKeyAddr\", \"amount\": \"2000000\" } ]
+#}"
 
 upgrade_proposal=$(cat <<EOF
 { "propose":
