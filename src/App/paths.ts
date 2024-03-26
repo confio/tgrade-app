@@ -10,6 +10,9 @@ export const paths = {
   oc: {
     prefix: "/oversightcommunity",
   },
+  ap: {
+    prefix: "/arbiterpool",
+  },
   cpool: {
     prefix: "/communitypool",
   },
